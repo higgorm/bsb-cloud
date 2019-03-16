@@ -1,0 +1,34 @@
+<form class="form-vertical" id="validation-form" action="" novalidate="novalidate">	
+	<div class="controls">
+		<div  class="span1">
+			<label class="control-label text-info" for="name"><?php echo utf8_encode("Número")?></label>
+			<input class="span1" type="text" placeholder="">
+		</div>	
+		<div  class="span4">
+			<label class="control-label text-info" for="name"><?php echo utf8_encode("Identificaçao")?></label>
+			<input class="span4" type="text" placeholder="">
+		</div>
+		<div  class="span4">
+			<label for="validateSelectProfissional" class="control-label text-info"><?php echo utf8_encode("Profissional")?></label>
+				 <select name="validateSelectProfissional" id="validateSelectProfissional" class="span5">
+                	<option value="">Selecione...</option>
+                 </select>
+			</div>
+		</div>
+		<div  class="span5">
+			<hr>
+		</div>
+		<div  class="span3">
+			<button id="btnCancelarNovaMaca" class="btn btn-primary btn" type="button">Cancelar</button>	
+			<button id="btnSalvarNovaMaca" class="btn btn-primary btn" type="button">Confirmar</button>
+		</div>
+		
+ </form>
+ <script>
+ $(document).ready(function() 
+ { 	
+    $('#btnCancelarNovaMaca,#btnSalvarNovaMaca').click(function(){
+   	 $('#macaModal').modal('hide');
+   });
+ });
+</script>

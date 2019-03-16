@@ -1,0 +1,133 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <!--<i class="icon-check"></i>-->
+                    <h3><?php echo utf8_encode("Análise CRM") ?></h3>
+                </div> <!-- /widget-header -->
+                <div class="widget-content">
+                    <div class="col-sm-12">&nbsp;</div>
+                    <form class="form-horizontal"  id="validation-form" action="/mail/crm" novalidate="novalidate" method="post" role="form" enctype="multipart/form-data">
+                    <div class="controls">
+                        <div class="col-md-12">
+                            <label class="control-label text-info">Movimentação de Clientes</label>
+                            <table class="table table-striped">
+
+                                <thead>
+                                <tr>
+                                    <th>Movimento</th>
+                                    <th>Quantidade (Clientes)</th>
+                                    <th>Porcentagem %</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <?php if ($aquisicao) :?>
+                                    <tr>
+                                        <td>Aquisição</td>
+                                        <td><?php echo $aquisicao['total']?></td>
+                                        <td><?php echo number_format($aquisicao['porcentagem'],2,",",".")?></td>
+                                        <td><a href="#" onclick="verClientes('aquisicao')">Ver clientes/Mandar E-mail</a></td>
+                                    </tr>
+
+                                <?php endif; ?>
+                                <?php if ($retencao) :?>
+                                    <tr>
+                                        <td>Retenção</td>
+                                        <td><?php echo $retencao['total']?></td>
+                                        <td><?php echo number_format($retencao['porcentagem'],2,",",".")?></td>
+                                        <td><a href="#" onclick="verClientes('retencao')">Ver clientes/Mandar E-mail</a></td>
+                                    </tr>
+
+                                <?php endif; ?>
+                                <?php if ($perda) :?>
+                                    <tr>
+                                        <td>Perda</td>
+                                        <td><?php echo $perda['total']?></td>
+                                        <td><?php echo number_format($perda['porcentagem'],2,",",".")?></td>
+                                        <td><a href="#" onclick="verClientes('perda')">Ver clientes/Mandar E-mail</a></td>
+                                    </tr>
+
+                                <?php endif; ?>
+                                <?php if ($total) :?>
+                                    <tr>
+                                        <td>Total</td>
+                                        <td><?php echo $total?></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+
+                                <?php endif; ?>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-12">
+                            <div id="chart_div"></div>
+                        </div>
+                    </div>
+                    <div id="verClientesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="verClientesModal" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">X</button>
+                                    <i class="icon-search icon-white"></i>
+                                    <span class="text-info-modal"><?php echo utf8_encode("Ver Clientes") ?></span>
+                                </div>
+                                <div id="BodyVerClientesModal" class="modal-body-xlarge"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Load the AJAX API-->
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {'packages':['corechart']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows([
+            ['Aquisição', <?php echo $aquisicao['porcentagem']?>],
+            ['Retenção', <?php echo $retencao['porcentagem'] ?>],
+            ['Perda', <?php echo $perda['porcentagem'] ?>]
+        ]);
+
+        // Set chart options
+        var options = {'title':'Gráfico: ',
+            'width':800,
+            'height':600};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+
+    verClientes = function (id){
+        $('#BodyVerClientesModal').html('');
+        $('#BodyVerClientesModal').load('/mail/ver-clientes?tipo='+id);
+        $('#verClientesModal').modal('show');
+    }
+
+
+</script>

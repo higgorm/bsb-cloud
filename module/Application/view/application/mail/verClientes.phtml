@@ -1,0 +1,215 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <!--<i class="icon-check"></i>-->
+                    <h3><?php echo utf8_encode("Ver Clientes") ?></h3>
+                </div> <!-- /widget-header -->
+                    <div class="widget-content">
+                        <div class="col-sm-12">&nbsp;</div>
+<div class="controls">
+    <div class="col-md-12" style="height: 350px;overflow-y: scroll;">
+        <label class="control-label text-info">Relação de Clientes</label>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th><input type="checkbox" class="selectAll" name="selectAll" id="selectAll" checked="checked" value="1"/></th>
+                <th>Nome do Cliente</th>
+                <th>Fone 1</th>
+                <th>Fone 2</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            if ($arrMail) {
+                foreach ($arrMail as $result) {
+
+                    echo '  <tr>
+                                <td><input type="checkbox" name="selectCliente[]" id="selectCliente" checked="checked" value="' . $result->cd_cliente . '"/></td>
+                                <td>' . utf8_encode($result->ds_nome_razao_social) . '</td>
+                                <td>' . $result->ds_fone1 . '</td>
+                                <td>' . $result->ds_fone2 . '</td>
+                                <td>' . $result->ds_email . '</td>
+                            </tr>';
+                }
+            }
+            ?>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+                        <fieldset class="col-md-12">
+                            <legend>Email</legend>
+                            <div class="controls">
+
+                                <div class="controls">
+                                    <div class="col-md-12">
+                                        <label class="control-label text-info" for="name">Assunto</label>
+                                        <input class="form-control" value="<?php echo $post['txtAssunto'] ?>" name="txtAssunto" id="txtAssunto" />
+                                    </div>
+                                </div>
+
+                                <div class="controls">
+                                    <div class="col-md-12">
+                                        <label class="control-label text-info" for="name">Texto da Mensagem</label>
+                                        <textarea class="form-control" name="txtMensagem" id="txtMensagem" cols="5"><?php echo $post['txtMensagem'] ?></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="controls">
+                                    <div class="col-md-6">
+                                        <label class="control-label text-info" for="name">Anexo</label>
+                                        <input type="file" class="multi" id="anexo" name="anexo[]"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="controls">
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="btn-group btn-group-justified col-md-12">
+
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default relatorio">
+                                        <i class="i i-chart"></i>
+                                        Imprimir Relatório
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default planilha">
+                                        <i class="i i-list"></i>
+                                        Imprimir Planilha
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default enviaremail">
+                                        <i class="i i-mail"></i>
+                                        Enviar Email
+                                    </button>
+                                </div>
+
+                            </div>
+                            <br />
+                        </div>
+                        </form>
+                    </div>
+            </div>
+        </div>
+</section>
+
+<!--<script type="text/javascript" src="/js/nicEdit/nicEdit-latest.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+        bkLib.onDomLoaded(function() {
+            new nicEditor().panelInstance('txtMensagem');
+        });
+  //]]>
+  </script>-->
+
+<script type="text/javascript">
+
+tinymce.init({
+    selector: "textarea",
+    theme: "modern",
+    width: 680,
+    height: 300,
+    language: "pt_BR",
+    plugins: [
+        "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+        "searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking spellchecker",
+        "table contextmenu directionality emoticons paste textcolor "
+    ],
+    relative_urls: false,
+    browser_spellcheck : true,
+    filemanager_title:"Responsive Filemanager",
+    external_filemanager_path:"/js/tinymce/ResponsiveFilemanager-master/filemanager/",
+    external_plugins: { "filemanager" : "/js/tinymce/ResponsiveFilemanager-master/filemanager/plugin.min.js"},
+    codemirror: {
+        indentOnInit: true, // Whether or not to indent code on init.
+        path: 'CodeMirror'
+    },
+    image_advtab: true,
+    toolbar1: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect",
+    toolbar2: "| responsivefilemanager | image | media | link unlink anchor | print preview code  | youtube | qrcode | flickr | picasa | colorpicker forecolor backcolor"
+});
+
+$('#anexo').MultiFile(
+    {
+        STRING: {
+            remove: 'X',
+            denied: 'Você não pode selecionar um arquivo $ext.\nTente novamente...',
+            file: '$file',
+            selected: 'Arquivo selecionado: $file',
+            duplicate: 'O arquivo ja foi selecionado:\n$file'
+        }
+    }
+);
+$(document).ready(function() {
+    validaSelecionado = function()
+    {
+        var p = false;
+        $("input[name='selectCliente[]']").each(function() {
+            if (this.checked)
+            {
+                p = true;
+            }
+        });
+        return p;
+    }
+
+    $('.enviaremail').click(function() {
+        if (validaSelecionado())
+        {
+            if ($('#txtAssunto').val() == '')
+            {
+                alert('Preencha o assunto da mensagem!');
+                return false;
+            }
+            if ($('textarea #txtMensagem').val() == '')
+            {
+                alert('Preencha o texto da mensagem!');
+                return false;
+            }
+
+            $('#validation-form').attr('action', '/mail/send-mail')
+            $('#validation-form').submit();
+            $('#validation-form').removeAttr('action');
+        }
+        else
+        {
+            alert('Selecione ao menos um cliente!');
+        }
+    });
+    $('.planilha').click(function() {
+        if (validaSelecionado())
+        {
+            $('#validation-form').attr('action', '/mail/gerar-planilha');
+            $('#validation-form').attr('target', '_blank');
+            $('#validation-form').submit();
+            $('#validation-form').removeAttr('action');
+            $('#validation-form').removeAttr('target');
+        }
+        else
+        {
+            alert('Selecione ao menos um cliente!');
+        }
+    });
+    $('.relatorio').click(function() {
+        if (validaSelecionado())
+        {
+            $('#validation-form').attr('action', '/mail/relatorio');
+            $('#validation-form').attr('target', '_blank');
+            $('#validation-form').submit();
+            $('#validation-form').removeAttr('action');
+            $('#validation-form').removeAttr('target');
+        }
+        else
+        {
+            alert('Selecione ao menos um cliente!');
+        }
+    });
+});
+</script>

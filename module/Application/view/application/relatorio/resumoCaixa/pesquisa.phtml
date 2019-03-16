@@ -1,0 +1,270 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <i class="icon-check"></i>
+                    <h3><?php echo utf8_encode("Relat&oacute;rio de Caixa") ?></h3>
+                </div> <!-- /widget-header -->
+                <div class="widget-content">
+                    <form id="formFiltro" class="form-vertical validation-form" method="post">
+                        <div class="controls">
+                            <div class="col-md-12">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Loja") ?></label>
+                                <br>
+                                <select class="form-control" id="cdLoja" name="cdLoja">
+                                    <option value="">Selecione...</option>
+                                    <?php
+                                    foreach ($listaLoja as $loja) {
+
+                                        echo "<option value='{$loja["CD_LOJA"]}'>{$loja["CD_LOJA"]} - " . utf8_encode($loja["DS_RAZAO_SOCIAL"]) . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label text-info" for="name">
+                                        <?php echo utf8_encode("Cliente:") ?>
+                                    </label>
+                                    <div id="ds_nome_razao_social" class="autocomplete"></div>
+                                    <input type="hidden" name="cd_cliente" value="" >
+                                </div>
+                            <div class="col-md-6">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Operador") ?></label>
+                                <br>
+                                <select class="form-control" id="cdOperador" name="cdOperador">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Data Inicial") ?></label>
+                                <br>
+                                <input type="text" id="dtInicial" name="dtInicial"  class="form-control" data-date-format="dd/mm/yyyy" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Data Final") ?></label>
+                                <br>
+                                <input type="text" id="dtFinal" name="dtFinal" class="form-control" data-date-format="dd/mm/yyyy" />
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr>
+                                <button id="btnPesquisarRelatorio" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
+                                <button id="btnCancelarRelatorio" class="btn btn-default btn" type="reset"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="row">&nbsp;</div>
+
+            </div> <!-- /widget-content -->
+        </div> <!-- /widget -->
+    </div> <!-- /span12 -->
+</div>
+</div>
+<div id="modalDadosRelatorio" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDadosRelatorio" aria-hidden="true">
+    <div class="modal-dialog"  style="width: 95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="btnFechar" class="pull-right btn btn-danger btn" >Fechar</button>
+                <button type="button" class="pull-right btn btn-primary"  id="btnGerarPDF"></i>PDF</button>
+                <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio de Resumo de Caixa") ?></span>
+            </div>
+            <div id="modalBodyDadosRelatorio" class="container-fluid" style="overflow-y:scroll"></div>
+            <form id="formRelatorio" target="_blank" action="/relatorio-resumo-caixa/relatorio" method="post">
+                <input type="hidden" id="pdf_cdLoja" name="pdf_cdLoja">
+                <input type="hidden" id="pdf_cdOperador" name="pdf_cdOperador">
+                <input type="hidden" id="pdf_dtInicial" name="pdf_dtInicial">
+                <input type="hidden" id="pdf_dtFinal" name="pdf_dtFinal">
+                <input type="hidden" id="pdf" name="pdf" value="false">
+            </form>
+        </div>
+    </div>
+</div>
+</section>
+<script>
+    $(document).ready(function() {
+        $('#dtInicial').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        $('#dtFinal').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+
+        $('#cdLoja').change(function() {
+            if ($('#cdLoja').val() == '') {
+                return false;
+            }
+
+            $.ajax({
+                url: "/ajax/get-operador-loja",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    cdLoja: $('#cdLoja').val()
+                },
+                success: function(data) {
+
+                    var options = "";
+                    options += '<option value="">Selecione...</option>';
+                    $.each(data, function(key, value) {
+                        options += '<option value="' + value.CD_FUNCIONARIO + '">' + value.DS_FUNCIONARIO + '</option>';
+                    });
+                    $("#cdOperador").html(options);
+                }
+            });
+        });
+
+
+        $('#formFiltro').submit(function()
+        {
+            $("#pdf_cdLoja").val($("#cdLoja").val());
+            $("#pdf_cdOperador").val($("#cdOperador").val());
+            $("#pdf_dtInicial").val($("#dtInicial").val());
+            $("#pdf_dtFinal").val($("#dtFinal").val());
+
+            $("#modalBodyDadosRelatorio").load('/relatorio-resumo-caixa/relatorio', {
+                cdLoja: $("#cdLoja").val(),
+                cdOperador: $("#cdOperador").val(),
+                dtInicial: $("#dtInicial").val(),
+                dtFinal: $("#dtFinal").val(),
+                pdf:  $("#pdf").val(),
+                cd_cliente: $("#cd_cliente").val()
+            });
+            $("#modalDadosRelatorio").modal('show');
+            return false;
+        });
+
+        $('#btnGerarPDF').click(function() {
+            $("#pdf").val("true");
+            gerarRelatorioPDF();
+
+        });
+
+        $('#btnFechar').click(function() {
+            $("#pdf").val("false");
+            $("#modalDadosRelatorio").modal('hide');
+        });
+
+        $('#btnVoltarRelatorio').click(function() {
+            window.location = '/relatorio/index';
+        });
+
+        gerarRelatorioPDF = function() {
+            $('#formRelatorio').submit();
+        };
+        $('#ds_nome_razao_social_input').attr('type', 'text');
+
+        setInterval(function() {
+            $('#ds_nome_razao_social_input').removeAttr('style');
+            $('#ds_nome_razao_social_input').addClass('form-control');
+        }, 200);
+
+        //componete foi alterado - procurar linhas comentadas
+        $(".autocomplete").flexbox('/cliente/buscarcliente', {
+            queryDelay: 800,
+            minChars: 3,
+            paging: {
+                pageSize: 5,
+                summaryTemplate: 'Exibindo {start}-{end} de {total} registros'
+            },
+            width: 450,
+            //                        watermark: 'Informe o nome do cliente',
+            hiddenValue: 'name',
+            onSelect: function() {
+
+            }
+        });
+    });
+</script>
+<style type="text/css">
+    /* Input textbox - do not specify a width here, it will be overwritten */
+    .ffb-input
+    {
+        float:left;
+        color:#000; /* must specify along with watermark color */
+        /*height:40px;  required for webkit browsers (Safari, Chrome) */
+    }
+    /* Color of watermark, if present */
+    .ffb-input.watermark { /* added and removed dynamically */
+        color:#888; /* must specify along with input color */
+    }
+    /* Drop-down arrow, with sprited image */
+    .ffb-arrow
+    {
+        float:left;
+        width:17px;
+        height:22px;
+        background-image:url(../img/sel_win7.gif);
+    }
+    .ffb-arrow.out { /* css sprite technique */
+        background-position:0;
+    }
+    .ffb-arrow.over { /* css sprite technique */
+        background-position:-17px 0;
+    }
+    .ffb-arrow.active { /* css sprite technique */
+        background-position:-4px 0;
+    }
+    .ffb-no-results
+    {
+        padding:2px;
+        color:#888;
+        font-style:italic;
+        border-bottom:1px solid #828790;
+    }
+    /* Container for dropdown contents */
+    .ffb {
+        position:absolute; /* this guy's parent div is hard-coded to position:relative */
+        overflow:hidden;
+        border-left:1px solid #828790; /* #7B9EBD for Vista */
+        border-right:1px solid #828790;
+        background-color:#fff; /* Give it a background-color, so it's not transparent */
+    }
+    /* Inner div for dropdown */
+    .ffb .content {
+        overflow:auto;
+    }
+    .ffb .content .row {
+        border-bottom:1px solid #828790;
+        color:#000;
+        height:20px;
+        clear:both;
+    }
+    .ffb-sel {
+        cursor:pointer;
+        cursor:hand;
+        color:#fff !important;
+        background-color:#39f;
+    }
+    .ffb-match {
+        font-weight:bold;
+        padding-left:32px;
+        color:#000;
+    }
+
+    /* Paging */
+    .ffb .paging {
+        vertical-align:middle;
+        border-bottom:1px solid #828790;
+    }
+    .ffb .page, .ffb a.page {
+        font-size:85%;
+        padding:2px;
+        border:solid 1px #339;
+        background-color:#eef;
+        margin:2px;
+    }
+    .ffb .box {
+        width:22px;
+        margin:2px;
+    }
+    .ffb .summary {
+        font-size:85%;
+    }
+</style>

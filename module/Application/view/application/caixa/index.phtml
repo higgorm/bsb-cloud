@@ -1,0 +1,160 @@
+    <div class="fluid widget stacked" >
+    <div class="widget-header fluid">
+        <i class="icon-check"></i>
+        <h3>Seleção de Caixa</h3>
+    </div>
+    <div class="widget-content">
+        <div class="col-md-12">
+            <input type="button" class="btn btn-info btn-large" id="btnAbertura" value="Abertura de caixa">
+            &nbsp;
+            <input type="button" class="btn btn-info btn-large" id="btnFechamento" value="Fechamento de caixa">
+            &nbsp;
+            <input type="button" class="btn btn-info btn-large" id="btnMovimentacao" value="Movimentação de caixa">
+        </div>
+
+        <div class="col-md-12"></div>
+        <div class="col-md-12"></div>
+
+        <ul id="tabsCaixa" class="nav nav-tabs">
+            <li id="aba1"><a href="#caixaDisponivel" data-toggle="tab" class="active cliCad">Caixas disponíveis</a></li>
+            <!-- li id="aba2"><a href="#aberturaCaixa" class="active cliRap" data-toggle="tab">Abertura de caixa</a></li -->
+        </ul>
+
+        <div class="tab-content col-md-12">
+            <form id="frmCaixa" action="/caixa/caixa" method="post">
+                <div class="tab-pane col-md-12" id="caixaDisponivel">
+
+                    
+
+                    <div class="col-md-12">
+                        <table class="table table-striped  table-hover" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th style="width: 25%;">Número do caixa</th>
+                                    <th style="width: 50%;">Operador (a)</th>
+                                    <th style="width: 25%;">Data abertura</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if (isset($listaCaixas)) {
+                                    foreach ($listaCaixas as $value) {
+                                        $disabled = (($value['CD_FUNCIONARIO'] == $cdFuncionario) || ($usuario == 'ORANGE')) ? '' : ' disabled="disabled" ';
+                                        echo '<tr>
+                                                    <td><input type="radio" class="radio" name="rdCaixa" '.$disabled.' value="' . $value['NR_CAIXA'] . '"/></td>
+                                                    <td>' . $value['NR_CAIXA'] . '</td>
+                                                    <td>' . $value['DS_FUNCIONARIO'] . '</td>
+                                                    <td>' . date('d/m/Y', strtotime($value['DT_ENTRADA'])) . '</td>
+                                                </tr>';
+                                    }
+                                } else {
+                                    echo '<tr>
+                                            <td colspan="3">Nenhum registro</td>
+                                        </tr>';
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-12"></div>
+                    <div class="col-md-12">
+                        <input type="submit" class="btn btn-success" id="btnUtilizar" value="Utilizar caixa" onclick="return validaSelCaixa();">
+                    </div>
+                </div>
+                <div class="tab-pane" id="aberturaCaixa">
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="divCaixaFuncionario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="divCaixaFuncionario" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                <h4 class="text-info-modal modalClienteAgenda">ABERTURA DE CAIXA</h4>
+            </div>
+            <div class="modal-body" id="bodyDivCaixaFuncionario"></div>
+        </div>
+    </div>
+</div>
+
+<div id="divCaixaFechamento" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="divCaixaFechamento" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                <h4 class="text-info-modal modalCaixaFechamento">FECHAMENTO DE CAIXA</h4>
+            </div>
+            <div class="modal-body" id="bodyDivCaixaFechamento"></div>
+        </div>
+    </div>
+</div>
+
+<div id="divCaixaMovimentacao" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="divCaixaMovimentacao" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                <h4 class="text-info-modal modalCaixaMovimentacao">MOVIMENTAÇÃO DE CAIXA</h4>
+            </div>
+            <div class="modal-body" id="bodyDivCaixaMovimentacao"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#dt_data').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        $('#tabsCaixa a[href="#caixaDisponivel"]').tab('show');
+
+        $('.closeDivCaixaFuncionario').click(function() {
+            $('#divCaixaFuncionario').modal('hide');
+        });
+
+        $('#btnAbertura').click(function() {
+            $('#bodyDivCaixaFuncionario').load('/caixa/caixafuncionario');
+            $('#divCaixaFuncionario').modal('show');
+        });
+        
+        $('#btnFechamento').click(function() {
+            $('#bodyDivCaixaFechamento').load('/caixa/fechamentocaixa');
+            $('#divCaixaFechamento').modal('show');
+        });
+        
+        $('#btnMovimentacao').click(function() {
+            if(validaSelCaixa())
+            {
+                $('#bodyDivCaixaMovimentacao').html('');
+                $('#bodyDivCaixaMovimentacao').load('/caixa/movimentacaocaixa?nrCaixa=1');
+                $('#divCaixaMovimentacao').modal('show');
+            }
+        });
+        
+        validaSelCaixa = function()
+        {            
+            var c = 0;
+            $('input[name=rdCaixa]').each(function(k,v){
+                if(v.checked){ c++; }
+            });
+            
+            if(c > 0)
+            {
+                return true;
+            }
+            else
+            {
+                alert('Selecione um caixa');
+                return false;
+            }
+            
+        }
+    });
+</script>

@@ -1,0 +1,712 @@
+
+<section class="panel panel-default">
+      <div class="main_container" >
+        <div class="row">
+
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div style="padding-left: 20px" >
+                    <h2>Vendas Diárias <small>Multi-loja</small></h2> <br/>
+                    <div class="row">
+						<form action="/relatorio-pedido/pesquisa-multi-loja" method="post">
+                      <div class="col-xs-2">
+                        <div class="form-group">
+                        <label for="" class="control-label text-info">Mês de Referência</label>
+                          <select class="selectpicker form-control" name="mes">
+                            <option>...</option>
+                            <option value="01" <?php echo ($mes == '01' ? 'selected' : '') ?>>Janeiro</option>
+                            <option value="02" <?php echo ($mes == '02' ? 'selected' : '') ?>>Fevereiro</option>
+                            <option value="03" <?php echo ($mes == '03' ? 'selected' : '') ?>>Março</option>
+                            <option value="04" <?php echo ($mes == '04' ? 'selected' : '') ?>>Abril</option>
+                            <option value="05" <?php echo ($mes == '05' ? 'selected' : '') ?>>Maio</option>
+                            <option value="06" <?php echo ($mes == '06' ? 'selected' : '') ?>>Junho</option>
+                            <option value="07" <?php echo ($mes == '07' ? 'selected' : '') ?>>Julho</option>
+                            <option value="08" <?php echo ($mes == '08' ? 'selected' : '') ?>>Agosto</option>
+                            <option value="09" <?php echo ($mes == '09' ? 'selected' : '') ?>>Setembro</option>
+                            <option value="10" <?php echo ($mes == '10' ? 'selected' : '') ?>>Outubro</option>
+                            <option value="11" <?php echo ($mes == '11' ? 'selected' : '') ?>>Novembro</option>
+                            <option value="12" <?php echo ($mes == '12' ? 'selected' : '') ?>>Dezembro</option>
+                          </select>  
+                        </div>
+                      </div>
+                      <div class="col-xs-2">
+                        <div class="form-group">
+                        <label for="" class="control-label text-info">Ano de Referência</label>
+                          <select class="selectpicker form-control" name="ano">
+                            <option>...</option>
+                            <option value="2016" <?php echo ($ano == '2016' ? 'selected' : '') ?>>2016</option>
+                            <option value="2017" <?php echo ($ano == '2017' ? 'selected' : '') ?>>2017</option>
+                          </select>  
+                        </div>
+                      </div>
+                      <br/>
+                      <button id="#" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
+						</form>
+					</div>
+                    <!-- Grafico Pizza -->
+                    <div class="col-md-6 col-sm-6 col-xs-12" >
+                      <div class="x_panel">
+                          <h4>Totais</h4>
+                        <div class="x_content" style="margin-left: -100px">
+                          <div id="echart_pie" style="height:250px"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Grafico Pizza -->
+                    <!-- Análise Dados -->
+					<?php foreach ($totais as $total): ?>
+                    <div class="col-md-6 col-sm-6 col-xs-12" >
+                      <div>  
+                        <h4>Estatística</h4>
+                      </div>
+                      <div class="x_panel">
+                        <div>
+                          <h5>Acumulado do dia 1° até hoje:</h5> <h4 style="color: #FF8C00"><?php echo $total['TOTAL']?></h4> 
+                        </div>
+						<!--
+                        <div>
+                          <h5>Dia da semana de maior venda:</h5> <h4 style="color: #FF8C00">Quinta Feira</h4> 
+                        </div>  
+                        -->
+                        <div>
+                          <h5>Média de vendas diárias:</h5> <h4 style="color: #FF8C00"><?php echo $total['MEDIA']?></h4> 
+                        </div>
+
+                      </div>
+                    </div>
+					<?php endforeach; ?>
+                    <!-- Análise Dados -->
+                  </div>
+
+                  <div class="clearfix"></div>
+
+                  <div >
+                    <p></p>
+					<?php echo var_dump( $lista ); ?>
+                    <div class="table-responsive" style="padding: 20px" >
+                      <table class="table">
+                        <thead>
+                          <tr class="headings" style="background-color:#FF8C00; color: #fff">
+                            <th class="column-title">Dia/Mês</th>
+                            <th class="column-title">Loja 01</th>
+                            <th class="column-title">Loja 02</th>
+                            <th class="column-title">Loja 03</th>
+                            <th class="column-title">Loja 04 </th>
+                            <th class="column-title">Loja 05 </th>
+                            <th class="column-title no-link last" ><span class="nobr">Detalhes</span></th>
+                          </tr>
+                        </thead>
+						
+                        <tbody>
+                          <tr class="even pointer">
+                            <td class=" ">01/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="/relatorio-pedido/detalhe-multi-loja" class="auto">Ver</a></td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">02/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="chartjs2_bsb.html">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">03/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="morisjs_bsb.html">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">04/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="echarts_bsb.html">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">05/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">06/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">07/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">08/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">09/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">10/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">11/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">12/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">13/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">14/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">15/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">16/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">17/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">18/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">19/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">20/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">21/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">22/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 </td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">23/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 </td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="even pointer">
+                            <td class=" ">24/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="odd pointer">
+                            <td class=" ">25/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="odd pointer">
+                            <td class=" ">26/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="odd pointer">
+                            <td class=" ">27/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="odd pointer">
+                            <td class=" ">28/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="odd pointer">
+                            <td class=" ">29/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="odd pointer">
+                            <td class=" ">30/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45 </td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                          <tr class="odd pointer">
+                            <td class=" ">31/03</td>
+                            <td class="a-right a-right ">R$7,45 </td>
+                            <td class="a-right a-right ">R$19,45</td>
+                            <td class="a-right a-right ">R$23,05</td>
+                            <td class="a-right a-right ">R$19,00</td>
+                            <td class="a-right a-right ">R$9.45</td>
+                            <td class=" last"><a href="#">Ver</a>
+                            </td>
+                          </tr>
+                  
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  </div>
+              </div>
+              </div>
+        </div>        
+      </div>
+    </div>
+
+
+
+
+    <script type="text/javascript" src="/relatorios/nprogress/nprogress.js"></script>
+    <script type="text/javascript" src="/relatorios/fastclick/lib/fastclick.js"></script>
+
+    <script type="text/javascript" src="/relatorios/echarts/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="/relatorios/echarts/map/js/world.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+
+    <script>
+          var theme = {
+              color: [
+                  '#26B99A', '#34495E', '#BDC3C7', '#3498DB',
+                  '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
+              ],
+
+              title: {
+                  itemGap: 8,
+                  textStyle: {
+                      fontWeight: 'normal',
+                      color: '#408829'
+                  }
+              },
+
+              dataRange: {
+                  color: ['#1f610a', '#97b58d']
+              },
+
+              toolbox: {
+                  color: ['#408829', '#408829', '#408829', '#408829']
+              },
+
+              tooltip: {
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  axisPointer: {
+                      type: 'line',
+                      lineStyle: {
+                          color: '#408829',
+                          type: 'dashed'
+                      },
+                      crossStyle: {
+                          color: '#408829'
+                      },
+                      shadowStyle: {
+                          color: 'rgba(200,200,200,0.3)'
+                      }
+                  }
+              },
+
+              dataZoom: {
+                  dataBackgroundColor: '#eee',
+                  fillerColor: 'rgba(64,136,41,0.2)',
+                  handleColor: '#408829'
+              },
+              grid: {
+                  borderWidth: 0
+              },
+
+              categoryAxis: {
+                  axisLine: {
+                      lineStyle: {
+                          color: '#408829'
+                      }
+                  },
+                  splitLine: {
+                      lineStyle: {
+                          color: ['#eee']
+                      }
+                  }
+              },
+
+              valueAxis: {
+                  axisLine: {
+                      lineStyle: {
+                          color: '#408829'
+                      }
+                  },
+                  splitArea: {
+                      show: true,
+                      areaStyle: {
+                          color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
+                      }
+                  },
+                  splitLine: {
+                      lineStyle: {
+                          color: ['#eee']
+                      }
+                  }
+              },
+              timeline: {
+                  lineStyle: {
+                      color: '#408829'
+                  },
+                  controlStyle: {
+                      normal: {color: '#408829'},
+                      emphasis: {color: '#408829'}
+                  }
+              },
+
+              k: {
+                  itemStyle: {
+                      normal: {
+                          color: '#68a54a',
+                          color0: '#a9cba2',
+                          lineStyle: {
+                              width: 1,
+                              color: '#408829',
+                              color0: '#86b379'
+                          }
+                      }
+                  }
+              },
+              map: {
+                  itemStyle: {
+                      normal: {
+                          areaStyle: {
+                              color: '#ddd'
+                          },
+                          label: {
+                              textStyle: {
+                                  color: '#c12e34'
+                              }
+                          }
+                      },
+                      emphasis: {
+                          areaStyle: {
+                              color: '#99d2dd'
+                          },
+                          label: {
+                              textStyle: {
+                                  color: '#c12e34'
+                              }
+                          }
+                      }
+                  }
+              },
+              force: {
+                  itemStyle: {
+                      normal: {
+                          linkStyle: {
+                              strokeColor: '#408829'
+                          }
+                      }
+                  }
+              },
+              chord: {
+                  padding: 4,
+                  itemStyle: {
+                      normal: {
+                          lineStyle: {
+                              width: 1,
+                              color: 'rgba(128, 128, 128, 0.5)'
+                          },
+                          chordStyle: {
+                              lineStyle: {
+                                  width: 1,
+                                  color: 'rgba(128, 128, 128, 0.5)'
+                              }
+                          }
+                      },
+                      emphasis: {
+                          lineStyle: {
+                              width: 1,
+                              color: 'rgba(128, 128, 128, 0.5)'
+                          },
+                          chordStyle: {
+                              lineStyle: {
+                                  width: 1,
+                                  color: 'rgba(128, 128, 128, 0.5)'
+                              }
+                          }
+                      }
+                  }
+              },
+              gauge: {
+                  startAngle: 225,
+                  endAngle: -45,
+                  axisLine: {
+                      show: true,
+                      lineStyle: {
+                          color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
+                          width: 8
+                      }
+                  },
+                  axisTick: {
+                      splitNumber: 10,
+                      length: 12,
+                      lineStyle: {
+                          color: 'auto'
+                      }
+                  },
+                  axisLabel: {
+                      textStyle: {
+                          color: 'auto'
+                      }
+                  },
+                  splitLine: {
+                      length: 18,
+                      lineStyle: {
+                          color: 'auto'
+                      }
+                  },
+                  pointer: {
+                      length: '90%',
+                      color: 'auto'
+                  },
+                  title: {
+                      textStyle: {
+                          color: '#333'
+                      }
+                  },
+                  detail: {
+                      textStyle: {
+                          color: 'auto'
+                      }
+                  }
+              },
+              textStyle: {
+                  fontFamily: 'Arial, Verdana, sans-serif'
+              }
+          };
+
+
+          var echartPie = echarts.init(document.getElementById('echart_pie'), theme);
+
+          echartPie.setOption({
+            tooltip: {
+              trigger: 'item',
+              formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+              x: 'center',
+              y: 'bottom',
+              data: ['Loja 1', 'Loja 2', 'Loja 3', 'Loja 4', 'Loja 5']
+            },
+            toolbox: {
+              show: true,
+              feature: {
+                magicType: {
+                  show: true,
+                  type: ['pie', 'funnel'],
+                  option: {
+                    funnel: {
+                      x: '25%',
+                      width: '50%'
+                    }
+                  }
+                },
+  /*             restore: {
+                  show: true,
+                  title: "Restore"
+                },
+  */              
+                saveAsImage: {
+                  show: true,
+                  title: "Salvar imagem"
+                }
+              }
+            },
+            calculable: true,
+            series: [{
+              name: 'Total de Vendas',
+              type: 'pie',
+              center: ['50%', '50%'],
+              data: [{
+                value: 335,
+                name: 'Loja 1'
+              }, {
+                value: 310,
+                name: 'Loja 2'
+              }, {
+                value: 234,
+                name: 'Loja 3'
+              }, {
+                value: 135,
+                name: 'Loja 4'
+              }, {
+                value: 1548,
+                name: 'Loja 5'
+              }]
+            }]
+          });         
+
+    </script>
+
+
+
+
+</section>

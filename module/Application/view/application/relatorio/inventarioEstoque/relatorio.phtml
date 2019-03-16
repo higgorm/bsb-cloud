@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>Relatório</title>
+<style type="text/css">
+<!--
+.style1 {font-family: Verdana, Arial, Helvetica, sans-serif}
+-->
+</style>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8%" align="left">
+    	<?php echo $this->logo ?> 
+    </td>
+    <td width="77%" align="left">
+    	  <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+    	  Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?><br>
+	      <b><?php echo htmlentities("RELATÓRIO INVENTÁRIO DE ESTOQUE")?></b>
+    </td>
+    <td width="15%" align="right">
+    <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
+    </td>
+  </tr>
+  <tr>
+  	<td colspan="3"><hr></td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+  <tr>
+    <td colspan="7" >
+    	Tipo Mercadoria / Se&ccedil;&atilde;o:<br>
+    	Livro de pre&ccedil;os: <?php echo htmlentities($this->nrLivroPreco);?><br>
+    	Ordem: <?php echo htmlentities($this->ordem);?><br>
+    	Apenas mercadoria com estoque positivo: <?php echo htmlentities(($this->estoquePositivo == 1 ? "Sim" : "Não"));?>
+    </td>
+  </tr>
+  
+  <tr>
+  	<td colspan="7"><hr></td>
+  </tr>
+  <tr>
+    <th width="7%" class="text-left" align="left">C&oacute;digo</th>
+    <th width="40%" class="text-left" align="left">Descri&ccedil;&atilde;o</th>
+    <th width="10%" class="text-left" align="left"><?php echo htmlentities("Cód. origem")?></th>
+    <th width="10%" class="text-right" align="right"><?php echo htmlentities("Preço custo")?></th>
+    <th width="10%" class="text-right" align="right"><?php echo htmlentities("Preço venda")?></th>
+    <th width="10%" class="text-right" align="right">Quantidade</th>
+    <th width="13%" class="text-right" align="right">Custo total</th>
+  </tr>
+  <?php
+  
+	$totalDeItens   = 0;
+	$totalVlrVenda  = 0;
+	$totalVlrCompra = 0;
+  
+  	foreach($this->lista as $linha)
+	{
+		print '<tr>
+			    <td class="text-left" align="left">'.$linha["Cd_Mercadoria"].'</td>
+			    <td class="text-left" align="left">'.htmlentities($linha["DescricaoMercadoria"]).'</td>
+			    <td class="text-right" align="right"></td>
+			    <td class="text-right" align="right">'.number_format($linha["VL_Preco_Venda"],2,",",".").'</td>
+			    <td class="text-right" align="right">'.number_format($linha["VL_Preco_Compra"],2,",",".").'</td>
+    			<td class="text-right" align="right">'.number_format($linha["NR_QTDE_ESTOQUE"],2).'</td>
+			    <td class="text-right" align="right">'.number_format($linha["PRECO_CUSTO"],2,",",".").'</td>
+			  </tr>';
+		
+		$totalDeItens ++; 
+		$totalVlrVenda += $linha["VL_Preco_Venda"];
+		$totalVlrCompra += $linha["VL_Preco_Compra"];
+	} 
+  ?>
+ <tr>
+  	<td colspan="7"><hr></td>
+  </tr>
+  <tr style="font-size: 13pt;">
+    <td colspan="7" class="text-left" align="left"><b>Total geral de itens:</b>&nbsp;<b><?php echo $totalDeItens ?></b></td>
+  </tr>
+  <tr style="font-size: 13pt;">
+    <td colspan="7" class="text-left" align="left"><b>Valor total de itens (Valor de compra):</b>&nbsp;<b><?php echo number_format($totalVlrVenda,2,",",".") ?></b></td>
+  </tr>
+  <tr style="font-size: 13pt;">
+    <td colspan="7" class="text-left" align="left"><b>Valor total de itens (Valor de venda):</b>&nbsp;&nbsp;&nbsp;&nbsp;<b><?php echo number_format($totalVlrCompra,2,",",".") ?></b></td>
+  </tr>
+</table>
+</body>
+</html>

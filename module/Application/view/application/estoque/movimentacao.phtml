@@ -1,0 +1,162 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <h3>Movimentação de Estoque</h3>
+                </div>
+                <div class="widget-content">
+                    <div class="widget-content">
+
+                        <form class="form-horizontal" id="validation-form" action="/estoque/pesquisa" novalidate="novalidate" method="post" role="form">
+
+                            <div class="controls">
+                                <div class="col-md-6">
+                                    <label class="text-info">Loja</label>
+                                    <input type="text" class="form-control" value="<?php echo $loja['ds_loja'] ?>" readonly="readonly"/>
+                                    <input type="hidden" id="CD_LOJA" name="CD_LOJA" class="form-control" value="<?php echo $loja['cd_loja'] ?>" />
+                                </div>
+                            </div>
+
+                            <div class="controls">
+                                <div class="col-md-6">
+                                    <label class="text-info">Mercadoria</label>
+                                    <select class="form-control" name="CD_MERCADORIA" id="CD_MERCADORIA">
+                                        <?php  if ($mercadorias):?>
+                                            <option value="">Selecione...</option>
+                                            <?php foreach ($mercadorias as $mercadoria):?>
+                                                <option value="<?php echo $mercadoria['CD_MERCADORIA'] ?>"><?php echo utf8_encode($mercadoria['DS_MERCADORIA'])?></option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="controls">
+                                <div class="col-md-4">
+                                    <label class="text-info">Classificacao da Movimentacao</label>
+                                    <select class="form-control" name="CD_MOVIMENTO" id="CD_MOVIMENTO">
+                                        <option value="0">Selecione...</option>
+                                        <?php if ($tipos):?>
+                                            <?php foreach ($tipos as $tipo):?>
+                                                <option value="<?php echo $tipo['CD_MOVIMENTO'] ?>"><?php echo utf8_encode($tipo['DS_MOVIMENTO'])?></option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="controls">
+                                <div class="col-md-4">
+                                    <label class="control-label text-info" for="name">Responsavel</label>
+                                    <select name="nomUsuario" id="nomUsuario" class="form-control">
+                                        <option value="0">Selecione...</option>
+                                        <?php if ($funcionarios):?>
+                                            <?php foreach ($funcionarios as $funcionario):?>
+                                                <option value="<?php echo $funcionario['CD_FUNCIONARIO'] ?>"><?php echo utf8_encode($funcionario['DS_FUNCIONARIO'])?></option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="controls">
+                                <div class="col-md-2">
+                                    <label class="control-label text-info" for="name">De:</label>
+                                    <input id="iniPeriodo" name="iniPeriodo" class="dataP form-control" value="<?php echo $post['iniPeriodo'] ?>" maxlength="10" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label text-info" for="name">Até: </label>
+                                    <input id="fimPeriodo" name="fimPeriodo" class="dataP form-control" value="<?php echo $post['fimPeriodo'] ?>" maxlength="10" />
+                                </div>
+                            </div>
+
+                            <div class="controls">
+                                <div class="col-sm-12">&nbsp;</div>
+                                <div class="btn-group btn-group col-sm-12">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default voltar">
+                                            <i class="i i-back"></i>
+                                            Limpar
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="submit" id="btnSubmit" class="btn btn-primary pesquisar">
+                                            <i class="i i-search"></i>
+                                            Pesquisar
+                                        </button>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+
+                        </form>
+                            <div class="controls">
+                                <div class="col-sm-12">
+                                    <button id="btnNovo" class="btn btn-success" style="float:right; margin-top:5px; margin-right:5px;">
+                                        <i class="icon-plus icon-white"></i>
+                                        + Adicionar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="controls">
+                                <div class="col-md-12" style="height: 350px;overflow-y: scroll;">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Tipo Movimentacao</th>
+                                            <th>Mercadoria</th>
+                                            <th>Quantidade</th>
+                                            <th>Responsavel</th>
+                                            <th>Opcoes</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if(count($movimentacoes)):?>
+                                                <?php foreach ($movimentacoes as $movimentacao):?>
+                                                    <tr>
+                                                        <td><?php $date = new DateTime($movimentacao->DT_MOVIMENTO); echo $date->format('d/m/y'); ?></td>
+                                                        <td><?php echo $movimentacao->DS_MOVIMENTO ?></td>
+                                                        <td><?php echo $movimentacao->DS_MERCADORIA ?></td>
+                                                        <td><?php echo number_format($movimentacao->NR_QTDE_MOVIMENTO,2,",",".") ?> </td>
+                                                        <td><?php echo $movimentacao->nomUsuario ?></td>
+                                                        <td><a href="/estoque/editar?id=<?php echo $movimentacao->NR_SEQ_MOV_ESTOQUE ?>" ><i class="fa fa-pencil"></i></a></td>
+                                                    </tr>
+                                                <? endforeach;?>
+                                            <? endif;?>
+                                        </tbody>
+                                    </table>
+                                    <?php if ($movimentacoes) echo $this->paginationControl($movimentacoes, 'Sliding', 'partials/paginator/control.phtml');?>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#iniPeriodo').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+        $('#fimPeriodo').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        $("#btnNovo").click(function() {
+            window.location = "/estoque/cadastrar";
+        });
+
+        $('.voltar').click(function() {
+            $('#CD_MERCADORIA').val('');
+            $('#CD_MOVIMENTO').val('');
+            $('#nomUsuario').val('');
+            $('#iniPeriodo').val('');
+            $('#fimPeriodo').val('');
+            $('#fimPeriodo').val('');
+        });
+    });
+</script>

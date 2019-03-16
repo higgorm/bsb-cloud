@@ -1,0 +1,246 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <!--<i class="icon-check"></i>-->
+                    <h3><?php echo utf8_encode("CADASTRO DE CLIENTES SIMPLIFICADO") ?></h3>
+                </div> <!-- /widget-header -->
+                <form id="validation-form" action="<?php echo $formAction ?>" method="post" role="form">
+                    <?php echo $this->formElement($form->get("maca")) ?>
+                    <?php echo $this->formElement($form->get("data")) ?>
+                    <?php echo $this->formElement($form->get("hora")) ?>
+                    <?php echo $this->formElement($form->get("vl_desconto")) ?>
+                    <?php echo $this->formElement($form->get("nr_pedido")) ?>
+                    <?php echo $hdServico ?>
+                    <div class="widget-content">
+
+                        <div class="controls">
+                            <div class="col-md-6">
+                                <label class="control-label text-info" for="name"><?php echo utf8_encode("Cliente") ?></label>
+                                <?php echo $this->formElement($form->get("ds_nome_razao_social")) ?>
+                                <?php //echo $this->formElementErrors($form->get("ds_nome_razao_social")) ?>
+
+                                <?php echo $this->formElement($form->get("cd_cliente")) ?>
+                                <?php //echo $this->formElementErrors($form->get("cd_cliente")) ?>
+                            </div>
+
+                            <div  class="col-md-3 input-prepend">
+                                <label for="email" class="control-label text-info">Telefone 1</label>
+                                <span class="add-on"><i class="icon-asterisk icon-black"></i></span>
+                                <?php echo $this->formElement($form->get("ds_fone1")) ?>
+                                <?php //echo $this->formElementErrors($form->get("ds_fone1")) ?>
+                            </div>
+                            <div  class="col-md-3 input-prepend">
+                                <label for="subject" class="control-label text-info">Telefone 2</label>
+                                <span class="add-on"><i class="icon-asterisk icon-black"></i></span>
+                                <?php echo $this->formElement($form->get("ds_fone2")) ?>
+                                <?php //echo $this->formElementErrors($form->get("ds_fone2")) ?>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <div class="col-md-4">
+                                <label for="subject" class="control-label text-info"><?php echo utf8_encode("Anivers&aacute;rio") ?></label>
+                                <!--<div class="input-append date" id="dp3" data-date="" data-date-format="mm/yyyy">-->
+                                <?php //echo $this->formElement($form->get("dt_nascimento")) ?>
+                                <!--span class="add-on btn-primary"><i class="icon-th icon-white"></i></span-->
+                                <?php //echo $this->formElementErrors($form->get("dt_nascimento")) ?>
+                                <!--</div>-->
+                                <br />
+                                <?php echo $this->formElement($form->get("dt_nascimento_d")) ?>
+                                <span class="add-on btn-primary"><i class="icon-th icon-white"></i></span>
+                                <?php echo $this->formElement($form->get("dt_nascimento_m")) ?>
+                            </div>
+                            <div  class="col-md-5">
+                                <label class="control-label text-info" for="name"><?php echo utf8_encode("Email") ?></label>
+                                <?php echo $this->formElement($form->get("ds_email")) ?>
+                                <?php //echo $this->formElementErrors($form->get("ds_email")) ?>
+                            </div>
+                            <div  class="col-md-3">
+                                <label class="control-label text-info"><?php echo utf8_encode("CPF") ?></label>
+                                <?php echo $this->formElement($form->get("nr_cgc_cpf")) ?>
+                                <?php //echo $this->formElementErrors($form->get("nr_cgc_cpf")) ?>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <div class="col-md-4">
+                                <label class="control-label text-info">Sexo</label>
+                                <div class="" style="">
+                                    <?php echo $this->formElement($form->get("ds_sexo")) ?>
+                                    <?php //echo $this->formElementErrors($form->get("st_cartao_fidelidade_entregue")) ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <div class="col-md-4">
+                                <label class="control-label text-info">Cart&atilde;o entrege</label>
+                                <div class="" style="">
+                                    <?php echo $this->formElement($form->get("st_cartao_fidelidade_entregue")) ?>
+                                    <?php //echo $this->formElementErrors($form->get("st_cartao_fidelidade_entregue")) ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- div class="controls">
+                            <div class="col-md-4">
+                                <label class="control-label text-info">Origem</label>
+                                <div class="" style="">
+                        <?php //echo $this->formElement($form->get("cd_origem")) ?>
+                        <?php //echo $this->formElementErrors($form->get("st_cartao_fidelidade_entregue")) ?>
+                                </div>
+                            </div>
+                        </div -->
+
+                        <div class="controls">
+                            <div  class="col-md-12">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Endere&ccedil;o") ?></label>
+                                <?php echo $this->formElement($form->get("ds_endereco")) ?>
+                                <?php //echo $this->formElementErrors($form->get("ds_endereco")) ?>
+                            </div>
+
+                        </div>
+
+                        <div class="controls">
+                            <div  class="col-md-4">
+                                <label class="control-label text-info" for="name"><?php echo utf8_encode("Bairro") ?></label>
+                                <?php echo $this->formElement($form->get("ds_bairro")) ?>
+                                <?php //echo $this->formElementErrors($form->get("ds_bairro")) ?>
+                            </div>
+
+                            <div  class="col-md-2">
+                                <label for="subject" class="control-label text-info">UF</label>
+                                <?php echo $this->formElement($form->get("cd_uf")) ?>
+                                <?php //echo $this->formElementErrors($form->get("cd_cidade")) ?>
+                            </div>
+
+                            <div  class="col-md-4">
+                                <label for="subject" class="control-label text-info">Cidade</label>
+                                <?php echo $this->formElement($form->get("cd_cidade")) ?>
+                                <?php //echo $this->formElementErrors($form->get("cd_cidade")) ?>
+                            </div>
+
+                            <div  class="col-md-2">
+                                <label class="control-label text-info" for=""><?php echo utf8_encode("CEP") ?></label>
+                                <?php echo $this->formElement($form->get("nr_cep")) ?>
+                                <?php //echo $this->formElementErrors($form->get("nr_cep")) ?>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <div  class="col-md-12">
+                                <label for="message" class="control-label text-info"><?php echo utf8_encode("Observa&ccedil;&atilde;o") ?></label>
+                                <?php echo $this->formElement($form->get("ds_contato")) ?>
+                                <?php //echo $this->formElementErrors($form->get("ds_contato")) ?>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div class="col-md-2">
+                                <label class="control-label text-info" for=""><?php echo utf8_encode("Data exclus&atilde;o") ?></label>
+                                <?php echo $this->formElement($form->get("dt_exclusao")) ?>
+                                <?php //echo $this->formElementErrors($form->get("dt_exclusao")) ?>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div  class="col-md-6">
+                            <label for="cd_origem" class="control-label text-info"><?php echo utf8_encode("Origem") ?></label>
+                            <?php echo $this->formElement($form->get("cd_origem")) ?>
+                            <?php //echo $this->formElementErrors($form->get("cd_origem")) ?>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div  class="col-md-2">
+                            <label for="cd_origem" class="control-label text-info"><?php echo utf8_encode("Receber SMS?") ?></label>
+                            <div>
+                                <?php echo $this->formElement($form->get("st_envia_sms")) ?> SIM
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-sm-12">
+                            <hr>
+                            <?php echo $this->formElement($form->get("submit")) ?>
+                            <?php echo $this->formElement($form->get("reset")) ?>
+                            <?php //echo $this->formElement($form->get("return")) ?>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    $(document).ready(function() {
+        $('#dt_nascimento').datepicker({format: 'dd/mm',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+        $('#dt_exclusao').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        $('#dt_nascimento_d, #dt_nascimento_m').change(function(){
+            var d = $('#dt_nascimento_d').val();
+            var m = $('#dt_nascimento_m').val();
+            var date = new Date();
+
+            var data = d+'/'+m+'/'+date.getFullYear();             
+            if(d !== '' && m !== '')
+            {
+                if(!validaData(data))
+                {
+                    alert('Informe um data válida!');
+                    $('#dt_nascimento_d, #dt_nascimento_m').val('');
+                }
+            }
+        });
+        
+
+        $('#cd_uf').change(function() {
+            if ($('#cd_uf').val() == '') {
+                $('#cd_cidade').val('');
+                return false;
+            }
+
+            $.ajax({
+                url: "/ajax/get-cidade-por-uf",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    cd_uf: $('#cd_uf').val()
+                },
+                success: function(data) {
+                    var options = "";
+                    $.each(data, function(key, value) {
+                        options += '<option value="' + key + '">' + value + '</option>';
+                    });
+                    $("#cd_cidade").html(options);
+                }
+            });
+
+        });
+    });
+
+    $("#nr_cgc_cpf").keypress(function() {
+        var c = $(this).val();
+        if (c.replace(/\./g, '').replace(/\-/g, '').replace(/\_/g, '') !== '')
+            mascaraPrincipal(this, cpf);
+    }).blur(function() {
+        var c = $(this).val();
+        if (c.replace(/\./g, '').replace(/\-/g, '').replace(/\_/g, '') !== ''){
+            if (!$(this).validateCPF()) {
+                alert('Digite um número de CPF válido.');
+                $(this).val('').focus();
+            }
+        }
+    });
+</script>

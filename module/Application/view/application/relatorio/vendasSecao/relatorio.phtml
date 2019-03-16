@@ -1,0 +1,195 @@
+<?php
+
+function imprimevalores($dataGrafico, $totalAnual)
+{
+    foreach ($dataGrafico as $grafico) {
+        foreach ($grafico as $k => $v) {
+            echo '["' . $k . '", ' . (($v * $totalAnual) / 100) . '],';
+        }
+    }
+}
+?>
+
+<html>
+    <head>
+        <title>Relatório</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="<?php echo $this->basePath() ?> /js/highcharts/js/highcharts.js"></script>
+        <script src="<?php echo $this->basePath() ?> /js/highcharts/js/modules/exporting.js"></script>
+        <style type="text/css">
+            <!--
+            .style1 {font-family: Verdana, Arial, Helvetica, sans-serif}
+            hr{margin-bottom:2.5px!important; margin-top:0px!important};
+            -->
+        </style>
+    </head>
+    <body>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="8%" align="left">
+                    <?php echo $this->logo ?>
+                </td>
+                <td width="77%" align="left">
+                    <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+                    Sistema de Gestão Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL ?><br>
+                    <b><?php echo "Relatório de Vendas Mensais por Seção no ano de {$this->ano} na loja {$this->dsLoja}" ?></b>
+                </td>
+                <td width="15%" align="right">
+                    <h6><?php echo $this->horaAtual ?><br><?php echo $this->dataAtual ?></h6>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><hr></td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+            <tr>
+                <th width="10%" class="text-left" align="left" nowrap>Tipo</th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Jan") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Fev") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Mar") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Abr") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Mai") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Jun") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Jul") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Ago") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Set") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Out") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Nov") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Dez") ?></th>
+                <th width="7%" class="text-right" align="right" nowrap><?php echo htmlentities("Anual") ?></th>
+            </tr>
+            <tr>
+                <td colspan="14"><hr></td>
+            </tr>
+
+            <?php
+            $totalGeral = Array('vendas01', 'vendas02', 'vendas03', 'vendas04', 'vendas05', 'vendas06', 'vendas07', 'vendas08', 'vendas09', 'vendas10', 'vendas11', 'vendas12', 'Anual');
+
+            $totalGeral[0]['vendas01'] = 0;
+            $totalGeral[1]['vendas02'] = 0;
+            $totalGeral[2]['vendas03'] = 0;
+            $totalGeral[3]['vendas04'] = 0;
+            $totalGeral[4]['vendas05'] = 0;
+            $totalGeral[5]['vendas06'] = 0;
+            $totalGeral[6]['vendas07'] = 0;
+            $totalGeral[7]['vendas08'] = 0;
+            $totalGeral[8]['vendas09'] = 0;
+            $totalGeral[9]['vendas10'] = 0;
+            $totalGeral[10]['vendas11'] = 0;
+            $totalGeral[11]['vendas12'] = 0;
+            $totalGeral[12]["Anual"] = 0;
+
+            $count = 0;
+            $dataGrafico = array();
+
+            foreach ($this->lista as $linha) {
+
+                print '<tr>
+			    <td class="text-left produtoServico" align="left">' . $linha["CD_TIPO_mercadoria"] . ' ' . htmlentities($linha["DS_Tipo_Mercadoria"]) . '</td>
+			    <td class="text-right" align="right">' . number_format($linha["Vendas01"], 2, ",", ".") . '</td>
+			    <td class="text-right" align="right">' . number_format($linha["Vendas02"], 2, ",", ".") . '</td>
+    			<td class="text-right" align="right">' . number_format($linha["Vendas03"], 2, ",", ".") . '</td>
+			    <td class="text-right" align="right">' . number_format($linha["Vendas04"], 2, ",", ".") . '</td>
+    		  	<td class="text-right" align="right">' . number_format($linha["Vendas05"], 2, ",", ".") . '</td>
+			    <td class="text-right" align="right">' . number_format($linha["Vendas06"], 2, ",", ".") . '</td>
+    			<td class="text-right" align="right">' . number_format($linha["Vendas07"], 2, ",", ".") . '</td>
+			    <td class="text-right" align="right">' . number_format($linha["Vendas08"], 2, ",", ".") . '</td>
+    		  	<td class="text-right" align="right">' . number_format($linha["Vendas09"], 2, ",", ".") . '</td>
+			    <td class="text-right" align="right">' . number_format($linha["Vendas10"], 2, ",", ".") . '</td>
+    			<td class="text-right" align="right">' . number_format($linha["Vendas11"], 2, ",", ".") . '</td>
+			    <td class="text-right" align="right">' . number_format($linha["Vendas12"], 2, ",", ".") . '</td>
+    			<td class="text-right totalAnual" align="right">' . number_format($linha["TotalAnual"], 2, ",", ".") . '</td>
+			  </tr>';
+
+
+                $totalGeral[0]['vendas01'] = $totalGeral[0]['vendas01'] + number_format((float) $linha["Vendas01"], 2, ",", ".");
+                $totalGeral[1]['vendas02'] = $totalGeral[1]['vendas02'] + number_format((float) $linha["Vendas02"], 2, ",", ".");
+                $totalGeral[2]['vendas03'] = $totalGeral[2]['vendas03'] + number_format((float) $linha["Vendas03"], 2, ",", ".");
+                $totalGeral[3]['vendas04'] = $totalGeral[3]['vendas04'] + number_format((float) $linha["Vendas04"], 2, ",", ".");
+                $totalGeral[4]['vendas05'] = $totalGeral[4]['vendas05'] + number_format((float) $linha["Vendas05"], 2, ",", ".");
+                $totalGeral[5]['vendas06'] = $totalGeral[5]['vendas06'] + number_format((float) $linha["Vendas06"], 2, ",", ".");
+                $totalGeral[6]['vendas07'] = $totalGeral[6]['vendas07'] + number_format((float) $linha["Vendas07"], 2, ",", ".");
+                $totalGeral[7]['vendas08'] = $totalGeral[7]['vendas08'] + number_format((float) $linha["Vendas08"], 2, ",", ".");
+                $totalGeral[8]['vendas09'] = $totalGeral[8]['vendas09'] + number_format((float) $linha["Vendas09"], 2, ",", ".");
+                $totalGeral[9]['vendas10'] = $totalGeral[9]['vendas10'] + number_format((float) $linha["Vendas10"], 2, ",", ".");
+                $totalGeral[10]['vendas11'] = $totalGeral[10]['vendas11'] + number_format((float) $linha["Vendas11"], 2, ",", ".");
+                $totalGeral[11]['vendas12'] = $totalGeral[11]['vendas12'] + number_format((float) $linha["Vendas12"], 2, ",", ".");
+                $totalGeral[12]["Anual"] = $totalGeral[12]["Anual"] + number_format((float) $linha["TotalAnual"], 2, ",", ".");
+
+
+                $dataGrafico[] = array(htmlentities($linha["DS_Tipo_Mercadoria"]) => $linha["TotalAnual"]);
+            }
+            ?>
+
+            <tr>
+                <th width="10%" class="text-left" align="left">Total Geral</th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[0]['vendas01'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[1]['vendas02'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[2]['vendas03'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[3]['vendas04'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[4]['vendas05'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[5]['vendas06'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[6]['vendas07'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[7]['vendas08'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[8]['vendas09'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[9]['vendas10'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[10]['vendas11'], 2, ",", ".") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo number_format($totalGeral[11]['vendas12'], 2, ",", ".") ?></th>
+                <th width="7%" class="text-right" align="right"><?php echo number_format($totalGeral[12]["Anual"], 2, ",", ".") ?></th>
+            </tr>
+            <tr><td colspan="14"><hr><br><br></td></tr>
+        </table>
+        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </body>
+
+
+    <script type="text/javascript">
+        $(function() {
+            var dataCharts = new Array();
+            var produto = '';
+            var totalan = '';
+            var c = 0;
+
+            $('#container').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: 'Total de vendas anual por seção'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            color: '#000000',
+                            connectorColor: '#000000',
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                        }
+                    }
+                },
+                series: [{
+                        type: 'pie',
+                        name: 'Secao',
+                        data: [<?php imprimevalores($dataGrafico, $totalGeral[12]); ?>]
+                    }],
+                exporting: {
+                    sourceWidth: 400,
+                    sourceHeight: 200,
+                    // scale: 2 (default)
+                    chartOptions: {
+                        subtitle: null
+                    }
+                }
+            });
+        });
+
+    </script>
+</html>

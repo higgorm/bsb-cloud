@@ -1,0 +1,282 @@
+<section class="panel panel-default">
+    <div class="panel-body">
+        <form id="frmAgenda" action="">
+            <div>
+                <input type="hidden" id="relogio" size="10">
+                <input type="hidden" id="dataAtual" name="dataAtual" value="<?php echo $dataAtual; ?>">
+            </div>
+            <div class="span9">
+                <div class="widget">
+
+                    <div class="widget-header" style="">
+                        <div class="col-md-6">
+                            <h4>
+                                <label for="" class="control-label text-info">
+                                      Agenda <?php echo ($dataInicio == $datafim) ? 'de: ' . $dataAtual : 'do Período de: ' . $dataInicio . ' até ' . $datafim; ?>
+                                </label>
+                            </h4>
+                        </div>
+                        <div class="col-md-3">
+                            <h4>
+                                <label for="" class="control-label text-info"><a href="#" onclick="abreDivFuncionario(true)">
+                                        Funcion&aacute;rio
+                                    </a>
+                                    /
+                                    <a href="#" onclick="abreDivFuncionario(false)">
+                                        Maca
+                                    </a>
+                                </label>
+                            </h4>
+                        </div>
+
+                        <div class="col-md-1 text-right text-left">
+                            <div class="btn-group">
+                                <a class="btn btn-rounded btn-default  dropdown-toggle" data-toggle="dropdown">Ações <span class="caret"></span></a>
+                                <ul class="dropdown-menu text-left pull-right">
+                                    <li>
+                                        <a href="#" id="btnMeusClientesAgenda">
+                                            Meus Clientes
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" id="btnAdicionarMaca">
+                                            Adicionar Profissionais/Macas
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                <div class="col-md-12">
+                        <div class="btn-group" style="margin: 5px;">
+
+                            <span style="background-color: #0099FF; margin-right: 2px; margin-left: 40px;">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                                        Serviço Faturado &nbsp;|&nbsp;
+                            <span style="background-color: orange; margin-right: 2px;">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                                        Agendado &nbsp;|&nbsp;
+                            <span style="background-color: pink; margin-right: 2px;">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                                        Em Atendimento &nbsp;|&nbsp;
+                            <span style="background-color: yellow; margin-right: 2px;">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                                        Alerta 5 minutos &nbsp;|&nbsp;
+                            <span style="background-color: #008000; margin-right: 2px;">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                            Agend. em Atraso
+                        </div>
+                    </div>
+                    </div>
+                    <div style="float:left;clear:right;background-color:white; width: 100%;">
+                        <div id="divHorarios" style="min-width:100%;color:#000000;">
+                            <div id="divFuncionarios" style="float:left;clear:right;background-color:white;height:370px;overflow:scroll;display:none;">
+                                <?php
+                                foreach ($listaFuncionarios as $operador) {
+                                    echo '<a href="#" onclick="javascript:atualizaFuncionario(\'' . trim($operador["CD_FUNCIONARIO"]) . '\');">' . substr(utf8_encode($operador["DS_FUNCIONARIO"]), 0, 15) . '</a><br>';
+                                }
+                                ?>
+                                <input type="hidden" id="cdFuncionario" name="cdop" value="<?php echo $cdFuncionario; ?>">
+                            </div>
+                            <table><tr><td style=" "></td></tr></table>
+                            <?php
+                            //carrega horários - inicio
+                            echo '<div style="width:60px;float:left;clear:right;"><table class="bottomBorder">';
+                            echo '<td><b>Hor&aacute;rio</b></td>';
+                            $hora = '08:00';
+                            for ($i = 0; $i <= $horaFim + 2; $i++) {
+                                echo '<tr><td><b>' . $hora . '</b></td></tr>';
+                                $horaNova = strtotime("$hora + $intervalo minutes");
+                                $hora = date("H:i", $horaNova);
+                            }
+                            echo '</table></div>';
+                            //carrega horarios - fim
+                            //carrega horarios macas - inicio
+                            if (isset($listaMacas)) {
+                                //echo '<div style="width:1100px;float:left;clear:right;overflow-x:scroll;">';
+                                foreach ($listaMacas as $maca) {
+                                    $hora = '08:00';
+                                    $vazio = '';
+                                    $stPedido = 'V';
+                                    echo '<table style="text-align:center;float:left;clear:right; width:9%;" class="bottomBorder">';
+                                    echo '<tr><td ><b>' . trim($maca['name']) . '</b></td></tr>';
+
+                                    for ($j = 0; $j <= $horaFim + 2; $j++) {
+                                        if (isset($listaAgendamentos[trim($maca['name'])])) {//verifica se possui agendamento para a maca
+                                            if (isset($listaAgendamentos[trim($maca['name'])][$hora])) {//verifica se tem hora marcada na maca
+                                                $value = $listaAgendamentos[trim($maca['name'])][$hora];
+                                                if (trim($value['hora']) == trim($hora)) {//verifica se o horário pertence a celula
+                                                    echo '<tr><td onclick="javascript:abreModal(\'' . $value['idcliente'] . '\',\'' . $value['id'] . '\',\'' . trim($value['maca']) . '\',\'' . trim($value['data']) . '\',\'' . trim($value['hora']) . '\',\'' . $value['st_cliente_rapido'] . '\',\'' . $value['st_pedido'] . '\',\'' . $value['nr_pedido'] . '\');" style="background-color:' . $value['backgroundColor'] . ';border-left: 1px dashed;">' . $value['title'] . '</td></tr>';
+                                                } else {
+                                                    echo '<tr><td onclick="javascript:abreModal(\'' . $value['idcliente'] . '\',\'' . $value['id'] . '\',\'' . trim($value['maca']) . '\',\'' . trim($value['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
+                                                }
+                                            } else {
+                                                echo '<tr><td onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
+                                            }
+
+                                            $horaNova = strtotime("$hora + $intervalo minutes");
+                                            $hora = date("H:i", $horaNova);
+                                        } else {
+                                            echo '<tr><td onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
+
+                                            $horaNova = strtotime("$hora + $intervalo minutes");
+                                            $hora = date("H:i", $horaNova);
+                                        }
+                                    }
+                                    echo '</table>';
+                                }
+                                //echo '</div>';
+                            }
+                            //carrega horarios macas - fim
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+    <!-- Modal para inser??o de cadeiras/Maca -->
+    <div id="macaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="macaModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="window.location.reload();" data-dismiss="modal">X</button>
+                    <i class="icon-search icon-white"></i>
+                    <span class="text-info-modal"><?php echo utf8_encode("Adicionar Profissional/Maca") ?></span>
+                </div>
+                <div id="bodyMacaModal" class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para inser??o de cliente -->
+    <div id="clienteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="clienteModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="window.location.reload();" data-dismiss="modal">X</button>
+                    <i class="icon-search icon-white"></i>
+                    <span class="text-info-modal"><?php echo utf8_encode("Meus Clientes") ?></span>
+                </div>
+                <div id="bodyClienteModal" class="modal-body-xlarge"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para inser??o de cliente -->
+    <div id="cadastraClienteAgenda" class="modal fade" tabindex="-1" role="dialog"  aria-labelledby="cadastraClienteAgenda" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="window.location.reload();" aria-hidden="true">X</button>
+                    <h4 class="text-info-modal modalClienteAgenda">AGENDAMENTO CLIENTE</h4>
+                </div>
+                <div class="modal-body" id="bodyCadastrarClienteAgenda" ></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal alerta relogio -->
+    <div id="modalRelogio" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalRelogio" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close closeModalRelogio" onclick="window.location.reload();" data-dismiss="modal" aria-hidden="true">X</button>
+                    <h4 class="text-info-modal modalRelogio">ALERTA DOS PRÓXIMOS AGENDAMENTOS</h4>
+                </div>
+                <div class="modal-body" id="bodyModalRelogio" ></div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</section>
+<style type="text/css">
+    table.bottomBorder { border-collapse:collapse; }
+    table.bottomBorder td, table.bottomBorder th { border-bottom:1px solid black;padding:3px; }
+</style>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+
+        //var _dataCorrente = new Date();
+        _horaInicio = <?php echo $horaInicio ?>;
+        _horaFim = <?php echo $horaFim ?>;
+        _intervalo = <?php echo $intervalo ?>;
+        _cdFunctionario = '<?php echo $cdFuncionario ?>';
+        _dataAtual = '<?php echo $dataAtual; ?>';
+
+        $('.closeModalRelogio').click(function() {
+            $('#modalRelogio').modal('hide');
+        });
+
+        $('#btnAdicionarMaca').click(function() {
+            $('#bodyMacaModal').html('');
+            $('#bodyMacaModal').load('/maca/cadastrar?modal=show');
+            $('#macaModal').modal('show');
+        });
+
+        $('#btnMeusClientesAgenda').click(function() {
+            $('#bodyClienteModal').html('');
+            $('#bodyClienteModal').load('/cliente/index?modal=show');
+            $('#clienteModal').modal('show');
+        });
+
+        $("#txtCalendario").datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"
+        }).on('changeDate', function(ev) {
+            var newDate = new Date(ev.date);
+            newDate.setDate(newDate.getDate());
+
+            if (ev.date != undefined)
+            {
+                $('#dataAtual').val(formatDate(new Date(ev.date), '%d/%M/%Y'));
+            }
+
+            $('#frmAgenda').submit();
+        });
+
+        atualizaFuncionario = function(func)
+        {
+            $('#cdFuncionario').val(func);
+            $('#frmAgenda').submit();
+        }
+
+        abreModal = function(idcliente, nrMaca, descMaca, data, hora, stclienterapido, stPedido, nrPedido)
+        {
+            $('#bodyCadastrarClienteAgenda').html('');
+            var url = '&idcliente=' + idcliente + '&id=' + nrMaca + '&agenda=' + descMaca.replace(/\ /g, "%20") + '&data=' + data + '&hora=' + hora + '&cdop=' + $('#cdFuncionario').val() + '&stclienterapido=' + stclienterapido + '&stPedido=' + stPedido + '&nr_pedido=' + nrPedido;
+            $('#bodyCadastrarClienteAgenda').load('/agenda/cadastrar-cliente-agenda?modal=show' + url);
+            $('#cadastraClienteAgenda').modal('show');
+        }
+
+        abreDivFuncionario = function(abre)
+        {
+            if (abre) {
+                $('#divFuncionarios').show();
+            }
+            else
+            {
+                atualizaFuncionario('');
+            }
+        }
+
+        if (_cdFunctionario != '')
+        {
+            abreDivFuncionario(true);
+
+        }
+
+        if (_dataAtual != '')
+        {
+            $('#txtCalendario').datepicker('update', _dataAtual);
+        }
+    });
+</script>

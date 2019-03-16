@@ -1,0 +1,248 @@
+<section class="panel panel-default">
+	<div class="main">
+		<div class="row-fluid">
+			<div class="panel-body">
+				<div class="widget-header">
+					<h3>Configurações NFe / NFCe</h3>
+				</div>
+				<?php foreach( $config as $dado ): ?>
+					<form class="form-horizontal"  id="validation-form" action="/nota/configurar" method="post" role="form" enctype="multipart/form-data">
+						<fieldset>
+							<legend>Dados Remetente</legend>
+							<div class="col-sm-6">
+								<label>Razão Social:</label>
+								<input type="text" name="razaosocial" id="razaosocial" class="form-control" value="<?php echo $dado['DS_RAZAO_SOCIAL']?>"/>
+							</div>
+							<div class="col-sm-6">
+								<label>Nome Fantasia:</label>
+								<input type="text" name="fantasia" id="fantasia" class="form-control" value="<?php echo $dado['DS_FANTASIA']?>"/>
+							</div>
+							<!-------------------------------------------------------------------------------------->
+							<div class="col-sm-3">
+								<label>CNPJ:</label>
+								<input type="text" name="cnpj" id="cnpj" class="form-control" value="<?php echo $dado['NR_CGC']?>"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Inscrição Estadual:</label>
+								<input type="text" name="IE" id="IE" class="form-control" value="<?php echo $dado['NR_INSC_ESTADUAL']?>"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Email:</label>
+								<input type="text" name="email" id="email" class="form-control" value="<?php echo $dado['DS_DANFE_eMail']?>"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Telefone:</label>
+								<input type="text" name="telefone" id="telefone" class="form-control" value="<?php echo $dado['DS_FONE']?>"/>
+							</div>
+							<!------------------------------------------------------------------------------------->
+							<div class="col-sm-8">
+								<label>Endereço:</label>
+								<input type="text" name="logradouro" id="logradouro" class="form-control" value="<?php echo $dado['DS_LOGRADOURO']?>"/>
+							</div>
+							<div class="col-sm-2">
+								<label>Numero:</label>
+								<input type="text" name="numero" id="numero" class="form-control" value="<?php echo $dado['DS_NUMERO']?>"/>
+							</div>
+							<div class="col-sm-2">
+								<label>CEP:</label>
+								<input type="text" name="cep" id="cep" class="form-control" value="<?php echo $dado['NR_CEP']?>"/>
+							</div>
+							<!----------------------------------------------------------------------------------------->
+							<div class="col-sm-3">
+								<label>Complemento:</label>
+								<input type="text" name="complemento" id="complemento" class="form-control" value="<?php echo $dado['DS_COMPLEMENTO']?>"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Bairro:</label>
+								<input type="text" name="bairro" id="bairro" class="form-control" value="<?php echo $dado['DS_BAIRRO']?>"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Cidade IBGE:</label>	
+								<select class="form-control" name="cidade_ibge">
+									<option value="">Selecione...</option>
+									<option value="5300108" <?php if( $dado['CD_IBGE_CIDADE'] == '5300108' ) echo "selected"; ?>>BRASILIA</option>
+								</select>
+							</div>
+							<div class="col-sm-3">
+								<label>UF:</label>	
+								<?php $uf = new \Util; echo $uf->retornaOptionUF( "siglaUF", $dado['CD_UF'] ); ?>
+							</div>
+							<div class="col-sm-6">
+								<label>Logotipo: </label>
+								<input type="file" class="form-control" name="logo" id="logo" accept="image/jpeg"/>
+							</div>
+						</fieldset>	
+						<!--<fieldset>
+							<legend>Nota</legend>
+							<div class="col-sm-4">
+								<label>Token IBPT</label>
+								<input type="text" name="tokenIBPT" id="tokenIBPT" value="" class="form-control"/>
+							</div>
+							<div class="col-sm-4">
+								<label>Token NFCe</label>
+								<input type="text" name="tokenNFCe" id="tokenNFCe" value="" class="form-control"/>
+							</div>
+							<div class="col-sm-4">
+								<label>Token Id NFCe</label>
+								<input type="text" name="tokenNFCe" id="tokenNFCe" value="" class="form-control"/>
+							</div>
+						</fieldset>-->
+						<fieldset>
+							<legend>Outras informações</legend>
+							<div class="col-sm-4">
+								<label>Regime Tributário</label>
+								<select name="regime" class="form-control">
+									<option value="1" <?php if( $dado['DS_REGIME_TRIBUTARIO'] == '1') echo "selected"; ?>>Simples Nacional</option>
+									<option value="2" <?php if( $dado['DS_REGIME_TRIBUTARIO'] == '2') echo "selected"; ?>>Simples Nacional (Excesso de Sublimite)</option>
+									<option value="3" <?php if( $dado['DS_REGIME_TRIBUTARIO'] == '3') echo "selected"; ?>>Regime Normal</option>
+								</select>
+							</div>
+							<div class="col-sm-4">
+								<label>Zerar BC</label>
+								<select name="ST_ZERAR_BC" class="form-control">
+									<option value="S" <?php if( $dado['ST_ZERAR_BC'] == 'S') echo "selected"; ?>>Sim</option>
+									<option value="N" <?php if( $dado['ST_ZERAR_BC'] == 'N') echo "selected"; ?>>Não</option>
+								</select>
+							</div>
+							<div class="col-sm-4">
+								<label>Natureza da Operação Padrão</label>
+								<select name="natOpPad" class="form-control">
+									<option value="">Selecione...</option>
+									<?php foreach($cfop as $res):?>
+										<option value="<?php echo $res['CD_NATUREZA_OPERACAO']?>" <?php if( $res['CD_NATUREZA_OPERACAO'] == $dado['CD_NATUREZA_OPERACAO']) echo "selected"?>>
+											<?php echo utf8_encode( $res['DS_NATUREZA_OPERACAO'] ) ?>
+										</option>
+									<?php endforeach;?>
+								</select>
+							</div>
+							<!----------------------------------------------------------------------------------------------------------->
+							<div class="col-sm-3">
+								<label>CNAE Fiscal</label>
+								<input type="text" class="form-control" name="cnae" value="<?php echo $dado['DS_CNAE']; ?>"/>
+							</div>
+							<div class="col-sm-2">
+								<label>Modelo Padrão</label>
+								<select name="mod" class="form-control">
+									<option value="NFE " <?php if( $dado['DS_NOTA_PADRAO'] == 'NFE ') echo "selected"; ?>>NFe</option>
+									<option value="NFCE" <?php if( $dado['DS_NOTA_PADRAO'] == 'NFCE') echo "selected"; ?> disabled>NFCe</option>
+								</select>
+							</div>
+							<div class="col-sm-3">
+								<label>Forma de Pagamento Padrão</label>
+								<select name="formaPagamento" class="form-control">
+									<option value="0" <?php if( $dado['CD_FORMA_PAGAMENTO'] == '0') echo "selected"; ?>>À Vista</option>
+									<option value="1" <?php if( $dado['CD_FORMA_PAGAMENTO'] == '1') echo "selected"; ?>>À Prazo</option>
+									<option value="2" <?php if( $dado['CD_FORMA_PAGAMENTO'] == '2') echo "selected"; ?>>Outros</option>
+								</select>
+							</div>
+							<div class="col-sm-2">
+								<label>Exigir Paciênte:</label>
+								<select class="form-control" name="obrigaPaciente">
+									<option value="N" <?php if( $dado['ST_OBRIGA_PACIENTE'] == 'N') echo "selected"; ?>>Não Exigir</option>
+									<option value="S" <?php if( $dado['ST_OBRIGA_PACIENTE'] == 'S') echo "selected"; ?>>Exigir</option>
+								</select>
+							</div>
+							<div class="col-sm-2">
+								<label>Ultima nota</label>
+								<input type="text" class="form-control" name="ultimaNota" value="<?php echo $dado['NR_NFE']; ?>"/>
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>Alíquota</legend>
+							<div class="col-sm-6">
+								<label>PIS(%)</label>
+								<input type="text" class="form-control" name="pis" value="<?php echo number_format($dado['PIS_pPIS'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-6">
+								<label>COFINS(%)</label>
+								<input type="text" class="form-control" name="cofins" value="<?php echo number_format($dado['COFINS_pCOFINS'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Retenção PIS(%)</label>
+								<input type="text" class="form-control" name="rtPis" value="<?php echo number_format($dado['RETENCAO_pPIS'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Retenção COFINS(%)</label>
+								<input type="text" class="form-control" name="rtCofins" value="<?php echo number_format($dado['RETENCAO_pCOFINS'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Retenção CSLL(%)</label>
+								<input type="text" class="form-control" name="rtCsll" value="<?php echo number_format($dado['RETENCAO_pCSLL'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Retenção IRRF(%)</label>
+								<input type="text" class="form-control" name="rtIrrf" value="<?php echo number_format($dado['RETENCAO_pIRRF'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-3">
+								<label>Retenção Previdência(%)</label>
+								<input type="text" class="form-control" name="rtPrev" value="<?php echo number_format($dado['RETENCAO_pPrevidencia'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-9">
+								<label>Exigir Preenchimento de Retenção Quando o Cliente for:</label>
+								<select class="form-control" name="obrigaRT">
+									<option value="">Não Exigir</option>
+									<option value="F" <?php if( $dado['ST_OBRIGA_RETENCAO'] == 'F') echo "selected"; ?>>Pessoa Fisíca</option>
+									<option value="J" <?php if( $dado['ST_OBRIGA_RETENCAO'] == 'J') echo "selected"; ?>>Pessoa Jurídica</option>
+									<option value="A" <?php if( $dado['ST_OBRIGA_RETENCAO'] == 'A') echo "selected"; ?>>Ambos</option>
+								</select>
+							</div>
+							<div class="col-sm-4">
+								<label>Percentual Aproxima de Tributos Federais</label>
+								<input type="text" class="form-control" name="nr_pTributos" value="<?php echo number_format($dado['NR_pTRIBUTOS'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-4">
+								<label>Percentual Aproxima de Tributos Estaduais</label>
+								<input type="text" class="form-control" name="nr_pTributos_est" value="<?php echo number_format($dado['NR_pTRIBUTOS_EST'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+							<div class="col-sm-4">
+								<label>Percentual Aproxima de Tributos Municipais</label>
+								<input type="text" class="form-control" name="nr_pTributos_mun" value="<?php echo number_format($dado['NR_pTRIBUTOS_MUN'],2); ?>" onKeyUp="moeda(this)"/>
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>Certificado</legend>
+							<div class="col-sm-6">
+								<label>Certificado A1</label>
+								<input type="file" class="form-control" name="certificado" id="certificado" />
+							</div>
+							<div class="col-sm-3">
+								<label>Senha</label>
+								<input type="password" class="form-control" name="certPassword" required />
+							</div>
+							<div class="col-xs-3 col-md-3">
+								<div class="col-xs-6 col-md-6">
+									<div class="col-xs-7 col-md-7">
+										<label>Homologação</label>
+										<input id="homologacao" type="radio" name="tp_amb" value="2" <?php if( $dado['TP_AMBIENTE'] == '2') echo "checked" ?> />
+									</div>
+								</div>
+								<div class="col-xs-6 col-md-6">
+									<div class="col-xs-7 col-md-7">
+										<label>Produção</label>
+										<input id="producao" type="radio" name="tp_amb" value="1" <?php if( $dado['TP_AMBIENTE'] == '1') echo "checked" ?>/>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+						
+						<input type="hidden" name="cliente" value="" />
+						
+						<div class="controls">
+							<div class="col-sm-12">
+								<hr>
+								<input type="hidden" name="salvar" id="salvar" value="true" />
+								<button type="submit" class="btn btn-success"> Salvar </button>
+								<!--<a href="/nota/status-nfe">
+									<button type="button" class="btn btn-success"> Testar Serviço </button>
+								</a>-->
+								<a href="/nota/lista">
+									<button type="button" class="btn btn-danger">Cancelar</button>
+								</a>
+							</div>
+						</div>
+					</form>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</div>
+</section>	

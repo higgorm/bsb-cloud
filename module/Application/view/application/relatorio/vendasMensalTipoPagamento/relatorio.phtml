@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>Relatório</title>
+<style type="text/css">
+<!--
+.style1 {font-family: Verdana, Arial, Helvetica, sans-serif}
+hr{margin-bottom:2.5px!important; margin-top:0px!important};
+-->
+</style>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8%" align="left">
+    	<?php echo $this->logo ?> 
+    </td>
+    <td width="77%" align="left">
+    	  <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+    	  Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?><br>
+	      <b><?php echo htmlentities("Relatório de Vendas Mensais por Tipo de Pagamento")?></b>
+    </td>
+    <td width="15%" align="right">
+    <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
+    </td>
+  </tr>
+   <tr>
+  	<td colspan="3"><hr></td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+  <tr>
+    <td colspan="14" >
+    	Ano: <?php echo $this->anoEmissao;?><br/>
+    	Tipo(s) de Pagamento: <?php echo $this->tiposPagamento;?>
+    </td>
+  </tr>
+  <tr>
+  	<td colspan="14"><hr></td>
+  </tr>
+  <tr>
+    <th width="10%" class="text-left" align="left" nowrap>Tipo</th>
+    <th width="6%" class="text-right" align="left"><?php echo htmlentities("Jan")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Fev")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Mar")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Abr")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Mai")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Jun")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Jul")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Ago")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Set")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Out")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Nov")?></th>
+    <th width="6%" class="text-right" align="right"><?php echo htmlentities("Dez")?></th>
+    <th width="7%" class="text-right" align="right" nowrap><?php echo htmlentities("Anual")?></th>
+  </tr>
+  <?php
+  
+	$totalGeral = Array();
+  
+  	foreach($this->lista as $linha)
+	{
+		print '<tr>
+			    <td class="text-left" align="left">'.$linha["CD_TIPO_PAGAMENTO"]." - ".htmlentities($linha["DS_TIPO_PAGAMENTO"]).'</td>
+			    <td class="text-right" align="right">'.number_format($linha["Vendas01"],2,",",".").'</td>
+			    <td class="text-right" align="right">'.number_format($linha["Vendas02"],2,",",".").'</td>
+    			<td class="text-right" align="right">'.number_format($linha["Vendas03"],2).'</td>
+			    <td class="text-right" align="right">'.number_format($linha["Vendas04"],2,",",".").'</td>
+    		  	<td class="text-right" align="right">'.number_format($linha["Vendas05"],2,",",".").'</td>
+			    <td class="text-right" align="right">'.number_format($linha["Vendas06"],2,",",".").'</td>
+    			<td class="text-right" align="right">'.number_format($linha["Vendas07"],2).'</td>
+			    <td class="text-right" align="right">'.number_format($linha["Vendas08"],2,",",".").'</td>
+    		  	<td class="text-right" align="right">'.number_format($linha["Vendas09"],2,",",".").'</td>
+			    <td class="text-right" align="right">'.number_format($linha["Vendas10"],2,",",".").'</td>
+    			<td class="text-right" align="right">'.number_format($linha["Vendas11"],2).'</td>
+			    <td class="text-right" align="right">'.number_format($linha["Vendas12"],2,",",".").'</td>
+    			<td class="text-right" align="right">'.number_format($linha["TotalAnual"],2,",",".").'</td>
+			  </tr>';
+		
+		$totalGeral["01"] += $linha["Vendas01"];
+		$totalGeral["02"] += $linha["Vendas02"];
+		$totalGeral["03"] += $linha["Vendas03"];
+		$totalGeral["04"] += $linha["Vendas04"];
+		$totalGeral["05"] += $linha["Vendas05"];
+		$totalGeral["06"] += $linha["Vendas06"];
+		$totalGeral["07"] += $linha["Vendas07"];
+		$totalGeral["08"] += $linha["Vendas08"];
+		$totalGeral["09"] += $linha["Vendas09"];
+		$totalGeral["10"] += $linha["Vendas10"];
+		$totalGeral["11"] += $linha["Vendas11"];
+		$totalGeral["12"] += $linha["Vendas12"];
+		$totalGeral["Anual"] += $linha["TotalAnual"];
+	} 
+  ?>
+  <tr >
+  	<td class="relDivisoria" colspan="14"><hr></td>
+  </tr>
+ <tr>
+    <th width="7%" class="text-left" align="left">Total Geral</th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["01"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["02"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["03"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["04"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["05"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["06"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["07"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["08"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["09"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["10"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["11"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["12"],2,",",".")?></th>
+    <th width="8%" class="text-right" align="right"><?php echo number_format($totalGeral["Anual"],2,",",".")?></th>
+  </tr>
+</table>
+</body>
+</html>

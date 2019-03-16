@@ -1,0 +1,28 @@
+<?php
+	/*
+	 * Output
+	*/
+	$output = array(
+			"sEcho" => 1,
+			"iTotalRecords" => $total["NR_PEDIDO"],
+			"iTotalDisplayRecords" => $total["NR_PEDIDO"],
+			"aaData" => array()
+	);
+	
+	foreach($pedidos as $pedido)
+	{
+		$row = array();
+		$row[]=$pedido["NR_PEDIDO"];
+		$row[]=($pedido["NR_CGC_CPF"]==1 && !empty($pedido["DS_IDENTIFICA_CLIENTE"])) ? utf8_encode($pedido["DS_IDENTIFICA_CLIENTE"]) : utf8_encode($pedido["NOME_DO_CLIENTE"]) ;
+		$row[]=number_format($pedido["VL_TOTAL_LIQUIDO"],"2",",",".");
+		$row[]=utf8_encode($pedido["DS_FUNCIONARIO"]);
+		$row[]=$pedido["CD_Funcionario"];
+		$row[]=$pedido["CD_LOJA"];
+		$row[]=$pedido["CD_TIPO_PEDIDO"];
+		$row["DT_RowId"]	="nr_pedido_".$pedido["NR_PEDIDO"];
+
+   		$output['aaData'][] = $row;
+   }//end foreach
+
+	echo json_encode($output);
+?>

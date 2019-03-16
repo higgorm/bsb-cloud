@@ -1,0 +1,44 @@
+<section class="panel panel-default">
+	<div class="main">
+		<div class="row-fluid">
+			<div class="panel-body">
+				<div class="widget-header">
+					<h3>Carta de Correção</h3>
+				</div>
+				<form class="form-horizontal"  id="validation-form" action="/nota/cartaCorrecao" novalidate="novalidate" method="post" role="form" enctype="multipart/form-data">
+					
+					<div class="col-md-8">
+						<label>Chave NF-e</label>
+            	    	<div class="input-group">
+							<input type="text" name="infNfe" id="infNfe" class="form-control" value=""/>
+            	    	    <div class="input-group-btn">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            	    	            Ação
+            	    	            <span class="caret"></span>
+            	    	        </button>
+            	    	        <ul class="dropdown-menu pull-right">
+									<li id="searchMercadoria" title="Pesquisar Mercadoria"><a href="#">Pesquisar</a></li>
+            	    	        </ul>
+            	    	    </div>
+            	    	</div>
+					</div>
+					<div class="col-sm-4">&nbsp;</div>
+					<div class="col-sm-12">
+						<label>Motivo:</label>
+						<input type="text" class="form-control"/>
+					</div>
+					<div class="controls">
+                        <div class="col-sm-12">
+                            <hr>
+                            <button type="submit" class="btn btn-success">
+                                <i class="i i-docs"></i>
+                                Salvar CCe
+                            </button>
+                        </div>
+                    </div>
+					
+				</form>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,54 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?php
+        echo $this->headTitle('Orange :: WEB')->setSeparator(' - ')->setAutoEscape(false);
+        echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
+        echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+                ->prependStylesheet($this->basePath() . '/css/style.css')
+                ->prependStylesheet($this->basePath() . '/css/bootstrap-responsive.min.css')
+                ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+                ->prependStylesheet($this->basePath() . '/css/style-responsive.css')
+                ->prependStylesheet($this->basePath() . '/css/DT_bootstrap.css');
+        echo $this->headScript()->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                ->prependFile($this->basePath() . '/js/bootstrap.min.js')
+                ->prependFile($this->basePath() . '/js/jquery.dataTables.js', 'text/javascript')
+                ->prependFile($this->basePath() . '/js/jquery.min.js')
+        ?>
+    </head>
+	
+    <body style="background: #f1f2f7 url(../img/franquia-orange.jpg) no-repeat;">
+
+        <!-- TOPO LOGO -->
+        <!--<div class="topologo" style="box-shadow: 1px 0 3px rgba(0,0,0,.15);">-->
+            <a name="top" href="<?php echo $this->url('home') ?>" >
+                <!--<img src="/img/logo-orange-small.png" border="0" >-->
+            </a>
+        </div>
+        <!-- CONTAINER LOGIN -->
+		
+        <div style="box-shadow: 3px 3px 3px #ff9659; margin: 10% auto; text-align: left; width: 270px; opacity: 0.9; padding: 10px; background: gray;">
+            <div class="" style="text-align:center;">
+				<img src="/img/logo-orange-small.png" border="0">
+            </div>
+			<?php echo $this->content; ?>
+        </div>
+		
+		
+
+        <!-- RODAPE -->
+        <div class="" style="position: absolute; bottom: 0; width:100%; text-align:center;">
+			<b> Dúvidas?</b><br>
+			<a link="suporte@bsbgestao.com.br">suporte@bsbgestao.com.br</a><br>
+			<b> (61) 3223-9816 / 3224-9575</b><br><br><br>
+            <b>&copy; <?php echo date('Y')?> <?php echo $this->translate('All rights reserved.') ?></b><br>
+            <a target="_blank" href="http://www.bsbgestao.com.br">www.bsbgestao.com.br</a><br>
+			
+        </div>
+
+        <?php echo $this->inlineScript() ?>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<html>
+<head>
+<title>Relat�rio</title>
+<style type="text/css">
+<!--
+.style1 {font-family: Verdana, Arial, Helvetica, sans-serif}
+-->
+</style>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8%" align="left">
+    	<?php echo $this->logo ?>
+    </td>
+    <td width="77%" align="left">
+    	  <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+          <b>Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?></b><br>
+	      <b><?php echo htmlentities('Versão 2.0') ?></b>
+    </td>
+    <td width="15%" align="right">
+    <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
+    </td>
+  </tr>
+  <tr>
+  	<td colspan="3"><hr></td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+  <tr>
+      <td colspan="6" style="text-align: center;"><h3><?php echo $this->dsPesquisa ?></h3></td>
+  </tr>
+  <tr>
+  	<td colspan="6"><hr></td>
+  </tr>
+  <tr>
+    <th width="20%" class="text-left" align="left">Nome do Cliente</th>
+    <th width="15%" class="text-left" align="left">Telefone 1</th>
+    <th width="15%" class="text-left" align="left">Telefone 2</th>
+    <th width="25%" class="text-left" align="left">E-Mail</th>
+    <th width="25%" class="text-left" align="left">Data Atendimento</th>
+    <th width="5%" class="text-right" align="left">Qtde.</th>
+  </tr>
+  <?php
+    $total = 0;
+  	foreach($this->arrMail as $linha)
+	{
+		print '<tr>
+			    <td class="text-left" align="left">'.$linha["DS_NOME_RAZAO_SOCIAL"].'</td>
+			    <td class="text-left" align="left">'.$linha["DS_FONE1"].'</td>
+			    <td class="text-right" align="left">'.$linha["DS_FONE2"].'</td>
+			    <td class="text-right" align="left">'.$linha["DS_EMAIL"].'</td>
+                            <td class="text-right" align="left">'.$linha["DT_PEDIDO"].'</td>
+			    <td class="text-right" align="left">'.$linha["QTD"].'</td>			    
+			  </tr>';
+        $total++;
+	}
+  ?>
+ <tr>
+  	<td colspan="6"><hr></td>
+  </tr>
+  <tr>
+    <td colspan="2" class="text-left" align="left"><b>Total de Registros:</b>&nbsp;<b><?php echo $total ?></b></td>
+  </tr>
+</table>
+</body>
+</html>

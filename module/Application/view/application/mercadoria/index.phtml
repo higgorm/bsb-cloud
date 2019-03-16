@@ -1,0 +1,97 @@
+<?php if (count($messages)) : ?>
+    <?php
+    foreach ($messages as $value):
+        $key = key($value);
+        $message = current($value);
+        ?>
+        <div class="alert alert-<?php echo $key ?>">
+            <button type="button" class="close" data-dismiss="alert" >&times;</button>
+            <?php echo $message ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <h3>Listagem de Serviço/ Mercadoria </h3>
+                </div>	
+				<form class="form-horizontal" id="validation-form" action="/mercadoria/index" novalidate="novalidate" method="post" role="form">
+					<div class="controls">
+						<div class="col-sm-8">
+							<label>Pesquisar</label>
+							<input type="text" class="form-control" name="campo_pesquisa" id="campo_pesquisa" />
+						</div>
+						<div class="col-sm-4">
+							<label>&nbsp;</label><br>
+							<button type="submit" id="btnSubmit" class="btn btn-primary">Pesquisar</button>
+						</div>
+					</div>
+				</form>
+            </div>
+        </div>
+		
+        <div class="row-fluid" id="result">
+            <div class="widget stacked" >
+                <div class="controls">
+                    <div class="col-sm-12">
+                        <button id="btnNovo" class="btn btn-success" style="float:right; margin-top:5px; margin-right:5px;">
+                            <i class="icon-plus icon-white"></i>
+                             Adicionar Serviço/ Mercadoria
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped m-b-none" data-ride="datatables">
+                        <thead>
+                            <tr >
+                                <!-- th nowrap>#</th -->
+                                <th nowrap>Cod.</th>
+                                <th nowrap>Descrição</th>
+                                <th nowrap>Unidade de Venda</th>
+                                <th nowrap>Preço Venda</th>
+                                <th nowrap>A&ccedil;&otilde;es</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($mercadorias)) : ?>
+                                <?php foreach ($mercadorias as $mercadoria): ?>
+                                    <tr>
+                                        <td align="left"><?php echo $mercadoria->CD_MERCADORIA  ?></td>
+                                        <td align="left"><?php echo utf8_decode($mercadoria->DS_MERCADORIA) ?></td>
+                                        <td align="left"><?php echo $mercadoria->CD_UNIDADE_VENDA ?></td>
+                                        <td align="right"><?php echo $mercadoria->VL_PRECO_VENDA ?></td>
+                                        <td  align="center">
+                                          <a href="/mercadoria/editar?id=<?php echo $mercadoria->CD_MERCADORIA ?>" ><i class="fa fa-pencil"></i></a> |
+                                            <a href="/mercadoria/remover?id=<?php echo $mercadoria->CD_MERCADORIA ?>" ><i class="fa fa-trash-o"></i></a>
+                                        </td>
+                                        </th>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>  
+                        <tfoot>
+                            <tr>
+                                <!-- th nowrap>#</th -->
+                                <th nowrap>Descrição</th>
+                                <th nowrap>Unidade de Venda</th>
+                                <th nowrap>Preço Venda</th>
+                                <th nowrap>A&ccedil;&otilde;es</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <?php echo $this->paginationControl($mercadorias, 'Sliding', 'partials/paginator/control.phtml') ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function() {
+        $("#btnNovo").click(function() {
+            window.location = "/mercadoria/cadastrar";
+        });
+    });
+</script>

@@ -1,0 +1,111 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="controls">
+                    <div class="col-md-3">
+                        <label class="text-info">Pesquisar por</label>
+                        <select class="form-control" name="st_tipo_pesquisa" id="st_tipo_pesquisa">
+                            <option value="1">Código</option>
+                            <option value="2" selected="selected">Nome/Razão Social</option>
+                            <option value="3">Fantasia</option>
+                            <option value="4">CPF/CNPJ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="col-md-6">
+                        <label class="text-info">Procurar por</label>
+                        <input type="text" class="form-control" name="codigoCliente" id="codigoCliente" value="" />
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="col-md-2">
+                        <label class="text-info">&nbsp;</label>
+                        <div>
+                            <button type="button" class="btn btn-info" id="btnPesquisaCliente">
+                                <i class="i i-search"></i>
+                                Localizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12"></div>
+                <!--style=" width: 98%; overflow-x: scroll;"-->
+                <div class="controls">
+                    <div class="table-responsive">
+                        <br />
+                        <table class="table table-hover">
+                            <thead>
+                            <td>Código</td>
+                            <td>Nome/Razão Social</td>
+                            <td>Nome Fantasia</td>
+                            <td>CPF/CNPJ</td>
+                            </thead>
+                            <tbody id="tListaCliente"> </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="13">Total de Registro(s): </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="controls">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary concluir">
+                            <i class="i i-ok"></i>
+                            Ok
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default cancelar">
+                            <i class="i i-cancel"></i>
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#btnPesquisaCliente').click(function() {
+            if($('#codigoCliente').val() == '') return false;
+            Util.recuperaClientePorParamentro();
+        });
+
+        $('.concluir').click(function() {
+            if($('input[name="co_cliente"]:checked').val() == '')
+            {
+                return false;
+            }
+
+            $.ajax({
+                url: "/cliente/recupera-cliente-por-codigo",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    cd_cliente: $('input[name="co_cliente"]:checked').val()
+                },
+                success: function(data) {
+                    if (data.result == 'erro') {
+                        alert(data.message);
+                        return false;
+                    }
+					
+					//$("input[name='co_cliente']").val($curr.attr('cdcliente'));
+					$("#destNome").val(data.data.ds_nome_razao_social);
+					$("#destCNPJ").val(data.data.nr_cgc_cpf);
+					$("#codCliente").val(data.data.cd_cliente);
+
+                    $('.modal').modal('hide');
+                }
+            });
+        });
+    });
+</script>

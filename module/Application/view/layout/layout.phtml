@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" class="app">
+    <head>
+        <meta charset="utf-8" />
+        <?php
+        $session = new Zend\Session\Container("orangeSessionContainer");
+        echo $this->headTitle('Orange :: WEB')->setSeparator(' - ')->setAutoEscape(false);
+        echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0');
+
+        echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+//                ->prependStylesheet($this->basePath() . '/js/template/calendar/bootstrap_calendar.css')
+                ->prependStylesheet($this->basePath() . '/css/template/app.css')
+                ->prependStylesheet($this->basePath() . '/css/template/font.css')
+                ->prependStylesheet($this->basePath() . '/css/template/icon.css')
+                ->prependStylesheet($this->basePath() . '/css/template/font-awesome.min.css')
+                ->prependStylesheet($this->basePath() . '/css/template/animate.css')
+                ->prependStylesheet($this->basePath() . '/css/template/bootstrap.css');
+
+        echo $this->headScript()->prependFile($this->basePath() . '/js/ie/html5shiv.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                ->prependFile($this->basePath() . '/js/ie/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                ->prependFile($this->basePath() . '/js/ie/excanvas.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                ->prependFile($this->basePath() . '/js/ie/excanvas.js');
+        ?>
+
+        <!-- JQuery -->
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <script type="text/javascript" src="/js/jquery-ui-1.10.4.custom.js"></script>
+        <script type="text/javascript" src="/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="/js/jquery.ui.widget.js"></script>
+        <!-- script type="text/javascript" src="/js/jquery.ui.position.js"></script -->
+        <script type="text/javascript" src="/js/jquery.flexbox.js"></script>
+        <script type="text/javascript" src="/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="/js/relogio.js"></script>
+        <script type="text/javascript" src="/js/funcoesData.js"></script>
+        <script type="text/javascript" src="/js/jquery.cpf-validate.1.0.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.maskMoney.js"></script>
+        <script type="text/javascript" src="/js/funcoes.js"></script>
+
+        <!-- Bootstrap -->
+        <script type="text/javascript" src="/js/template/bootstrap.js"></script>
+        <script type="text/javascript" src="/js/jquery.dataTables.bootstrap.js"></script>
+        <script type="text/javascript" src="/js/bootstrap-datepicker.js"></script>
+        <script type="text/javascript" src="/js/locales/bootstrap-datepicker.pt-BR.js"></script>
+        <script type="text/javascript" src="/js/bootstrap-inputmask.js"></script>
+
+        <!-- App -->
+        <script type="text/javascript" src="/js/template/app.js"></script>
+        <script type="text/javascript" src="/js/template/slimscroll/jquery.slimscroll.min.js"></script>
+
+        <script type="text/javascript" src="/js/template/sortable/jquery.sortable.js"></script>
+        <script type="text/javascript" src="/js/template/app.plugin.js"></script>
+
+        <script type="text/javascript" src="/js/template/datatables/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/js/template/datatables/jquery.csv-0.71.min.js"></script>
+
+        <script type="text/javascript" src="/js/jquery.MultiFile.js"></script> 
+
+        <script src="/js/tinymce/tinymce.min.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="/js/template/datatables/datatables.css" type="text/css"/>
+		
+		<!--JS util-->
+		<script type="text/javascript" src="/js/orangeweb/util.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				Util.init();
+			});
+		</script>
+
+        <script type="text/javascript" >
+            var _horaInicio;
+            var _horaFim;
+            var _intervalo;
+        </script>
+		
+		<!-- cdn for modernizr, if you haven't included it already -->
+		<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js"></script>
+		<!-- polyfiller file to detect and load polyfills -->
+		<script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
+		<script>
+		  webshims.setOptions('waitReady', false);
+		  webshims.setOptions('forms-ext', {types: 'date'});
+		  webshims.polyfill('forms forms-ext');
+		</script>
+    </head>
+    <body onload="verificaAgenda(_horaInicio, _horaFim, _intervalo);">
+        <?php $url = explode('?', $_SERVER['REQUEST_URI']); ?>
+        <section class="vbox">
+            <header class="bg-primary header header-md navbar navbar-fixed-top-xs box-shadow">
+                <div class="navbar-header aside-md dk">
+                    <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen" data-target="#nav">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                    <a href="<?php echo $this->url('home') ?>" class="navbar-brand" style="margin-left: 34px;">
+                        <img src="/img/logo-orange-small.png" class="m-r-sm">
+                    </a>
+                </div>
+                <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user user">
+                    <li class="hidden-xs">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"  title="Idiomas">
+                            <i class="i i-earth"></i>
+                        </a>
+                        <section class="dropdown-menu aside-xl animated flipInY">
+                            <section class="panel bg-white">
+                                <header class="panel-heading b-light bg-light">
+                                    <strong>IDIOMAS</strong>
+                                </header>
+                                <div class="list-group list-group-alt">
+                                    <a href="#" class="media list-group-item">
+                                        <span class="pull-left thumb-sm">
+                                            <img src="/img/iconeBrasil.gif" class="img-circle">
+                                        </span>
+                                        <span class="media-body block m-b-none">
+                                            Brasil<br>
+                                        </span>
+                                    </a>
+                                    <div class="list-group list-group-alt">
+                                        <!--<a href="#" class="media list-group-item">
+                                            <span class="pull-left thumb-sm">
+                                                <img src="/img/iconeEua.gif" alt="Brasil" class="img-circle">
+                                            </span>
+                                            <span class="media-body block m-b-none">
+                                                USA<br>
+                                            </span>
+                                        </a>
+                                        <div class="list-group list-group-alt">
+                                            <a href="#" class="media list-group-item">
+                                                <span class="pull-left thumb-sm">
+                                                    <img src="/img/espanha.gif" alt="Brasil" class="img-circle">
+                                                </span>
+                                                <span class="media-body block m-b-none">
+                                                    España<br>
+                                                </span>
+                                            </a>
+                                        </div>-->
+                                    </div>
+                                </div>
+                            </section>
+                        </section>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="thumb-sm avatar pull-left">
+                                <img src="/img/a0.png">
+                            </span>
+                            <?php echo utf8_encode($session->dsLoja); ?>
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight">
+                            <span class="arrow top"></span>
+                            <li>
+                                <a href="/perfil">Perfil</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="/index/logout">Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </header>
+            <section>
+                <section class="hbox stretch">
+                    <!-- .aside -->
+                    <aside class="bg-black aside-md hidden-print" id="nav">
+                        <section class="vbox">
+                            <section class="w-f scrollable">
+                                <div class=slim-scroll data-height=auto data-disable-fade-out=true data-distance=0 data-size=10px data-railOpacity=0.2>
+                                    <!-- nav -->
+                                    <nav class="nav-primary hidden-xs">
+                                        <ul class="nav nav-main" data-ride="collapse">
+                                            <li>
+                                                <a class="auto" href="/painel/index" >
+                                                    <i class="i i-home"></i>
+                                                    <span class="font-bold">PAINEL INICIAL</span>
+                                                </a>
+                                            </li>
+											<li class="">
+												<a href="#" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+													<i class="fa fa-qrcode"></i>
+													<span class="font-bold">Cadastros</span>
+												</a>
+												<ul class="nav dk">
+                                                    <li>
+                                                        <a href="/cliente" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Clientes</span>
+                                                        </a>
+                                                    </li>
+												</ul>
+												<ul class="nav dk">
+                                                    <li>
+                                                        <a href="/mercadoria" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Serviço/Mercadoria</span>
+                                                        </a>
+                                                    </li>
+												</ul>
+												<ul class="nav dk">
+                                                    <li>
+                                                        <a href="/tabela/cfop" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>CFOP</span>
+                                                        </a>
+                                                    </li>
+												</ul>
+												<ul class="nav dk">
+                                                    <li>
+                                                        <a href="/tabela/cartao" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Cartões</span>
+                                                        </a>
+                                                    </li>
+												</ul>
+												<ul class="nav dk">
+                                                    <li>
+                                                        <a href="/tabela/forma-pagamento" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Forma de Pagamento</span>
+                                                        </a>
+                                                    </li>
+												</ul>
+											</li>
+											<!--<li class="">
+												<a href="/agenda" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+													<i class="fa fa-calendar"></i>
+													<span class="font-bold">Agenda</span>
+												</a>
+											</li>
+											<li class="">
+												<a href="/pedido/lista-tablet" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+													<i class="fa fa-pencil"></i>
+													<span class="font-bold">Pedido</span>
+												</a>
+											</li>
+											<li class="">
+												<a href="/caixa/caixa" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+													<i class="fa fa-money"></i>
+													<span class="font-bold">Caixa</span>
+												</a>
+											</li>
+											
+											<li class="">
+												<a href="/contas-pagar" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+													<i class="fa fa-money"></i>
+													<span class="font-bold">Contas à Pagar</span>
+												</a>
+											</li>
+											<li class="">
+												<a href="/contas-receber" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+													<i class="fa fa-money"></i>
+													<span class="font-bold">Contas à Receber</span>
+												</a>
+											</li>-->
+											
+											<li class="">
+												<a href="" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+													<i class="fa fa-qrcode"></i>
+													<span class="font-bold">Nota Fiscal Eletrônica</span>
+												</a>
+												<ul class="nav dk">
+												
+													
+                                                    <li>
+                                                        <a href="/nota/avulsa" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Emitir NF-e</span>
+                                                        </a>
+                                                    </li>
+													<li>
+                                                        <a href="/nota/lista" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Listar NF-e</span>
+                                                        </a>
+                                                    </li>
+                                                    <!--<li>
+                                                        <a href="/nota/pedido" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Pedido</span>
+                                                        </a>
+                                                    </li>
+													<li>
+                                                        <a href="/nota/ordemServico" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Ordem de Serviço</span>
+                                                        </a>
+                                                    </li>
+													<li>
+                                                        <a href="/nota/cartaCorrecao" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Carta de Correção</span>
+                                                        </a>
+                                                    </li>-->
+													<li>
+                                                        <a href="/nota/consulta-receita" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Consulta(Receita)</span>
+                                                        </a>
+                                                    </li>
+													<li>
+                                                        <a href="/nota/configurar" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Configurar</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+											</li>
+                                            <!--<li class="">
+                                                <a href="#" class="auto">
+                                                    <span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+                                                        <i class="i i-circle-sm text-active"></i>
+                                                    </span>
+                                                    <i class="fa fa-users"></i>
+                                                    <span class="font-bold">CRM</span>
+                                                </a>
+                                                <ul class="nav dk">
+                                                    <li>
+                                                        <a href="/mail/analise" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Análise</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/mail/crm" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>E-MAIL</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>-->
+                                            <li class="<?php echo ($url[0] != '/agenda/index') ? '' : '' ?>">
+                                                <a href="#" class="auto">
+                                                    <span class="pull-right text-muted">
+                                                        <i class="i i-circle-sm-o text"></i>
+                                                        <i class="i i-circle-sm text-active"></i>
+                                                    </span>
+                                                    <i class="i i-graph icon"></i>
+                                                    <span class="font-bold">Relatórios</span>
+                                                </a>
+                                                <ul class="nav dk">
+                                                    <!-- RELATORIO ATENDIMENTO -->
+                                                    <li class="">
+                                                       <!-- <a href="#" class="auto">
+                                                            <span class="pull-right text-muted">
+                                                                <i class="i i-circle-sm-o text"></i>
+                                                                <i class="i i-circle-sm text-active"></i>
+                                                            </span>
+                                                            <i class="i i-dot icon"></i>
+                                                            <span class="font-bold">Atendimento</span>
+                                                        </a>-->
+                                                        <ul class="nav dk">
+                                                            <li >
+                                                                <a href="/relatorio-atendimento/pesquisa" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Produtos / Serviços Vendidos</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+													<li class="">
+														<a href="/relatorio-nota/pesquisa" class="auto">
+                                                            <span class="pull-right text-muted">
+                                                                <i class="i i-circle-sm-o text"></i>
+                                                                <i class="i i-circle-sm text-active"></i>
+                                                            </span>
+                                                            <i class="i i-dot icon"></i>
+                                                            <span class="font-bold">Nota</span>
+                                                        </a>
+													</li> 
+
+                                                    <!-- RELATORIO AGENDAMENTO -->
+                                                    <li class="">
+                                                        <a href="#" class="auto">
+                                                            <span class="pull-right text-muted">
+                                                                <i class="i i-circle-sm-o text"></i>
+                                                                <i class="i i-circle-sm text-active"></i>
+                                                            </span>
+                                                            <i class="i i-dot icon"></i>
+                                                            <span class="font-bold">Agendamento</span>
+                                                        </a>
+                                                        <ul class="nav dk">
+                                                            <li >
+                                                                <a href="/relatorio-agendamento/pesquisa" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Relatório de Agendamentos</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                    <!-- RELATORIO CAIXA -->
+                                                    <li class="">
+                                                        <a href="#" class="auto">
+                                                            <span class="pull-right text-muted">
+                                                                <i class="i i-circle-sm-o text"></i>
+                                                                <i class="i i-circle-sm text-active"></i>
+                                                            </span>
+                                                            <i class="i i-dot icon"></i>
+                                                            <span class="font-bold">Caixa</span>
+                                                        </a>
+                                                        <ul class="nav dk">
+                                                            <li >
+                                                                <a href="/relatorio-caixa/pesquisa" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Caixa</span>
+                                                                </a>
+                                                            </li>
+                                                            <li >
+                                                                <a href="/relatorio-resumo-caixa/pesquisa" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Resumo de Caixa</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                    <!-- RELATORIO ESTOQE -->
+                                                   <!-- <li class="">
+                                                        <a href="#" class="auto">
+                                                            <span class="pull-right text-muted">
+                                                                <i class="i i-circle-sm-o text"></i>
+                                                                <i class="i i-circle-sm text-active"></i>
+                                                            </span>
+                                                            <i class="i i-dot icon"></i>
+                                                            <span class="font-bold">Estoque</span>
+                                                        </a>
+                                                        <ul class="nav dk">
+                                                            <li >
+                                                                <a href="/relatorio-inventario-estoque/pesquisa" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Invent&aacute;rio de Estoque</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>-->
+
+                                                    <!-- RELATORIO GERENCIAL -->
+                                                    <li class="">
+                                                        <a href="#" class="auto">
+                                                            <span class="pull-right text-muted">
+                                                                <i class="i i-circle-sm-o text"></i>
+                                                                <i class="i i-circle-sm text-active"></i>
+                                                            </span>
+                                                            <i class="i i-dot icon"></i>
+                                                            <span class="font-bold">Gerencial</span>
+                                                        </a>
+                                                        <ul class="nav dk">
+                                                            <li >
+                                                                <a href="/relatorio-vendas-mensal-tipo-pagamento/pesquisa" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Vendas Mensais Por Tipo de Pagamento</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+														<ul class="nav dk">
+                                                            <li >
+                                                                <a href="/relatorio-pedido/pesquisa" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Pedidos</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                </ul>
+                                            </li>
+
+
+
+
+
+                                            <li class="<?php echo ($url[0] != '') ? '' : '' ?>">
+                                                <a href="#" class="auto">
+                                                    <span class="pull-right text-muted">
+                                                        <i class="i i-circle-sm-o text"></i>
+                                                        <i class="i i-circle-sm text-active"></i>
+                                                    </span>
+                                                    <i class="i i-graph icon"></i>
+                                                    <span class="font-bold">Central de Relatórios</span>
+                                                </a>
+                                                <ul class="nav dk">
+                                                    <!-- RELATORIO ATENDIMENTO -->
+                                                    <li class="">
+                                                       <!-- <a href="#" class="auto">
+                                                            <span class="pull-right text-muted">
+                                                                <i class="i i-circle-sm-o text"></i>
+                                                                <i class="i i-circle-sm text-active"></i>
+                                                            </span>
+                                                            <i class="i i-dot icon"></i>
+                                                            <span class="font-bold">Atendimento</span>
+                                                        </a>-->
+                                                        <ul class="nav dk">
+                                                            <li >
+                                                                <a href="" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Relatórios</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                    <!-- RELATORIO AGENDAMENTO -->
+                                                    <li class="">
+                                                        <a href="#" class="auto">
+                                                            <span class="pull-right text-muted">
+                                                                <i class="i i-circle-sm-o text"></i>
+                                                                <i class="i i-circle-sm text-active"></i>
+                                                            </span>
+                                                            <i class="i i-dot icon"></i>
+                                                            <span class="font-bold">relatorio</span>
+                                                        </a>
+                                                        <ul class="nav dk">
+                                                            <li >
+                                                                <a href="/relatorio-pedido/pesquisa-multi-loja" class="auto">
+                                                                    <i class="i i-dots"></i>
+                                                                    <span>Multi-Loja</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                </ul>
+                                            </li>
+
+
+
+
+
+
+
+
+
+
+                                            <?php if ($url[0] == '/agenda/index'): ?>
+                                                <li class="active">
+                                                    <a href="#" class="auto">
+                                                        <i class="i i-calendar"></i>
+                                                        <span class="font-bold">CALENDÁRIO</span>
+                                                    </a>
+                                                    <ul>
+                                                        <li>
+                                                            <span>
+                                                                <div id="txtCalendario"></div>
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </nav>
+                                    <!-- / nav -->
+                                </div>
+                            </section>
+                            <footer class="footer hidden-xs no-padder text-center-nav-xs">
+                                <a href="#nav" data-toggle="class:nav-xs" class="btn btn-icon icon-muted btn-inactive m-l-xs m-r-xs">
+                                    <i class="i i-circleleft text"></i>
+                                    <i class="i i-circleright text-active"></i>
+                                </a>
+                            </footer>
+                        </section>
+                    </aside>
+                    <!-- /.aside -->
+                    <section id="content">
+                        <section class="hbox stretch">
+                            <section>
+                                <section class="vbox">
+                                    <section class="scrollable padder">
+                                        <?php echo $this->content; ?>
+                                    </section>
+                                </section>
+                            </section>
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </body>
+</html>

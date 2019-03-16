@@ -1,0 +1,61 @@
+<div >
+    <legend style="color: white; text-align: center;">Acesso ao Sistema</legend>
+        <!--<select name="lojaDefault" id="lojaDefault" class="span3" required>
+            <option value="">Selecione uma loja</option>
+            <?php
+            //foreach ($lojas as $loja) {
+            //    $check = ($lojaDefault == $loja->cd_loja) ? ' selected="selected" ' : "";
+            //    echo "<option value='{$loja->cd_loja}' {$check}>" . utf8_encode($loja->ds_fantasia) . "</option>";
+           // }
+            ?>
+
+        </select>-->
+        
+        <!--<select style="width:100%;" required="required" name="username" class="form-control">
+            <option value="">Selecione...</option>
+            <?php
+            //if (!empty($listaFuncionario)) {
+            //    echo '<option value="ORANGE">ORANGE</option>';
+            //    foreach ($listaFuncionario as $operador) {
+            //        echo "<option value='" . $operador["DS_LOGIN"] . "'>" . substr(utf8_encode($operador["DS_LOGIN"]), 0, 15) . "</option>";
+            //    }
+           // }
+            ?>
+        </select>-->
+	<form method="POST" action="/index/login" accept-charset="UTF-8">
+        <?php
+        if (count($flashMessages)) {
+            foreach ($flashMessages as $message) {
+                echo '<div class="alert alert-error">
+                         <a class="close" data-dismiss="alert" href="#">x</a>' . $message . '
+                     </div>';
+            }
+        }
+        ?>
+		<input class="span3" placeholder="Usuário" type="text" name="username" required>
+        <input class="span3" placeholder="Senha" type="password" name="password" required>
+        <button class="btn-info btn" type="submit">Acessar</button>
+    </form>
+    <!--franquia-orange-->
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+            <?php if ($lojaDefault != '') { ?>
+                var nomeLoja = $('#lojaDefault option:selected').text().replace(/ /g,"-").toLowerCase();
+                nomeLoja = '../img/'+nomeLoja+'.jpg';
+                $('body').css('background-image', 'url('+nomeLoja+')').fadeIn();
+            <?php } else { ?>
+                $('body').css('background-image', 'url(../img/franquia-orange.jpg)').fadeIn();
+            <?php } ?>
+            
+            $('#lojaDefault').change(function() {
+                $('form').attr('action','').submit();
+            });
+            
+            $('#btnSub').click(function(){
+                $('form').attr('action','/index/login').submit();
+            });
+        });
+    </script>
+</div>

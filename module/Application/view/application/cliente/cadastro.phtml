@@ -1,0 +1,199 @@
+﻿<section class="panel panel-default">
+    <div class="main">
+		<div class="row-fluid">
+            <div class="panel-body">
+				<h3 class="tit">Clientes</h3>        
+				<hr />   
+				<form action="/cliente/cadastro" method="post" id="formularioCliente">  
+					<fieldset>
+						<legend>Informações Básicas</legend>
+						<div class="col-xs-4 col-md-4">
+							<div class="col-xs-6 col-md-6">
+								<div class="col-xs-7 col-md-7">
+									<label>Física</label>
+									<input id="flg_tipo_fisica" type="radio" name="tp_cliente" value="F" checked onclick="mudaTipo('PF')" readonly />
+								</div>
+							</div>
+							<div class="col-xs-6 col-md-6">
+								<div class="col-xs-7 col-md-7">
+									<label>Jurídica</label>
+									<input id="flg_tipo_juridica" type="radio" name="tp_cliente" value="J" <?php if(@$cliente->tp_cliente == 'J') echo 'checked' ?> onclick="mudaTipo('PJ')" />
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-4 col-md-4">        
+							<label>Nome: </label>    
+							<input class="form-control" type="text" name="ds_nome_razao_social" value="<?php echo utf8_decode( @$cliente->ds_nome_razao_social ) ?>" maxlength="120" required="required">    
+						</div>	
+						
+						<div class="col-xs-4 col-md-4" id="FANTASIA">        
+							<label>Nome Fantasia: </label>        
+							<input class="form-control" type="text" name="ds_fantasia" value="<?php echo utf8_decode( @$cliente->ds_fantasia ) ?>" maxlength="50">    
+						</div>
+						<div class="col-xs-2 col-md-2" id="cpf">        
+							<label>CPF: </label>        
+							<input class="form-control" type="text" name="ds_cpf" id="ds_cpf" value="<?php echo @$cliente->nr_cgc_cpf ?>" maxlength="14" onKeyPress="return formatar('###.###.###-##',this,true,event)" onblur="setaDoc(this.value)">    
+						</div>
+						<div class="col-xs-2 col-md-2" id="cnpj">        
+							<label>CNPJ: </label>        
+							<input class="form-control" type="text" name="ds_cnpj" id="ds_cnpj" value="<?php echo @$cliente->nr_cgc_cpf ?>" maxlength="18" onKeyPress="return formatar('##.###.###/####-##',this,true,event)" onblur="setaDoc(this.value)">    
+						</div>
+						<div class="col-xs-2 col-md-2" id="SUFRAMA">        
+							<label>Inscricao na Suframa: </label>        
+							<input class="form-control" type="text" name="ds_suframa" value="<?php echo @$cliente->ds_suframa ?>" maxlength="10">    
+						</div>
+						<div class="col-xs-2 col-md-2">        
+							<label>Inscricao Estadual: </label>        	
+							<input class="form-control" type="text" name="nr_insc_estadual" value="<?php echo @$cliente->nr_insc_estadual ?>" maxlength="15">    
+						</div>
+						<div class="col-xs-3 col-md-3">
+							<label>Indicador da IE</label>
+							<select class="form-control" name="indIE"  required="required">
+								<option value="">Selecione...</option>
+								<option value="1" <?php if(@$cliente->indIE == '1') echo 'selected'?> >Contribuinte</option>
+								<option value="2" <?php if(@$cliente->indIE == '2') echo 'selected'?>>Isento</option>
+								<option value="9" <?php if(@$cliente->indIE == '9') echo 'selected'?>>Não Contribuinte</option>
+							</select>
+						</div>
+						<div class="col-xs-3 col-md-3">        
+							<label>e-Mail: </label>        
+							<input class="form-control" type="text" name="ds_email" value="<?php echo @$cliente->ds_email ?>" maxlength="60">    
+						</div>
+					</fieldset>
+					
+					<fieldset>
+						<legend>Endereço</legend>
+						<div class="col-xs-6 col-md-6">        
+							<label>Logradouro: </label>        
+							<input class="form-control" type="text" name="ds_endereco" value="<?php echo utf8_decode( @$cliente->ds_endereco ) ?>" maxlength="50"  required="required">    
+						</div>
+						<div class="col-xs-2 col-md-2">        
+							<label>Numero: </label>        
+							<input class="form-control" type="text" name="ds_numero" value="<?php echo @$cliente->ds_numero ?>" maxlength="4"  required="required">    
+						</div>
+						<div class="col-xs-4 col-md-4">        
+							<label>Complemento: </label>        
+							<input class="form-control" type="text" name="ds_complemento" value="<?php echo @$cliente->ds_complemento ?>"  maxlength="50">    
+						</div>
+						<!--<div class="col-xs-3 col-md-3" id="fantasia">        
+							<label>Complemento: </label>        
+							<input class="form-control" type="text" name="UNIDADE_VENDA" maxlength="255">    
+						</div>-->
+						<div class="col-xs-2 col-md-2">        
+							<label>Bairro: </label>        
+							<input class="form-control" type="text" name="ds_bairro" value="<?php echo utf8_decode( @$cliente->ds_bairro ) ?>" maxlength="50"  required="required">    
+						</div>
+						<div class="col-xs-2 col-md-2" id="icms_modBC">
+							<label>UF</label>
+							<?php $uf = new \Util; echo $uf->retornaOptionUF( "cd_uf", $ufCliente ); ?>
+						</div>
+						<div class="col-xs-4 col-md-4">        
+							<label>Cidade: </label>   
+							<select name="cd_cidade" id="cd_cidade" class="form-control"  required="required">
+								<option value="">Selecione...</option>
+								<?php if( @$cliente->cd_cidade != '') 
+									echo '<option value="'.@$cliente->cd_cidade.'" selected>'.@$cidade.'</option>' ?>
+							</select>  
+						</div>
+						<div class="col-xs-2 col-md-2">        
+							<label>CEP: </label>        
+							<input class="form-control" type="number" name="nr_cep" placeholder="Só Números" value="<?php echo @$cliente->nr_cep ?>" maxlength="8"  required="required">    
+						</div>
+						<div class="col-xs-2 col-md-2">        
+							<label>Fone: </label>        
+							<input class="form-control" type="text" name="ds_fone1"  placeholder="Só Números"  value="<?php echo @$cliente->ds_fone1 ?>" maxlength="20"  required="required">    
+						</div>
+					</fieldset>
+					
+					<div class="controls">
+						<div class="col-md-12">&nbsp;</div>
+						<div class="btn-group btn-group-justified col-md-12">
+							<div class="col-md-9">&nbsp;</div>
+							<div class="col-md-3">
+								<input type="hidden" name="nr_cgc_cpf" id="nr_cgc_cpf" value="<?php echo @$cliente->nr_cgc_cpf ?>" />
+								<input type="hidden" name="cd_cliente" value="<?php echo @$cliente->cd_cliente ?>" />
+								<button type="submit" class="btn btn-primary">
+									Salvar
+								</button>
+								<button type="button" class="btn btn-default">
+									Cancelar
+								</button>
+							</div>
+						</div>
+					</div>
+		
+				</form>
+			</div>
+		</div>
+	</div>
+</section>
+<script>
+	window.onload = function(){
+		<?php if( @$cliente->tp_cliente == 'J' )
+			echo "mudaTipo('PJ');";
+		else 
+			echo "mudaTipo('PF');";
+		?>
+	}
+	
+	$('#cd_uf').change(function(){
+		$.ajax({
+            url: "/ajax/get-cidade-por-uf",
+            type: "POST",
+            dataType: "json",
+            data: {
+                cd_uf: $('#cd_uf').val()
+            },
+            success: function(data) {
+                var options = "";
+                $.each(data, function(key, value) {
+                    options += '<option value="' + key + '">' + value + '</option>';
+                });
+                $("#cd_cidade").html(options);
+            }
+        });
+	});
+	
+	$('#formularioCliente').submit(function(){
+		if( document.getElementById('cpf').style.display == 'none' ){
+			if( $('#ds_cnpj').val() == '' ){
+				alert('Preencha o CNPJ');
+				return false;
+			}else{
+				return true;
+			}
+		}else{
+			if( $('#ds_cpf').val() == '' ){
+				alert('Preencha o CPF');
+				return false;
+			}else{
+				return true;
+			}
+		}
+	});
+	
+		
+	function mudaTipo( tipo ){
+		if( tipo == 'PF' ){
+			document.getElementById('FANTASIA'	).style.display = 'none';
+			document.getElementById('SUFRAMA'	).style.display = 'none';
+			document.getElementById('cnpj'	    ).style.display = 'none';
+			
+			document.getElementById('cpf'	    ).style.display = 'block';
+			
+			document.getElementById('ds_cpf').value = formataCampo(document.getElementById('ds_cpf').value,'###.###.###-##');
+		}else{
+			document.getElementById('FANTASIA'	).style.display = 'block';
+			document.getElementById('SUFRAMA'	).style.display = 'block';
+			document.getElementById('cnpj'		).style.display = 'block';
+			
+			document.getElementById('cpf'	    ).style.display = 'none';
+			
+			document.getElementById('ds_cnpj').value = formataCampo(document.getElementById('ds_cnpj').value,'##.###.###/####-##');
+		}
+	}
+	
+	function setaDoc( doc ){
+		$('#nr_cgc_cpf').val(doc);
+	}
+</script>

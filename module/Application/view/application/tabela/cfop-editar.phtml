@@ -1,0 +1,40 @@
+﻿<section class="panel panel-default">
+    <div class="main">
+		<div class="row-fluid">
+            <div class="panel-body">
+				<h3 class="tit">Operadora de Cartão</h3>
+				<hr />
+				<?php foreach( $cfop as $dado ): ?>
+					<form action="/tabela/cfop-cadastrar" method="post">
+						<div class="col-xs-2 col-md-2">
+							<label>CFOP: </label>
+							<input class="form-control" type="text" name="CD_NATUREZA_OPERACAO" value="<?php echo $dado['CD_NATUREZA_OPERACAO'] ?>" maxlength="4" >
+						</div>
+
+						<div class="col-xs-10 col-md-10">
+							<label>Descrição: </label>
+							<input class="form-control" type="text" name="DS_NATUREZA_OPERACAO" value="<?php echo utf8_encode($dado['DS_NATUREZA_OPERACAO']) ?>" maxlength="255" >    
+						</div>
+
+						<input type="hidden" name="CD_NATUREZA_OPERACAO" />
+
+						<div class="controls">
+							<div class="col-md-12">&nbsp;</div>
+							<div class="btn-group btn-group-justified col-md-12">
+								<div class="col-md-9">&nbsp;</div>
+								<div class="col-md-3">
+									<button type="submit" class="btn btn-primary">
+										Salvar
+									</button>
+									<a href="/tabela/cfop"><button type="button" class="btn btn-default">
+										Cancelar
+									</button></a>
+								</div>
+							</div>
+						</div>
+					</form>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</div>
+</section>

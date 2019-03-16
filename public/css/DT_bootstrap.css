@@ -1,0 +1,68 @@
+
+div.dataTables_length label {
+	width: 460px;
+	float: left;
+	text-align: left;
+}
+
+div.dataTables_length select {
+	width: 75px;
+}
+
+div.dataTables_filter label {
+	float: right;
+	width: 460px;
+}
+
+div.dataTables_info {
+	padding-top: 8px;
+}
+
+div.dataTables_paginate {
+	float: right;
+	margin: 0;
+}
+
+.datatable tr td
+{
+    line-height: 15px!important;
+    padding: 0px!important;
+    height:30px;
+}
+.datatable tr th
+{
+    line-height: 15px!important;
+    padding: 4px!important;
+}
+.dataTables_scrollBody
+{
+	margin-top:-30px;	
+}
+.actionAgendar
+{
+	cursor:pointer;
+	cursor:hand;
+}
+.actionAlterar
+{
+	cursor:pointer;
+	cursor:hand;
+	border:0px; 
+	color:#000;
+	background-color: #B2D4F7;
+  	background-image: linear-gradient(to bottom, #FFFFFF,#B2D4F7 );
+ 	background-repeat: repeat-x;
+ 
+}
+.actionAtender
+{
+		cursor:pointer;
+		cursor:hand; 
+		border:0px; 
+		background-color:#99FF33;
+  		background-image: linear-gradient(to bottom, #FFFFFF,#99FF33);
+ 		background-repeat: repeat-x; 
+		color:#000;
+
+} 
+

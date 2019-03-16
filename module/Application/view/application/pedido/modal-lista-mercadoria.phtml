@@ -1,0 +1,169 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="controls">
+                    <div class="col-md-10">
+                        <label class="text-info">Lista</label>
+                        <input type="text" class="form-control" name="ds_mercadoria" id="ds_mercadoria" value="" />
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="col-md-2">
+                        <label class="text-info">&nbsp;</label>
+                        <button type="button" class="btn btn-info" id="btnPesquisaMercadoria">
+                            <i class="i i-search"></i>
+                            Buscar Lista
+                        </button>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <div class="col-md-12"></div>
+                </div>
+
+                <div class="controls">
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel panel-heading">
+                                <h3 class="panel-title">Dados da Empresa</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="controls">
+                                    <div class="col-md-8">
+                                        <label class="text-info">Contato</label>
+                                        <input type="text" class="form-control" name="" id="" value="" />
+                                    </div>
+                                </div>
+                                <div class="controls">
+                                    <div class="col-md-4">
+                                        <label class="text-info">Telefone</label>
+                                        <input type="text" class="form-control" name="" id="" value="" />
+                                    </div>
+                                </div>
+                                <div class="controls">
+                                    <div class="col-md-12">
+                                        <label class="text-info">Endereço</label>
+                                        <input type="text" class="form-control" name="" id="" value="" />
+                                    </div>
+                                </div>
+                                <div class="controls">
+                                    <div class="col-md-5">
+                                        <label class="text-info">Cidade</label>
+                                        <input type="text" class="form-control" name="" id="" value="" />
+                                    </div>
+                                </div>
+                                <div class="controls">
+                                    <div class="col-md-3">
+                                        <label class="text-info">UF</label>
+                                        <input type="text" class="form-control" name="" id="" value="" />
+                                    </div>
+                                </div>
+                                <div class="controls">
+                                    <div class="col-md-4">
+                                        <label class="text-info">Alunos/Conv.</label>
+                                        <input type="text" class="form-control" name="" id="" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel panel-heading">
+                                <h3 class="panel-title">Dados da Lista</h3>
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="controls">
+                                    <div class="col-md-5">
+                                        <label class="text-info">Série/Característica</label>
+                                        <input type="text" class="form-control" name="" id="" value="" />
+                                    </div>
+                                </div>
+                                <div class="controls">
+                                    <div class="col-md-7">
+                                        <label class="text-info">Série/Característica</label>
+                                        <select class="form-control" name="" id="">
+                                            <option value="">Selecione</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="controls">
+                                    <div class="col-md-12">
+                                        <label class="text-info">Funcionário Responsável</label>
+                                        <select class="form-control" name="" id="">
+                                            <option value="">Selecione</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="controls">
+                                    <div class="col-md-12">
+                                        <label class="text-info">Observação</label>
+                                        <input type="text" class="form-control" name="" id="" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12"></div>
+
+                <div>
+                    <div class="table-responsive">
+                        <br />
+                        <table class="table table-hover">
+                            <thead>
+                            <td>CÓDIGO</td>
+                            <td>DESCRIÇÃO</td>
+                            <td>QTD. LISTA</td>
+                            <td>QTD. COMPRA</td>
+                            <td>PREÇO UNITÁRIO</td>
+                            <td>TOTAL</td>
+                            </thead>
+                            <tbody>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="controls">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary concluir">
+                            <i class="i i-ok"></i>
+                            Ok
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default cancelar">
+                            <i class="i i-cancel"></i>
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#btnPesquisaMercadoria').click(function() {
+            $('#bodyBuscarLista').html('');
+            $('#bodyBuscarLista').load('/pedido/modal-pesquisa-lista-mercadoria');
+            $('#buscarListaModal').modal('show');
+        });
+    });
+</script>

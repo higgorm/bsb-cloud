@@ -1,0 +1,258 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <!--<i class="icon-check"></i>-->
+                    <h3><?php echo utf8_encode("CADASTRO DE CONTAS A PAGAR") ?></h3>
+                </div> <!-- /widget-header -->
+                <form id="validation-form" action="<?php echo $form?>" method="post" role="form">
+
+                    <div class="widget-content">
+
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="text-info">Loja</label>
+                            <input type="text" class="form-control" value="<?php echo $loja['ds_loja'] ?>" readonly="readonly"/>
+                            <input type="hidden" id="CD_LOJA" name="CD_LOJA" class="form-control" value="<?php echo $loja['cd_loja'] ?>" />
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="control-label text-info" for="name">Classificação Financeira</label>
+                            <select name="CD_CLASSE_FINANCEIRA" id="CD_CLASSE_FINANCEIRA" class="form-control">
+                                <?php if($listaClassificacao):?>
+                                    <?php foreach ($listaClassificacao as $field => $value):?>
+                                        <option value="<?php echo $field?>"
+                                            <?php if($post['CD_CLASSE_FINANCEIRA'] == $field ) echo  'selected="selected"' ?> >
+                                            <?php echo utf8_encode($value) ?>
+                                        </option>
+                                    <?php endforeach ?>
+                                <?php endif ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="control-label text-info" for="name">Centro de Custos</label>
+                            <select name="CD_CENTRO_CUSTO" id="CD_CENTRO_CUSTO" class="form-control">
+                                <option value="0">Selecione...</option>
+                                <?php if($listaCentro):?>
+                                    <?php foreach ($listaCentro as $centro):?>
+                                        <option value="<?php echo $centro['CD_CENTRO_CUSTO'] ?>"
+                                            <?php if($post['CD_CENTRO_CUSTO'] == $centro['CD_CENTRO_CUSTO'] ) echo  'selected="selected"' ?> >
+                                            <?php echo utf8_encode($centro['DS_CENTRO_CUSTO']) ?>
+                                        </option>
+                                    <?php endforeach ?>
+                                <?php endif ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Data Movimento</label>
+                            <input id="DT_MOVIMENTO" name="DT_MOVIMENTO" class="dataP form-control" value="<?php $date = new DateTime($post['DT_MOVIMENTO']); echo $date->format('d-m-y');?>" maxlength="10" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Número Doc</label>
+                            <input id="DS_DOCUMENTO" name="DS_DOCUMENTO" class="form-control" value="<?php echo $post['DS_DOCUMENTO']?>" maxlength="10" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Valor Doc (R$)</label>
+                            <input id="VL_DOCUMENTO" name="VL_DOCUMENTO" class="form-control" value="<?php echo number_format($post['VL_DOCUMENTO'],2,",",".") ?>" maxlength="10" />
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="control-label text-info" for="ds_fone1">Banco para Pagamento</label>
+                            <select class="form-control" id="CD_BANCO_PAGAMENTO" name="CD_BANCO_PAGAMENTO">
+                                <option value="">Selecione...</option>
+                                <?php if($listaBancos):?>
+                                    <?php foreach($listaBancos as $banco):?>
+                                        <option value="<?php echo $banco['CD_BANCO']?>"
+                                            <?php if($post['CD_BANCO_PAGAMENTO'] == $banco['CD_BANCO']) echo "selected='selected'" ?>>
+                                            <?php echo $banco['DS_BANCO']?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-3">
+                            <label class="control-label text-info" for="ds_fone1">Credor</label>
+                            <input name="DS_CREDOR" id="DS_CREDOR" class="form-control" value="<?php echo $post['DS_CREDOR']?>" maxlength="255"/>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-3">
+                            <label class="control-label text-info" for="name">Fornecedor</label>
+                            <select name="CD_FORNECEDOR" id="CD_FORNECEDOR" class="form-control">
+                                <option value="">Selecione...</option>
+                                <?php if($listaFornecedor):?>
+                                    <?php foreach ($listaFornecedor as $fornecedor):?>
+                                        <option value="<?php echo $fornecedor['CD_FORNECEDOR'] ?>"
+                                            <?php if($fornecedor['CD_FORNECEDOR'] == $post['CD_FORNECEDOR']) echo 'selected="selected"' ?>>
+                                            <?php echo utf8_encode($fornecedor['DS_RAZAO_SOCIAL']) ?>
+                                        </option>
+                                    <?php endforeach ?>
+                                <?php endif ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="control-label text-info" for="ds_fone1">Complemento</label>
+                            <input name="DS_COMPL_HISTORICO" id="DS_COMPL_HISTORICO" class="form-control" value="<?php echo $post['DS_COMPL_HISTORICO']?>" maxlength="255"/>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="control-label text-info" for="ds_fone1">Observação</label>
+                            <input name="DS_OBSERVACAO" id="DS_OBSERVACAO" class="form-control" value="<?php echo $post['DS_OBSERVACAO']?>" maxlength="255"/>
+                        </div>
+                    </div>
+
+                        <?php if (count($parcelas)) :?>
+                        <div class="col-sm-12">&nbsp;</div>
+                        <div class="panel-body">
+                            <table class="table table-striped m-b-none" data-ride="datatables">
+                                <thead>
+                                <tr >
+                                    <th nowrap>Nr. Parcela</th>
+                                    <th nowrap>Vencimento</th>
+                                    <th nowrap>Valor</th>
+                                    <th nowrap>Data Pagamento</th>
+                                    <th nowrap>Baixado</th>
+                                    <th nowrap>Baixar</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($parcelas as $parcela):?>
+                                        <tr>
+                                            <td><?php echo $parcela['NR_DOCUMENTO_CP_SEQ'] ?></td>
+                                            <td><?php  $date = new DateTime($parcela['DT_VENCIMENTO']); echo $date->format('d-m-y'); ?> </td>
+                                            <td><?php echo number_format($parcela['VL_DOCUMENTO'],2,",",".") ?></td>
+                                            <td><?php  $date = new DateTime($parcela['DT_PAGAMENTO']); echo $date->format('d-m-y'); ?> </td>
+                                            <td><?php echo (empty ($parcela['DT_PAGAMENTO'])) ? "NÃO" : "SIM" ?></td>
+                                            <td><a href="#" onclick="baixar(<?php echo $parcela['NR_DOCUMENTO_CP_SEQ'] ?>)"><i class="fa fa-check"></i></a></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <?php endif; ?>
+
+                        <div class="controls">
+                            <div class="col-md-6">
+                                <label class="control-label text-info" for="name">Adicionar Pagamento</label>
+                                <select name="pagamento" id="pagamento" class="form-control">
+                                    <option value="">Selecione...</option>
+                                    <option value="1">Digitar parcelas</option>
+                                    <option value="2">Gerar Parcelas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" name="hr" id="hr" style="display:none;"><hr/></div>
+
+                        <div class="controls" id="qtd_parcela" name="qtd_parcela" style="display:none;">
+                            <div class="col-md-2">
+                                <label class="control-label text-info" for="ds_fone1">Qtd. Parcelas</label>
+                                <input name="qtd_parcelas" id="qtd_parcelas" class="form-control" value="<?php echo (!empty($pg['qtd_parcelas'])) ? $pg['qtd_parcelas'] :  '1' ?>"/>
+                            </div>
+                        </div>
+                        <div class="controls" id="tipo_pagamento" name="tipo_pagamento" style="display:none;">
+                            <div class="col-md-4">
+                                <label class="control-label text-info" for="name">Tipo Pagamento</label>
+                                <select name="tipo_pagamento" id="tipo_pagamento" class="form-control">
+                                    <option value="">Selecione...</option>
+                                    <?php if($listaPagamento):?>
+                                        <?php foreach ($listaPagamento as $pagamento):?>
+                                            <option value="<?php echo $pagamento['CD_TIPO_PAGAMENTO'] ?>"
+                                                <?php if($pagamento['CD_TIPO_PAGAMENTO'] == $post['CD_TIPO_PAGAMENTO']) echo 'selected="selected"' ?>>
+                                                <?php echo utf8_encode($pagamento['DS_TIPO_PAGAMENTO']) ?>
+                                            </option>
+                                        <?php endforeach ?>
+                                    <?php endif ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="dt_vencimento" name="dt_vencimento" style="display:none;">
+                            <label class="control-label text-info" for="name">Venc. 1ª Parcela</label>
+                            <input id="vencimento" name="vencimento" class="dataP form-control" value="<?php echo $pg['vencimento'] ?>"  />
+                        </div>
+                    <div id="baixaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="baixaModal" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">X</button>
+                                    <i class="icon-search icon-white"></i>
+                                    <span class="text-info-modal"><?php echo utf8_encode("Baixa Parcela") ?></span>
+                                </div>
+                                <div id="bodyBaixaModal" class="modal-body-xlarge"></div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="controls">
+                            <div class="col-sm-12">&nbsp;</div>
+                            <div class="btn-group btn-group col-sm-12">
+                                <div class="btn-group">
+                                    <a href="/contas-pagar"><button id="btn_voltar" type="button" class="btn btn-default voltar">
+                                        <i class="i i-back"></i>
+                                        Voltar
+                                    </button></a>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary salvar">
+                                        <i class="i i-success"></i>
+                                        Salvar
+                                    </button>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    $(document).ready(function() {
+        $('#DT_MOVIMENTO').datepicker({format: 'dd-mm-yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        $('#vencimento').datepicker({format: 'dd-mm-yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        $('#pagamento').change(function() {
+            if (this.value == 2)
+            {
+                $('#hr').show();
+                $('#qtd_parcela').show();
+                $('#tipo_pagamento').show();
+                $('#dt_vencimento').show();
+            }
+            else
+            {
+                $('#hr').hide();
+                $('#qtd_parcela').hide();
+                $('#tipo_pagamento').hide();
+                $('#dt_vencimento').hide();
+            }
+        });
+
+        baixar = function (id){
+            $('#bodyBaixaModal').html('');
+            $('#bodyBaixaModal').load('/contas-pagar/baixa?id='+id);
+            $('#baixaModal').modal('show');
+        }
+
+    });
+
+</script>

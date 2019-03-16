@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <title>Relat&oacute;rio</title>
+    </head>
+    <body>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="8%" align="left">
+                    <?php echo @$this->logo ?>
+                </td>
+                <td width="77%" align="left">
+                    <b><?php echo htmlentities(@$this->dsLoja); ?></b><br>
+                    Sistema de Gest&atilde;o Empresarial <?php //echo VERSAO_GESTAO_EMPRESARIAL ?><br>
+                    <b>RELAT&Oacute;RIO DE NOTAS</b>
+                </td>
+                <td width="15%" align="right">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><hr></td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+            <tr>
+                <td colspan="6" >
+                    Loja:
+                    <hr> 
+                </td>
+            </tr>
+            <tr>
+                <td>N&#8304; Nota</td>
+                <td>Status</td>
+                <td>Data Emiss&atilde;o</td>
+                <!--<td>Cod. Cliente</td>-->
+				<td>Chave</td>
+                <td>Total Nota</td>
+            </tr>
+                <?php foreach ($lista as $nota): ?>
+                    <tr>
+                        <td><?php echo $nota['infNFE'] ?></td>
+                        <td><?php if( $nota['DS_CANCELA_PROTOCOLO'] != '' ){
+										echo 'Cancelada';
+									}else{
+										if( $nota['DS_PROTOCOLO'] != '' ){
+											echo 'Emitida';
+										}else{
+											echo 'Não Emitida';
+										}
+									}						
+							?></td>
+                        <td><?php echo datE('d/m/y', strtotime($nota['dEmi'])); ?></td>
+						<td><?php echo $nota['DS_NFE_CHAVE'] ?></td>
+                        <td><?php echo number_format($nota['ICMSTot_vNF'],2,",",".") ?></td> 
+                    </tr>
+                <?php endforeach; ?>
+            <tr><td></td></tr><tr class="success">
+                <td>Total</td>
+                <td><?php echo number_format(@$totalPedRec,2,",",".") ?></td>
+            </tr>
+        </table>
+    </body>
+</html>

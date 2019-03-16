@@ -1,0 +1,244 @@
+<section class="panel panel-default">
+
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <i class="icon-check"></i>
+                    <h3><?php echo utf8_encode("Relat&oacute;rio de Agendamentos") ?></h3>
+                </div>
+
+                <div class="widget-content">
+                    <form id="formRelatorio" target="self" class="form-vertical" id="validation-form" action="/relatorio-agendamento/relatorio">
+                        <input type="hidden" id="pdf" name="pdf" value="false" />
+                        <div class="controls">
+                            <div class="col-md-12">
+                                <label class="control-label text-info" for="name">
+                                    <?php echo utf8_encode("Cliente:") ?>
+                                </label>
+                                <div id="ds_nome_razao_social" class="autocomplete"></div>
+                                <input type="hidden" name="cd_cliente" id="cd_cliente">
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
+                                <div class="input-append date" id="dp1" data-date="" data-date-format="dd/mm/yyyy" >
+                                    <input class="form-control" size="16" type="text" value="" id="dtInicio" name="dtInicio" required>
+                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
+                                <div class="input-append date" id="dp2" data-date="" data-date-format="dd/mm/yyyy" >
+                                    <input class="form-control" size="16" type="text" value="" id="dtTermino" name="dtTermino" required>
+                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Situa&ccedil;&atilde;o") ?></label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="rdbSituacao" id="rdbSituacao_A" value="A" />&nbsp;Aberto
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="radio" name="rdbSituacao" id="rdbSituacao_F" value="F" />&nbsp;Fechado
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="radio" name="rdbSituacao" id="rdbSituacao_T" value="T" checked/>&nbsp;Todos
+                                    </label>
+                                    <input name="situacao" id="situacao" type="hidden" value=""/>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <hr>
+                                <button id="btnPesquisarRelatorio" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
+                                <button id="btnCancelarRelatorio" class="btn btn-default btn" type="reset"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                                <button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div> <!-- /widget-content -->
+            </div> <!-- /widget -->
+        </div> <!-- /span12 -->
+    </div>
+</div>
+<div id="modalDadosRelatorio" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDadosRelatorio" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="pull-right btn btn-danger"  id="btnFechar"></i>Fechar</button>
+                <button type="button" class="pull-right btn btn-primary"  id="btnGerarPDF"></i>PDF</button>
+                <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio de Atendimento - Produtos / Serviços Vendidos") ?></span>
+            </div>
+            <div id="modalBodyDadosRelatorio" class="container-fluid" style="overflow-y:scroll"></div>
+        </div>
+    </div>
+</div>
+</section>
+<script>
+    $(document).ready(function() {
+        $('#dp1,#dp2').datepicker();
+
+        $('#formRelatorio').submit(function()
+        {
+            if ($("#pdf").val() == "false")
+            {
+
+                $("#modalBodyDadosRelatorio").load('/relatorio-agendamento/relatorio', {
+                    dtInicio    : $("#dtInicio").val(),
+                    ds_nome_razao_social: $('#ds_nome_razao_social').val(),
+                    dtTermino   : $("#dtTermino").val(),
+                    situacao : $("#situacao").val(),
+                    cd_cliente: $("#cd_cliente").val()
+                });
+                $("#modalDadosRelatorio").modal('show');
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        });
+
+        $('#btnGerarPDF').click(function() {
+            $("#pdf").val("true");
+            $("#formRelatorio").submit();
+        });
+
+        $('#rdbSituacao_A').click(function() {
+            $("#situacao").val("A");
+        });
+        $('#rdbSituacao_F').click(function() {
+            $("#situacao").val("F");
+        });
+        $('#rdbSituacao_T').click(function() {
+            $("#situacao").val("T");
+        });
+
+        $('#btnFechar').click(function() {
+            $("#pdf").val("false");
+            $("#modalDadosRelatorio").modal('hide');
+        });
+
+
+        $('#btnVoltarRelatorio').click(function() {
+            window.location = '/relatorio/index';
+        });
+
+        $('#ds_nome_razao_social_input').attr('type', 'text');
+
+        setInterval(function() {
+            $('#ds_nome_razao_social_input').removeAttr('style');
+            $('#ds_nome_razao_social_input').addClass('form-control');
+        }, 200);
+
+        //componete foi alterado - procurar linhas comentadas
+        $(".autocomplete").flexbox('/cliente/buscarcliente', {
+            queryDelay: 800,
+            minChars: 3,
+            paging: {
+                pageSize: 5,
+                summaryTemplate: 'Exibindo {start}-{end} de {total} registros'
+            },
+            width: 450,
+            //                        watermark: 'Informe o nome do cliente',
+            hiddenValue: 'name',
+            initialValue: '<?php echo $razao; ?>',
+            onSelect: function() {
+
+            }
+        });
+    });
+</script>
+<style type="text/css">
+    /* Input textbox - do not specify a width here, it will be overwritten */
+    .ffb-input
+    {
+        float:left;
+        color:#000; /* must specify along with watermark color */
+        /*height:40px;  required for webkit browsers (Safari, Chrome) */
+    }
+    /* Color of watermark, if present */
+    .ffb-input.watermark { /* added and removed dynamically */
+        color:#888; /* must specify along with input color */
+    }
+    /* Drop-down arrow, with sprited image */
+    .ffb-arrow
+    {
+        float:left;
+        width:17px;
+        height:22px;
+        background-image:url(../img/sel_win7.gif);
+    }
+    .ffb-arrow.out { /* css sprite technique */
+        background-position:0;
+    }
+    .ffb-arrow.over { /* css sprite technique */
+        background-position:-17px 0;
+    }
+    .ffb-arrow.active { /* css sprite technique */
+        background-position:-4px 0;
+    }
+    .ffb-no-results
+    {
+        padding:2px;
+        color:#888;
+        font-style:italic;
+        border-bottom:1px solid #828790;
+    }
+    /* Container for dropdown contents */
+    .ffb {
+        position:absolute; /* this guy's parent div is hard-coded to position:relative */
+        overflow:hidden;
+        border-left:1px solid #828790; /* #7B9EBD for Vista */
+        border-right:1px solid #828790;
+        background-color:#fff; /* Give it a background-color, so it's not transparent */
+    }
+    /* Inner div for dropdown */
+    .ffb .content {
+        overflow:auto;
+    }
+    .ffb .content .row {
+        border-bottom:1px solid #828790;
+        color:#000;
+        height:20px;
+        clear:both;
+    }
+    .ffb-sel {
+        cursor:pointer;
+        cursor:hand;
+        color:#fff !important;
+        background-color:#39f;
+    }
+    .ffb-match {
+        font-weight:bold;
+        padding-left:32px;
+        color:#000;
+    }
+
+    /* Paging */
+    .ffb .paging {
+        vertical-align:middle;
+        border-bottom:1px solid #828790;
+    }
+    .ffb .page, .ffb a.page {
+        font-size:85%;
+        padding:2px;
+        border:solid 1px #339;
+        background-color:#eef;
+        margin:2px;
+    }
+    .ffb .box {
+        width:22px;
+        margin:2px;
+    }
+    .ffb .summary {
+        font-size:85%;
+    }
+</style>

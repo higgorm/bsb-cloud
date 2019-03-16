@@ -1,0 +1,25 @@
+<?php
+$output = array(
+    "sEcho" => 1,
+    "iTotalRecords" => 0,
+    "iTotalDisplayRecords" => 0,
+    "aaData" => array()
+);
+
+$total = 0;
+
+foreach ($listaAgendamentoMensal as $agendamento) {
+    $row = array();
+    $row['CD_CLIENTE'] = $agendamento["CD_CLIENTE"];
+    $row['DS_CLIENTE'] = utf8_encode($agendamento["DS_CLIENTE"]);
+    $row['DS_FONE1'] = utf8_encode($agendamento["DS_FONE1"]);
+    $row['DT_HORARIO'] = date('d/m/Y', strtotime($agendamento["DT_HORARIO"]));
+    $row['ST_PEDIDO'] = $agendamento["ST_PEDIDO"];
+    $output['aaData'][] = $row;
+    $total++;
+}
+
+$output["iTotalRecords"] = $total;
+$output["iTotalDisplayRecords"] = $total;
+
+echo json_encode($output);

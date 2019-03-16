@@ -1,0 +1,313 @@
+<form id="frmCaixaFuncionario" action="/caixa/recebepedido" method="post">
+    <table style="width: 100%;">
+        <tr>
+            <td>
+                <div class="fluid widget stacked" >
+                    <div class="widget-content">
+                        <div>
+                            <div class="col-md-6">
+                                <h3>Pedido(s) nº <?php echo $nrPedido ?></h3>
+                            </div>
+                            <div class="col-md-12"></div>
+
+                            <div class="col-md-3">
+                                <label class="control-label text-info" for="name">Forma pagamento:</label>
+
+                                <select style="width:100%;" required="required" name="frPagamento" id="frPagamento" class="form-control">
+                                    <?php
+                                    foreach ($listaFormaPagamento as $l) {
+                                        echo '<option value="' . $l['CD_PLANO_PAGAMENTO'] . '">' . utf8_encode($l['DS_PLANO_PAGAMENTO']) . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label text-info" for="name">Tipo pagamento:</label>
+                                <select style="width:100%;" required="required" name="tpPagamento" id="tpPagamento" class="form-control">
+                                    <?php
+                                    foreach ($listaTipoPagamento as $l) {
+                                        echo '<option value="' . $l['CD_TIPO_PAGAMENTO'] . '">' . utf8_encode($l['DS_TIPO_PAGAMENTO']) . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3" id="divCartao" style="display:none;">
+                                <label class="control-label text-info" for="name">Cartão:</label>
+                                <select style="width:100%;" required="required" name="tpCartao" id="tpCartao" class="form-control">
+                                    <?php
+                                    foreach ($listaCartao as $l) {
+                                        echo '<option value="' . $l['CD_CARTAO'] . '">' . utf8_encode($l['DS_CARTAO']) . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+
+                            <div id="divCheque" style="display: none;">
+                                <div class="col-md-3">
+                                    <label class="control-label text-info" for="name">CNPJ/CPF Emissor:</label>
+                                    <input type="text" id="nrCNPJCPF" name="nrCNPJCPF" class="form-control campoCPF" data-mask="999.999.999-99" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label text-info" for="name">Nome Emissor:</label>
+                                    <input type="text" id="nmEmissor" name="nmEmissor" value="" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label text-info" for="name">Telefone Emissor:</label>
+                                    <input type="text" id="tlEmissor" name="tlEmissor" value="" class="form-control">
+                                </div>
+
+                                <div class="col-md-12">&nbsp;</div>
+
+                                <div class="col-md-3">
+                                    <label class="control-label text-info" for="name">Banco:</label>
+                                    <select style="width:100%;" required="required" name="cdBanco" id="cdBanco" class="form-control">
+                                        <?php
+                                        foreach ($listaBanco as $l) {
+                                            echo '<option value="' . $l['CD_BANCO'] . '">' . utf8_encode($l['DS_BANCO']) . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label text-info" for="name">Agência:</label>
+                                    <input type="text" id="nrAgenia" name="nrAgenia" value="" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label text-info" for="name">Nº conta:</label>
+                                    <input type="text" id="nrConta" name="nrConta" value="" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label text-info" for="name">Nº cheque:</label>
+                                    <input type="text" id="nrCheque" name="nrCheque" value="" class="form-control">
+                                </div>
+
+                                <div class="col-md-12">&nbsp;</div>
+
+                                <div class="col-md-3">
+                                    <label class="control-label text-info" for="name">Data vencimento:</label>
+                                    <input type="text" id="dtVencimento" name="dtVencimento" class="input-sm input-s datepicker-input form-control" value="">
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="control-label text-info" for="name">Observação:</label><br>
+                                    <input type="text" id="dsObservacao" name="dsObservacao" value="" style="width: 100%;" class="form-control">
+                                </div>
+
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+
+                            <div class="col-md-3">
+                                <label class="control-label text-info" for="name">Valor cobrado:</label>
+                                <input type="text" id="vlCobrado" name="vlCobrado" value="<?php echo $vlPedido ?>" readonly="readonly" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label text-info" for="name">Valor recebido:</label>
+                                <input type="text" class="moeda form-control" id="vlRecebido" name="vlRecebido" value="">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label text-info" id="lblTroco" for="name">Troco:</label>
+                                <input type="text" class="moeda form-control" id="vlTroco" name="vlTroco" value="0,00" readonly="readonly">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                <input type="button" id="btnConfirmar" class="btn btn-default" value="Incluir">
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+
+                            <div class="col-md-12" style="overflow-x: scroll;width: 850px;">
+                                <table class="table table-striped" id="tbPagamento">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Forma pagamento</th>
+                                            <th>Tipo pagamento</th>
+                                            <th>Valor recebido</th>
+                                            <th>Cartão</th>
+                                            <th>Qtd parcelas</th>
+                                            <th>Financeira</th>
+                                            <th>Nº documento</th>
+                                            <th>Banco</th>
+                                            <th>Agência</th>
+                                            <th>Nº conta</th>
+                                            <th>Nº cheque</th>
+                                            <th>Data emissão</th>
+                                            <th>Data vencimento</th>
+                                            <th>Pedido/devolução</th>
+                                            <th>CNPJ/CPF emissor</th>
+                                            <th>Nome emissor</th>
+                                            <th>Telefone emissor</th>
+                                            <th>Cancelado</th>
+                                            <th>Nº cartão crédito</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-12">&nbsp;</div>
+
+                            <div class="col-md-12" style="padding-top: 7px;">
+                                <input type="button" class="btn btn-primary btn-large" id="btnReceber" value="Receber">
+                                <input type="button" class="btn btn-danger btn-large" id="btnCancelar" value="Cancelar">
+                            </div>
+                        </div>
+                        <input type="hidden" name="nrPedido" id="nrPedido" value="<?php echo $nrPedido ?>">
+                        <input type="hidden" name="cdCliente" id="cdCliente" value="<?php echo $cdCliente ?>">
+                        <input type="hidden" name="nrCaixa" id="nrCaixa" value="<?php echo $nrCaixa ?>">
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    $(document).ready(function() {
+        $(".moeda").maskMoney({showSymbol: true, symbol: "", decimal: ",", thousands: "."});
+
+        $('#dtVencimento').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        $(".campoCPF").keypress(function() {
+            //mascaraPrincipal(this, this.value);
+        }).blur(function() {
+            if ($(this).val() !== '') {
+                if (!$(this).validateCPF()) {
+                    alert('Digite um número de CPF válido.');
+                    $(this).val('').focus();
+                }
+            }
+        });
+
+        editaTipoPagamento = function(tpPag, vlPag)
+        {
+            $('#vlRecebido').val(vlPag);
+            var vlTroco = ($('#vlTroco').val() != '') ? $('#vlTroco').val() : '0,00';
+
+            var t = (parseFloat(vlPag.replace(/\./g, "").replace(",", ".")) + parseFloat(vlTroco.replace(/\./g, "").replace(",", ".")));
+            $('#vlTroco').val(formatReal(t));
+            $('#vlRecebido').focus();
+            $('#tpPagamento').val(tpPag).change();
+        }
+
+        calculaPagamento = function()
+        {
+            var recebido = 0;
+            $('#tbPagamento tbody').find('tr').each(function(indice) {
+                recebido = recebido + parseFloat($(this).find('td').find("input[name='vlPagamento[]']").val().replace(/\./g, "").replace(",", "."));
+            });
+
+            pago = $('#vlCobrado').val();
+            vpago = pago.replace(/\./g, "").replace(",", ".");
+            troco = (parseFloat(recebido) - parseFloat(vpago + vpago));
+
+            if (troco >= 0)
+            {
+                $('#lblTroco').text('Troco:');
+            }
+            else
+            {
+                $('#lblTroco').text('Falta:');
+                troco = troco * -1;
+            }
+
+            $('#vlTroco').val(formatReal(troco));
+            $('#vlRecebido').val('').focus();
+        }
+
+        $('#tpPagamento').change(function()
+        {
+            $('#divCartao').hide();
+            $('#divCheque').hide();
+
+            if (this.value == 5)
+            {
+                $('#divCartao').show();
+            }
+            else if (this.value == 2)
+            {
+                $('#divCheque').show();
+            }
+        });
+
+        $('#btnCancelar').click(function() {
+            $('#divModalPagamento').modal('hide');
+        });
+
+        $('#btnReceber').click(function() {
+            var cobrado = $('#vlCobrado').val().replace(/\./g, "").replace(",", ".");
+            var vpago = 0;
+
+            $('#tbPagamento tbody').find('tr').each(function(indice) {
+                vpago = vpago + parseFloat($(this).find('td').find("input[name='vlPagamento[]']").val().replace(/\./g, "").replace(",", "."));
+            });
+
+            troco = (parseFloat(cobrado) + parseFloat(vpago));
+            if (vpago >= cobrado)
+            {
+                modalCpfNota();
+            }
+            else
+            {
+                alert('Valor recebido menor que o valor do pedido!');
+            }
+        });
+
+        $('#btnConfirmar').click(function() {
+            if ($('#vlRecebido').val() != '') {
+
+                var dsFrPag = $('#frPagamento option:selected').text();
+                var tpFrPag = $('#frPagamento option:selected').val();
+
+                var dsPag = $('#tpPagamento option:selected').text();
+                var tpPag = $('#tpPagamento option:selected').val();
+
+                var dsCar = ($('#tpPagamento').val() == 5) ? $('#tpCartao option:selected').text() : '';
+                var tpCar = ($('#tpPagamento').val() == 5) ? $('#tpCartao option:selected').val() : '';
+
+                var dsBan = ($('#tpPagamento').val() == 2) ? $('#cdBanco option:selected').text() : '';
+                var tpBan = ($('#tpPagamento').val() == 2) ? $('#cdBanco option:selected').val() : '';
+
+                var bt = '<i class="fa fa-check" aria-hidden="true" onclick="javascript:editaTipoPagamento(' + tpPag + ',\'' + $('#vlRecebido').val() + '\');$(this).parent().parent().remove();    "></i>';
+
+                $('#tbPagamento tbody').append('<tr>' +
+                        '<td>' + bt + '</td>' +
+                        '<td><input type="hidden" name="frPagamento[]" value="' + tpFrPag + '">' + dsFrPag + '</td>' +
+                        '<td><input type="hidden" name="tpPagamento[]" value="' + tpPag + '">' + dsPag + '</td>' +
+                        '<td><input type="hidden" name="vlPagamento[]" value="' + $('#vlRecebido').val() + '">' + $('#vlRecebido').val() + '</td>' +
+                        '<td><input type="hidden" name="tpCar[]" value="' + tpCar + '">' + dsCar + '</td>' +
+                        '<td><input type="hidden" name="qtdParcela[]" value=""></td>' +
+                        '<td><input type="hidden" name="cdFinanceira[]" value=""></td>' +
+                        '<td><input type="hidden" name="nrDocumento[]" value=""></td>' +
+                        '<td><input type="hidden" name="cdBanco[]" value="' + tpBan + '">' + dsBan + '</td>' +
+                        '<td><input type="hidden" name="nrAgenia[]" value="' + $('#nrAgenia').val() + '">' + $('#nrAgenia').val() + '</td>' +
+                        '<td><input type="hidden" name="nrConta[]" value="' + $('#nrConta').val() + '">' + $('#nrConta').val() + '</td>' +
+                        '<td><input type="hidden" name="nrCheque[]" value="' + $('#nrCheque').val() + '">' + $('#nrCheque').val() + '</td>' +
+                        '<td><input type="hidden" name="dtEmissao[]" value="' + $('#dtVencimento').val() + '">' + $('#dtVencimento').val() + '</td>' +
+                        '<td><input type="hidden" name="dtVencimento[]" value="' + $('#dtVencimento').val() + '">' + $('#dtVencimento').val() + '</td>' +
+                        '<td>' + $('#nrPedido').val() + '</td>' +
+                        '<td><input type="hidden" name="nrCNPJCPF[]" value="' + $('#nrCNPJCPF').val() + '">' + $('#nrCNPJCPF').val() + '</td>' +
+                        '<td><input type="hidden" name="nmEmissor[]" value="' + $('#nmEmissor').val() + '">' + $('#nmEmissor').val() + '</td>' +
+                        '<td><input type="hidden" name="tlEmissor[]" value="' + $('#tlEmissor').val() + '">' + $('#tlEmissor').val() + '</td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '</tr>');
+
+                calculaPagamento();
+            }
+            else
+            {
+                alert('Informe o valor recebido!');
+            }
+        });
+    });
+
+    function modalCpfNota() {
+
+        $('#bodyDivModalPedido').load('/pedido/cpf-nota');
+        $('#divModalPedido').modal('show');
+    }
+</script>

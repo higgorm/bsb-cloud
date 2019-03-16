@@ -1,0 +1,162 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <!--<i class="icon-check"></i>-->
+                    <h3><?php echo utf8_encode("MOVIMENTACAO DE ESTOQUE");?></h3>
+                </div> <!-- /widget-header -->
+                <form id="validation-form" action="<?php echo $form?>" method="post" role="form">
+
+                    <div class="controls">
+                        <div class="col-md-12">
+                            <label class="text-info">Loja</label>
+                            <input type="text" class="form-control" value="<?php echo $loja['ds_loja'] ?>" readonly="readonly"/>
+                            <input type="hidden" id="CD_LOJA" name="CD_LOJA" class="form-control" value="<?php echo $loja['cd_loja'] ?>" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="text-info">Mercadoria</label>
+                            <select class="form-control" name="CD_MERCADORIA" id="CD_MERCADORIA" required>
+                                <option value="">Selecione...</option>
+                                <?php  if ($mercadorias):?>
+                                    <?php foreach ($mercadorias as $mercadoria):?>
+                                        <option <?php if ($mov['CD_MERCADORIA'] == $mercadoria['CD_MERCADORIA']) echo 'selected="selected"'?>
+                                            value="<?php echo $mercadoria['CD_MERCADORIA'] ?>"
+                                            onclick="attCamp('<?php echo $mercadoria['DS_REFERENCIA']."','".$mercadoria['DS_MODELO_COR']?>')">
+                                            <?php echo $mercadoria['DS_MERCADORIA']?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Referencia</label>
+                            <input id="DS_REFERENCIA" name="DS_REFERENCIA" class="form-control"  maxlength="10" disabled="disabled" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Modelo/Cor</label>
+                            <input id="DS_MODELO_COR" name="DS_MODELO_COR" class="form-control"  maxlength="10" disabled="disabled" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Em estoque</label>
+                            <input id="" name="" class="form-control" value="<?php echo number_format($mov['NR_QTDE_ESTOQUE'],2,",",".")  ?>" maxlength="10" disabled="disabled" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-3">
+                            <label class="control-label text-info" for="name">Data</label>
+                            <input id="DT_MOVIMENTO" name="DT_MOVIMENTO" class="input-sm input-s datepicker-input form-control" data-date-format="dd/mm/yyyy" value="<?php $date = new DateTime($mov['DT_MOVIMENTO']); echo $date->format('d/m/y'); ?>" maxlength="10" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-9">
+                            <label class="text-info">Classificacao da Movimentacao</label>
+                            <select class="form-control" name="CD_MOVIMENTO" id="CD_MOVIMENTO" required>
+                                <option value="">Selecione...</option>
+                                <?php if ($tipos):?>
+                                    <?php foreach ($tipos as $tipo):?>
+                                        <option value="<?php echo $tipo['CD_MOVIMENTO'] ?>"
+                                            <?php if($mov['CD_MOVIMENTO'] == $tipo['CD_MOVIMENTO']) echo 'selected = "selected"' ?>>
+                                            <?php echo utf8_encode($tipo['DS_MOVIMENTO'])?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-12">
+                            <label class="control-label text-info" for="ds_fone1">Motivo</label>
+                            <input name="DS_MOTIVO" id="DS_MOTIVO" class="form-control" value="<?php echo $mov['DS_MOTIVO']?>" maxlength="255" required/>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-3">
+                            <label class="control-label text-info" for="name">Numero do Documento</label>
+                            <input id="NR_DOCUMENTO" name="NR_DOCUMENTO" class="form-control" value="<?php echo $mov['NR_DOCUMENTO'] ?>" maxlength="10"/>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-3">
+                            <label class="control-label text-info" for="name">Quantidade</label>
+                            <input id="NR_QTDE_MOVIMENTO" name="NR_QTDE_MOVIMENTO" class="form-control" value="<?php echo $mov['NR_QTDE_MOVIMENTO'] ?>" maxlength="10" required/>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-3">
+                            <label class="control-label text-info" for="name">Nº do Lote</label>
+                            <input id="NR_LOTE" name="NR_LOTE" class="form-control" value="<?php echo $mov['NR_LOTE'] ?>" maxlength="10" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-3">
+                            <label class="control-label text-info" for="name">Vencimento do Lote</label>
+                            <input id="DT_VENCIMENTO" name="DT_VENCIMENTO" class="input-sm input-s datepicker-input form-control" data-date-format="dd/mm/yyyy" value="<?php $date = new DateTime($mov['DT_VENCIMENTO']); echo $date->format('d/m/y');?>" maxlength="10" />
+                        </div>
+                    </div>
+                        <div class="controls">
+                            <div class="col-sm-12">&nbsp;</div>
+                            <div class="btn-group btn-group col-sm-12">
+                                <div class="btn-group">
+                                    <a href="/estoque"><button id="btn_voltar" type="button" class="btn btn-default voltar">
+                                            <i class="i i-back"></i>
+                                            Voltar
+                                        </button></a>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary salvar">
+                                        <i class="i i-success"></i>
+                                        Salvar
+                                    </button>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    $(document).ready(function() {
+        $('#DT_MOVIMENTO').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+        $('#DT_VENCIMENTO').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        function attCamp (referencia, mod){
+
+            $('#DS_REFERENCIA').val(referencia);
+            $('#DS_MODELO_COR').val(mod);
+            //$('#NR_QTDE_ESTOQUE').value = estoque;
+        }
+
+
+    });
+
+
+
+</script>

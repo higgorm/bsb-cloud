@@ -1,0 +1,128 @@
+<div class="main">
+    <div class="row">
+        <div class="span12">
+            <div class="widget stacked">
+                <div class="widget-header">
+                    <i class="icon-check"></i>
+                    <h3><?php echo "Relatório de vendas seção " ?></h3>
+                </div> <!-- /widget-header -->
+                <div class="widget-content">
+                    <form id="formRelatorio" target="self" class="form-vertical validation-form"  action="/relatorio-vendas-secao/relatorio">
+                        <input type="hidden" id="pdf" name="pdf" value="false" />
+                        <div class="controls">
+                            <div class="span2z">
+                                <fieldset>
+                                    <legend>Selecione uma loja em branco para todas</legend>
+                                    <select class="span5" id="cdLoja" name="cdLoja">
+                                        <option value="">Selecione...</option>
+                                        <?php
+                                        foreach ($listaLoja as $loja) {
+                                            echo "<option value='{$loja["CD_LOJA"]}'>{$loja["CD_LOJA"]} - " . utf8_encode($loja["DS_RAZAO_SOCIAL"]) . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </fieldset>
+                            </div>
+                            <div class="span6">
+                                <fieldset>
+                                    <legend>Período</legend>
+                                    <div class="input-append date" id="dpYears" data-date="">
+                                        <input class="span1" size="16" type="text" id="anoEmissao" name="anoEmissao" value="" required>
+                                        <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                                    </div>
+                                </fieldset>
+
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_A" value="A" checked/>&nbsp;Considerar data de criação do período
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="checkbox" name="inPedidoPosterior" id="inPedidoPosterior" value="P1" />&nbsp;Incluir pedidos posteriores (P1)
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_F" value="F" disabled="disabled"/>&nbsp;Considerar data de recebimento do pedido
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="span12">
+                                <hr>
+                                <button id="btnPesquisarRelatorio" class="btn btn-info btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
+                                <button id="btnCancelarRelatorio" class="btn btn-info btn" type="reset"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                                <button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div> <!-- /widget-content -->
+            </div> <!-- /widget -->
+        </div> <!-- /span12 -->
+    </div>
+</div>
+<div id="modalDadosRelatorio" class="modal hide fade fluid" style="float:none!important; left:5%!important; margin:0!important; top:2%!important; width:90%; min-height:90%">
+    <div class="modal-header">
+        <button type="button" class="pull-right"  id="btnFechar"><i class="icon-remove"></i>Fechar</button>
+        <button type="button" class="pull-right"  id="btnGerarPDF"><i class="icon-file"></i>PDF</button>
+        <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo "Relatório de vendas por seção" ?></span>
+    </div>
+    <div id="modalBodyDadosRelatorio" class="container-fluid" style="max-height:410pt; overflow-y:scroll"></div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#dpYears').datepicker({
+            "format": "yyyy",
+            'startView': 2,
+            lang: 'pt-br'
+        }).on('changeYear', function(e) {
+            var dp = $(e.currentTarget).data('datepicker');
+            dp.date = e.date;
+            dp.setValue();
+            dp.hide();
+        });
+
+        $('#formRelatorio').submit(function()
+        {
+            var arrayTiposPagamento = new Array();
+
+            if ($("#pdf").val() == "false")
+            {
+                $("input[type='checkbox']:checked").each(
+                        function() {
+                            arrayTiposPagamento.push($(this).val());
+                        }
+                );
+
+                $("#modalBodyDadosRelatorio").load('/relatorio-vendas-secao/relatorio', {
+                    anoEmissao: $("#anoEmissao").val(),
+                    cd_loja: $("#cdLoja").val(),
+                    rdbSituacaoCaixa: $("input[name='rdbSituacaoCaixa']:checked").val(),
+                    inPedidoPosterior: $("#inPedidoPosterior").val()
+                });
+
+                $("#modalDadosRelatorio").modal('show');
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        });
+
+        $('#btnGerarPDF').click(function() {
+            $("#pdf").val("true");
+            $("#formRelatorio").submit();
+        });
+
+
+        $('#btnFechar').click(function() {
+            $("#pdf").val("false");
+            $("#modalDadosRelatorio").modal('hide');
+        });
+
+        $('#btnVoltarRelatorio').click(function() {
+            window.location = '/relatorio/index';
+        });
+    });
+</script>

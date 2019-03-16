@@ -1,0 +1,292 @@
+<div class="tab-content">
+    <form id="frmMovimentacaoCaixa" action="" method="post">
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <div class="fluid widget stacked" >
+                        <div class="controls">
+                            <!-- INICIO - INSERIR/EXCLUIR -->
+                            <div class="col-md-8">
+                                <input type="radio" class="radio-inline" name="rdTipo" id="rdTipoP" value="0" onclick="executaTipo(this.value);">PROCURAR&nbsp;
+                                <input type="radio" class="radio-inline" name="rdTipo" id="rdTipoE" value="1" onclick="executaTipo(this.value);">ENTRADA&nbsp;
+                                <input type="radio" class="radio-inline" name="rdTipo" id="rdTipoS" value="2" onclick="executaTipo(this.value);">SA&Iacute;DA&nbsp;
+                            </div>
+                            <div class="col-md-12"></div>
+                            <div class="col-md-4">
+                                <label class="control-label text-info" for="name">Caixa:</label>
+                                <input type="text" name="nrCaixa" value="<?php echo $nrCaixa ?>" class="form-control" readonly="readonly">
+                            </div>
+                            <div class="col-md-4 debcred">
+                                <label class="control-label text-info" for="name">C&oacute;digo de lançamento:</label>
+                                <input type="text" id="nrLancamentoCaixa" value="<?php echo $nrLancamentoCaixa ?>" class="form-control" readonly="readonly">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label text-info" for="name">Data:</label>
+                                <input type="text" name="dtCaixa" value="<?php echo date('d/m/Y') ?>" class="form-control" readonly="readonly">
+                            </div>
+                            <div class="col-md-12 debcred"></div>
+                            <div class="col-md-4 debcred">
+                                <label class="control-label text-info" for="name">Hist&oacute;rico de movimenta&ccedil;&atilde;o:</label>
+                                <select style="width:100%;" id="cdTipoMovimentacaoCaixa" name="cdTipoMovimentacaoCaixa" class="form-control" required="required">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 debcred">
+                                <label class="control-label text-info" for="name">Classifica&ccedil;&atilde;o financeira:</label>
+                                <select style="width:100%;" id="cdClasseFinanceira" name="cdClasseFinanceira" class="form-control" required="required">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 debcred"></div>
+                            <div class="col-md-4 debcred">
+                                <label class="control-label text-info" for="name">Nº documento:</label>
+                                <input type="text" name="nrDocumento" value="" class="form-control">
+                            </div>
+                            <div class="col-md-4 debcred">
+                                <label class="control-label text-info" for="name">Valor movimento:</label>
+                                <input type="text" name="vlMovimento" value="" class="form-control moeda" required="required">
+                            </div>
+                            <div class="col-md-12 debcred"></div>
+                            <div class="col-md-12 debcred">
+                                <label class="control-label text-info" for="name">Complemento do hist&oacute;rico:</label>
+                                <textarea class="form-control" name="txtComplemento" id="txtComplemento" required="required"></textarea>
+                            </div>
+                            
+                            <!-- FIM - INSERIR/EXCLUIR -->
+                            
+                            <div class="col-md-12"></div>
+                            
+                            <!-- INICIO - PESQUISA-->
+                            
+                            <div class="col-md-4 pesquisa">
+                                <label class="control-label text-info" for="name">Pesquisar por:</label>
+                                <select style="width:100%;" id="cdPesquisaPor" name="cdPesquisaPor" class="form-control" required="required">
+                                    <option value="1">Listar todos</option>
+                                    <option value="2">Nº do lan&ccedil;amento</option>
+                                    <option value="3">hist&oacute;rico</option>
+                                    <option value="4">Nº do documento</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 pesquisa">
+                                <label class="control-label text-info" for="name">Procurar por:</label>
+                                <input type="text" name="txtProcurar" value="" class="form-control">
+                            </div>
+                            <div class="col-md-2 pesquisa">
+                                <label class="control-label text-info" for="name">&nbsp;</label>
+                                <br>
+                                <input type="button" class="btn btn-primary pesquisa" id="btnLocalizar" value="Localizar">
+                            </div>
+                            <div class="col-md-12 pesquisa"></div>
+                            <div class="col-md-12 pesquisa">
+                                <table class="table table-striped table-hover" id="tblResultado">
+                                    <thead>
+                                        <tr>
+                                            <th>Nº Caixa</th>
+                                            <th>Nº Lan&ccedil;amento</th>
+                                            <th>Nº Documento</th>
+                                            <th>Data Movimento</th>
+                                            <th>Vl Movimento</th>
+                                            <th>Movimento</th>
+                                            <th>Hist&oacute;rio</th>
+                                            <th>Tipo de Entrada</th>
+                                            <th>Cancelado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- FIM - PESQUISA-->
+                            
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <br />
+                    <div class="controls">
+                        <div class="col-md-12">
+                            <input type="submit" class="btn btn-primary btn-large debcred" id="btnGravar" value="Gravar">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#dtCaixa').datepicker(
+                            {
+                                format: 'dd/mm/yyyy',
+                                language: 'pt-BR',
+                                todayBtn: "linked"
+                            }
+                        );
+        
+        $(".moeda").maskMoney({showSymbol: true, symbol: "", decimal: ",", thousands: "."});
+        
+        $(".debcred").hide();
+        $(".pesquisa").hide();
+        
+        $('#btnLocalizar').click(function(){
+            $.ajax({
+                type: 'post',
+                url: '/caixa/pesquisamovimentacaocaixa',
+                data: {
+                    nrCaixa:$('input[name=nrCaixa]').val(),
+                    dtCaixa:$('input[name=dtCaixa]').val(),
+                    cdPesquisaPor:$('select[name=cdPesquisaPor]').val(),
+                    txtProcurar:$('input[name=txtProcurar]').val()
+                },
+                success: function(data) {
+                    var data2 = eval("(" + data + ")");
+                    var linhas = '';
+                    $('#tblResultado tbody').html('');
+                    
+                    if(data2.success === true)
+                    {
+                        
+                        $.each(data2.result, function(key, value) {
+                            linhas += '<tr>';
+                            linhas += '    <td>' + value.NR_CAIXA + '</td>';
+                            linhas += '    <td>' + value.NR_LANCAMENTO_CAIXA + '</td>';
+                            linhas += '    <td>' + value.NR_DOCUMENTO + '</td>';
+                            linhas += '    <td>' + value.DT_MOVIMENTO + '</td>';
+                            linhas += '    <td>' + formatReal(value.VL_TOTAL_LIQUIDO) + '</td>';
+                            linhas += '    <td>' + value.DS_TIPO_MOVIMENTO_CAIXA + '</td>';
+                            linhas += '    <td>' + value.DS_COMPL_MOVIMENTO + '</td>';
+                            linhas += '    <td>' + value.DS_CLASSE_FINANCEIRA + '</td>';
+                            linhas += '    <td>' + value.ST_CANCELADO + '</td>';
+                            linhas += '</tr>';
+                        });
+                    }
+                    else
+                    {
+                        alert('Nenhum registro localizado.');
+                    }
+                    
+                    $('#tblResultado').append(linhas);
+                },
+                cache: false
+            });
+        });
+        
+        $('#frmMovimentacaoCaixa').submit(function(e){            
+            e.preventDefault(); 
+            $.ajax({
+                type: 'post',
+                url: '/caixa/gravamovimentacaocaixa',
+                data: {
+                    retorna:true,
+                    rdTipo:$('input[name=rdTipo]').val(),
+                    nrCaixa:$('input[name=nrCaixa]').val(),
+                    dtCaixa:$('input[name=dtCaixa]').val(),
+                    cdTipoMovimentacaoCaixa:$('select[name=cdTipoMovimentacaoCaixa]').val(),
+                    cdClasseFinanceira:$('select[name=cdClasseFinanceira]').val(),
+                    nrDocumento:$('input[name=nrDocumento]').val(),
+                    vlMovimento:$('input[name=vlMovimento]').val(),
+                    txtComplemento:$('#txtComplemento').val()
+                },
+                success: function(data) {
+                    var data2 = eval("(" + data + ")");
+                    if(data2.success === true)
+                    {
+                        $('#nrLancamentoCaixa').val(data2.nrLancamentoCaixa);
+                        alert('Gravado com sucesso.');
+                    }
+                    else
+                    {
+                        alert('Ocorreu um erro.');
+                    }
+                },
+                cache: false
+            });
+        });
+        
+        resetForm = function()
+        {
+            $(".debcred").hide();
+            $(".pesquisa").hide();
+            $("#frmMovimentacaoCaixa").reset();
+        }
+        
+        buscaHistMov = function(st)
+        {
+            $.ajax({
+                url: "/ajax/get-historico-movimentacao",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    stcredeb: st
+                },
+                success: function(data) {
+                    var options = "";
+                    $.each(data, function(key, value) {
+                        options += '<option value="' + key + '">' + value + '</option>';
+                    });
+                    $("#cdTipoMovimentacaoCaixa").html(options);
+                }
+            });
+        }
+        
+        buscaClassFinanceira = function(st)
+        {
+            $.ajax({
+                url: "/ajax/get-classificacao-financeira",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    stcredeb: st
+                },
+                success: function(data) {
+                    var options = "";
+                    $.each(data, function(key, value) {
+                        options += '<option value="' + key + '">' + value + '</option>';
+                    });
+                    $("#cdClasseFinanceira").html(options);
+                }
+            });
+        }
+        
+        executaTipo = function(tipo)
+        {
+            resetForm();
+            if(tipo === '0')
+            {
+                $(".debcred").hide();
+                $(".pesquisa").show();
+                $("#rdTipoP").attr('checked',true);
+            }
+            else if(tipo === '1')
+            {
+                $(".debcred").show();
+                $(".pesquisa").hide();
+                $("#rdTipoE").attr('checked',true);
+                buscaHistMov('C');
+                buscaClassFinanceira('C');
+            }
+            else if(tipo === '2')
+            {
+                $(".debcred").show();
+                $(".pesquisa").hide();
+                $("#rdTipoS").attr('checked',true);
+                buscaHistMov('D');
+                buscaClassFinanceira('D');
+            }
+        }
+    });
+</script>

@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>Relatório</title>
+<style type="text/css">
+<!--
+.style1 {font-family: Verdana, Arial, Helvetica, sans-serif}
+-->
+</style>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8%" align="left">
+    	<?php echo $this->logo ?> 
+    </td>
+    <td width="77%" align="left">
+    	  <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+    	  Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?><br>
+	      <b><?php echo htmlentities("Relatório de Atendimento - Produtos / Serviços Vendidos")?></b>
+    </td>
+    <td width="15%" align="right">
+    <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
+    </td>
+  </tr>
+  <tr>
+  	<td colspan="3"><hr></td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+  <tr>
+    <td colspan="5" >Per&iacute;odo de <?php echo $this->dataInicial; ?> at&eacute; <?php echo $this->dataFinal; ?></td>
+  </tr>
+  <tr>
+  	<td colspan="5"><hr></td>
+  </tr>
+  <tr>
+    <th width="7%" class="text-left" align="left">C&oacute;digo</th>
+    <th width="50%" class="text-left" align="left">Descri&ccedil;&atilde;o</th>
+    <th width="15%" class="text-right" align="right">Qtde.</th>
+    <th width="13%" class="text-right" align="right">Valor</th>
+    <th width="15%" class="text-right" align="right">Perc. (%)</th>
+  </tr>
+  <?php
+  	foreach($this->lista as $linha)
+	{
+		$percentagem =  (((float)$this->total["VL_TOTAL"] > 0) ? ($linha["VALOR"]/$this->total["VL_TOTAL"])*100 : "0");
+		print '<tr>
+			    <td class="text-left" align="left">'.$linha["CD_MERCADORIA"].'</td>
+			    <td class="text-left" align="left">'.htmlentities($linha["DS_MERCADORIA"]).'</td>
+			    <td class="text-right" align="right">'.number_format($linha["NR_QTDE"],2,",",".").'</td>
+			    <td class="text-right" align="right">'.number_format($linha["VALOR"],2,",",".").'</td>
+			    <td class="text-right" align="right">'.number_format($percentagem,3,",",".").'%</td>
+			  </tr>';
+		
+		$totalDePedidos += (int)$linha["NR_QTDE"]; 
+	} 
+  ?>
+ <tr>
+  	<td colspan="5"><hr></td>
+  </tr>
+  <tr>
+    <td colspan="2" class="text-left" align="left"><b>Quantidade total de atendimento no per&iacute;odo:</b>&nbsp;<b><?php echo $totalDePedidos ?></b></td>
+    <td class="text-right" align="right"><b>TOTAL</b></td>
+    <td class="text-right" align="right"><b><?php echo number_format($this->total["VL_TOTAL"],2,",",".")?></b></td>
+    <td class="" ></td>
+  </tr>
+</table>
+</body>
+</html>

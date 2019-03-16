@@ -1,0 +1,297 @@
+<section class="panel panel-default">
+
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <i class="icon-check"></i>
+                    <h3><?php echo utf8_encode("Relat&oacute;rio de Caixa") ?></h3>
+                </div> <!-- /widget-header -->
+                <div class="widget-content">
+                    <form id="formFiltro" target="self" class="form-vertical validation-form" action="/relatorio-caixa/filtro">
+                            <!--  <input type="hidden" id="pdf" name="pdf" value="false" />	-->
+                        <div class="controls">
+
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
+                                <div class="input-append date" id="dp1" data-date="" data-date-format="dd/mm/yyyy" >
+                                    <input class="form-control" size="16" type="text" value="" id="dtCaixaInicial" name="dtCaixaInicial" required>
+                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
+                                <div class="input-append date" id="dp2" data-date="" data-date-format="dd/mm/yyyy" >
+                                    <input class="form-control" size="16" type="text" value="" id="dtCaixaFinal" name="dtCaixaFinal" required>
+                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Operador") ?></label>
+                                <br>
+                                <select class="form-control" id="cdFuncionario" name="cdFuncionario">
+                                    <option value="">Selecione...</option>
+                                    <?php
+                                    foreach ($listaOperador as $operador) {
+
+                                        echo "<option value='{$operador["CD_FUNCIONARIO"]}'>{$operador["CD_FUNCIONARIO"]} - " . utf8_encode($operador["DS_FUNCIONARIO"]) . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Situa&ccedil;&atilde;o Caixa") ?></label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_A" value="A" checked/>&nbsp;Aberto
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_F" value="F" />&nbsp;Fechado
+                                    </label>
+                                </div>
+                            </div>
+<!--
+                            <div class="col-md-3">
+                                <label for="" class="control-label text-info">Ordenação por Lanç. no Caixa</label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="stOrdenacao" value="S" />&nbsp;Sim
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="radio" name="stOrdenacao" value="N" />&nbsp;Não
+                                    </label>
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="col-md-12">
+                            <hr>
+                            <button id="btnPesquisarCaixa" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Buscar Caixa</button>
+                            <button id="btnCancelarRelatorio" class="btn btn-default btn" type="reset"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                            <button id="btnVoltarRelatorio" class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+                        </div>
+                        <div class="col-md-12">&nbsp;</div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <!-- filter -->
+                <div class="fluid" id="filtroCaixa">
+                    <table class="table table-striped table-bordered" id="tableFiltroCaixa">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span><?php echo utf8_encode("Loja") ?></span>
+                                </th>
+                                <th>
+                                    <span><?php echo utf8_encode("Operador") ?></span>
+                                </th>
+                                <th>
+                                    <span><?php echo utf8_encode("Caixa") ?></span>
+                                </th>
+                                <th>
+                                    <span><?php echo utf8_encode("Dt. Entrada") ?></span>
+                                </th>
+                                <th>
+                                    <span>Dt. Saída</span>
+                                </th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div><!-- /filter -->
+                </form>
+            </div> <!-- /widget-content -->
+        </div> <!-- /widget -->
+    </div> <!-- /span12 -->
+</div>
+</div>
+<div id="modalDadosRelatorio" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDadosRelatorio" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="btnFechar" class="pull-right btn btn-danger btn" >Fechar</button>
+                <button type="button" class="pull-right btn btn-primary"  id="btnGerarPDF"></i>PDF</button>
+                <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio de Caixa") ?></span>
+            </div>
+            <div id="modalBodyDadosRelatorio" class="container-fluid" style="overflow-y:scroll"></div>
+            <form id="formRelatorio" target="_blank">
+                <input type="hidden" id="pdf_cdLoja" name="pdf_cdLoja" value="" />
+                <input type="hidden" id="pdf_cdCaixa" name="pdf_cdCaixa" value="" />
+                <input type="hidden" id="pdf_cdFuncionario" name="pdf_cdFuncionario" value="" />
+                <input type="hidden" id="pdf_dsFuncionario" name="pdf_dsFuncionario" value="" />
+                <input type="hidden" id="pdf_dtEntrada" name="pdf_dtEntrada" value="" />
+                <input type="hidden" id="pdf_stCaixa" name="pdf_stCaixa" value="" />
+                <input type="hidden" id="pdf" name="pdf" value="false" />
+            </form>
+        </div>
+    </div>
+</div>
+</section>
+<script>
+    $(document).ready(function() {
+        $('#dp1,#dp2').datepicker();
+
+        /* Table initialisation */
+        oTableFiltroCaixa = $('#tableFiltroCaixa').dataTable({
+            "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
+            "sScrollY": "200px",
+            "bScrollCollapse": false,
+            "bPaginate": false,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "bProcessing": false,
+            "bServerSide": false,
+            "aoColumns": [
+                {"sClass": "nowrap left", "sWidth": "12%", "sType": "string"},
+                {"sClass": "nowrap left", "sWidth": "32%", "sType": "string"},
+                {"sClass": "nowrap right", "sWidth": "12%", "sType": "numeric"},
+                {"sClass": "nowrap center", "sWidth": "8%", "sType": "date"},
+                {"sClass": "nowrap center", "sWidth": "8%", "sType": "date"},
+                {"sClass": "nowrap center", "sWidth": "25%", "sType": "html"}
+            ]
+
+        });
+
+        $('#formFiltro').submit(function()
+        {
+
+            oTableFiltroCaixa.fnClearTable(); //Limpa o grid table
+
+            var vStCaixa = 0;
+            $("input[type='radio']:checked").each(
+                    function() {
+                        vStCaixa = $(this).val();
+                    }
+            );
+
+            //Envia os dados ao servidor para atualiza��o do pedido
+            $.ajax({
+                "type": "post",
+                "data": {nrCaixa: $("#nrCaixa").val(),
+                    dtCaixaInicial: $("#dtCaixaInicial").val(),
+                    dtCaixaFinal: $("#dtCaixaFinal").val(),
+                    cdFuncionario: $("#cdFuncionario").val(),
+                    stCaixa: vStCaixa
+                },
+                "url": "/relatorio-caixa/filtro",
+                "dataType": "json",
+                "success": function(json)
+                {
+
+
+                    results = json.aaData;
+                    $.each(results, function()
+                    {
+                        oTableFiltroCaixa.fnAddData([
+                            this.CD_LOJA,
+                            this.DS_FUNCIONARIO,
+                            this.NR_CAIXA,
+                            this.DT_HORA_ENTRADA,
+                            this.DT_HORA_SAIDA,
+                            this.BOTAO
+                        ]);
+                    });
+                },
+                "error": function(json)
+                {
+                    alert("Falha inesperada do servidor! Contate a Orange do Brasil.");
+                }
+            });
+
+            return false;
+
+        });
+
+
+
+        $('#btnGerarPDF').click(function() {
+            $("#pdf").val("true");
+            gerarRelatorioPDF();
+
+        });
+
+        $('#btnFechar').click(function() {
+            $("#pdf").val("false");
+            $("#modalDadosRelatorio").modal('hide');
+        });
+
+
+        $('#btnVoltarRelatorio').click(function() {
+            window.location = '/relatorio/index';
+        });
+
+        gerarRelatorioHtml = function(filtro) {
+
+            vStCaixa = 0;
+            $("input[type='radio']:checked").each(
+                    function() {
+                        vStCaixa = $(this).val();
+                    }
+            );
+                $("#modalBodyDadosRelatorio").load('/relatorio-caixa/relatorio', {
+                    cdLoja: $(filtro).attr("data-loja-id"),
+                    cdCaixa: $(filtro).attr("data-caixa-id"),
+                    cdFuncionario: $(filtro).attr("data-funcionario-id"),
+                    dsFuncionario: $(filtro).attr("data-funcionario-nome"),
+                    dtEntrada: $(filtro).attr("data-entrada-caixa"),
+                    stCaixa: vStCaixa
+                });
+
+            $("#modalDadosRelatorio").modal('show');
+
+            //preparar o form pdf, mesmo que n�o seja usado neste momento
+            $("#pdf_cdLoja").val($(filtro).attr("data-loja-id"));
+            $("#pdf_cdCaixa").val($(filtro).attr("data-caixa-id"));
+            $("#pdf_cdFuncionario").val($(filtro).attr("data-funcionario-id"));
+            $("#pdf_dsFuncionario").val($(filtro).attr("data-funcionario-nome"));
+            $("#pdf_dtEntrada").val($(filtro).attr("data-entrada-caixa"));
+            $("#pdf_stCaixa").val(vStCaixa);
+            $("#formRelatorio").attr("action","/relatorio-caixa/relatorio");
+
+        }, gerarRelatorioHtmlDetalhado = function(filtro) {
+
+            vStCaixa = 0;
+            $("input[type='radio']:checked").each(
+                function() {
+                    vStCaixa = $(this).val();
+                }
+            );
+            $("#modalBodyDadosRelatorio").load('/relatorio-caixa/relatorio-detalhado', {
+                cdLoja: $(filtro).attr("data-loja-id"),
+                cdCaixa: $(filtro).attr("data-caixa-id"),
+                cdFuncionario: $(filtro).attr("data-funcionario-id"),
+                dsFuncionario: $(filtro).attr("data-funcionario-nome"),
+                dtEntrada: $(filtro).attr("data-entrada-caixa"),
+                stCaixa: vStCaixa
+            });
+
+            $("#modalDadosRelatorio").modal('show');
+
+            //preparar o form pdf, mesmo que n�o seja usado neste momento
+            $("#pdf_cdLoja").val($(filtro).attr("data-loja-id"));
+            $("#pdf_cdCaixa").val($(filtro).attr("data-caixa-id"));
+            $("#pdf_cdFuncionario").val($(filtro).attr("data-funcionario-id"));
+            $("#pdf_dsFuncionario").val($(filtro).attr("data-funcionario-nome"));
+            $("#pdf_dtEntrada").val($(filtro).attr("data-entrada-caixa"));
+            $("#pdf_stCaixa").val(vStCaixa);
+            $("#formRelatorio").attr("action","/relatorio-caixa/relatorio-detalhado");
+
+        },
+                    gerarRelatorioPDF = function() {
+
+                    vStCaixa = 0;
+                    $("input[type='radio']:checked").each(
+                            function() {
+                                vStCaixa = $(this).val();
+                            }
+                    );
+
+                    $('#formRelatorio').submit();
+                }
+
+    });
+</script>

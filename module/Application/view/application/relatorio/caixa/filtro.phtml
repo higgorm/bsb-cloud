@@ -1,0 +1,39 @@
+<?php
+	/*
+	 * Output
+	*/
+	$output = array(
+			"sEcho" => 1,
+			"iTotalRecords" => $total["NR_MOVIMENTOS"],
+			"iTotalDisplayRecords" => $total["NR_MOVIMENTOS"],
+			"aaData" => array()
+	);
+	
+	foreach($listaCaixaMovimento as $movimento)
+	{
+		$movimento++;
+		$row = array();
+		$row[CD_LOJA]=utf8_encode($movimento["CD_LOJA"]);
+		$row[DS_FUNCIONARIO]=utf8_encode($movimento["DS_FUNCIONARIO"]);
+		$row[NR_CAIXA]=utf8_encode($movimento["NR_CAIXA"]);
+		$row[DT_HORA_ENTRADA]=$movimento["DT_HORA_ENTRADA_FTD"]." ".$movimento["HORA_ENTRADA_FTD"];
+		$row[DT_HORA_SAIDA]=$movimento["DT_HORA_SAIDA_FTD"]." ".$movimento["HORA_SAIDA_FTD"];
+		$row[BOTAO]=utf8_encode("<button type=\"button\" name=\"btnPesquisarDados\" id=\"\" class=\"btn btn-small btn-primary\" onclick=\"gerarRelatorioHtml($(this))\"
+								 data-loja-id=\"{$movimento["CD_LOJA"]}\" 
+								 data-caixa-id=\"{$movimento["NR_CAIXA"]}\" 
+								 data-funcionario-id=\"{$movimento["CD_FUNCIONARIO"]}\" 
+								 data-funcionario-nome=\"{$movimento["DS_FUNCIONARIO"]}\" 
+								 data-entrada-caixa=\"{$movimento["DT_ENTRADA_FTD"]}\"  \>Resumido</button>
+								 <button type=\"button\" name=\"btnPesquisarDadosDetalhados\" id=\"\" class=\"btn \" onclick=\"gerarRelatorioHtmlDetalhado($(this))\"
+								 data-loja-id=\"{$movimento["CD_LOJA"]}\"
+								 data-caixa-id=\"{$movimento["NR_CAIXA"]}\"
+								 data-funcionario-id=\"{$movimento["CD_FUNCIONARIO"]}\"
+								 data-funcionario-nome=\"{$movimento["DS_FUNCIONARIO"]}\"
+								 data-entrada-caixa=\"{$movimento["DT_ENTRADA_FTD"]}\"  \>Detalhado</button>");
+		
+
+   		$output['aaData'][] = $row;
+   }//end foreach
+
+	echo json_encode($output);
+?>

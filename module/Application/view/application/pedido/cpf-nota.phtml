@@ -1,0 +1,54 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="controls">
+                    <div class="col-md-4">
+                        <label class="text-info">CPF</label>
+                        <input type="text" class="form-control" name="" id="" value="" />
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="col-md-8">
+                        <label class="text-info">Nome do Cliente</label>
+                        <input type="text" class="form-control" name="" id="" value="" />
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="col-md-12">
+                        <label class="text-info">Endereço</label>
+                        <input type="text" class="form-control" name="" id="" value="" />
+                    </div>
+                </div>
+                <div class="col-md-12"></div>
+            </div>
+            <div class="panel-footer">
+                <div class="controls">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary inclurDados">
+                            <i class="i i-ok"></i>
+                            Ok
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default cancelarDados">
+                            <i class="i i-cancel"></i>
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.inclurDados').click(function() {
+            $('#frmCaixaFuncionario').submit();
+        });
+        $('.cancelarDados').click(function() {
+            $('#frmCaixaFuncionario').submit();
+        });
+    });
+</script>

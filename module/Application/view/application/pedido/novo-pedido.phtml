@@ -1,0 +1,320 @@
+<div  class="controls form-inline fluid">
+    <div id="alertaDeInclusao" class="alert">
+        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
+        <strong>Alerta: </strong> Informe o produto / servi&ccedil;o  a ser adicionado.
+    </div>
+    <div id="alertaDeExclusao" class="alert">
+        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
+        <strong>Alerta: </strong> Voc&ecirc; n&atilde;o selecionou nenhum produto / servi&ccedil;o.
+    </div>
+    <div id="alertaDeDuplicidade" class="alert">
+        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
+        <strong>Alerta: </strong> Voc&ecirc; j&aacute; adicionou este produto / servi&ccedil;o  ao pedido.
+    </div>
+    <div id="alertaDeInclusaoProfissional" class="alert">
+        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
+        <strong>Alerta: </strong> Voc&ecirc; ainda n&atilde;o informou o profissional.
+    </div>
+    <div id="alertaDeValidacaoEstoque" class="alert">
+        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
+        <strong>Alerta: </strong><span id="txtAlertaDeValidacaoEstoque"></span>
+    </div>
+    <label class="control-label text-info" for="name"><?php echo utf8_encode("Nome do Cliente") ?>:</label>&nbsp;
+    <span><?php echo $nmClienteSelecionado ?></span>
+</div>
+        <form name="frmPedidoTablet" id="frmPedidoTablet" method="post">
+            <input type="hidden" name="nrPedido" id="nrPedido" value="<?php echo $nrPedido ?>" />
+            <input type="hidden" name="tpPedido" id="tpPedido" value="<?php echo $tpPedido ?>" />
+            <div class="row-fluid">
+                    <div class="span8">
+                        <label class="control-label text-info" for="name"><?php echo "Produto / Serviço" ?>:&nbsp;</label>
+                        <select name="comboSelectServico" id="comboSelectServico" class="form-control">
+                            <option value="">Selecione...</option>
+                            <?php
+                            foreach ($mercadorias as $mercadoria) {
+                                echo "<option value='{$mercadoria["CD_MERCADORIA"]}'>{$mercadoria["CD_MERCADORIA"]} - " . utf8_encode($mercadoria["DS_MERCADORIA"]) . "</option>";
+                            }
+                            ?>
+                        </select>
+                        <div class="col-md-12">&nbsp;</div>
+                        <button id="btnIncluirMercadoria" class="btn btn-primary" type="button"><i class="icon-white icon-plus"></i>&nbsp;Adicionar ao pedido</button>
+                    </div>
+            </div>
+            <div class="col-md-12">&nbsp;</div>
+            <div class="fluid">
+                <table class="table table-striped table-bordered" id="tablePedido">
+                    <thead>
+                        <tr>
+                            <th>
+                                <button type="button" id="chkTodos" class="btn btn-info" ><i class="icon-white"></i></button>
+                            </th>
+                            <th>
+                                <span><?php echo "PRODUTO / SERVIÇO" ?></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="fluid">
+                <button id="btnExcluirMercadoria" class="btn  btn-info span3 pull-right" type="button"><i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados</button>
+            </div>
+            <div class="col-md-12">&nbsp;</div>
+            <div class="controls form-inline fluid">
+                <label for="validateSelectProfissional" class="control-label text-info" >&nbsp;<?php echo utf8_encode("Profissional / Atendente") ?>:</label>
+                <select name="comboSelectVendedor" id="comboSelectVendedor" class="form-control" onchange="desabilitaAlerta()">
+                    <option value="">Selecione...</option>
+        <?php
+        foreach ($vendedores as $vendedor) {
+            if ((int) $vendedor["CD_FUNCIONARIO"] == (int) $cdVendedorSelecionado) {
+                $selected = " selected ";
+            } else {
+                $selected = "  ";
+            }
+            echo "<option value='{$vendedor["CD_FUNCIONARIO"]}'  " . $selected . ">{$vendedor["CD_FUNCIONARIO"]} - " . utf8_encode($vendedor["DS_FUNCIONARIO"]) . "</option>";
+        }
+        ?>
+                </select>
+            </div>
+
+            <div class="col-md-12">&nbsp;</div>
+            <div class="controls">
+                <div class="col-md-12">
+                    &nbsp;
+                    <button id="btnCancelarAtendimento" class="btn btn-danger" type="button"><i class="icon-white icon-remove-sign"></i>&nbsp;Retornar a listagem </button>
+                    <button id="btnSalvarPedido" class="btn btn-primary" type="button" data-loadign-text="Salvando...."><i class="icon-white icon-ok-sign"></i>&nbsp;Salvar Pedido</button>
+                </div>
+            </div>
+        </form>
+<div class="col-md-12">&nbsp;</div>
+<script>
+    $(document).ready(function() {
+
+
+        /* Table initialisation */
+        oTablePedido = $('#tablePedido').dataTable({
+            "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
+            "sScrollY": "160px",
+            "bScrollCollapse": false,
+            "bPaginate": false,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+            "bProcessing": false,
+            "bServerSide": false,
+            "aoColumns": [
+                {"sClass": "nowrap left", "sWidth": "4%", "sType": "html"},
+                {"sClass": "nowrap left", "sWidth": "96%", "sType": "string"}
+            ]
+
+        });
+
+		$("#btnSalvarPedido").click(
+			function(){
+				
+				var cdSelectVendedor = $("#comboSelectVendedor :selected").val();
+                var dsSelectVendedor = $("#comboSelectVendedor :selected").text();
+				var arrayCheckBoxMercadorias = new Array();
+				
+				if (cdSelectVendedor > 0){
+                    //Salva Pedido
+                    $.ajax({
+                        "type": "post",
+                        "data": {	cdVendedor: cdSelectVendedor,
+									dsVendedor: dsSelectVendedor,
+									checkBoxMercadoria: arrayCheckBoxMercadorias
+                        },
+                        "url": "/pedido/salvar-novo-pedido",
+                        "dataType": "json",
+                        "success": function(json){
+							if (json.retorno == true){
+                                //Redirecionar para tela com lista de pedidos
+								 
+                            }
+						},
+                        "error": function(json){
+                            alert("Falha inesperada do servidor! Contate a Orange do Brasil.");
+                        }
+                    });
+				}else{
+                    desabilitaAlerta();
+                    $("#alertaDeInclusaoProfissional").show();
+                }				
+			}
+		);
+
+        $("#btnAtualizarAtendimento").click(
+                function() {
+
+                    var cdSelectVendedor = $("#comboSelectVendedor :selected").val();
+                    var dsSelectVendedor = $("#comboSelectVendedor :selected").text();
+                    var nrPedidoAtualizacao = $("#nrPedido").val();
+                    var arrayCheckBoxMercadorias = new Array();
+
+                    $("button[type='button'][name^='chkMercadoria']").each(function() {
+                        arrayCheckBoxMercadorias.push($(this).val());
+                    });
+
+                    if (cdSelectVendedor > 0)
+                    {
+                        //Envia os dados ao servidor para atualiza??o do pedido
+                        $.ajax({
+                            "type": "post",
+                            "data": {nrPedido: nrPedidoAtualizacao,
+                                cdVendedor: cdSelectVendedor,
+                                dsVendedor: dsSelectVendedor,
+                                checkBoxMercadoria: arrayCheckBoxMercadorias
+                            },
+                            "url": "/pedido/salvar-pedido",
+                            "dataType": "json",
+                            "success": function(json)
+                            {
+                                if (json.retorno == true)
+                                {
+                                    oTableLista.fnReloadAjax(); //Atualiza a lista de pedido
+                                    oTablePedido.fnClearTable(); //Retira as mercadorias do pedido atual
+                                    $("#modalPedidoTablet").modal('hide'); //Fecha a janela modal
+                                }
+
+                            },
+                            "error": function(json)
+                            {
+                                alert("Falha inesperada do servidor! Contate a Orange do Brasil.");
+                            }
+                        });
+
+                    }
+                    else
+                    {
+                        desabilitaAlerta();
+                        $("#alertaDeInclusaoProfissional").show();
+                    }
+
+                }
+        );
+
+        $("#btnCancelarAtendimento").click(
+                function() {
+
+                    oTableLista.fnReloadAjax(); //Atualiza a lista de pedido
+                    oTablePedido.fnClearTable(); //Retira as mercadorias do pedido atual
+                    $("#modalPedidoTablet").modal('hide'); //Fecha a janela modal
+                }
+        );
+
+        $("#chkTodos").click(function() {
+            $("button[type='button'][name^='chkMercadoria']").each(function() {
+                if ($(this).html() == "<i class=\"icon-white\"></i>")
+                {
+                    $(this).html("<i class=\"icon-white icon-ok\"></i>");
+                }
+                else
+                {
+                    $(this).html("<i class=\"icon-white\"></i>");
+                }
+            });
+
+            if ($(this).html() == "<i class=\"icon-white\"></i>")
+            {
+                $(this).html("<i class=\"icon-white icon-ok\"></i>");
+            }
+            else
+            {
+                $(this).html("<i class=\"icon-white\"></i>");
+            }
+        });
+
+
+        $("#btnExcluirMercadoria").click(
+                function() {
+
+                    desabilitaAlerta();
+                    var numCheckboxMarcados = 0;
+                    $("button[type='button'][name^='chkMercadoria']").each(function() {
+                        if ($(this).html() == "<i class=\"icon-white icon-ok\"></i>")
+                        {
+                            //remove a mercadoria
+                            oTablePedido.fnDeleteRow(oTablePedido.fnGetPosition($(this).closest('tr').get(0)));
+                            numCheckboxMarcados++;
+                        }
+                    });
+                    $("#chkTodos").removeAttr("checked");//Desmarca a op??o todos
+                    if (numCheckboxMarcados == 0)
+                    {
+                        $('#alertaDeExclusao').show();
+                    }
+                }
+        );
+
+        $("#btnIncluirMercadoria").click(
+                function () {
+
+                    var cdTipoPedido = $("#tpPedido").val();
+                    var cdSelectServico = $("#comboSelectServico :selected").val();
+                    var descSelectServico = $("#comboSelectServico  :selected").text();
+
+                    desabilitaAlerta();
+
+                    if (cdSelectServico > 0)
+                    {
+
+                        if ($("#chkMercadoria" + cdSelectServico).length >= 1)
+                        {
+                            //A mercadoria j? foi adicionada
+                            $("#alertaDeDuplicidade").show();
+                        }
+                        else
+                        {
+                            //verifica estoque
+                            $.getJSON("/pedido/verifica-estoque", {tpPedido: cdTipoPedido, cdMercadoria: cdSelectServico}, function(responseJson) {
+                                if (responseJson.PERMITIR == 1)
+                                {
+                                    oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria' + cdSelectServico + '" value="' + cdSelectServico + '" class=\"btn btn-info\" onclick=\"verificaStatus($(this))\"><i class=\"icon-white\"></i></button>',
+                                        descSelectServico
+                                    ]);
+                                    $("#comboSelectServico").val("");
+                                }
+                                else
+                                {
+                                    $("#txtAlertaDeValidacaoEstoque").html(responseJson.ERRO);
+                                    $("#alertaDeValidacaoEstoque").show();
+                                }
+                            });
+
+
+
+                        }
+                    }
+                    else
+                    {
+                        $("#alertaDeInclusao").show();
+                    }
+                }
+       );
+
+        desabilitaAlerta = function() {
+            $('#alertaDeExclusao').hide();
+            $("#alertaDeInclusao").hide();
+            $("#alertaDeDuplicidade").hide();
+            $("#alertaDeInclusaoProfissional").hide();
+            $("#alertaDeValidacaoEstoque").hide();
+
+        },
+                verificaStatus = function(button) {
+                    if (button.html() == "<i class=\"icon-white\"></i>")
+                    {
+                        button.html("<i class=\"icon-white icon-ok\"></i>");
+                    }
+                    else
+                    {
+                        button.html("<i class=\"icon-white\"></i>");
+                    }
+                }
+
+        //chamada a fun??o  desabilitaAlerta
+        desabilitaAlerta();
+
+    });
+</script>

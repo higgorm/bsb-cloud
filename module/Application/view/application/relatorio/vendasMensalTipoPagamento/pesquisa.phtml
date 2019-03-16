@@ -1,0 +1,168 @@
+<section class="panel panel-default">
+
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <i class="icon-check"></i>
+                    <h3><?php echo utf8_encode("Relat&oacute;rio de vendas mensais por tipo de pagamento ") ?></h3>
+                </div> <!-- /widget-header -->
+                <div class="widget-content">
+                    <form id="formRelatorio" target="self" class="form-vertical validation-form"  action="/relatorio-vendas-mensal-tipo-pagamento/relatorio">
+                        <input type="hidden" id="pdf" name="pdf" value="false" />
+                        <div class="controls">
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Per&iacute;odo / Ano") ?></label>
+                                <!-- div class="input-append date" id="dpYears" data-date="">
+                                    <input class="form-control" size="16" type="text" id="anoEmissao" name="anoEmissao" value="" required>
+                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                                </div -->
+                                <select class="form-control" id="anoEmissao" name="anoEmissao" required>
+                                    <option value="">Selecione...</option>
+                                    <?php 
+                                        for($i=(int)date('Y'); 2002<=$i; $i--)
+                                        {
+                                            echo '<option value="'.$i.'">'.$i.'</option>';
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("Tipos de Pagamento") ?></label>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="col-md-3">
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoDinheiro" value="1" checked/>&nbsp;Dinheiro
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoCheque" value="2" checked/>&nbsp;Cheque
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoDinheiro" value="3"  checked/>&nbsp;Boleto
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoDinheiro" value="4"  checked/>&nbsp;Financeira
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoCartao" value="5" checked/>&nbsp;Cart&atilde;o
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoCartao" value="6" checked/>&nbsp;Devolu&ccedil;&atilde;o
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoCheque" value="7" checked/>&nbsp;Ticket
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoDinheiro" value="8" checked/>&nbsp;Dep&oacute;sito
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <!-- <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoCheque" value="9" />&nbsp;N�o innformado
+                                    </label>
+                                    -->
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoCartao" value="10"  checked/>&nbsp;Carta de Cr&eacutedito
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoDinheiro" value="11"  checked/>&nbsp;Cart&atilde;o Manual
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" name="tipoPagamento" id="tipoPagamentoCheque" value="12"  checked/>&nbsp;Cart&atilde;o Parcelado
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <hr>
+                                <button id="btnPesquisarRelatorio" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
+                                <button id="btnCancelarRelatorio" class="btn btn-default btn" type="reset"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                                <button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div> <!-- /widget-content -->
+            </div> <!-- /widget -->
+        </div> <!-- /span12 -->
+
+    </div>
+    <div id="modalDadosRelatorio" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDadosRelatorio" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="pull-right btn btn-danger"  id="btnFechar">Fechar</button>
+                    <button type="button" class="pull-right btn-primary btn"  id="btnGerarPDF">PDF</button>
+                    <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio de vendas mensais por tipo de pagamento") ?></span>
+                </div>
+                <div id="modalBodyDadosRelatorio" class="container-fluid" style="overflow-y:scroll"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function() {
+        $('#dpYears').datepicker({
+            "format": "yyyy",
+            'startView': 2
+        }).on('changeYear', function(e) {
+            var dp = $(e.currentTarget).data('datepicker');
+            dp.date = e.date;
+            dp.setValue();
+            dp.hide();
+        });
+        $('#formRelatorio').submit(function()
+        {
+            var arrayTiposPagamento = new Array();
+
+            if ($("#pdf").val() == "false")
+            {
+                $("input[type='checkbox']:checked").each(
+                        function() {
+                            arrayTiposPagamento.push($(this).val());
+                        }
+                );
+
+                $("#modalBodyDadosRelatorio").load('/relatorio-vendas-mensal-tipo-pagamento/relatorio', {
+                    anoEmissao: $("#anoEmissao").val(),
+                    tiposPagamento: arrayTiposPagamento.toString()
+                });
+                $("#modalDadosRelatorio").modal('show');
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        });
+
+        $('#btnGerarPDF').click(function() {
+            $("#pdf").val("true");
+            $("#formRelatorio").submit();
+        });
+
+
+        $('#btnFechar').click(function() {
+            $("#pdf").val("false");
+            $("#modalDadosRelatorio").modal('hide');
+        });
+
+        $('#btnVoltarRelatorio').click(function() {
+            window.location = '/relatorio/index';
+        });
+    });
+</script>

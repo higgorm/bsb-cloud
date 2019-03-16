@@ -1,0 +1,95 @@
+﻿<html>
+    <head>
+        <title>Relat&oacute;rio</title>
+    </head>
+    <body>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="8%" align="left">
+                    <?php echo $this->logo ?>
+                </td>
+                <td width="77%" align="left">
+                    <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+                    Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL ?><br>
+                    <b>RELAT&oacute;RIO DE CAIXA</b>
+                </td>
+                <td width="15%" align="right">
+                    <h6><?php echo $this->horaAtual ?><br><?php echo $this->dataAtual ?></h6>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><hr></td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+            <tr>
+                <td colspan="6" >
+                    Loja: <?php echo htmlentities($this->cdLoja . " - " . $this->dsLoja); ?><br/>
+                    <?php if (count($operador)): ?>
+                        Operador: <?php echo $operador[0]["DS_FUNCIONARIO"] ?><br/>
+                    <?php endif; ?>
+                    <?php if ($dtAbertura): ?>
+                        Data de Abertura: <?php echo $dtAbertura ?>
+                    <?php endif; ?>
+                    <?php if ($dtFechamento): ?>
+                        &nbsp;&nbsp;&nbsp;Data de Fechamento: <?php echo $dtFechamento ?>
+                    <?php endif; ?>
+                    <hr>
+                </td>
+            </tr>
+            <tr>
+                <td>Data</td>
+                <td>Pedidos Recebidos</td>
+                <td>Frete</td>
+                <td>OS</td>
+                <td>Dinheiro</td>
+                <td>Cheque</td>
+                <td>Cheque Pr&eacute;</td>
+                <td>Cart&atilde;o</td>
+                <td>Boleto</td>
+                <td>Dep&oacute;sito</td>
+                <td>Conv&ecirc;nio</td>
+                <td>Outras</td>
+                <td>Entrada Caixa</td>
+                <td>Sa&iacute;da Caixa</td>
+                <td>Total Geral</td>
+            </tr>
+                <?php foreach ($listCaixa as $caixa): ?>
+                    <tr>
+                        <td><?php echo $caixa['data'] ?></td>
+                        <td><?php echo number_format($caixa['totalPedRec'],2,",",".") ?></td><?php $totalPedRec = $totalPedRec + $caixa['totalPedRec'] ;?>
+                        <td><?php echo number_format($caixa['frete'],2,",",".") ?></td><?php $frete = $frete + $caixa['frete'] ;?>
+                        <td><?php echo number_format($caixa['totalOs'],2,",",".") ?></td><?php $totalOs = $totalOs + $caixa['totalOs'] ;?>
+                        <td><?php echo number_format($caixa['dinheiro'],2,",",".") ?></td><?php $dinheiro = $dinheiro + $caixa['dinheiro'] ;?>
+                        <td><?php echo number_format($caixa['cheque'],2,",",".") ?></td><?php $cheque = $cheque + $caixa['cheque'] ;?>
+                        <td><?php echo number_format($caixa['cheque_pre'],2,",",".") ?></td><?php $cheque_pre = $cheque_pre + $caixa['cheque_pre'] ;?>
+                        <td><?php echo number_format($caixa['cartao'],2,",",".") ?></td><?php $cartao = $cartao + $caixa['cartao'] ;?>
+                        <td><?php echo number_format($caixa['boleto'],2,",",".") ?></td><?php $boleto = $boleto + $caixa['boleto'] ;?>
+                        <td><?php echo number_format($caixa['deposito'],2,",",".") ?></td><?php $deposito = $deposito + $caixa['deposito'] ;?>
+                        <td><?php echo number_format($caixa['convenio'],2,",",".") ?></td><?php $convenio = $convenio + $caixa['convenio'] ;?>
+                        <td><?php echo number_format($caixa['outros'],2,",",".") ?></td><?php $outros = $outros + $caixa['outros'] ;?>
+                        <td><?php echo number_format($caixa['entrada'],2,",",".") ?></td><?php $entrada = $entrada + $caixa['entrada'] ;?>
+                        <td><?php echo number_format($caixa['saida'],2,",",".") ?></td><?php $saida = $saida + $caixa['saida'] ;?>
+                        <td><?php echo number_format($caixa['totaGeral'],2,",",".") ?></td><?php $totaGeral = $totaGeral + $caixa['totaGeral'] ;?>
+                    </tr>
+                <?php endforeach; ?>
+            <tr><td></td></tr><tr class="success">
+                <td>Totais</td>
+                <td><?php echo number_format($totalPedRec,2,",",".") ?></td>
+                <td><?php echo number_format($frete,2,",",".") ?></td>
+                <td><?php echo number_format($totalOs,2,",",".") ?></td>
+                <td><?php echo number_format($dinheiro,2,",",".") ?></td>
+                <td><?php echo number_format($cheque,2,",",".") ?></td>
+                <td><?php echo number_format($cheque_pre,2,",",".") ?></td>
+                <td><?php echo number_format($cartao,2,",",".") ?></td>
+                <td><?php echo number_format($boleto,2,",",".") ?></td>
+                <td><?php echo number_format($deposito,2,",",".") ?></td>
+                <td><?php echo number_format($convenio,2,",",".") ?></td>
+                <td><?php echo number_format($outros,2,",",".") ?></td>
+                <td><?php echo number_format($entrada,2,",",".") ?></td>
+                <td><?php echo number_format($saida,2,",",".") ?></td>
+                <td><?php echo number_format($totaGeral,2,",",".") ?></td>
+            </tr>
+        </table>
+    </body>
+</html>

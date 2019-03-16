@@ -1,0 +1,918 @@
+<!-- Tab panes -->
+<div class="tab-content">
+<div class="">
+<input type="hidden" id="cliente_rapido" value="<?php echo $dados['CD_CLIENTE_RAPIDO'] ?>" />
+
+<section class="panel panel-default">
+<header class="panel-heading text-right bg-light">
+    <ul class="nav nav-tabs pull-in">
+        <li class="" id="abaCadastrado">
+            <a data-toggle="tab" href="#homeCliente">
+                <i class="fa fa-edit text-muted"></i> Cliente Cadastrado
+            </a>
+        </li>
+        <li class="active" id="abaRapido">
+            <a data-toggle="tab" href="#searchCliente">
+                <i class="fa fa-user text-muted"></i> Cliente Rápido
+            </a>
+        </li>
+    </ul>
+</header>
+<div class="panel-body">
+<div class="tab-content">
+<div class="tab-pane fade in" id="homeCliente">
+    <form method="post" id="frmHomeCliente">
+        <input type="hidden" name="nr_maca" value="<?php echo (isset($params['id'])) ? $params['id'] : NULL ?>" >
+        <input type="hidden" name="st_cliente_rapido" value="N" >
+        <input type="hidden" name="dt_atendimento" value="<?php echo $params['data'] ?>" >
+        <input type="hidden" name="nr_pedido" value="<?php echo $params['nr_pedido'] ?>" >
+        <input type="hidden" name="hr_atendimento" value="<?php echo str_pad(str_pad($params['hora'], 2, "0", STR_PAD_RIGHT), 2, "0", STR_PAD_LEFT); ?>:00" >
+        <input type="hidden" name="cd_cliente" value="<?php echo (isset($dados['CD_CLIENTE'])) ? $dados['CD_CLIENTE'] : null ?>" >
+
+        <?php if (!empty($params['nr_pedido'])) { ?>
+            <label class="control-label text-info" style="font-size: large;" for="name">Pedido nº: <?php echo $params['nr_pedido'] ?></label>
+            <br>
+        <?php } ?>
+        <label class="control-label text-info" style="font-size: large;" for="name">Agendamento para <?php echo $params['data'] ?> <?php echo str_pad(str_pad($params['hora'], 2, "0", STR_PAD_RIGHT), 2, "0", STR_PAD_LEFT); ?></label>
+
+        <div class="controls">
+            <div class="col-md-12">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Nome:") ?>
+                </label>
+
+                <?php $razao = (isset($dados['DS_NOME_RAZAO_SOCIAL'])) ? $dados['DS_NOME_RAZAO_SOCIAL'] : null ?>
+                <?php //echo $this->formElement($form->get("ds_nome_razao_social")->setAttribute('value', $razao)) ?>
+                <div id="ds_nome_razao_social" class="autocomplete"></div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Fone 1:") ?>
+                </label>
+
+                <?php $fone1 = (isset($dados['DS_FONE1'])) ? $dados['DS_FONE1'] : null ?>
+                <?php echo $this->formElement($form->get("ds_fone1")->setAttribute('value', $fone1)) ?>
+            </div>
+            <div class="col-md-3">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Fone 2:") ?>
+                </label>
+
+                <?php $fone2 = (isset($dados['DS_FONE2'])) ? $dados['DS_FONE2'] : null ?>
+                <?php echo $this->formElement($form->get("ds_fone2")->setAttribute('value', $fone2)) ?>
+            </div>
+            <div class="col-md-3">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Desconto (%):") ?>
+                </label>
+                <input type="text" id="vl_desconto" readonly="readonly" name="vl_desconto" class="form-control"  data-mask="999,99" placeholder="0,00"
+                       value="<?php isset($dados['VL_DESCONTO']) ? $dados['VL_DESCONTO'] : NULL ?>">
+            </div>
+
+            <div class="col-md-3">
+                <label class="control-label text-info" for="name">
+                    &nbsp;
+                </label>
+                <?php $check = ($dados['ST_CLIENTE_CHEGOU'] == 'S') ? 'checked' : NULL; ?>
+                <?php echo $this->formElement($form->get("st_cliente_chegou")->setAttribute('checked', $check)) ?>
+                <?php echo utf8_encode("Cliente chegou") ?>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="controls">
+            <div class="col-md-10">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Servi&ccedil;os:") ?>
+                </label>
+                <?php echo $this->formElement($form->get("list_servico")) ?>
+
+            </div>
+            <div class="col-md-2">
+                <label class="control-label text-info" for="name">
+                    &nbsp;
+                </label>
+                <div>
+                    <button type="button" class="addServico btn btn-default" aria-hidden="true">Incluir</button>
+                </div>
+            </div>
+
+            <br />
+            <br />
+            <div class="controls">
+                <div class="col-md-12">
+                    <fieldset class="form-group" style="border: solid #cfcfcf 1px;">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th style="width: 15%;">C&Oacute;DIGO</th>
+                                <th>SERVI&Ccedil;O</th>
+                                <th>VALOR</th>
+                                <th>PROMOÇÃO</th>
+                                <th style="width: 5%;"></th>
+                            </tr>
+                            </thead>
+                            <tbody class="bd-list-servicos">
+                            <?php if (count($servico)): ?>
+                                <?php foreach ($servico as $serv) : ?>
+                                    <tr>
+                                        <td><?php echo $serv['CD_MERCADORIA'] ?></td>
+                                        <td><?php echo $serv['DS_MERCADORIA'] ?></td>
+                                        <td><?php echo number_format($serv['VL_PRECO_VENDA'], 2, ',', '.') ?></td>
+                                        <td><?php echo number_format($serv['VL_PRECO_VENDA_PROMOCAO'], 2, ',', '.') ?></td>
+                                        <td></td>
+                                        <td><i class="fa fa-trash-o" aria-hidden="true" onclick="javascript:removeitem('<?php echo $serv['CD_MERCADORIA'] ?>');
+                                                $(this).parent().parent().remove();"></i> </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            </tbody>
+                        </table>
+                        <div class="listServicos">
+                            <?php if (count($servico)): ?>
+                                <?php foreach ($servico as $serv) : ?>
+                                    <input type="hidden" name="cd_servico[]" value="<?php echo $serv['CD_MERCADORIA'] ?>" />
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="controls">
+            <div class="col-md-12">
+                <label for="" class="control-label text-info"><?php echo utf8_encode("Profissional:") ?></label>
+                <select class="form-control" id="cdFuncionario1" name="cdop">
+                    <option selected="selected" value="">Selecione...</option>
+                    <?php
+                    foreach ($listaFuncionarios as $operador) {
+                        $selected = ($operador["CD_FUNCIONARIO"] == $dados['CD_FUNCIONARIO']) ? "selected='selected'" : "";
+                        echo "<option {$selected} value='{$operador["CD_FUNCIONARIO"]}'>{$operador["CD_FUNCIONARIO"]} - " . utf8_encode($operador["DS_FUNCIONARIO"]) . "</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="col-md-12">
+                <br>
+                <?php echo $this->formElement($form->get("fechar")) ?>
+                &nbsp;
+                <?php
+                if ($params['data'] >= date('d/m/Y')) {
+                    if (isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
+                        echo $this->formElement($form->get("return"));
+                    }
+                }
+                ?>
+                &nbsp;
+                <?php
+                if ($params['data'] >= date('d/m/Y')) {
+                    if (!isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
+                        echo $this->formElement($form->get("submit"));
+						//echo $this->formElement($form->get("button"));
+						echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
+                    }
+                }
+                ?>
+                &nbsp;
+                <?php
+                if ($params['data'] == date('d/m/Y')) {
+                    if ($params['stPedido'] == 'A') {
+                        echo $this->formElement($form->get("atender"));
+                    }
+                }
+                ?>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="tab-pane fade active in" id="searchCliente">
+    <form method="post" id="frmSearchCliente">
+        <input type="hidden" name="nr_maca" value="<?php echo (isset($params['id'])) ? $params['id'] : NULL ?>" >
+        <input type="hidden" name="st_cliente_rapido" value="S" >
+        <input type="hidden" name="nr_pedido" value="<?php echo $params['nr_pedido'] ?>" >
+        <input type="hidden" name="dt_atendimento" value="<?php echo $params['data'] ?>" >
+        <input type="hidden" name="hr_atendimento" value="<?php echo str_pad(str_pad($params['hora'], 2, "0", STR_PAD_RIGHT), 2, "0", STR_PAD_LEFT); ?>:00" >
+        <input type="hidden" name="cd_cliente" value="1" >
+
+        <?php if (!empty($params['nr_pedido'])) { ?>
+            <label class="control-label text-info" style="font-size: large;" for="name">Pedido nº: <?php echo $params['nr_pedido'] ?></label>
+            <br>
+        <?php } ?>
+        <label class="control-label text-info" style="font-size: large;" for="name">Agendamento para <?php echo $params['data'] ?> <?php echo str_pad(str_pad($params['hora'], 2, "0", STR_PAD_RIGHT), 2, "0", STR_PAD_LEFT); ?></label>
+
+        <div class="controls">
+            <div class="col-md-12">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Nome:") ?>
+                </label>
+                <?php $razao = (isset($dados['DS_NOME_RAZAO_SOCIAL'])) ? $dados['DS_NOME_RAZAO_SOCIAL'] : null ?>
+                <?php echo $this->formElement($form->get("ds_nome_razao_social")->setAttribute('value', $razao)) ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Fone 1:") ?>
+                </label>
+                <?php $fone1 = (isset($dados['DS_FONE1'])) ? $dados['DS_FONE1'] : null ?>
+                <?php echo $this->formElement($form->get("ds_fone1")->setAttribute('value', $fone1)) ?>
+            </div>
+
+            <div class="col-md-3">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Fone 2:") ?>
+                </label>
+
+                <?php $fone2 = (isset($dados['DS_FONE2'])) ? $dados['DS_FONE2'] : null ?>
+                <?php echo $this->formElement($form->get("ds_fone2")->setAttribute('value', $fone2)) ?>
+            </div>
+
+            <div class="col-md-3">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Desconto (%):") ?>
+                </label>
+                <input type="text" id="vl_descontoR" readonly="readonly" name="vl_desconto" class="form-control"  data-mask="999,99" placeholder="0,00"
+                       value="<?php isset($dados['VL_DESCONTO']) ? $dados['VL_DESCONTO'] : NULL ?>">
+            </div>
+
+            <div class="col-md-3">
+                <label class="control-label text-info" for="name">
+                    &nbsp;
+                </label>
+                <div class="radio">
+                    <?php $check = ($dados['ST_CLIENTE_CHEGOU'] == 'S') ? 'checked' : NULL; ?>
+                    <?php echo $this->formElement($form->get("st_cliente_chegou")->setAttribute('checked', $check)) ?>
+                    <?php echo utf8_encode("Cliente chegou") ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="col-md-10">
+                <label class="control-label text-info" for="name">
+                    <?php echo utf8_encode("Servi&ccedil;os:") ?>
+                </label>
+                <?php echo $this->formElement($form->get("list_servico")) ?>
+            </div>
+            <div class="col-md-2">
+                <label class="control-label text-info" for="name">
+                    &nbsp;
+                </label>
+                <div>
+                    <button type="button" class="addServico btn btn-default" aria-hidden="true">Incluir</button>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="controls">
+            <div class="col-md-12">
+                <fieldset class="form-group" style="border: solid #cfcfcf 1px;">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="width: 15%;">C&Oacute;DIGO</th>
+                            <th>SERVI&Ccedil;O</th>
+                            <th>VALOR</th>
+                            <th>PROMOÇÃO</th>
+                            <th style="width: 5%;"></th>
+                        </tr>
+                        </thead>
+                        <tbody class="bd-list-servicos">
+                        <?php if (count($servico)):?>
+                            <?php foreach ($servico as $serv) : ?>
+                                <tr>
+                                    <td><?php echo $serv['CD_MERCADORIA'] ?></td>
+                                    <td><?php echo $serv['DS_MERCADORIA'] ?></td>
+                                    <td><?php echo number_format($serv['VL_PRECO_VENDA'], 2, ',', '.') ?></td>
+                                    <td><?php echo number_format($serv['VL_PRECO_VENDA_PROMOCAO'], 2, ',', '.') ?></td>
+                                    <td></td>
+                                    <td><i class="fa fa-trash-o" aria-hidden="true" onclick="javascript:removeitem('<?php echo $serv['CD_MERCADORIA'] ?>');
+                                            $(this).parent().parent().remove();"></i> </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        </tbody>
+                    </table>
+                    <div class="listServicos">
+                        <?php if (count($servico)): ?>
+                            <?php foreach ($servico as $serv) : ?>
+                                <input type="hidden" name="cd_servico[]" value="<?php echo $serv['CD_MERCADORIA'] ?>" />
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="controls">
+            <div class="col-md-12">
+                <label for="" class="control-label text-info"><?php echo utf8_encode("Profissional:") ?></label>
+                <select class="form-control" id="cdFuncionario2" name="cdop">
+                    <option selected="selected" value="">Selecione...</option>
+                    <?php
+                    foreach ($listaFuncionarios as $operador) {
+                        $selected = ($operador["CD_FUNCIONARIO"] == $dados['CD_FUNCIONARIO']) ? "selected='selected'" : "";
+                        echo "<option {$selected} value='{$operador["CD_FUNCIONARIO"]}'>{$operador["CD_FUNCIONARIO"]} - " . utf8_encode($operador["DS_FUNCIONARIO"]) . "</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="col-md-12">
+                <br>
+                <?php echo $this->formElement($form->get("fechar")) ?>
+                &nbsp;
+                <?php
+                if ($params['data'] >= date('d/m/Y')) {
+                    if (isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
+                        echo $this->formElement($form->get("return"));
+                    }
+                }
+                ?>
+                &nbsp;
+                <?php
+                if ($params['data'] >= date('d/m/Y')) {
+                    if (!isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
+                        echo $this->formElement($form->get("submit"));
+						echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
+                    }
+                }
+                ?>
+                &nbsp;
+                <?php
+                if ($params['data'] == date('d/m/Y')) {
+                    if ($params['stPedido'] == 'A') {
+                        echo $this->formElement($form->get("atender"));
+                    }
+                }
+                ?>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+
+
+<div id="divValida" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="divValida" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mySmallModalLabel">Autorização</h5>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="controls">
+                                <div class="col-md-12">
+                                    <label class="control-label text-info" for="c">
+                                        Usu&aacute;rio
+                                    </label>
+                                    <!-- input type="text" id="c" value="" class="form-control" -->
+                                    <select style="width:100%;" required="required" id="c" class="form-control">
+                                        <option value="">Selecione...</option>
+                                        <?php
+                                        if (!empty($listaSupervisor)) {
+                                            echo '<option value="ORANGE">ORANGE</option>';
+                                            foreach ($listaSupervisor as $operador) {
+                                                echo "<option value='" . $operador["DS_LOGIN"] . "'>" . substr(utf8_encode($operador["DS_LOGIN"]), 0, 15) . "</option>";
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="controls">
+                                <div class="col-md-12">
+                                    <label class="control-label text-info" for="v">
+                                        Senha
+                                    </label>
+                                    <input type="password" id="v" value="" class="form-control">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <br />
+                            <div class="controls">
+                                <div class="col-md-12">
+                                    <input type="button" id="btnValidaDesconto" class="btn btn-primary btn" value="Validar" style="display: none;" />
+                                    <input type="button" id="btnValidaCancelamento" class="btn btn-primary btn" value="Validar" style="display: none;" />
+                                    <input type="button" id="btnFecharValidaSenha" class="btn btn-danger btn" value="Fechar" onclick="javascript:$('#divValida').modal('hide');"/>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div id="divClienteAgenda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="divClienteAgenda" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="javascript:$('#divClienteAgenda').modal('hide');">X</span>
+                <h4 class="text-info-modal modalClienteAgenda">AGENDAMENTO CLIENTE</h4>
+            </div>
+            <div id="bodyDivClienteAgenda" class="modal-body"></div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdVlDesconto" value=""/>
+<style type="text/css">
+    /* Input textbox - do not specify a width here, it will be overwritten */
+    .ffb-input
+    {
+        float:left;
+        color:#000; /* must specify along with watermark color */
+        /*height:40px;  required for webkit browsers (Safari, Chrome) */
+    }
+    /* Color of watermark, if present */
+    .ffb-input.watermark { /* added and removed dynamically */
+        color:#888; /* must specify along with input color */
+    }
+    /* Drop-down arrow, with sprited image */
+    .ffb-arrow
+    {
+        float:left;
+        width:17px;
+        height:22px;
+        background-image:url(../img/sel_win7.gif);
+    }
+    .ffb-arrow.out { /* css sprite technique */
+        background-position:0;
+    }
+    .ffb-arrow.over { /* css sprite technique */
+        background-position:-17px 0;
+    }
+    .ffb-arrow.active { /* css sprite technique */
+        background-position:-4px 0;
+    }
+    .ffb-no-results
+    {
+        padding:2px;
+        color:#888;
+        font-style:italic;
+        border-bottom:1px solid #828790;
+    }
+    /* Container for dropdown contents */
+    .ffb {
+        position:absolute; /* this guy's parent div is hard-coded to position:relative */
+        overflow:hidden;
+        border-left:1px solid #828790; /* #7B9EBD for Vista */
+        border-right:1px solid #828790;
+        background-color:#fff; /* Give it a background-color, so it's not transparent */
+    }
+    /* Inner div for dropdown */
+    .ffb .content {
+        overflow:auto;
+    }
+    .ffb .content .row {
+        border-bottom:1px solid #828790;
+        color:#000;
+        height:20px;
+        clear:both;
+    }
+    .ffb-sel {
+        cursor:pointer;
+        cursor:hand;
+        color:#fff !important;
+        background-color:#39f;
+    }
+    .ffb-match {
+        font-weight:bold;
+        padding-left:32px;
+        color:#000;
+    }
+
+    /* Paging */
+    .ffb .paging {
+        vertical-align:middle;
+        border-bottom:1px solid #828790;
+    }
+    .ffb .page, .ffb a.page {
+        font-size:85%;
+        padding:2px;
+        border:solid 1px #339;
+        background-color:#eef;
+        margin:2px;
+    }
+    .ffb .box {
+        width:22px;
+        margin:2px;
+    }
+    .ffb .summary {
+        font-size:85%;
+    }
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    _stclienterapido = '<?php echo $params['stclienterapido']; ?>';
+
+    $('form').submit(function() {
+        if ($('input[name="cd_servico[]"]').val() == undefined) {
+            $('#list_servico').attr('required', 'required');
+            $('#list_servico').val('');
+            return false;
+        }
+    });
+
+    //componete foi alterado - procurar linhas comentadas
+    $(".autocomplete").flexbox('/cliente/buscarcliente', {
+        queryDelay: 800,
+        minChars: 3,
+        paging: {
+            pageSize: 5,
+            summaryTemplate: 'Exibindo {start}-{end} de {total} registros'
+        },
+        width: 450,
+        //                        watermark: 'Informe o nome do cliente',
+        hiddenValue: 'name',
+        initialValue: '<?php echo $razao; ?>',
+        onSelect: function() {
+
+        }
+    });
+
+    $('#ds_nome_razao_social_input').attr('type', 'text');
+
+    $('#vl_desconto').click(function() {
+        $('#btnValidaDesconto').show();
+        $('#btnValidaCancelamento').hide();
+        var inputAttrReadonly = document.getElementById("vl_desconto").getAttribute("readonly");
+        if (inputAttrReadonly == "readonly") {
+            $('#c').val('');
+            $('#v').val('');
+            $('#divValida').modal('show');
+            $('#hdVlDesconto').val('vl_desconto');
+        }
+    });
+
+    $('#vl_descontoR').click(function() {
+        $('#btnValidaDesconto').show();
+        $('#btnValidaCancelamento').hide();
+        var inputAttrReadonly = document.getElementById("vl_descontoR").getAttribute("readonly");
+        if (inputAttrReadonly == "readonly") {
+            $('#c').val('');
+            $('#v').val('');
+            $('#divValida').modal('show');
+            $('#hdVlDesconto').val('vl_descontoR');
+        }
+    });
+
+    $('.closeValidaSenha').click(function() {
+        $('#divValida').modal('hide');
+    });
+
+    $('#btnFecharValidaSenha').click(function() {
+        $('.closeValidaSenha').click();
+    });
+
+    setInterval(function() {
+        $('#ds_nome_razao_social_input').attr('required', 'required');
+        //            $('#ds_nome_razao_social_input').removeClass('ffb-input');
+        $('#ds_nome_razao_social_input').removeAttr('style');
+        $('#ds_nome_razao_social_input').addClass('form-control');
+    }, 200);
+});
+
+$('#btnValidaDesconto').click(function() {
+
+    $.ajax({
+        type: 'get',
+        url: '/index/validasenha',
+        data: {
+            'c': $('#c').val(),
+            'v': $('#v').val()
+            //'v': $.md5($('#v').val())
+        },
+        success: function(data) {
+            var data2 = eval("(" + data + ")");
+            eval(data2);
+            $('#c').val('');
+            $('#v').val('');
+            if (data2.valido === true) {
+                $('#divValida').modal('hide');
+                var idput = $('#hdVlDesconto').val();
+                $('#' + idput).attr('readonly', false);
+                $('#c').val('');
+                $('#v').val('');
+                $('#divValida').modal('hide');
+            }
+            else
+            {
+                var idput = $('#hdVlDesconto').val();
+                $('#' + idput).attr('readonly', true);
+                alert('Não autorizado');
+            }
+        }
+    });
+});
+
+$('#frmHomeCliente .addServico').click(function() {
+    if ($('#frmHomeCliente #cd_servico').val() === '')
+        return false;
+
+    $.ajax({
+        type: 'post',
+        url: '/agenda/recupera-servico-por-codigo',
+        data: {'cd_servico': $('#frmHomeCliente #list_servico').val()},
+        success: function(data) {
+            if (data) {
+                var data2 = eval("(" + data + ")");
+                eval(data2);
+                validaServicoExiste(data2.CD_MERCADORIA, data2.DS_MERCADORIA, data2.VL_PRECO_VENDA, data2.VL_PRECO_VENDA_PROMOCAO, data2.DT_VALIDADE_PROMOCAO);
+            }
+        }
+    });
+});
+
+function validaServicoExiste(co, ds, vl, desc, dtVl)
+{
+    var testeValor = true;
+    if ($("#frmHomeCliente input[name='cd_servico[]']")) {
+        $("#frmHomeCliente input[name='cd_servico[]']").each(function(i, v) {
+            if (v.value == co) {
+                testeValor = false;
+            }
+        });
+    }
+
+    if (testeValor) {
+        $('<input>').attr('type', 'hidden').attr('name', 'cd_servico[]').val(co).appendTo('#frmHomeCliente .listServicos');
+        var bt = '<i class="fa fa-trash-o" aria-hidden="true" onclick="javascript:removeitem(' + co + ');$(this).parent().parent().remove();    "></i>';
+        var td = '<td>' + co + '</td><td>' + ds + '</td><td>' + formatReal(vl) + '</td><td>' + formatReal(desc) + '</td><td>' + bt + '</td>';
+        var tr = '<tr>' + td + '</tr>';
+        $('.bd-list-servicos').append(tr);
+    }
+}
+
+$('#frmSearchCliente .addServico').click(function() {
+    if ($('#frmSearchCliente #cd_servico').val() === '')
+        return false;
+
+    $.ajax({
+        type: 'post',
+        url: '/agenda/recupera-servico-por-codigo',
+        data: {'cd_servico': $('#frmSearchCliente #list_servico').val()},
+        success: function(data) {
+            if (data) {
+                var data2 = eval("(" + data + ")");
+                eval(data2);
+                validaServicoExisteR(data2.CD_MERCADORIA, data2.DS_MERCADORIA, data2.VL_PRECO_VENDA, data2.VL_PRECO_VENDA_PROMOCAO, data2.DT_VALIDADE_PROMOCAO);
+            }
+        }
+    });
+});
+
+function validaServicoExisteR(co, ds, vl, desc, dtVl)
+{
+    var testeValor = true;
+    if ($("#frmSearchCliente input[name='cd_servico[]']")) {
+        $("#frmSearchCliente input[name='cd_servico[]']").each(function(i, v) {
+            if (v.value == co) {
+                testeValor = false;
+            }
+        });
+    }
+
+    if (testeValor) {
+        $('<input>').attr('type', 'hidden').attr('name', 'cd_servico[]').val(co).appendTo('#frmSearchCliente .listServicos');
+        var bt = '<i class="fa fa-trash-o" aria-hidden="true" onclick="javascript:removeitem(' + co + ');$(this).parent().parent().remove();    "></i>';
+        var td = '<td>' + co + '</td><td>' + ds + '</td><td>' + formatReal(vl) + '</td><td>' + formatReal(desc) + '</td><td>' + bt + '</td>';
+        var tr = '<tr>' + td + '</tr>';
+        $('.bd-list-servicos').append(tr);
+    }
+}
+
+function removeitem(e)
+{
+    $("input[name='cd_servico[]']").each(function(i, v) {
+        if (this.value == e) {
+            $(this).remove();
+        }
+    });
+}
+
+function cancelarAgendamento()
+{
+    if (confirm('Deseja cancelar esse agendamento?'))
+    {
+        $('#c').val('');
+        $('#v').val('');
+        $('#btnValidaDesconto').hide();
+        $('#btnValidaCancelamento').show();
+        $('#divValida').modal('show');
+    }
+}
+
+$('.closeDivClienteAgenda').click(function() {
+    $('#divClienteAgenda').modal('hide');
+});
+
+function gravaAtendimento()
+{
+    var arrayServicos = new Array();
+    $('input[name="cd_servico[]"]').each(
+        function() {
+            arrayServicos.push($(this).val());
+        }
+    );
+
+    $.ajax({
+        type: 'get',
+        url: '/agenda/atendecliente',
+        data: {
+            'maca': $("input[name='nr_maca']").val(),
+            'funcionario1': $("#cdFuncionario1").val(),
+            'funcionario2': $("#cdFuncionario2").val(),
+            'data': $("input[name='dt_atendimento']").val(),
+            'hora': $("input[name='hr_atendimento']").val(),
+            'cdservico': $('#list_servico').val(),
+            'cd_cliente': $("input[name='cd_cliente']").val(),
+            'vl_desconto': $("#vl_desconto").val(),
+            'nr_pedido' : $("input[name=nr_pedido]").val(),
+            'cd_servico': arrayServicos
+        },
+        success: function(data) {
+            var data2 = eval("(" + data + ")");
+            eval(data2);
+            if (data2.valido === false) {
+                alert('Ocorreu um erro');
+            }
+            else
+            {
+                window.location = '/agenda/index';
+                //alert('Antedimento realizado.');
+                $('#cadastraClienteAgenda').modal('hide');
+            }
+        }
+    });
+}
+
+function cadastrarCliente()
+{
+    var arrayServicos = new Array();
+    $('input[name="cd_servico[]"]').each(
+        function() {
+            arrayServicos.push($(this).val());
+        }
+    );
+
+    $('#bodyDivClienteAgenda').load('/cliente/agendacadastrar',
+        {
+            modal: 'show',
+            ds_nome_razao_social: $('#ds_nome_razao_social').val(),
+            ds_fone1: $('#ds_fone1').val(),
+            ds_fone2: $('#ds_fone2').val(),
+            maca: $("input[name='nr_maca']").val(),
+            data: $("input[name='dt_atendimento']").val(),
+            hora: $("input[name='hr_atendimento']").val(),
+            cdservico: $('#list_servico').val(),
+            vl_desconto: $("#vl_desconto").val(),
+            nr_pedido : $("input[name=nr_pedido]").val(),
+            cd_servico: arrayServicos,
+            formAction: 'atendecliente'
+        });
+    $('#divClienteAgenda').modal('show');
+}
+
+function atenderAgendamento()
+{
+    if (_stclienterapido == 'S')
+    {
+        if (confirm('Deseja cadastrar o cliente?'))
+        {
+            cadastrarCliente();
+        }
+        else
+        {
+            gravaAtendimento();
+        }
+    }
+    else
+    {
+        gravaAtendimento();
+    }
+}
+
+function alteraSituacao()
+{
+    var url;
+    if ($("input[name=nr_pedido]").val() !== "") {
+        url = '/agenda/situacaoagendamento';
+    } else {
+        url = '/agenda/limpaagendamento';
+    }
+    $.ajax({
+        type: 'get',
+        url: url,
+        data: {
+            cliente : $("input[name='cd_cliente']").val(),
+            maca : $("input[name='nr_maca']").val(),
+            data : $("input[name='dt_atendimento']").val(),
+            hora : $("input[name='hr_atendimento']").val(),
+            nr_pedido : $("input[name=nr_pedido]").val()
+        },
+        success: function(data) {
+            var data2 = eval("(" + data + ")");
+            eval(data2);
+            if (data2.valido == 1) {
+                $('#divValida').modal('hide');
+                alert('Agendamento cancelado');
+                window.location.reload();
+            }
+            else
+            {
+                alert('Ocorreu um erro!');
+            }
+        }
+    });
+}
+
+$('#btnValidaCancelamento').click(function() {
+    $.ajax({
+        type: 'get',
+        url: '/index/validasenha',
+        data: {
+            c: $('#c').val(),
+            v: $('#v').val()
+            //'v': $.md5($('#v').val())
+        },
+        success: function(data) {
+            var data2 = eval("(" + data + ")");
+            eval(data2);
+            $('#c').val('');
+            $('#v').val('');
+            if (data2.valido === true) {
+                alteraSituacao();
+            }
+            else
+            {
+                alert('Não autorizado');
+            }
+        }
+    });
+});
+
+function fecharTela()
+{
+    $('#cadastraClienteAgenda').modal('hide');
+    $('#bodyCadastrarClienteAgenda').html('');
+    window.location.reload();
+}
+
+if (_stclienterapido != '')
+{
+    if (_stclienterapido == 'S')
+    {
+        $('#abaCadastrado').hide().html('');
+        $('#homeCliente').hide().html('');
+        $('#abaRapido').show();
+        $('#searchCliente').show();
+    }
+    else if (_stclienterapido == 'N')
+    {
+        $('#abaCadastrado').show();
+        $('#homeCliente').show();
+        $('#abaRapido').hide().html('');
+        $('#searchCliente').hide().html('');
+    }
+}
+else
+{
+    //$('#homeCliente').attr('disabled', false);
+    //$('#searchCliente').attr('disabled', false);
+}
+
+</script>

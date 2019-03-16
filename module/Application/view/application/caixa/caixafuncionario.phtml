@@ -1,0 +1,117 @@
+<div class="tab-content">
+    <form id="frmCaixaFuncionario" action="/caixa/caixafuncionario" method="post">
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <div class="fluid widget stacked" >
+                        <div class="controls">
+                            <div class="col-md-4">
+                                <label class="control-label text-info" for="name">Caixa:</label>
+                                <select style="width:100%;" required="required" name="nr_caixa" class="form-control">
+                                    <option value="">Selecione...</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label text-info" for="name">Funcionário:</label>
+                                <select style="width:100%;" required="required" name="cd_funcionario" class="form-control">
+                                    <option value="">Selecione...</option>
+                                    <?php
+                                    if (isset($listaFuncionario)) {
+                                        foreach ($listaFuncionario as $operador) {
+                                            echo "<option value='" . $operador["CD_FUNCIONARIO"] . "'>" . substr(utf8_encode($operador["DS_FUNCIONARIO"]), 0, 15) . "</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label text-info" for="name">Data:</label>
+                                <input type="text" name="dt_entrada" value="<?php echo date('d/m/Y') ?>" readonly="readonly" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <br />
+                    <div class="controls">
+                        <div class="col-md-12">
+                            <input type="submit" class="btn btn-primary btn-large" id="btnAbreCaixa" value="Abrir caixa">                            
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    $(document).ready(function() {
+                
+        retorno = function(dado)
+        {
+            if (dado == '') {
+                $("#frmCaixaFuncionario").unbind('submit').submit();
+            } else {                
+                //alert("Foi um caixa aberto no dia " + dado[0].DT_ENTRADA + " para o funcionário "+dado[0].DS_FUNCIONARIO+"!");
+                var msg = '';
+                var url = '';
+                var msgR = '';                
+                if(dado[0].DT_ENTRADA.trim() == $("input[name='dt_entrada']").val())
+                { 
+                    msg = 'Deseja reabir esse caixa?';
+                    url = '/caixa/reaberturacaixa';
+                    msgR = 'Caixa reaberto!';
+                    $('form').attr('action','/caixa/index');
+                }
+                else
+                {
+                    msg = 'Deseja fechar esse caixa?';
+                    url = '/caixa/fechamentocaixa';
+                    msgR = 'Caixa fechado!';
+                    $('form').attr('action','/caixa/caixafuncionario');
+                }
+
+                if(confirm("Foi aberto um caixa no dia " + dado[0].DT_ENTRADA + " para o funcionário "+dado[0].DS_FUNCIONARIO+"!\n\n"+msg+"\n\n\n"))
+                {
+                    $.ajax({
+                            type: 'post',
+                            url: url,
+                            data: {
+                                nr_caixa: $("select[name='nr_caixa']").val(),
+                                dtCaixa : dado[0].DT_ENTRADA,
+                                retorna : true
+                            },
+                            success: function(data) {
+                                alert(msgR);
+                                $("#frmCaixaFuncionario").unbind('submit').submit();
+                            },
+                            cache: false
+                        });
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+                
+        $('#frmCaixaFuncionario').submit(function(e){            
+            e.preventDefault(); 
+            $.ajax({
+                type: 'get',
+                url: '/caixa/validaaberturacaixa',
+                data: {
+                    nrCaixa: $("select[name='nr_caixa']").val(),
+                    cdFunc : $("select[name='cd_funcionario']").val()
+                },
+                success: function(data) {
+                    var data2 = eval("(" + data + ")");
+                    retorno(data2);
+                },
+                cache: false
+            });
+        });
+    });
+</script>

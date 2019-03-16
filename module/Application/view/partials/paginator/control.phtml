@@ -1,0 +1,27 @@
+<div class="paginator paginator-centered">
+	<?php if(isset($this->previous)):?>
+		<a href="javascript:void(0)" onclick="submitThis(<?php echo $this->previous?>);" class="btn ">Anterior</a>
+	<?php endif;?>
+	
+	<?php foreach($this->pagesInRange as $item):?>
+		<?php if($this->current == $item):?>
+			<a href="javascript:void(0)" class="btn btn-danger disabled"><?php echo $item?></a>
+		<?php else:?>
+			<a href="javascript:void(0)" onclick="submitThis(<?php echo $item?>);" class="btn"><?php echo $item?></a>
+		<?php endif;?>
+	<?php endforeach;?>
+	
+	<?php if(isset($this->next)):?>
+		<a href="javascript:void(0)" onclick="submitThis(<?php echo $this->next?>);" class="btn ">Pr&oacute;ximo</a>
+	<?php endif;?>
+</div>
+<script>
+ $(document).ready(function() { 	
+
+    submitThis = function(numPg) {
+		var action = $("#validation-form").attr("action");
+		$("#validation-form").attr("action",action+"?pg="+numPg);
+		$("#btnSubmit").click();
+    }
+ });
+ </script>

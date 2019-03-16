@@ -1,0 +1,318 @@
+<section class="panel panel-default">
+    <div class="main">
+		<div class="row-fluid">
+            <div class="panel-body">
+				<h3 class="tit">Editar Serviço/Mercadoria</h3>
+				<hr />
+				<?php foreach($mercadoria as $dado): ?>
+					<form action="/mercadoria/<?php echo ( @$dado['CD_MERCADORIA'] ? 'editar' : 'cadastrar' ) ?>" method="post">
+						<fieldset>
+							<legend>Informações Básicas</legend>
+							<div class="col-xs-3 col-md-3">
+								<div class="col-xs-6 col-md-6">
+									<div class="col-xs-7 col-md-7">
+										<label>Serviço</label>
+										<input id="servico" type="radio" name="flg_tipo" value="S" <?php if(@$dado['ST_SERVICO' ] <> 'N' ) echo 'checked' ?> onclick="mudaTipo('S')"  onclick="mudaTipo('S')"/>
+									</div>
+								</div>
+								<div class="col-xs-6 col-md-6">
+									<div class="col-xs-7 col-md-7">
+										<label>Mercadoria</label>
+										<input id="mercadoria" type="radio" name="flg_tipo" value="N" <?php if(@$dado['ST_SERVICO' ] == 'N') echo 'checked' ?> onclick="mudaTipo('N')"  onclick="mudaTipo('M')"/>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-7 col-md-7">
+								<label>Descrição: </label>
+								<input class="form-control" type="text" name="MERCADORIA" maxlength="120" value="<?php echo utf8_decode( @$dado['DS_MERCADORIA'] ); ?>" required="required">
+							</div>
+
+							<div class="col-xs-2 col-md-2" id="und_venda">
+								<label>Unidade de Venda: </label>
+								<input class="form-control" type="text" name="UNIDADE_VENDA" maxlength="255" value="<?php echo  ( @$dado['CD_UNIDADE_VENDA'] == '' ? 'UN' : @$dado['CD_UNIDADE_VENDA'] ) ?>">
+							</div>
+						</fieldset>
+
+						<fieldset>
+							<legend>Preços</legend>
+							<div class="col-xs-3 col-md-3" id="preco_compra">
+								<label>Preço de compra: </label>
+								<input class="form-control" type="text" name="vl_compra" maxlength="255" value="<?php echo ( @$dado['VL_PRECO_COMPRA'] ? number_format(@$dado['VL_PRECO_COMPRA'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+							</div>
+							<div class="col-xs-3 col-md-3">
+								<label>Preço de venda: </label>
+								<input class="form-control" type="text" name="vl_venda" maxlength="255" value="<?php echo ( @$dado['VL_PRECO_VENDA'] ? number_format(@$dado['VL_PRECO_VENDA'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+							</div>
+							<!--<div class="col-xs-3 col-md-3">
+								<label>Percentual: </label>
+								<input class="form-control" type="text" name="vl_percentual" maxlength="255" >
+							</div>-->
+						</fieldset>
+
+						<fieldset>
+							<legend>Informações Fiscais</legend>
+							<div class="col-xs-4 col-md-4">
+								<label>CFOP Interno</label>
+								<select name="CFOP_INTERNO" class="form-control" required="required">
+									<option VALUE="">Selecione...</option>
+									<?php foreach( $cfop as $res ){
+										echo '<option value="'.$res['CD_NATUREZA_OPERACAO'].'"';
+										if($res['CD_NATUREZA_OPERACAO'] == @$dado['DS_CFOP_INTERNO']) echo ' selected ';
+										echo '>'.$res['CD_NATUREZA_OPERACAO'] . ' - ' . utf8_encode( $res['DS_NATUREZA_OPERACAO'] ).'</option>';
+									}?>
+								</select>
+							</div>
+							<div class="col-xs-4 col-md-4">
+								<label>CFOP Externo</label>
+								<select name="CFOP_EXTERNO" class="form-control" required="required">
+									<option VALUE="">Selecione...</option>
+									<?php foreach( $cfop as $res ){
+										echo '<option value="'.$res['CD_NATUREZA_OPERACAO'].'"';
+										if($res['CD_NATUREZA_OPERACAO'] == @$dado['DS_CFOP_EXTERNO']) echo ' selected ';
+										echo '>'.$res['CD_NATUREZA_OPERACAO'] . ' - ' . utf8_encode( $res['DS_NATUREZA_OPERACAO'] ).'</option>';
+									}?>
+								</select>
+							</div>
+							<!--<div class="col-xs-4 col-md-4" id="classFiscal">
+								<label>Classificação Fiscal</label>
+								<select name="" class="form-control">
+									<option>Selecione...</option>
+								</select>
+							</div>-->
+							<!-------------------------------->
+							<div class="col-xs-4 col-md-4" id="div_csosn">
+								<label>CSOSN</label>
+								<select class="form-control" name="CSOSN"  >
+									<option value="">Selecione...</option>
+									<option value="102" <?php if(@$dado['DS_CSOSN'] == '102') echo 'selected'; ?>>Tributada pelo Simples Nacional sem permissão de crédito</option>
+									<option value="103" <?php if(@$dado['DS_CSOSN'] == '103') echo 'selected'; ?>>Isenção do ICMS no Simples Nacional para faixa de receita bruta</option>
+									<option value="300" <?php if(@$dado['DS_CSOSN'] == '300') echo 'selected'; ?>>Imune</option>
+									<option value="400" <?php if(@$dado['DS_CSOSN'] == '400') echo 'selected'; ?>>Não tributada pelo Simples Nacional </option>
+								</select>
+							</div>
+							<div class="col-xs-4 col-md-4">
+								<label>NCM</label>
+								<input class="form-control" type="text" name="NCM" maxlength="255" value="<?php echo @$dado['DS_NCM']; ?>" required="required">
+							</div>
+							<div class="col-xs-3 col-md-3" id="div_cest">
+								<label>CEST</label>
+								<input class="form-control" type="text" name="CEST" maxlength="255" value="<?php echo @$dado['CEST']; ?>">
+							</div>
+							<div class="col-xs-3 col-md-3" id="icms_interno">
+								<label>ICMS Interno</label>
+								<input class="form-control" type="text" name="ICMS_INTERNO" maxlength="255" value="<?php echo @$dado['NR_PERCENTUAL_ICMS_INTERNO']; ?>">
+							</div>
+							<div class="col-xs-3 col-md-3" id="icms_externo">
+								<label>ICMS Externo</label>
+								<input class="form-control" type="text" name="ICMS_EXTERNO" maxlength="255" value="<?php echo @$dado['NR_PERCENTUAL_ICMS_EXTERNO']; ?>">
+							</div>
+							<!------------------------------->
+							<div class="col-xs-4 col-md-4" id="icms_modBC">
+								<label>Modalidade de determinação da BC do ICMS </label>
+								<select class="form-control" name="ICMS_modBC"  >
+									<option value="">Selecione...</option>
+									<option value="0" <?php if(@$dado['ICMS_modBC'] == '0') echo 'selected'; ?>>Margem Valor Agregado (%)</option>
+									<option value="1" <?php if(@$dado['ICMS_modBC'] == '1') echo 'selected'; ?>>Pauta</option>
+									<option value="2" <?php if(@$dado['ICMS_modBC'] == '2') echo 'selected'; ?>>Preço Tabelado Máx. (Valor)</option>
+									<option value="3" <?php if(@$dado['ICMS_modBC'] == '3') echo 'selected'; ?>>Valor da Operação</option>
+								</select>
+							</div>
+
+							<!--<div class="col-xs-3 col-md-3">
+								<label>PIS</label>
+								<input class="form-control" type="text" name="pis" maxlength="255" >
+							</div>-->
+							<div class="col-xs-3 col-md-3" id="cListServ">
+								<label>Cod. Lista Serviço (Só números)</label>
+								<input class="form-control" type="number" name="cListServ" min="0001" max="9999" value="<?php echo @$dado['CLISTSERV']; ?>">
+							</div>
+							<div class="col-xs-3 col-md-3">
+								<label>Substituição Tributaria MVA %</label>
+								<input class="form-control" type="number" name="stMva" maxlength="255" value="<?php echo ( @$dado['NR_MVA'] ? number_format(@$dado['NR_MVA'],2, '.', '') : '0.00' ); ?>">
+							</div>
+							<!------------------------------->
+							<div class="col-xs-12 col-md-12" id="icmsst">
+								<label>Situação Tributaria</label>
+								<select name="situacaoTributaria" class="form-control">
+									<option VALUE="">Selecione...</option>
+									<option value="00" <?php if( @$dado['ICMS_CST'] == '00') echo 'selected';?>>00 - Tributada integralmente</option>
+									<!--<option value="10" <?php if( @$dado['ICMS_CST'] == '10') echo 'selected';?>>10 - Tributada e com cobrança do ICMS por substituição</option>
+									<option value="20" <?php if( @$dado['ICMS_CST'] == '20') echo 'selected';?>>20 - Tributação com redução de base de cálculo</option>
+									<option value="30" <?php if( @$dado['ICMS_CST'] == '30') echo 'selected';?>>30 - Tributação Isenta ou não tributada e com cobrança do ICMS por substituição tributária</option>
+									<option value="40" <?php if( @$dado['ICMS_CST'] == '40') echo 'selected';?>>40 - Tributação Isenta, Não tributada ou Suspensão</option>
+									<option value="51" <?php if( @$dado['ICMS_CST'] == '51') echo 'selected';?>>51 - Tributação com Diferimento (a exigência do preenchimento das informações do ICMS diferido fica a critério de cada UF)</option>
+									<option value="60" <?php if( @$dado['ICMS_CST'] == '60') echo 'selected';?>>60 - Tributação ICMS cobrado anteriormente por substituição tributária</option>
+									<option value="70" <?php if( @$dado['ICMS_CST'] == '70') echo 'selected';?>>70 - Tributação ICMS com redução de base de cálculo e cobrança do ICMS por substituição tributária</option>-->
+									<option value="90" <?php if( @$dado['ICMS_CST'] == '90') echo 'selected';?>>90 - Tributação ICMS: Outros </option>
+								</select>
+							</div>
+							<div class="col-xs-6 col-md-6" id="indIncentivo">
+								<label>Indicador de Incentivo ISS</label>
+								<select name="indIncentivo" class="form-control">
+									<option value="">Selecione</option>
+									<option value="1" <?php if( @$dado['ISSQN_indIncentivo'] == '1') echo 'selected';?>>Sim</option>
+									<option value="2" <?php if( @$dado['ISSQN_indIncentivo'] == '2') echo 'selected';?>>Não</option>
+								</select>
+							</div>
+							<div class="col-xs-9 col-md-9" id="div_indIss">
+								<label>Indicador de ISS</label>
+								<select name="indIss" id="indIss" class="form-control">
+									<option value="">Selecione</option>
+									<option value="1" <?php if( @$dado['ISSQN_indISS'] == '1') echo 'selected';?>>Exigível</option>
+									<option value="2" <?php if( @$dado['ISSQN_indISS'] == '2') echo 'selected';?>>Não Incidência</option>
+									<option value="3" <?php if( @$dado['ISSQN_indISS'] == '3') echo 'selected';?>>Isenção</option>
+									<option value="4" <?php if( @$dado['ISSQN_indISS'] == '4') echo 'selected';?>>Exportação</option>
+									<option value="5" <?php if( @$dado['ISSQN_indISS'] == '5') echo 'selected';?>>Imunidade</option>
+									<option value="6" <?php if( @$dado['ISSQN_indISS'] == '6') echo 'selected';?>>Exigibilidade Suspensa por Decisão Judicial</option>
+									<option value="7" <?php if( @$dado['ISSQN_indISS'] == '7') echo 'selected';?>>Exigibilidade Suspensa por Processo Administrativo</option>
+								</select>
+							</div>
+
+							<div class="col-xs-3 col-md-3" id="iss">
+								<label>ISS (%)</label>
+								<input class="form-control" type="text" name="vl_iss" maxlength="255" value="<?php echo ( @$dado['VL_ISS'] ? number_format(@$dado['VL_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+							</div>
+
+							<div class="col-xs-3 col-md-3" id="retiss">
+								<label>Retenção ISS (%)</label>
+								<input class="form-control" type="number" name="VL_RET_ISS" maxlength="255" value="<?php echo ( @$dado['VL_RET_ISS'] ? number_format(@$dado['VL_RET_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+							</div>
+
+							<div class="col-xs-4 col-md-4" id="ipicst">
+								<label>Situação Tributaria IPI</label>
+								<select name="ipi_cst" class="form-control">
+									<option value="">Selecione</option>
+									<option value="00">Entrada com recuperação de crédito </option>
+									<option value="49">Outras entradas</option>
+									<option value="50">Saída tributada</option>
+									<option value="99">Outras saídas</option>
+								</select>
+							</div>
+							<div class="col-xs-3 col-md-3" id="ipi">
+								<label>IPI</label>
+								<input class="form-control" type="number" name="nr_ipi" maxlength="255" value="<?php echo ( @$dado['NR_IPI'] ? number_format(@$dado['NR_IPI'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+							</div>
+							<div class="col-xs-5 col-md-5" id="icms_org">
+								<label>Origem</label>
+								<select name="icms_orgiem" class="form-control">
+									<option VALUE="">Selecione...</option>
+									<option VALUE="0" <?php if( @$dado['ICMS_Orig'] == '0') echo 'selected';?>>0 - Nacional</option>
+									<option VALUE="1" <?php if( @$dado['ICMS_Orig'] == '1') echo 'selected';?>>1 - Estrangeira - Importação direta</option>
+									<option VALUE="2" <?php if( @$dado['ICMS_Orig'] == '2') echo 'selected';?>>2 - Estrangeira - Adquirida no mercado interno</option>
+									<option VALUE="3" <?php if( @$dado['ICMS_Orig'] == '3') echo 'selected';?>>3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%</option>
+									<option VALUE="4" <?php if( @$dado['ICMS_Orig'] == '4') echo 'selected';?>>4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes</option>
+									<option VALUE="5" <?php if( @$dado['ICMS_Orig'] == '5') echo 'selected';?>>5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40</option>
+									<option VALUE="6" <?php if( @$dado['ICMS_Orig'] == '6') echo 'selected';?>>6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural</option>
+									<option VALUE="7" <?php if( @$dado['ICMS_Orig'] == '7') echo 'selected';?>>7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante lista CAMEX e gás natural</option>
+									<option VALUE="8" <?php if( @$dado['ICMS_Orig'] == '8') echo 'selected';?>>8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%</option>
+								</select>
+							</div>
+							<div class="col-xs-6 col-md-6">
+							<label>Situação Tributaria PIS</label>
+							<select name="stPis" class="form-control" REQUIRED>
+								<option VALUE="">Selecione...</option>
+								<option VALUE="01" <?php if( @$dado['PIS_CST'] == '01') echo 'selected';?>>01 - Operação Tributável (base de cálculo = valor da operação alíquota normal (cumulativo/não cumulativo))</option>
+								<option VALUE="02" <?php if( @$dado['PIS_CST'] == '02') echo 'selected';?>>02 - Operação Tributável (base de cálculo = valor da operação (alíquota diferenciada))</option>
+								<option VALUE="03" <?php if( @$dado['PIS_CST'] == '03') echo 'selected';?>>03 - Operação Tributável (base de cálculo = quantidade vendida x alíquota por unidade de produto)</option>
+								<option VALUE="04" <?php if( @$dado['PIS_CST'] == '04') echo 'selected';?>>04 - Operação Tributável (tributação monofásica (alíquota zero))</option>
+								<option VALUE="05" <?php if( @$dado['PIS_CST'] == '05') echo 'selected';?>>05 - Operação Tributável (Substituição Tributária)</option>
+								<option VALUE="06" <?php if( @$dado['PIS_CST'] == '06') echo 'selected';?>>06 - Operação Tributável (alíquota zero)</option>
+								<option VALUE="07" <?php if( @$dado['PIS_CST'] == '07') echo 'selected';?>>07 - Operação Isenta da Contribuição</option>
+								<option VALUE="08" <?php if( @$dado['PIS_CST'] == '08') echo 'selected';?>>08 - Operação Sem Incidência da Contribuição</option>
+								<option VALUE="09" <?php if( @$dado['PIS_CST'] == '09') echo 'selected';?>>09 - Operação com Suspensão da Contribuição</option>
+							</select>
+						</div>
+						<div class="col-xs-6 col-md-6">
+							<label>Situação Tributaria COFINS</label>
+							<select name="stCofins" class="form-control" REQUIRED>
+								<option VALUE="">Selecione...</option>
+								<option VALUE="01" <?php if( @$dado['COFINS_CST'] == '01') echo 'selected';?>>01 - Operação Tributável (base de cálculo = valor da operação alíquota normal (cumulativo/não cumulativo))</option>
+								<option VALUE="02" <?php if( @$dado['COFINS_CST'] == '02') echo 'selected';?>>02 - Operação Tributável (base de cálculo = valor da operação (alíquota diferenciada))</option>
+								<option VALUE="03" <?php if( @$dado['COFINS_CST'] == '03') echo 'selected';?>>03 - Operação Tributável (base de cálculo = quantidade vendida x alíquota por unidade de produto)</option>
+								<option VALUE="04" <?php if( @$dado['COFINS_CST'] == '04') echo 'selected';?>>04 - Operação Tributável (tributação monofásica, alíquota zero)</option>
+								<option VALUE="05" <?php if( @$dado['COFINS_CST'] == '05') echo 'selected';?>>05 - Operação Tributável (Substituição Tributária)</option>
+								<option VALUE="06" <?php if( @$dado['COFINS_CST'] == '06') echo 'selected';?>>06 - Operação Tributável (alíquota zero)</option>
+								<option VALUE="07" <?php if( @$dado['COFINS_CST'] == '07') echo 'selected';?>>07 - Operação Isenta da Contribuição</option>
+								<option VALUE="08" <?php if( @$dado['COFINS_CST'] == '08') echo 'selected';?>>08 - Operação Sem Incidência da Contribuição</option>
+								<option VALUE="09" <?php if( @$dado['COFINS_CST'] == '09') echo 'selected';?>>09 - Operação com Suspensão da Contribuição</option>
+							</select>
+						</div>
+							<!-------------------------------------->
+
+						</fieldset>
+
+						<!------------ HIDDENS --------------------------------->
+						<input type="hidden" name="CD_MERCADORIA" value="<?php echo @$dado['CD_MERCADORIA']; ?>"/>
+
+						<div class="controls">
+							<div class="col-md-12">&nbsp;</div>
+							<div class="btn-group btn-group-justified col-md-12">
+								<div class="col-md-9">&nbsp;</div>
+								<div class="col-md-3">
+									<button type="submit" class="btn btn-primary">
+										Salvar
+									</button>
+									<button type="button" class="btn btn-default">
+										Cancelar
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</div>
+</section>
+<script>
+	window.onload = function(){
+		if( document.getElementById('servico').checked ){
+			mudaTipo('S');
+		}else{
+			mudaTipo('M');
+		}
+	}
+	function mudaTipo( tipo ){
+		if( tipo == 'S' ){
+			document.getElementById('icms_interno'	).style.display = 'none';
+			document.getElementById('icms_externo'	).style.display = 'none';
+			document.getElementById('und_venda'		).style.display	= 'none';
+			document.getElementById('preco_compra'  ).style.display	= 'none';
+			document.getElementById('icms_org'  	).style.display	= 'none';
+			document.getElementById('ipi'  			).style.display	= 'none';
+			document.getElementById('ipicst'  		).style.display	= 'none';
+			document.getElementById('icmsst'  		).style.display	= 'none';
+			document.getElementById('icms_modBC'  	).style.display	= 'none';
+			document.getElementById('div_cest'  	).style.display	= 'none';
+			document.getElementById('div_csosn'  	).style.display	= 'none';
+
+			document.getElementById('cListServ'		).style.display	= 'block';
+			document.getElementById('iss'			).style.display	= 'block';
+			document.getElementById('indIncentivo'	).style.display	= 'block';
+			document.getElementById('div_indIss'	).style.display = 'block';
+			document.getElementById('retiss'		).style.display = 'block';
+
+			document.getElementById("indIss").required = true;
+		}else{
+			document.getElementById('icms_interno'	).style.display	= 'block';
+			document.getElementById('icms_externo'	).style.display	= 'block';
+			document.getElementById('und_venda'		).style.display = 'block';
+			document.getElementById('preco_compra'	).style.display = 'block';
+			document.getElementById('ipi'			).style.display = 'block';
+			document.getElementById('icms_org'		).style.display = 'block';
+			document.getElementById('ipicst'		).style.display = 'block';
+			document.getElementById('icmsst'		).style.display = 'block';
+			document.getElementById('icms_modBC'	).style.display = 'block';
+			document.getElementById('div_cest'		).style.display = 'block';
+			document.getElementById('div_csosn'		).style.display = 'block';
+
+			document.getElementById('cListServ'		).style.display = 'none';
+			document.getElementById('iss'			).style.display = 'none';
+			document.getElementById('indIncentivo'	).style.display = 'none';
+			document.getElementById('div_indIss'	).style.display = 'none';
+			document.getElementById('retiss'		).style.display = 'none';
+
+			document.getElementById("indIss").required = false;
+		}
+	}
+</script>

@@ -1,0 +1,247 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <h3>Contas a Receber</h3>
+                </div>
+                <div class="widget-content">
+                <div class="widget-content">
+
+                <form class="form-horizontal" id="validation-form" action="/contas-receber/pesquisa" novalidate="novalidate" method="post" role="form">
+
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="text-info">Loja</label>
+                            <input type="text" class="form-control" value="<?php echo $loja['ds_loja'] ?>" readonly="readonly"/>
+                            <input type="hidden" id="CD_LOJA" name="CD_LOJA" class="form-control" value="<?php echo $loja['cd_loja'] ?>" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="control-label text-info" for="name">Vendedor</label>
+                            <select name="CD_FUNCIONARIO" id="CD_FUNCIONARIO" class="form-control">
+                                <option value="">Selecione...</option>
+                                <?php if($listaFuncionario):?>
+                                    <?php foreach ($listaFuncionario as $funcionario):?>
+                                        <option value="<?php  echo $funcionario['CD_FUNCIONARIO'];?>"<?php if($post['CD_FUNCIONARIO'] == $funcionario['CD_FUNCIONARIO'] ) echo  'selected="selected"' ?>>
+                                            <?php echo $funcionario['DS_FUNCIONARIO'] ?>
+                                        </option>
+                                    <?php endforeach ?>
+                                <?php endif ?>
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="controls">
+                        <div class="col-md-4">
+                            <label class="control-label text-info" for="name"><?php echo utf8_encode("Nome do Cliente") ?></label>
+                            <input name="DS_NOME_RAZAO_SOCIAL" id="DS_NOME_RAZAO_SOCIAL" class="form-control" value="<?php echo $post['DS_NOME_RAZAO_SOCIAL']?>" maxlength="255" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-4">
+                            <label class="control-label text-info" for="nr_cgc_cpf"><?php echo utf8_encode("CPF / CNPJ") ?></label>
+                            <input name="NR_CGF_CPF" id="NR_CGF_CPF" class="form-control" value="<?php echo $post['NR_CGF_CPF']?>" maxlength="255"/>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Faixa de Valores</label>
+                            <input id="minValor" name="minValor" class="dataP form-control" value="<?php echo $post['minValor']?>" maxlength="10" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">&nbsp;</label>
+                            <input id="maxValor" name="maxValor" class="dataP form-control" value="<?php echo $post['maxValor']?>" maxlength="10" />
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="controls">
+                        <div class="col-md-4">
+                            <label class="control-label text-info" for="name">Tipo de pagamento</label>
+                            <select name="CD_TIPO_PAGAMENTO" id="CD_TIPO_PAGAMENTO" class="form-control">
+                                <option value="">Selecione...</option>
+                                <?php if($listaPagamento):?>
+                                    <?php foreach ($listaPagamento as $pagamento):?>
+                                        <option value="<?php echo $pagamento['CD_TIPO_PAGAMENTO'] ?>"
+                                            <?php if($post['CD_TIPO_PAGAMENTO'] == $pagamento['CD_TIPO_PAGAMENTO'] ) echo  'selected="selected"' ?> >
+                                            <?php echo utf8_encode($pagamento['DS_TIPO_PAGAMENTO']) ?>
+                                        </option>
+                                    <?php endforeach ?>
+                                <?php endif ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-4">
+                            <label class="control-label text-info">Nome do Emissor</label>
+                                <input name="DS_EMISSOR" id="DS_EMISSOR" class="form-control" value="<?php echo $post['DS_EMISSOR']?>" maxlength="255"/>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="control-label text-info">Número NF</label>
+                            <input id="NR_NOTA" name="NR_NOTA" class="dataP form-control" value="<?php echo $post['NR_NOTA']?>" maxlength="10" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Número Doc</label>
+                            <input id="NR_DOCUMENTO_CR" name="NR_DOCUMENTO_CR" class="dataP form-control" value="<?php echo $post['NR_DOCUMENTO_CR']?>" maxlength="10" />
+                        </div>
+                    </div>
+                    <br>
+                    <div class="controls">
+                        <div class="col-md-4" style="padding-right:0px;">
+                            <label class="control-label text-info" for="name">Período</label>
+                            <br><input type="radio" name="rdVencimento" value="0" class="rdAusencia form-vertical" <?php if($post['rdVencimento'] == '0' ) echo  'checked="checked"' ?>>
+                            Vencimento
+                            &nbsp;<input type="radio" name="rdVencimento" value="1" class="rdAusencia form-vertical" <?php if($post['rdVencimento'] == '1' ) echo  'checked="checked"' ?>>
+                            Lançamento
+                            <div class="controls">
+                                <div class="col-md-6" style="padding-left:0px;">
+                                    <input id="dtIni" name="dtIni" class="dataP form-control" value="<?php echo $post['dtIni']?>" maxlength="10" />
+                                </div>
+                                <div class="col-md-6" style="padding-left:3px;">
+                                    <input id="dtFim" name="dtFim" class="dataP form-control" value="<?php echo $post['dtFim']?>" maxlength="10" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="controls">
+                        <div class="col-md-4" style="padding-right:0px;">
+                            <label class="control-label text-info" for="name">Apenas</label>
+                            <br><input type="radio" name="rdApenas" value="0" class="rdAusencia form-vertical"  <?php if($post['rdApenas'] == '0' ) echo  'checked="checked"' ?>>
+                            Todos
+                            <br><input type="radio" name="rdApenas" value="1" class="rdAusencia form-vertical" <?php if($post['rdApenas'] == '1' ) echo  'checked="checked"' ?>>
+                            Baixados
+                            <br><input type="radio" name="rdApenas" value="2" class="rdAusencia form-vertical" <?php if($post['rdApenas'] == '2' ) echo  'checked="checked"' ?>>
+                            Abertos
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-sm-12">&nbsp;</div>
+                        <div class="btn-group btn-group col-sm-12">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default voltar">
+                                    <i class="i i-back"></i>
+                                    Limpar
+                                </button>
+                            </div>
+                            <div class="btn-group">
+                                <button type="submit" id="btnSubmit" class="btn btn-primary pesquisar">
+                                    <i class="i i-search"></i>
+                                    Pesquisar
+                                </button>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                </form>
+
+                    <div class="row-fluid" id="result">
+                        <div class="widget stacked" >
+                            <div class="controls">
+                                <div class="col-sm-12">
+                                    <button id="btnNovo" class="btn btn-success" style="float:right; margin-top:5px; margin-right:5px;">
+                                        <i class="icon-plus icon-white"></i>
+                                         + Adicionar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-striped m-b-none" data-ride="datatables">
+                                    <thead>
+                                    <tr >
+                                        <th nowrap>Doc/Pedido</th>
+                                        <th nowrap>Nota Fiscal</th>
+                                        <th nowrap>Cliente</th>
+                                        <th nowrap>Lançamento</th>
+                                        <th nowrap>Vencimento</th>
+                                        <th nowrap>Valor</th>
+                                        <th nowrap>Tipo Pagamento</th>
+                                        <th nowrap>Opcao</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if (count($contasReceber)) : ?>
+                                        <?php foreach ($contasReceber as $contaReceber): ?>
+                                          <tr>
+                                                <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
+                                                <td align="left"><?php echo $contaReceber->NR_DOCUMENTO_CR ?></td>
+                                                <td align="left"><?php echo $contaReceber->NR_NOTA ?></td>
+                                                <td align="left"><?php echo $contaReceber->CD_CLIENTE.' - '.utf8_encode($contaReceber->DS_NOME_RAZAO_SOCIAL) ?></td>
+                                                <td align="left"><?php  $date = new DateTime($contaReceber->EMISSAO); echo $date->format('d-m-y'); ?> </td>
+                                                <td align="left"><?php $date = new DateTime($contaReceber->DT_VENCIMENTO); echo $date->format('d-m-y'); ?> </td>
+                                                <td align="left"><?php echo number_format($contaReceber->VL_DOCUMENTO,2,",",".") ?></td>
+                                                <td align="center"><?php echo utf8_encode($contaReceber->DS_TIPO_PAGAMENTO) ?></td>
+                                                <td  align="center">
+                                                      <a href="/contas-receber/editar?id=<?php echo $contaReceber->NR_LANCAMENTO_CR ?>" ><i class="fa fa-pencil"></i></a> <!--|
+                                            <a href="/cliente/remover?id=<?php echo $cliente->CD_CLIENTE ?>" ><i class="fa fa-trash-o"></i></a>-->
+                                                </td>
+                                                </th>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th nowrap>Doc/Pedido</th>
+                                        <th nowrap>Nota Fiscal</th>
+                                        <th nowrap>Cliente</th>
+                                        <th nowrap>Lançamento</th>
+                                        <th nowrap>Vencimento</th>
+                                        <th nowrap>Valor</th>
+                                        <th nowrap>Tipo pagamento</th>
+                                        <th nowrap>Opcao</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                <?php if($contasReceber) echo $this->paginationControl($contasReceber, 'Sliding', 'partials/paginator/control.phtml') ?>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#dtIni').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+        $('#dtFim').datepicker({format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            todayBtn: "linked"});
+
+        $("#btnNovo").click(function() {
+            window.location = "/contas-receber/cadastrar";
+        });
+
+        $('.voltar').click(function() {
+            $('#CD_FUNCIONARIO').val('');
+            $('#DS_NOME_RAZAO_SOCIAL').val('');
+            $('#NR_CGF_CPF').val('');
+            $('#minValor').val('');
+            $('#maxValor').val('');
+            $('#CD_TIPO_PAGAMENTO').val('');
+            $('#DS_EMISSOR').val('');
+            $('#NR_NOTA').val('');
+            $('#NR_DOCUMENTO_CR').val('');
+            $('#dtIni').val('');
+            $('#dtFim').val('');
+        });
+    });
+</script>

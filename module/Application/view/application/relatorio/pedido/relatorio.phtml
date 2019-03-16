@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>Relat&oacute;rio</title>
+    </head>
+    <body>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="8%" align="left">
+                    <?php echo @$this->logo ?>
+                </td>
+                <td width="77%" align="left">
+                    <b><?php echo htmlentities(@$this->dsLoja); ?></b><br>
+                    Sistema de Gest&atilde;o Empresarial <?php //echo VERSAO_GESTAO_EMPRESARIAL ?><br>
+                    <b>RELAT&oacute;RIO DE PEDIDO</b>
+                </td>
+                <td width="15%" align="right">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><hr></td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+            <tr>
+                <td colspan="6" >
+                    Loja: 
+                    <hr> 
+                </td>
+            </tr>
+            <tr>
+                <td>Nº Pedido</td>
+                <td>Data Pedido</td>
+                <td>Cod. Cliente</td>
+                <td>Total Bruto</td>
+                <td>Total Liquido</td>
+            </tr>
+                <?php foreach ($lista as $pedido): ?>
+                    <tr>
+                        <td><?php echo $pedido['NR_PEDIDO'] ?></td>
+                        <td><?php echo datE('d/m/y', strtotime($pedido['DT_PEDIDO'])); ?></td>
+                        <td><?php echo $pedido['CD_CLIENTE'] ?></td>
+                        <td><?php echo number_format($pedido['VL_TOTAL_BRUTO'],2,",",".") ?></td> <?php $totalPedRec = $totalPedRec + $pedido['VL_TOTAL_BRUTO'] ;?>
+                        <td><?php echo number_format($pedido['VL_TOTAL_LIQUIDO'],2,",",".") ?></td><?php $totalPedRec = $totalPedRec + $pedido['VL_TOTAL_LIQUIDO'] ;?>
+                    </tr>
+                <?php endforeach; ?>
+            <tr><td></td></tr><tr class="success">
+                <td>Total</td>
+                <td><?php echo number_format($totalPedRec,2,",",".") ?></td>
+            </tr>
+        </table>
+    </body>
+</html>

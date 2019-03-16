@@ -1,0 +1,565 @@
+<script type="text/javascript" src="/js/orangeweb/pedido/orcamento.js"></script>
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <h3>Pedido de Venda</h3>
+                </div>
+
+                <form id="formPedido" method="post" role="form">
+                    <div class="controls">
+                        <div class="col-md-5">
+                            <label class="text-info">Loja</label>
+                            <input type="text" class="form-control" name="ds_loja" id="ds_loja" value="<?php echo $arrLoja['ds_loja'] ?>" readonly="readonly"/>
+                            <input type="hidden" class="form-control" name="cd_loja" id="cd_loja" value="<?php echo $arrLoja['cd_loja'] ?>" />
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="text-info">N.o Pedido</label>
+                            <input type="text" name="nu_pedido" id="nu_pedido" class="form-control" placeholder="" value="<?php echo ($nr_pedido) ? $nr_pedido : NULL ?>"/>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-3">
+                            <label class="text-info">Data</label>
+                            <input type="text" name="dt_pedido" id="dt_pedido" class="form-control datepicker-input" data-date-format="dd/mm/yyyy"/>
+
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="text-info">Livro</label>
+                            <input type="text" name="nu_livro" id="nr_livro" class="form-control" value="1" readonly/>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-4">
+                            <label class="text-info">Tipo Mercadoria/Seção</label>
+                            <select class="form-control" name="cd_tipo_mercadoria" id="cd_tipo_mercadoria">
+                                <option value="">Selecione</option>
+                                <?php foreach ($arrMercadoria as $mercadoria): ?>
+                                <option value="<?php echo $mercadoria['CD_TIPO_MERCADORIA'] ?>"><?php echo utf8_encode(trim($mercadoria['DS_TIPO_MERCADORIA'])) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control">
+                        <div class="col-md-4">
+                            <label class="text-info" >Representante / Vendedor</label>
+                            <select class="form-control" name="cd_funcionario" id="cd_funcionario">
+                                <option value="">Selecione</option>
+                                <?php foreach ($arrOperador as $funcionario): ?>
+                                    <option value="<?php echo $funcionario['CD_FUNCIONARIO'] ?>"><?php echo $funcionario['DS_FUNCIONARIO'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                    <div class="controls">
+                        <div class="col-md-4">
+                            <label class="text-info">Prazo Tabela de Preços</label>
+                            <select class="form-control" name="cd_prazo" id="cd_prazo">
+                                <option value="">Selecione</option>
+                                <?php foreach ($arrPrazo as $prazo): ?>
+                                    <option value="<?php echo trim($prazo['CD_PRAZO']) ?>"><?php echo trim($prazo['DS_PRAZO']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-6">
+                            <label class="text-info" >Cliente</label>
+                            <div class="input-group">
+                                <input type="text" name="ds_razao_social" id="ds_razao_social" class="form-control" value="CONSUMIDOR" required="required" />
+                                <input type="hidden" name="cd_cliente" id="cd_cliente" value="1" />
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Cliente<span class="caret"></span></button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="#">Cliente Simplificado</a></li>
+                                        <li><a href="#">Pesquisar</a></li>
+                                        <li><a href="#">Detalhes do Cliente</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-4">
+                            <label class="text-info">Tipo de Pedido</label>
+                            <select class="form-control" name="cd_tipo_pedido" id="cd_tipo_pedido">
+                                <?php foreach ($arrTipoPedido as $k => $v): ?>
+                                    <option value="<?php echo $k ?>"><?php echo $v ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-md-2">
+                            <label class="text-info">&nbsp;</label>
+                            <div>
+                                <button type="button" class="btn btn-info" id="btnLista">
+                                    <i class="i i-list2"></i>
+                                    Lista
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="col-sm-12">
+                            <hr>
+                            <button type="button" class="btn btn-primary submit">
+                                <i class="i i-search"></i>
+                                Pesquisar
+                            </button>
+
+                            <button type="button" class="btn btn-success hide">
+                                <i class="i i-docs"></i>
+                                Salvar Pedido
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div class="col-md-12">&nbsp;</div>
+
+                <div class="divAbasPedidos hide">
+                    <ul class="nav nav-tabs nav-justified">
+                        <li class="active">
+                            <a href="#mercadoria" data-toggle="tab">Mercadoria</a>
+                        </li>
+                        <!-- <li>
+                            <a href="#endereco" data-toggle="tab">Endereço Entrega</a>
+                        </li>-->
+                        <!--                        <li>
+                                                    <a href="#adicionais" data-toggle="tab">Dados Adicionais</a>
+                                                </li>-->
+                        <li>
+                            <a href="#historico" data-toggle="tab">Histórico Cliente</a>
+                        </li>
+                        <li>
+                            <a href="#ultimacompra" data-toggle="tab">Última Compra</a>
+                        </li>
+                        <li>
+                            <a href="#pedidoanterior" data-toggle="tab">Ped./Orç. Anteriores</a>
+                        </li>
+                        <!-- <li>
+                            <a href="#lotepedido" data-toggle="tab">Lotes no Pedido</a>
+                        </li>-->
+                    </ul>
+                    <div class="tab-content">
+                        <div id="mercadoria" class="tab-pane active">
+                            <div class="col-md-12">&nbsp;</div>
+                            <!-- INICIO FORMULARIO MERCADORIA-->
+                            <div class="controls">
+                                <div class="col-md-2">
+                                    <label>Código</label>
+                                    <div class="input-group">
+                                        <input type="text" name="cd_mercadoria" id="cd_mercadoria" class="form-control" value=""/>
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                Ação
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right">
+                                                <li id="searchMercadoria" title="Pesquisar Mercadoria"><a href="#">Pesquisar</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Descrição</label>
+                                    <input type="text" class="form-control" name="ds_mercadoria" id="ds_mercadoria"/>
+                                </div>
+                                <div class="col-md-1">
+                                    <label>Retirada</label>
+                                    <input type="text" class="form-control" name="tp_retirada" id="tp_retirada" maxlength="1"
+                                           title="C - Caixa, D - Depósito, E - Expedição, F - Entrega futura, L - Livre"/>
+                                </div>
+                                <div class="col-md-1">
+                                    <label>Qtd.</label>
+                                    <input type="text" class="form-control" name="qt_mercadoria" id="qt_mercadoria" />
+                                </div>
+                                <div class="col-md-1">
+                                    <label>% Desc.</label>
+                                    <input type="text" class="form-control" name="vl_desconto" id="vl_desconto" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Pço Unitário</label>
+                                    <input type="text" class="form-control" name="vl_preco_unitario" id="vl_preco_unitario" />
+                                </div>
+                                <div class="col-md-1">
+                                    <label>&nbsp;</label>
+                                    <div>
+                                        <i class="i i-add-to-list" id="insereMercadoria"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="table-responsive">
+                                <br />
+                                <table class="table table-hover">
+                                    <thead>
+                                    <td>CÓDIGO</td>
+                                    <td>DESCRIÇÃO</td>
+                                    <td>QTD</td>
+                                    <td>DESC. (%)</td>
+                                    <td>VALOR DESC.</td>
+                                    <td>VALOR NOMINAL</td>
+                                    <td>VALOR TOTAL</td>
+                                    <td>V. C.</td>
+                                    <td>PROMOÇÃO</td>
+                                    <td>ENTREGA</td>
+                                    </thead>
+                                    <tbody id='tMercadorias'></tbody>
+                                </table>
+                            </div>
+                            <!-- FINAL  FORMULARIO MERCADORIA-->
+                        </div>
+                        <div id="endereco" class="tab-pane">
+                            <div class="col-md-12">&nbsp;</div>
+                            <!-- INICIO FORMULARIO ENDERECO ENTREGA -->
+                            <div class="control">
+                                <div class="col-lg-8">
+                                    <label>Identifica Cliente Consumidor</label>
+                                    <input class="form-control" id="" name="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-4">
+                                    <label>CPF/CNPJ Consumidor</label>
+                                    <input class="form-control" id="" name="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-8">
+                                    <label>Endereço</label>
+                                    <input class="form-control" id="" name="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-2">
+                                    <label>Bairro</label>
+                                    <input class="form-control" id="" name="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-2">
+                                    <label>CEP</label>
+                                    <input class="form-control" name="" id="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-2">
+                                    <label>UF</label>
+                                    <select class="form-control" name="cd_uf" id="cd_uf">
+                                        <?php foreach ($arrUf as $k => $v): ?>
+                                            <option value="<?php echo $k ?>"><?php echo $v ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-2">
+                                    <label>Cidade</label>
+                                    <select class="form-control" name="cd_cidade" id="cd_cidade">
+                                        <option>Selecione</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-4">
+                                    <label>Telefone</label>
+                                    <input class="form-control" name="" id="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-4">
+                                    <label>Contato</label>
+                                    <input class="form-control" name="" id="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-12">
+                                    <label>Observação</label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <!-- FINAL  FORMULARIO ENDERECO ENTREGA -->
+                        </div>
+                        <div id="adicionais" class="tab-pane">
+                            <div class="col-md-12">&nbsp;</div>
+                            <!-- INICIO FORMULARIO DADOS ADICIONAIS -->
+                            <div class="control">
+                                <div class="col-lg-4">
+                                    <label>Validade da proposta</label>
+                                    <input class="form-control" name="" id="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-4">
+                                    <label>Prazo de entrega</label>
+                                    <input class="form-control" name="" id="" />
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="col-lg-4">
+                                    <label>Prazo de pagamento</label>
+                                    <input class="form-control" name="" id="" />
+                                </div>
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+                            <fieldset class="col-md-12">
+                                <legend>Lista utilizada</legend>
+                                <div class="control">
+                                    <div class="col-lg-2">
+                                        <label>Empresa</label>
+                                        <input class="form-control" name="" id="" />
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <div class="col-lg-4">
+                                        <label>&nbsp;</label>
+                                        <input class="form-control" name="" id="" />
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <div class="col-lg-2">
+                                        <label>Lista</label>
+                                        <input class="form-control" name="" id="" />
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <div class="col-lg-4">
+                                        <label>&nbsp;</label>
+                                        <input class="form-control" name="" id="" />
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <!-- FINAL  FORMULARIO DADOS ADICIONAIS -->
+                        </div>
+                        <div id="historico" class="tab-pane">
+                            <div class="col-md-12">&nbsp;</div>
+                            <!-- INICIO FORMULARIO HISTORICO DE CLIENTE-->
+                            <div class="controls">
+                                <div class="col-md-3">
+                                    <label>Data Inicial</label>
+                                    <input type="input" class="form-control datepicker-input" id="dt_inicial" name="dt_inicial"  data-date-format="dd/mm/yyyy"/>
+                                </div>
+                            </div>
+                            <div class="controls">
+
+                                <div class="col-md-3">
+                                    <label>Data Final</label>
+                                    <input type="input" class="form-control datepicker-input" id="dt_final" name="dt_final"  data-date-format="dd/mm/yyyy"/>
+                                </div>
+                            </div>
+                            <div class="controls">
+                                <div class="col-md-2">
+                                    <label>&nbsp;</label>
+                                    <div>
+                                        <button class="btn btn-info pesquisa-historico" type="button">
+                                            <i class="i i-search"></i>
+                                            Pesquisar &nbsp;
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="controls">
+                                <div class="col-md-2">
+                                    <label>&nbsp;</label>
+                                    <div>
+                                        <button class="btn btn-info" type="button">
+                                            <i class="i i-history"></i>
+                                            Hist. detalhado
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="table-responsive">
+                                <br />
+                                <table class="table table-hover">
+                                    <thead>
+                                    <td>N. PEDIDO</td>
+                                    <td>DATA PEDIDO</td>
+                                    <td>CGC/CPF</td>
+                                    <td>CLIENTE</td>
+                                    <td>VALOR BRUTO</td>
+                                    <td>VALOR LIQUIDO</td>
+                                    <td>REPRESENTANTE</td>
+                                    <td>PRAZO</td>
+                                    <td>CIDADE</td>
+                                    <td>UF</td>
+                                    </thead>
+                                    <tbody id="tHistoricoCliente">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- FINAL  FORMULARIO HISTORICO DE CLIENTE-->
+                        </div>
+                        <div id="ultimacompra" class="tab-pane">
+                            <div class="col-md-12">&nbsp;</div>
+                            <!-- INICIO FORMULARIO EXTRATO-->
+                            <ul class="nav nav-tabs nav-justified" id="abaUltimasCompras"></ul>
+                            <div class="tab-content" id="listaUltimasCompras"></div>
+                            <!-- FINAL  FORMULARIO EXTRATO-->
+                        </div>
+                        <div id="pedidoanterior" class="tab-pane">
+                            <div class="col-md-12">&nbsp;</div>
+                            <!-- INICIO FORMULARIO PEDIDOS ANTERIORES-->
+                            <div class="controls">
+                                <div class="col-md-3">
+                                    <label>Data Inicial</label>
+                                    <input type="input" class="form-control datepicker-input"/>
+                                </div>
+                            </div>
+                            <div class="controls">
+                                <div class="col-md-3">
+                                    <label>Data Final</label>
+                                    <input type="input" class="form-control datepicker-input"/>
+                                </div>
+                            </div>
+                            <div class="controls">
+                                <div class="col-md-2">
+                                    <label>&nbsp;</label>
+                                    <div>
+                                        <button class="btn btn-info" type="button">
+                                            <i class="i i-search"></i>
+                                            Pesquisar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="table-responsive">
+                                <br />
+                                <table class="table table-hover">
+                                    <thead>
+                                    <td>N. PEDIDO</td>
+                                    <td>DATA</td>
+                                    <td>RAZÃO SOCIAL DO CLIENTE</td>
+                                    <td>TIPO DE PEDIDO</td>
+                                    <td>VALOR BRUTO</td>
+                                    <td>VALOR TOTAL LIQUIDO</td>
+                                    </thead>
+                                    <tbody id="tPedidoAnterior">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- FINAL  FORMULARIO PEDIDOS ANTERIORES-->
+                        </div>
+                        <div id="lotepedido" class="tab-pane">
+                            <div class="col-md-12">&nbsp;</div>
+                            <!-- INICIO FORMULARIO LOTE PEDIDO-->
+                            <div class="table-responsive">
+                                <br />
+                                <table class="table table-hover">
+                                    <thead>
+                                    <td>CÓDIGO</td>
+                                    <td>LOTE</td>
+                                    <td>VENCIMENTO</td>
+                                    <td>QTD</td>
+                                    <td>SIT. LOTE</td>
+                                    <td>SIT. LOTE NOVO</td>
+                                    </thead>
+                                    <tbody>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- FINAL  FORMULARIO LOTE PEDIDO-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ###### MODAIS ###### -->
+
+<!-- Modal Lista de Mercadoria -->
+<div id="listaMercadoriaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="listaMercadoriaModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal"><?php echo utf8_encode("LISTA DE MERCADORIAS") ?></span>
+            </div>
+            <div id="bodyListaMercadoria" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Buscar Lista -->
+<div id="buscarListaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="buscarListaModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal"><?php echo utf8_encode("PESQUISA LISTA DE MATERIAIS") ?></span>
+            </div>
+            <div id="bodyBuscarLista" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pesquisa Mercadoria -->
+<div id="pesquisaMercadoriaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pesquisaMercadoriaModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal">PESQUISA MERCADORIA - PREÇO DE VENDA</span>
+            </div>
+            <div id="bodyMercadoria" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        Orcamento.init();
+//        var data = new Date();
+//        var dia = data.getDate();
+//        var mes = data.getMonth();
+//        var ano = data.getFullYear();
+//        $('#dt_pedido').val(dia+'/'+mes+'/'+ano);
+    });
+</script>

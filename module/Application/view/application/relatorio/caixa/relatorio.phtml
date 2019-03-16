@@ -1,0 +1,213 @@
+<html>
+<head>
+<title>Relatório</title>
+<style type="text/css">
+<!--
+.style1 {font-family: Verdana, Arial, Helvetica, sans-serif}
+-->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</style>
+</head>
+<body>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8%" align="left">
+    	<?php echo $this->logo ?>
+    </td>
+    <td width="77%" align="left">
+    	   <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+    	  Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?><br>
+	      <b>RELAT&Oacute;RIO DE CAIXA RESUMIDO</b>
+    </td>
+    <td width="15%" align="right">
+    <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
+    </td>
+  </tr>
+  <tr>
+  	<td colspan="3"><hr></td>
+  </tr>
+</table>
+<!-- Pedidos de Venda do dia -->
+<?php if(@$detalhamento): ?>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+        <tr>
+            <td colspan="6" >
+                Loja: <?php echo htmlentities($this->cdLoja." - ".$this->dsLoja);?><br/>
+                N&uacute;mero do caixa: <?php echo $this->numeroCaixa; ?><br/>
+                Operador: <?php echo htmlentities(@$this->total["CD_FUNCIONARIO"]." - ".$this->total["DS_FUNCIONARIO"])?><br/>
+                Data: <?php echo $this->total["DT_ENTRADA"] ?>&nbsp;&nbsp;&nbsp;Hora de abertura: <?php echo $this->total["HORA_ENTRADA"] ?>&nbsp;&nbsp;&nbsp;Hora de fechamento: <?php echo $this->total["HORA_SAIDA"] ?>
+                <hr>
+            </td>
+        </tr>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+        <tr>
+            <td>Pedidos de Venda</td>
+        </tr>
+        <tr>
+            <td colspan="2">Lançamento</td>
+            <td colspan="2">Tipo Movimento</td>
+            <td colspan="2">Complemento</td>
+            <td colspan="2">Data do Pedido</td>
+            <td colspan="2">Nr. Pedido</td>
+            <td colspan="2">Vlr Pedido</td>
+            <td colspan="2">Frete</td>
+            <td colspan="2">Total</td>
+        </tr>
+        <?php foreach( $detalhamento as $detalhe):?>
+        <tr>
+            <td colspan="2"><?php echo $detalhe['NR_LANCAMENTO_CAIXA'] ?></td>
+            <td colspan="2"><?php echo $detalhe['DS_TIPO_MOVIMENTO_CAIXA'] ?></td>
+            <td colspan="2"><?php echo $detalhe['DS_COMPL_MOVIMENTO'] ?></td>
+            <td colspan="2"><?php $date = new DateTime($detalhe['DT_MOVIMENTO']); echo $date->format('d/m/y'); ?></td>
+            <td colspan="2"><?php echo $detalhe['NR_LANCAMENTO_CAIXA'] ?></td>
+            <td colspan="2"><?php echo number_format($detalhe['VL_TOTAL_LIQUIDO'],2,",",".") ?></td>
+            <td colspan="2"></td>
+            <td colspan="2"><?php echo number_format($detalhe['VL_TOTAL_LIQUIDO'],2,",",".") ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>
+<br />
+<hr>
+<!-- pagina final -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
+    <tr>
+        <td colspan="6" >
+            Loja: <?php echo htmlentities($this->cdLoja." - ".$this->dsLoja);?><br/>
+            N&uacute;mero do caixa: <?php echo $this->numeroCaixa; ?><br/>
+            Operador: <?php echo htmlentities(@$this->total["CD_FUNCIONARIO"]." - ".$this->total["DS_FUNCIONARIO"])?><br/>
+            Data: <?php echo $this->total["DT_ENTRADA"] ?>&nbsp;&nbsp;&nbsp;Hora de abertura: <?php echo $this->total["HORA_ENTRADA"] ?>&nbsp;&nbsp;&nbsp;Hora de fechamento: <?php echo $this->total["HORA_SAIDA"] ?>
+            <hr>
+        </td>
+    </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total de entradas:</th>
+    <td class="" align="right"><span style="color:green"><?php  echo number_format($this->totalEntrada["VALOR"],2,",",".") ?></span></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total de saídas:</th>
+    <td class="" align="right"><span style="color:red"><?php  echo number_format($this->totalSaida["VALOR"],2,",",".") ?></span></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total cheque:</th>
+    <td class="" align="right"><?php  echo number_format($this->totalCheque["VALOR"],2,",",".") ?></td>
+    <th width="15%" class="" align="right">Á vista:</th>
+    <td class="" align="right"><?php echo number_format($this->totalChequeAVista["VALOR"],2,",",".") ?></td>
+    <th width="15%" class="" align="right">Pré:</th>
+    <td class="" align="right"><?php echo number_format($this->totalChequePreDatado["VALOR"],2,",",".") ?></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total cartão:</th>
+    <td class="" align="right"><?php echo number_format($this->totalCartao["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Cartão Manual:</th>
+    <td class="" align="right"><?php echo number_format($this->totalCartaoManual["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total cartão parcelado:</th>
+    <td class="" align="right"><?php echo number_format($this->totalCartaoParcelado["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total espécie:</th>
+    <td class="" align="right"><?php echo number_format($this->totalEspecie["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total financeira:</th>
+    <td class="" align="right"><?php echo number_format($this->totalFinanceira["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total ticket:</th>
+    <td class="" align="right"><?php echo number_format($this->totalTicket["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total boleto:</th>
+    <td class="" align="right"><?php echo number_format($this->totalBoleto["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total devolução:</th>
+    <td class="" align="right"><?php echo number_format($this->totalDevolucao["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total depósito C/C></th>
+    <td class="" align="right"><?php echo number_format($this->totalDeposito["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Carta de crédito:</th>
+    <td class="" align="right"><?php echo number_format($this->totalCartaCredito["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr style="font-size: 13pt;">
+      <?php $entrada = $this->totalEntrada["VALOR"] + $this->totalCheque["VALOR"] + $this->totalCartao["VALOR"] + $this->totalEspecie["VALOR"]
+          + $this->totalFinanceira["VALOR"] + $this->totalTicket["VALOR"] + $this->totalBoleto["VALOR"] + $this->totalDeposito["VALOR"]
+          + $this->totalCartaCredito["VALOR"];
+            $saida = $this->totalSaida["VALOR"] + $this->totalDevolucao["VALOR"];
+            $totalGeral = $entrada - $saida;
+            $totalSemEntSai  = $this->totalCheque["VALOR"] + $this->totalCartao["VALOR"] + $this->totalEspecie["VALOR"]
+          + $this->totalFinanceira["VALOR"] + $this->totalTicket["VALOR"] + $this->totalBoleto["VALOR"] + $this->totalDeposito["VALOR"]
+          + $this->totalCartaCredito["VALOR"];
+      $totalSemEntSai = $totalSemEntSai - $this->totalDevolucao["VALOR"];?>
+    <th width="15%" class=""  align="left">Total geral:</th>
+    <td class="" align="right"><b><?php echo number_format($totalGeral,2,",",".")?></b></td>
+    <th width="30%" class="" align="center" colspan="2">Total sem entradas/saídas</th>
+    <td class="" align="left" colspan="2"><b><?php echo number_format(($totalSemEntSai),2,",",".")?></b></td>
+  </tr>
+  <tr>
+  	<td colspan="6"><hr></td>
+  </tr>
+  <tr>
+  	<th colspan="6">INFORMAÇÕES ADICIONAIS</th>
+  </tr>
+  <tr>
+    <th width="20%" class="" align="left">Total posterior 1º caixa:</th>
+    <td class="" align="right"><?php echo number_format($this->totalPosteriorRecebido["TOTALP1RECEBIDO"],2,",",".")?></td>
+    <th width="15%" class="" align="right">Total frete:</th>
+    <td class="" align="right"><?php echo number_format($this->totalPosteriorRecebido["FRETEP1"],2,",",".")?></td>
+    <th width="15%" class="" align="right">Total geral:</th>
+    <td class="" align="right"><?php echo number_format($this->totalPosteriorRecebido["TOTALFECHAMENTO"],2,",",".")?></td>
+  </tr>
+   <tr>
+    <th width="20%" class="" align="left">Total posterior recebido:</th>
+    <td class="" align="right"><?php echo number_format($this->totalPosteriorRecebido["TOTAL"],2,",",".")?></td>
+    <th width="15%" class="" align="right">Total frete:</th>
+    <td class="" align="right"><?php echo number_format($this->totalPosteriorRecebido["TOTALFRETE"],2,",",".")?></td>
+    <th width="15%" class="" align="right">Total geral:</th>
+    <td class="" align="right"><?php echo number_format($this->totalPosteriorRecebido["FRETEFECHAMENTO"],2,",",".")?></td>
+  </tr>
+  <tr>
+  	<td colspan="6"><hr></td>
+  </tr>
+  <tr>
+  	<th colspan="6">DETALHAMENTO DAS VENDAS POR CARTÃO</th>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total crédito:</th>
+    <td class="" align="right"><?php echo number_format($this->totalCartaoCredito["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total débito:</th>
+    <td class="" align="right"><?php echo number_format($this->totalCartaoDebito["VALOR"],2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+  <tr>
+    <th width="15%" class="" align="left">Total geral:</th>
+    <td class="" align="right"><?php echo number_format(($this->totalCartaoCredito["VALOR"] + $this->totalCartaoDebito["VALOR"]),2,",",".") ?></td>
+    <td class="" align="right" colspan="4"></td>
+  </tr>
+</table>
+</body>
+</html>
