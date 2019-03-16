@@ -56,23 +56,23 @@ class ClienteSearchForm extends Form {
                     "required" => false
         ));
 
-        $submit = new Button('submit');
-        $submit->setLabel("Pesquisar")
-                ->setAttributes(array(
-                    "type" => "submit",
-                    "id" => "btnSubmit",
-                    "class" => "btn btn-primary btn",
-                    "style" => "margin-left:10%",
-        ));
-
-        $clear = new Button('buttonLimpar');
-        $clear->setLabel("Limpar")
-                ->setAttributes(array(
-                    "type" => "button",
-                    "class" => "btn btn-default btn",
-                    "id" => "btnLimparFormulario",
-                    "onclick" => "javascript:location.href='/cliente/index'",
-        ));
+//        $submit = new Button('submit');
+//        $submit->setLabel("Pesquisar")
+//                ->setAttributes(array(
+//                    "type" => "submit",
+//                    "id" => "btnSubmit",
+//                    "class" => "btn btn-primary btn",
+//                    "style" => "",
+//        ));
+//
+//        $clear = new Button('buttonLimpar');
+//        $clear->setLabel("Limpar")
+//                ->setAttributes(array(
+//                    "type" => "button",
+//                    "class" => "btn btn-default btn",
+//                    "id" => "btnLimparFormulario",
+//                    "onclick" => "javascript:window.location.href='/cliente/index'",
+//        ));
 
 
 
@@ -81,8 +81,8 @@ class ClienteSearchForm extends Form {
         $this->add($dsEndereco);
         $this->add($ccgCpf);
         $this->add($dsFone1);
-        $this->add($submit, array('priority' => -100));
-        $this->add($clear);
+       // $this->add($submit, array('priority' => -100));
+       // $this->add($clear);
     }
 
 }

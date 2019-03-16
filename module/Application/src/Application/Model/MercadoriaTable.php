@@ -330,8 +330,21 @@ class MercadoriaTable extends AbstractTableGateway {
 		return $return;
 	}
 	
-	public function getMercadoriasNota(){
-		$statement = $dbAdapter->query("SELECT  M.CD_MERCADORIA,
+//	public function getMercadoriasNota(){
+//		$statement = $dbAdapter->query("SELECT  M.CD_MERCADORIA,
+//												M.DS_MERCADORIA
+//										FROM	TB_MERCADORIA M
+//										INNER JOIN	  TB_ESTOQUE E ON M.CD_MERCADORIA = E.CD_MERCADORIA
+//											WHERE E.CD_LOJA 		  = ?
+//												AND M.DT_EXCLUSAO is null
+//    										ORDER BY
+//    							  				M.CD_MERCADORIA");
+//
+//		return $statement->execute(array($session->cdLoja));
+//	}
+
+    public function getComboMercadorias($cdLoja) {
+        $statement = $this->adapter->query("SELECT  M.CD_MERCADORIA,
 												M.DS_MERCADORIA
 										FROM	TB_MERCADORIA M
 										INNER JOIN	  TB_ESTOQUE E ON M.CD_MERCADORIA = E.CD_MERCADORIA
@@ -339,9 +352,25 @@ class MercadoriaTable extends AbstractTableGateway {
 												AND M.DT_EXCLUSAO is null
     										ORDER BY
     							  				M.CD_MERCADORIA");
-												
-		return $statement->execute(array($session->cdLoja));
-	}
+
+        $results =  $statement->execute(array($cdLoja));
+        return $results;
+    }
+
+    public function recuperaValorDeVenda($cdLoja, $cdMercadoria) {
+            $statement = $this->adapter->query("SELECT
+                                                        B.ST_LIBERA_SEM_ESTOQUE,
+                                                        dbo.MostraEstoque( b.cd_loja, a.CD_Mercadoria ) as NR_QTDE_ESTOQUE,
+                                                        dbo.MostraReserva( b.cd_loja, a.CD_Mercadoria ) as NR_QTDE_RESERVA,
+                                                        dbo.MostraEstoqueDisponivel( b.CD_LOJA, a.CD_MERCADORIA ) as NR_QTDE_DISPONIVEL
+                                                FROM	TB_MERCADORIA A
+                                                INNER JOIN TB_ESTOQUE B ON A.CD_MERCADORIA = B.CD_MERCADORIA
+                                                WHERE B.CD_LOJA = ? AND
+                                                    A.CD_Mercadoria = ? AND
+                                                    A.DT_EXCLUSAO is null ");
+            $results = $statement->execute(array($cdLoja, $cdMercadoria));
+            return  $results->current();
+    }
 	
 	public function remove($id)
     {

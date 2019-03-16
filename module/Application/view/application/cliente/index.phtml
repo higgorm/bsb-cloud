@@ -50,13 +50,25 @@
                             <?php echo $this->formElementErrors($form->get("ds_endereco")) ?>
                         </div>
                     </div>
-
+<!--
                     <div class="controls">
                         <div class="col-sm-12">
                             <hr>
-                            <?php echo $this->formElement($form->get("submit")) ?>
-                            <?php echo $this->formElement($form->get("buttonLimpar")) ?>
+                            <?php // echo $this->formElement($form->get("submit")) ?>
+                            <?php // echo $this->formElement($form->get("buttonLimpar")) ?>
                         </div>
+                    </div> -->
+
+                    <div class="col-sm-12">
+                        <hr>
+                        <button type="submit" name="submit" id="btnSubmit" class="btn btn-primary btn" style="" value="">
+                            <i class="fa fa-search"></i>
+                            Pesquisar
+                        </button>
+                        <button type="button" name="buttonLimpar" class="btn btn-default btn" id="btnLimparFormulario" onclick="javascript:window.location.href='/cliente/index'" value="">
+                            <i class="i i-back"></i>
+                            Limpar
+                        </button>
                     </div>
 
                 </form>
@@ -67,8 +79,8 @@
                 <div class="controls">
                     <div class="col-sm-12">
                         <button id="btnNovoCliente" class="btn btn-success" style="float:right; margin-top:5px; margin-right:5px;">
-                            <i class="icon-plus icon-white"></i>
-                             Adicionar novo cliente
+                            <i class="i glyphicon-plus"></i>
+                             Adicionar cliente
                         </button>
                     </div>
                 </div>

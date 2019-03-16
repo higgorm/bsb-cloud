@@ -2,11 +2,39 @@
     <div class="main">
 		<div class="row-fluid">
             <div class="panel-body">
-				<h3 class="tit">Operadora de Cartão</h3>        
-				<hr />   
-				<form action="/tabela/cartao-editar">  
-				
+				<h3 class="tit">Editar Operadora de Cart&atilde;o</h3>
+				<hr />
+                <?php foreach( $cartao as $dado ): ?>
+				<form action="/tabela/cartao-editar" method="post">
+                    <input type="hidden" name="CD_CARTAO"  value="<?php echo (int)$dado['CD_CARTAO'] ?>">
+                    <div class="col-xs-12 col-md-12">
+                        <label>Descri&ccedil;&atilde;o: </label>
+                        <input class="form-control" type="text" name="DS_CARTAO" maxlength="50" value="<?php echo utf8_encode($dado['DS_CARTAO']) ?>">
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        <label>Percentual Desconto: </label>
+                        <input class="form-control" type="number" name="NR_PERCENTUAL_DESCONTO" maxlength="12" value="<?php echo $dado['NR_PERCENTUAL_DESCONTO'] ?>">
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        <label>Dias para Reembolso: </label>
+                        <input class="form-control" type="number" name="NR_DIAS_REEMBOLSO" maxlength="2" value="<?php echo $dado['NR_DIAS_REEMBOLSO'] ?>">
+                    </div>
+                    <div class="controls">
+                        <div class="col-md-12">&nbsp;</div>
+                        <div class="btn-group btn-group-justified col-md-12">
+                            <div class="col-md-9">&nbsp;</div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary">
+                                    Salvar
+                                </button>
+                                <a href="/tabela/cartao"><button type="button" class="btn btn-default">
+                                        <i class="i i-back"></i>
+                                        Cancelar
+                                    </button></a>
+                            </div>
+                        </div>
 				</form>
+                <?php endforeach; ?>
 			</div>
 		</div>
 	</div>

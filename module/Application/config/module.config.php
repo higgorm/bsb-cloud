@@ -40,6 +40,7 @@ return array(
             'Application\Controller\Ajax' => 'Application\Controller\AjaxController',
         ),
     ),
+
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -115,4 +116,5 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
+
 );

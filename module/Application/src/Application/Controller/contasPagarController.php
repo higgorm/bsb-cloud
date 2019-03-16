@@ -36,9 +36,12 @@ class ContasPagarController extends AbstractActionController
         $session = new Container("orangeSessionContainer");
 
         $loja = array('cd_loja' => $session->cdLoja,
-            'ds_loja' => utf8_encode($session->dsLoja));
+                      'ds_loja' => utf8_encode($session->dsLoja));
+
+        $contasPagar = $this->getTable('contas_pagar')->fetchAll(array(), 1); //PAGENUMBER FIXO
 
         $viewModel = new ViewModel(array(
+            'contasPagar' => $contasPagar,
             'listaFornecedore' => $this->getTable("fornecedor")->selectAll(),
             'listaPagamento' => $this->getTable("pedido_table")->listaTipoPagamento(),
             'loja' => $loja
@@ -109,7 +112,8 @@ class ContasPagarController extends AbstractActionController
             }else{
                 $fornecedor = $_POST['CD_FORNECEDOR'];
             }
-            $id = $this->getTable('contas_pagar')->nextId($session->cdLoja);
+
+           $id = $this->getTable('contas_pagar')->nextId($session->cdLoja);
 
             $alt = array(
                 'CD_LOJA'                   =>  $session->cdLoja,

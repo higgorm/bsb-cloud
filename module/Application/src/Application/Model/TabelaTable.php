@@ -58,10 +58,12 @@ class TabelaTable extends AbstractTableGateway
 		$insert = $sql->insert( 'TB_TIPO_PAGAMENTO' );
 		$insert->values($array);
 
-		$statement = $sql->getSqlStringForSqlObject($insert);
+        $selectString = $sql->getSqlStringForSqlObject($insert);
+        $statement = $this->adapter->query( $selectString );
 		$results = $statement->execute();
 
 		return $results;
+
 	}
 
 	public function atualiza_formaPagamento( $id, $array ){
@@ -132,7 +134,8 @@ class TabelaTable extends AbstractTableGateway
 		$insert = $sql->insert( 'TB_CARTAO' );
 		$insert->values($array);
 
-		$$statement = $sql->getSqlStringForSqlObject($insert);
+        $selectString = $sql->getSqlStringForSqlObject($insert);
+        $statement = $this->adapter->query( $selectString );
 		$results = $statement->execute();
 
 		return $results;

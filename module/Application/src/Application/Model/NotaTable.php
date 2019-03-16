@@ -43,7 +43,7 @@ class NotaTable extends AbstractTableGateway
 	}
 	
 	public function fetchAll(Array $param = array(), $currentPage = "1", $countPerPage = "10"){
-		
+
 		$select = new Select();
         $where = new Where();
 		
@@ -62,6 +62,29 @@ class NotaTable extends AbstractTableGateway
 
         return $paginator;
 	}
+
+    public function fetchArray(Array $param = array()){
+        $returnArray = array();
+        $adapter = $this->adapter;
+        $sql = new Sql($adapter);
+        $select = new Select();
+        $where = new Where();
+
+        foreach ($param as $field => $search) {
+            $where->like($field, '%' . $search . '%');
+        }
+
+        $select->from($this->table)
+            ->where($where)
+            ->order("infNFE DESC");
+
+        $selectString = $sql->getSqlStringForSqlObject($select);
+        $statement = $this->adapter->query( $selectString );
+
+        $results = $statement->execute();
+        return $results->current();
+
+    }
 	
 	public function getNota($nota){
 		$statement = $this->adapter->query('SELECT * FROM '.$this->table.' WHERE infNfe = '.$nota);

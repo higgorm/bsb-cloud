@@ -7,9 +7,9 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Session\Container;
 
-class CartaoTable extends AbstractTableGateway {
+class TipoPagamentoTable extends AbstractTableGateway {
 
-    protected $table = "TB_CARTAO";
+    protected $table = "TB_TIPO_PAGAMENTO";
 
     public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
@@ -25,7 +25,7 @@ class CartaoTable extends AbstractTableGateway {
 
     public function nextId()
     {
-        $statement = $this->adapter->query('SELECT MAX(CD_CARTAO)+1 as NEXT FROM '.$this->table);
+        $statement = $this->adapter->query('SELECT MAX(CD_TIPO_PAGAMENTO)+1 as NEXT FROM '.$this->table);
         $results = $statement->execute();
 
         $current = $results->current();
@@ -33,7 +33,7 @@ class CartaoTable extends AbstractTableGateway {
     }
 
     public function selectAll(){
-        $statement = $this->adapter->query('SELECT * FROM '.$this->table.' ORDER BY DS_CARTAO ASC');
+        $statement = $this->adapter->query('SELECT * FROM '.$this->table.' ORDER BY DS_TIPO_PAGAMENTO ASC');
 
         $results = $statement->execute();
         $returnArray = array();

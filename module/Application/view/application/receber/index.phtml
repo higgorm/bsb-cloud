@@ -51,11 +51,11 @@
                     <div class="controls">
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">Faixa de Valores</label>
-                            <input id="minValor" name="minValor" class="dataP form-control" value="<?php echo $post['minValor']?>" maxlength="10" />
+                            <input id="minValor" name="minValor"  type="number" class="dataP form-control" value="<?php echo $post['minValor']?>" maxlength="10" />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">&nbsp;</label>
-                            <input id="maxValor" name="maxValor" class="dataP form-control" value="<?php echo $post['maxValor']?>" maxlength="10" />
+                            <input id="maxValor" name="maxValor" type="number" class="dataP form-control" value="<?php echo $post['maxValor']?>" maxlength="10" />
                         </div>
                     </div>
 
@@ -129,20 +129,18 @@
                     </div>
 
                     <div class="controls">
-                        <div class="col-sm-12">&nbsp;</div>
-                        <div class="btn-group btn-group col-sm-12">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default voltar">
-                                    <i class="i i-back"></i>
-                                    Limpar
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button type="submit" id="btnSubmit" class="btn btn-primary pesquisar">
-                                    <i class="i i-search"></i>
-                                    Pesquisar
-                                </button>
-                            </div>
+                        <div class="col-sm-12">
+                            <hr>
+
+                            <button type="submit" id="btnSubmit" class="btn btn-primary pesquisar">
+                                <i class="i i-search"></i>
+                                Pesquisar
+                            </button>
+
+                            <button type="button" class="btn btn-default voltar">
+                                <i class="i i-back"></i>
+                                Limpar
+                            </button>
                         </div>
                         <br />
                     </div>
@@ -153,8 +151,8 @@
                             <div class="controls">
                                 <div class="col-sm-12">
                                     <button id="btnNovo" class="btn btn-success" style="float:right; margin-top:5px; margin-right:5px;">
-                                        <i class="icon-plus icon-white"></i>
-                                         + Adicionar
+                                        <i class="i glyphicon-plus"></i>
+                                         Adicionar Conta
                                     </button>
                                 </div>
                             </div>

@@ -15,13 +15,30 @@ class PedidoTable extends AbstractTableGateway {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
         //$this->resultSetPrototype->setArrayObjectPrototype(new Servicos());
-        //$this->initialize();
+        $this->initialize();
 		
 		$session = new Container("orangeSessionContainer");
 		if( @$session->cdBase ){
 			$statement = $this->adapter->query("USE BDGE_".$session->cdBase);
 			$statement->execute();
 		}
+    }
+
+    public function selectCountNrPedido($cdLoja){
+        $statement = $this->adapter->query("SELECT  COUNT(A.NR_PEDIDO) AS NR_PEDIDO
+    									FROM TB_PEDIDO A
+										LEFT JOIN TB_CLIENTE C ON A.CD_CLIENTE = C.CD_CLIENTE
+    									INNER JOIN TB_PARAMEMPRESA PE ON PE.CD_LOJA=A.CD_LOJA
+										WHERE
+    										PE.FLALOJADEFAULT = 'S'	AND
+    			 							A.ST_PEDIDO   	  = 'A' AND
+    									    CONVERT(VARCHAR(10),A.DT_PEDIDO,103)= CONVERT(VARCHAR(10),GETDATE(),103) AND
+    										A.CD_LOJA     	  = ? ");
+
+
+        $results = $statement->execute(array($cdLoja));
+        $rowResult = $results->current();
+        return $rowResult["NR_PEDIDO"];
     }
 
     public function getIdClientePedido($nrPedido, $cdLoja)

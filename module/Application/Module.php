@@ -26,7 +26,6 @@ class Module {
 
         $this->initAcl($e);
         $e->getApplication()->getEventManager()->attach('route', array($this, 'checkAcl'));
-
         $e->getApplication()->getServiceManager()->get('translator');
         $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
@@ -64,9 +63,9 @@ class Module {
     }
 
     public function checkAcl(MvcEvent $e) {
-        //$route = $e -> getRouteMatch() -> getMatchedRouteName();
-        $params = $e->getRouteMatch()->getParams();
-        $route = $params['controller'] . "/" . $params['action'];
+        $nameRoute = $e -> getRouteMatch() -> getMatchedRouteName();
+        $params    = $e->getRouteMatch()->getParams();
+        $route     = $params['controller'] . "/" . $params['action'];
 
         //you set your role
         $session = new Container("orangeSessionContainer");
@@ -78,7 +77,8 @@ class Module {
             $session->userRole = 'atendente';
         }
 
-        if (!$e->getViewModel()->acl->isAllowed($session->userRole, $route)) {
+        if (($nameRoute != 'api')
+            && (!$e->getViewModel()->acl->isAllowed($session->userRole, $route))) {
             $response = $e->getResponse();
             //location to page or what ever
             $response->getHeaders()->addHeaderLine('Location', $e->getRequest()->getBaseUrl() . '/404');
@@ -114,6 +114,12 @@ class Module {
     public function getServiceConfig() {
         return array(
             "factories" => array(
+                //Services negociais
+                'Application\Service\NotaFiscalService' => function ($sm) {
+                    return new \Application\Service\NotaFiscalService($sm);
+                },
+
+                //Services de banco de ddos
                 "loja_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new LojaTable($adapter);
@@ -154,21 +160,21 @@ class Module {
                     $table = new Model\FuncionarioTable($adapter);
                     return $table;
                 },
-                "agendamento_franquia" => function($sm) {
-                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\AgendamentoFranquiaTable($adapter);
-                    return $table;
-                },
-                "agendamento_franquia_table" => function($sm) {
-                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\AgendamentoFranquiaTable($adapter);
-                    return $table;
-                },
-                "agendamento_franquia_servicos" => function($sm) {
-                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\AgendamentoFranquiaServicosTable($adapter);
-                    return $table;
-                },
+//                "agendamento_franquia" => function($sm) {
+//                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+//                    $table = new Model\AgendamentoFranquiaTable($adapter);
+//                    return $table;
+//                },
+//                "agendamento_franquia_table" => function($sm) {
+//                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+//                    $table = new Model\AgendamentoFranquiaTable($adapter);
+//                    return $table;
+//                },
+//                "agendamento_franquia_servicos" => function($sm) {
+//                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+//                    $table = new Model\AgendamentoFranquiaServicosTable($adapter);
+//                    return $table;
+//                },
                 "mercadoria_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new Model\MercadoriaTable($adapter);

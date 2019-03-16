@@ -10,6 +10,7 @@
 
 namespace Application\Controller;
 
+use Application\Service\NotaFiscalService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
@@ -49,15 +50,12 @@ class NotaController extends AbstractActionController{
 
 	public function listaAction(){
 
-        $request = $this->getRequest();
-        $messages = $this->flashMessenger()->getMessages();
-        $parametros = array();
+	    $notaFiscalService = new NotaFiscalService( $this->getServiceLocator());
+
+        $request    = $this->getRequest();
+        $messages   = $this->flashMessenger()->getMessages();
         $pageNumber = (int) $this->params()->fromQuery('pg');
-        $param = array();
-		// get the db adapter
-        $sm = $this->getServiceLocator();
-        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-		$table = new notaTable($dbAdapter);
+        $param      = array();
 
         if ($pageNumber == 0) {
             $pageNumber = 1;
@@ -73,9 +71,9 @@ class NotaController extends AbstractActionController{
             }
         }
 
-        $listaNfe = $table->fetchAll($param, $pageNumber);
+        $listaNfe   = $notaFiscalService->getList($param, $pageNumber);
 
-        $viewModel = new ViewModel();
+        $viewModel  = new ViewModel();
         $viewModel->setTerminal(false);
         $viewModel->setVariable('listaNfe', $listaNfe);
 

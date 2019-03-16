@@ -37,7 +37,11 @@ class ContasReceberController extends AbstractActionController
         $loja = array('cd_loja' => $session->cdLoja,
             'ds_loja' => utf8_encode($session->dsLoja));
 
-		$viewModel = new ViewModel(array(
+        $contasReceber = $this->getTable('contas_receber_table')->fetchAll(array(), 1);
+
+
+        $viewModel = new ViewModel(array(
+            'contasReceber' => $contasReceber,
             'listaFuncionario' => $this->getTable("functionario")->getListaFuncionarioLoja($session->cdLoja),
             'listaPagamento' => $this->getTable("pedido_table")->listaTipoPagamento(),
             'loja' => $loja

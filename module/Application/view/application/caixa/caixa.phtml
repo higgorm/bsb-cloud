@@ -1,339 +1,355 @@
-<div class="fluid widget stacked" >
-    <div class="widget-header fluid">
-        <i class="icon-check"></i>
-        <h3>CAIXA <?php echo $nrCaixa; ?></h3>
-    </div>
-    <form id="frmCaixaC" method="post"><input type="hidden" name="rdCaixa" value="<?php echo $nrCaixa; ?>"></form>
-    <div class="widget-content">
-       
-        <ul id="tabsCaixas" class="nav nav-tabs">
-            <li id="aba1"><a href="#entradaPedidos" data-toggle="tab" class="active cliCad">Entrada de pedidos</a></li>
-            <li id="aba2" style="display: none;"><a href="#transporteFrete" data-toggle="tab" class="cliCad">Transporte / Frente e outras despesas assessórias</a></li>
-        </ul>
-        
-        <div class="tab-content">
-            <div class="span10" style="padding-top: 5px;padding-bottom: 7px;">
-                <label class="control-label text-info" for="name">
-                    <?php echo utf8_encode("Tipos de pedido:") ?>
-                </label>
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <div class="widget-header">
+                    <h3>
+                        Caixa <?php echo $nrCaixa; ?>
+                    </h3>
+                </div>
 
-                <select>
-                    <option value="1">Pedido Venda</option>
-                </select>
-            </div>
-            <div class="tab-pane span12" id="entradaPedidos">
-                <ul id="tabsSubCaixas" class="nav nav-tabs">
-                    <li id="aba1"><a href="#pedidos" data-toggle="tab" class="active cliCad">Pedidos</a></li>
-                    <li id="aba2"><a href="#ordemServico" data-toggle="tab" class="cliCad">Ordens de serviço</a></li>
-                    <li id="aba3"><a href="#rebemimentoPedidos" class="cliRap" data-toggle="tab">Recebimento pedido posterior / Contas a receber</a></li>
-                </ul>
-                
-                <div class="tab-content">                    
-                    <div class="tab-pane span12" id="pedidos">                        
-                        <div class="span12"></div>
-                        <div class="span10" style="overflow-x: scroll;height:300px;">
-                            <label class="control-label text-primary" for="name">Relação de pedido(s) em aberto</label>
-                            <table class="table table-striped  table-hover" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nª pedido</th>
-                                        <th>Nome do cliente</th>
-                                        <!-- th>Representante</th -->
-                                        <th>Valor bruto</th>
-                                        <th>Desconto</th>
-                                        <!-- th>Vl frete</th -->
-                                        <th>Valor líquido</th>
-                                        <!-- th>Frete</th>
-                                        <th>CNPJ/CPF</th>
-                                        <th>Cliente</th>
-                                        <th>Fone do cliente</th>
-                                        <th>Bco</th>
-                                        <th>Agência</th>
-                                        <th>C/C</th>
-                                        <th>UF</th>
-                                        <th>NF</th>
-                                        <th>Tipo pedido</th>
-                                        <th>Situação</th>
-                                        <th>Nº cupom</th>
-                                        <th>Subs. tributária</th>
-                                        <th>Prazo</th -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    if (isset($listaPedidos)) { 
-                                        foreach ($listaPedidos as $value) {
-                                            $desconto = (float)($value['VL_TOTAL_BRUTO'] - $value['VL_TOTAL_LIQUIDO']);
-                                            echo '<tr>
-                                                    <td><input type="checkbox" name="ckPedido[]" value="\''. $value['NR_PEDIDO'] .'\'" onclick="somaTotal(this.checked,\'' . (number_format($value['VL_TOTAL_BRUTO'], 2, ',', '.')) . '\',\'' . (number_format($desconto, 2, ',', '.')) . '\');"></td>
-                                                    <td>' . $value['NR_PEDIDO'] . '</td>
-                                                    <td>' . $value['DS_NOME_RAZAO_SOCIAL'] . '</td>
-                                                    <td>' . (number_format($value['VL_TOTAL_BRUTO'], 2, ',', '.')) . '</td>
-                                                    <td>' . (number_format($desconto, 2, ',', '.')) . '</td>
-                                                    <td>' . (number_format($value['VL_TOTAL_LIQUIDO'], 2, ',', '.')) . '</td>
-                                                </tr>';
-                                        }
-                                    }
-                                    else
-                                    {
-                                        echo '<tr>
-                                                <td colspan="3">Nenhum registro</td>
-                                            </tr>';
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <!-- td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td -->
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="ordemServico">
-                        <div class="span10" style="overflow-x: scroll;height:340px;">
-                            <label class="control-label text-primary" for="name">Relação de ordens de serviço em aberto</label>
-                            <table class="table" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Nome do cliente</th>
-                                        <th>Representante</th>
-                                        <th>Vl bruto</th>
-                                        <th>Vl desconto</th>
-                                        <th>Vl frete</th>
-                                        <th>Vl líquido</th>
-                                        <th>Frete</th>
-                                        <th>CNPJ/CPF</th>
-                                        <th>Cliente</th>
-                                        <th>Fone do cliente</th>
-                                        <th>Bco</th>
-                                        <th>Agência</th>
-                                        <th>C/C</th>
-                                        <th>Cód. cliente</th>
-                                        <th>UF</th>
-                                        <th>NF</th>
-                                        <th>Marcado</th>
-                                        <th>Nº OS</th>
-                                        <th>Nº cupom</th>
-                                        <th>Subs. tributária</th>
-                                        <th>Prazo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="rebemimentoPedidos">
-                        <div class="col-md-12" style="padding-top: 5px;padding-bottom: 7px;">
-                            <input type="checkbox" >Pesquisar cliente
+                <form id="frmCaixaC" method="post">
+                    <input type="hidden" name="rdCaixa" value="<?php echo $nrCaixa; ?>">
+                </form>
+                <div class="widget-content">
+
+                    <ul id="tabsCaixas" class="nav nav-tabs">
+                        <li id="aba1"><a href="#entradaPedidos" data-toggle="tab" class="active cliCad">Entrada de pedidos</a></li>
+                        <li id="aba2" style="display: none;"><a href="#transporteFrete" data-toggle="tab" class="cliCad">Transporte / Frente e outras despesas assessórias</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="span10" style="padding-top: 5px;padding-bottom: 7px;">
+                            <label class="control-label text-info" for="name">
+                                <?php echo utf8_encode("Tipos de pedido:") ?>
+                            </label>
+
                             <select>
-                                <option>Selecione...</option>
+                                <option value="1">Pedido Venda</option>
                             </select>
-                            <input type="button" class="btn btn-success" id="btnPesquisa" value="Pesquisar">
-                            
-                            
-                            Data inicial: <input type="text" id="dt_data">
-                            Data final: <input type="text" id="dt_data">
-                            <input type="button" class="btn btn-success" id="btnPesquisa" value="Pesquisar">
-                            
-                            <input type="button" class="btn btn-success" id="btnPesquisa" value="Pré fatura">
                         </div>
-                        <div class="col-md-12" style="overflow-x: scroll;height:250px;">
-                            <label class="control-label text-primary" for="name">Relação de pedido(s) posteriores NÃO recebidos</label>
-                            <table class="table" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Nª pedido</th>
-                                        <th>Nome do cliente</th>
-                                        <th>Representante</th>
-                                        <th>Vl bruto</th>
-                                        <th>Desconto</th>
-                                        <th>Vl frete</th>
-                                        <th>Vl líquido</th>
-                                        <th>Frete</th>
-                                        <th>CNPJ/CPF</th>
-                                        <th>Cliente</th>
-                                        <th>Fone do cliente</th>
-                                        <th>Bco</th>
-                                        <th>Agência</th>
-                                        <th>C/C</th>
-                                        <th>UF</th>
-                                        <th>NF</th>
-                                        <th>Tipo pedido</th>
-                                        <th>Situação</th>
-                                        <th>Nº cupom</th>
-                                        <th>Subs. tributária</th>
-                                        <th>Prazo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-12">&nbsp;</div>
-                <div class="col-md-12" style="padding-left: 0px;">
-                    <div class="col-md-6" style="padding-left: 0px;padding-right: 0px;">
-                        <label class="control-label text-info" for="name">&nbsp;</label>
-                        <input type="button" class="btn btn-info" id="btnAciona" value="Acionar gaveta">
-                    
-                        <label class="control-label text-info" for="name">&nbsp;</label>
-                        <input type="button" class="btn btn-info" id="btnAtualizaCaixa" value="Atualizar caixa">
-                    
-                        <label class="control-label text-info" for="name">&nbsp;</label>
-                        <input type="button" class="btn btn-info" id="btnVer" value="Ver pedido/OS">
-                    
-                        <label class="control-label text-info" for="name">&nbsp;</label>
-                        <input type="button" class="btn btn-info" id="btnRecebe" value="Receber pedido">
-                    </div>
-                    <div class="col-md-6" style="padding-left: 0px;">
-                        <div class="col-md-3" style="padding-left: 0px;">
-                            <label class="control-label text-info" for="name"><?php echo utf8_encode("Total") ?></label>
-                            <input type="text" id="txtVlTotal" class="moeda form-control" value="0,00" readonly="readonly">
-                        </div>
-                        <div class="col-md-3" style="padding-left: 0px;">
-                            <label class="control-label text-info" for="name"><?php echo utf8_encode("Valor desconto") ?></label>
-                            <input type="text" id="txtVlDesconto" class="moeda form-control" value="0,00" readonly="readonly">
-                        </div>
-                        <div class="col-md-3" style="padding-left: 0px;">
-                            <label class="control-label text-info" for="name"><?php echo utf8_encode("Frete/Outros") ?></label>
-                            <input type="text" id="txtFreteOutros" class="moeda form-control" value="0,00" readonly="readonly">
-                        </div>
-                        <div class="col-md-3" style="padding-left: 0px;">
-                            <label class="control-label text-info" for="name"><?php echo utf8_encode("Total geral") ?></label>
-                            <input type="text" id="txtTotalGeral" class="moeda form-control" value="0,00" readonly="readonly">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">&nbsp;</div>
+                        <div class="tab-pane span12" id="entradaPedidos">
+                            <ul id="tabsSubCaixas" class="nav nav-tabs">
+                                <li id="aba1"><a href="#pedidos" data-toggle="tab" class="active cliCad">Pedidos</a></li>
+                                <li id="aba2"><a href="#ordemServico" data-toggle="tab" class="cliCad">Ordens de serviço</a></li>
+                                <li id="aba3"><a href="#rebemimentoPedidos" class="cliRap" data-toggle="tab">Recebimento pedido posterior / Contas a receber</a></li>
+                            </ul>
 
-                <div class="col-md-12">
-                    <label class="control-label text-info" for="name">
-                        <?php echo utf8_encode("Total geral") ?>
-                    </label>
-                    <input type="text" id="txtTotalGeral1" class="text-primary" value="0,00">
-                    
-                    <label class="control-label text-info" for="name">
-                        <?php echo utf8_encode("Pago") ?>
-                    </label>
-                    <input type="text" id="txtTotalGeral2" class="text-primary" value="0,00">
-                </div>
-            </div>
-            <div class="tab-pane span12" id="transporteFrete">
-                <fieldset>
-                    <legend>Dados do transporte / Frete</legend>
-                
-                    <div class="span2" style="padding-bottom:5px;">
-                        <label class="control-label text-info" for="name">
-                            <?php echo utf8_encode("Transporte") ?>
-                        </label>
+                            <div class="tab-content">
+                                <div class="tab-pane span12" id="pedidos">
+                                    <div class="span12"></div>
+                                    <div class="span10" style="overflow-x: scroll;height:300px;">
+                                        <label class="control-label text-primary" for="name">Relação de pedido(s) em aberto</label>
+                                        <table class="table table-striped  table-hover" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Nª pedido</th>
+                                                    <th>Nome do cliente</th>
+                                                    <!-- th>Representante</th -->
+                                                    <th>Valor bruto</th>
+                                                    <th>Desconto</th>
+                                                    <!-- th>Vl frete</th -->
+                                                    <th>Valor líquido</th>
+                                                    <!-- th>Frete</th>
+                                                    <th>CNPJ/CPF</th>
+                                                    <th>Cliente</th>
+                                                    <th>Fone do cliente</th>
+                                                    <th>Bco</th>
+                                                    <th>Agência</th>
+                                                    <th>C/C</th>
+                                                    <th>UF</th>
+                                                    <th>NF</th>
+                                                    <th>Tipo pedido</th>
+                                                    <th>Situação</th>
+                                                    <th>Nº cupom</th>
+                                                    <th>Subs. tributária</th>
+                                                    <th>Prazo</th -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                if (isset($listaPedidos)) {
+                                                    foreach ($listaPedidos as $value) {
+                                                        $desconto = (float)($value['VL_TOTAL_BRUTO'] - $value['VL_TOTAL_LIQUIDO']);
+                                                        echo '<tr>
+                                                                <td><input type="checkbox" name="ckPedido[]" value="\''. $value['NR_PEDIDO'] .'\'" onclick="somaTotal(this.checked,\'' . (number_format($value['VL_TOTAL_BRUTO'], 2, ',', '.')) . '\',\'' . (number_format($desconto, 2, ',', '.')) . '\');"></td>
+                                                                <td>' . $value['NR_PEDIDO'] . '</td>
+                                                                <td>' . $value['DS_NOME_RAZAO_SOCIAL'] . '</td>
+                                                                <td>' . (number_format($value['VL_TOTAL_BRUTO'], 2, ',', '.')) . '</td>
+                                                                <td>' . (number_format($desconto, 2, ',', '.')) . '</td>
+                                                                <td>' . (number_format($value['VL_TOTAL_LIQUIDO'], 2, ',', '.')) . '</td>
+                                                            </tr>';
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    echo '<tr>
+                                                            <td colspan="3">Nenhum registro</td>
+                                                        </tr>';
+                                                }
+                                                ?>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <!-- td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td -->
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="ordemServico">
+                                    <div class="span10" style="overflow-x: scroll;height:340px;">
+                                        <label class="control-label text-primary" for="name">Relação de ordens de serviço em aberto</label>
+                                        <table class="table" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nome do cliente</th>
+                                                    <th>Representante</th>
+                                                    <th>Vl bruto</th>
+                                                    <th>Vl desconto</th>
+                                                    <th>Vl frete</th>
+                                                    <th>Vl líquido</th>
+                                                    <th>Frete</th>
+                                                    <th>CNPJ/CPF</th>
+                                                    <th>Cliente</th>
+                                                    <th>Fone do cliente</th>
+                                                    <th>Bco</th>
+                                                    <th>Agência</th>
+                                                    <th>C/C</th>
+                                                    <th>Cód. cliente</th>
+                                                    <th>UF</th>
+                                                    <th>NF</th>
+                                                    <th>Marcado</th>
+                                                    <th>Nº OS</th>
+                                                    <th>Nº cupom</th>
+                                                    <th>Subs. tributária</th>
+                                                    <th>Prazo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="rebemimentoPedidos">
+                                    <div class="col-md-12" style="padding-top: 5px;padding-bottom: 7px;">
+                                        <input type="checkbox" >Pesquisar cliente
+                                        <select>
+                                            <option>Selecione...</option>
+                                        </select>
 
-                        <select>
-                            <option value="">Selecione...</option>
-                        </select>
+                                        <button id="btnPesquisa" type="button" class="btn btn-primary">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+
+                                        Data inicial: <input type="text" id="dt_data">
+                                        Data final: <input type="text" id="dt_data">
+
+                                        <button id="btnPesquisa" type="button" class="btn btn-primary">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+
+                                        <input type="button" class="btn btn-success" id="btnPesquisa" value="Pré fatura">
+                                    </div>
+                                    <div class="col-md-12" style="overflow-x: scroll;height:250px;">
+                                        <label class="control-label text-primary" for="name">Relação de pedido(s) posteriores NÃO recebidos</label>
+                                        <table class="table" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nª pedido</th>
+                                                    <th>Nome do cliente</th>
+                                                    <th>Representante</th>
+                                                    <th>Vl bruto</th>
+                                                    <th>Desconto</th>
+                                                    <th>Vl frete</th>
+                                                    <th>Vl líquido</th>
+                                                    <th>Frete</th>
+                                                    <th>CNPJ/CPF</th>
+                                                    <th>Cliente</th>
+                                                    <th>Fone do cliente</th>
+                                                    <th>Bco</th>
+                                                    <th>Agência</th>
+                                                    <th>C/C</th>
+                                                    <th>UF</th>
+                                                    <th>NF</th>
+                                                    <th>Tipo pedido</th>
+                                                    <th>Situação</th>
+                                                    <th>Nº cupom</th>
+                                                    <th>Subs. tributária</th>
+                                                    <th>Prazo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="col-md-12" style="padding-left: 0px;">
+                                <div class="col-md-6" style="padding-left: 0px;padding-right: 0px;">
+                                   <!-- <label class="control-label text-info" for="name">&nbsp;</label>
+                                    <input type="button" class="btn btn-info" id="btnAciona" value="Acionar gaveta">
+                                    -->
+
+                                    <label class="control-label text-info" for="name">&nbsp;</label>
+                                    <input type="button" class="btn btn-info" id="btnAtualizaCaixa" value="Atualizar caixa">
+
+                                    <label class="control-label text-info" for="name">&nbsp;</label>
+                                    <input type="button" class="btn btn-info" id="btnVer" value="Ver pedido/OS">
+
+                                    <label class="control-label text-info" for="name">&nbsp;</label>
+                                    <input type="button" class="btn btn-info" id="btnRecebe" value="Receber pedido">
+                                </div>
+                                <div class="col-md-6" style="padding-left: 0px;">
+                                    <div class="col-md-3" style="padding-left: 0px;">
+                                        <label class="control-label text-info" for="name"><?php echo utf8_encode("Total") ?></label>
+                                        <input type="text" id="txtVlTotal" class="moeda form-control" value="0,00" readonly="readonly">
+                                    </div>
+                                    <div class="col-md-3" style="padding-left: 0px;">
+                                        <label class="control-label text-info" for="name"><?php echo utf8_encode("Valor desconto") ?></label>
+                                        <input type="text" id="txtVlDesconto" class="moeda form-control" value="0,00" readonly="readonly">
+                                    </div>
+                                    <div class="col-md-3" style="padding-left: 0px;">
+                                        <label class="control-label text-info" for="name"><?php echo utf8_encode("Frete/Outros") ?></label>
+                                        <input type="text" id="txtFreteOutros" class="moeda form-control" value="0,00" readonly="readonly">
+                                    </div>
+                                    <div class="col-md-3" style="padding-left: 0px;">
+                                        <label class="control-label text-info" for="name"><?php echo utf8_encode("Total geral") ?></label>
+                                        <input type="text" id="txtTotalGeral" class="moeda form-control" value="0,00" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+
+                            <div class="col-md-12">
+                                <label class="control-label text-info" for="name">
+                                    <?php echo utf8_encode("Total geral") ?>
+                                </label>
+                                <input type="text" id="txtTotalGeral1" class="text-primary" value="0,00">
+
+                                <label class="control-label text-info" for="name">
+                                    <?php echo utf8_encode("Pago") ?>
+                                </label>
+                                <input type="text" id="txtTotalGeral2" class="text-primary" value="0,00">
+                            </div>
+                        </div>
+                        <div class="tab-pane span12" id="transporteFrete">
+                            <fieldset>
+                                <legend>Dados do transporte / Frete</legend>
+
+                                <div class="span2" style="padding-bottom:5px;">
+                                    <label class="control-label text-info" for="name">
+                                        <?php echo utf8_encode("Transporte") ?>
+                                    </label>
+
+                                    <select>
+                                        <option value="">Selecione...</option>
+                                    </select>
+                                </div>
+                                <div class="span2" style="float:left;clear:right;padding-left:10px;">
+                                    <label class="control-label text-info" for="name">
+                                        <?php echo utf8_encode("Valor do frete") ?>
+                                    </label>
+                                    <br>
+                                    <input type="text" id="txtVlTotal">
+                                </div>
+                                <div class="span2" style="float:left;clear:right;padding-left:10px;">
+                                    <label class="control-label text-info" for="name">
+                                        <?php echo utf8_encode("Data da entrega") ?>
+                                    </label>
+                                    <br>
+                                    <input type="text" id="txtVlDesconto1">
+                                </div>
+                                <div class="span2" style="float:left;clear:right;padding-left:10px;">
+                                    <label class="control-label text-info" for="name">
+                                        <?php echo utf8_encode("Frete por conta do:") ?>
+                                    </label>
+                                    <br>
+                                    <input type="radio" id="txtFreteOutros" name="rdFrete">1-Emitente
+                                    <input type="radio" id="txtFreteOutros" name="rdFrete">2-Destinatário
+                                </div>
+                                <div class="span2" style="float:left;clear:right;padding-left:10px;">
+                                    <label class="control-label text-info" for="name">
+                                        <?php echo utf8_encode("Qtd caixas/volume") ?>
+                                    </label>
+                                    <br>
+                                    <input type="text" id="txtTotalGeral3">
+                                </div>
+                            </fieldset>
+                        </div>
                     </div>
-                    <div class="span2" style="float:left;clear:right;padding-left:10px;">
-                        <label class="control-label text-info" for="name">
-                            <?php echo utf8_encode("Valor do frete") ?>
-                        </label>
-                        <br>
-                        <input type="text" id="txtVlTotal">
-                    </div>
-                    <div class="span2" style="float:left;clear:right;padding-left:10px;">
-                        <label class="control-label text-info" for="name">
-                            <?php echo utf8_encode("Data da entrega") ?>
-                        </label>
-                        <br>
-                        <input type="text" id="txtVlDesconto1">
-                    </div>
-                    <div class="span2" style="float:left;clear:right;padding-left:10px;">
-                        <label class="control-label text-info" for="name">
-                            <?php echo utf8_encode("Frete por conta do:") ?>
-                        </label>
-                        <br>
-                        <input type="radio" id="txtFreteOutros" name="rdFrete">1-Emitente
-                        <input type="radio" id="txtFreteOutros" name="rdFrete">2-Destinatário
-                    </div>
-                    <div class="span2" style="float:left;clear:right;padding-left:10px;">
-                        <label class="control-label text-info" for="name">
-                            <?php echo utf8_encode("Qtd caixas/volume") ?>
-                        </label>
-                        <br>
-                        <input type="text" id="txtTotalGeral3">
-                    </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <div id="divModalPagamento" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="divModalPagamento" aria-hidden="true">
     <div class="modal-dialog modal-lg">

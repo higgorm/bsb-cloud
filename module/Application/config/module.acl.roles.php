@@ -2,7 +2,7 @@
 
 return array(
     'admin' => array(
-	
+
         // LAYOUT
         'index/',
         'index/logout',
@@ -71,8 +71,8 @@ return array(
         'agenda/limpaagendamento',
 
         // MACA CONTROLLER
-        'maca/index',
-        'maca/cadastrar',
+        //'maca/index',
+        //'maca/cadastrar',
 
         // PEDIDO CONTROLLER
 		'pedido/novo-pedido',
@@ -190,6 +190,8 @@ return array(
         'ajax/get-historico-movimentacao',
         'ajax/get-classificacao-financeira',
         'ajax/get-operador-loja',
+
+
     ),
     'atendente' => array(
         // LAYOUT
@@ -391,5 +393,6 @@ return array(
         'ajax/get-historico-movimentacao',
         'ajax/get-classificacao-financeira',
         'ajax/get-operador-loja',
+
     ),
 );
