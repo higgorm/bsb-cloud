@@ -72,7 +72,7 @@ class RelatorioAgendamentoController extends RelatorioController
 		    	$viewModel->setVariable('rdbSituacao',$situacao);
 		    	$viewModel->setVariable('lista',$return);
 		    	$viewModel->setVariable('dsLoja',$session->dsLoja);
-		    	$viewModel->setVariable('logo','<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+		    	$viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
 		    	$viewModel->setVariable('dataAtual',date("d/m/Y"));
 		    	$viewModel->setVariable('horaAtual',date("h:i:s"));
 		    	$viewModel->setTemplate("application/relatorio/agendamento/relatorio.phtml");
@@ -98,7 +98,7 @@ class RelatorioAgendamentoController extends RelatorioController
 		    			'dsLoja'=>$session->dsLoja,
 		    			'dataAtual' => date("d/m/Y"),
 		    			'horaAtual' => date("h:i:s"),
-		    			'logo' => '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-relatorio.png" alt="logo"  />',
+		    			'logo' => '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-orange-small.png" alt="logo"  />',
 		    			'dataInicial'=>$dataDeInicio,
 		    			'dataFinal'=>$dataDeTermino,
 		    			'rdbSituacao'=>$situacao,

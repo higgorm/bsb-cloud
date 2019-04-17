@@ -76,6 +76,9 @@ class relatorioPedidoController  extends RelatorioController
     		$viewModel = new ViewModel();
     		$viewModel->setTerminal(true);
     		$viewModel->setVariable('lista',$results);
+            $viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
+            $viewModel->setVariable('dataAtual',date("d/m/Y"));
+            $viewModel->setVariable('horaAtual',date("h:i:s"));
     		$viewModel->setTemplate("application/relatorio/pedido/relatorio.phtml");
     		return $viewModel;
     	}
@@ -101,7 +104,9 @@ class relatorioPedidoController  extends RelatorioController
     		));
     		
     		$pdf->setTemplate("application/relatorio/pedido/relatorio.phtml");
-    	
+            $pdf->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
+            $pdf->setVariable('dataAtual',date("d/m/Y"));
+            $pdf->setVariable('horaAtual',date("h:i:s"));
     		return $pdf;
     	}
     	

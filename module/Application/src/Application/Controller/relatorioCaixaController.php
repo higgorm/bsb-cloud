@@ -433,7 +433,7 @@ class RelatorioCaixaController extends RelatorioController
     		$viewModel->setVariable('totalCartaoDebito',$resultDetCartaoDebito->current());
     		$viewModel->setVariable('cdLoja',$session->cdLoja);
     		$viewModel->setVariable('dsLoja',$session->dsLoja);
-    		$viewModel->setVariable('logo','<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+    		$viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
     		$viewModel->setVariable('dataAtual',date("d/m/Y"));
     		$viewModel->setVariable('horaAtual',date("h:i:s"));
     		$viewModel->setTemplate("application/relatorio/caixa/relatorio.phtml");
@@ -513,7 +513,7 @@ class RelatorioCaixaController extends RelatorioController
             $pdf->setVariable('totalCartaoDebito',$resultDetCartaoDebito->current());
             $pdf->setVariable('cdLoja',$session->cdLoja);
             $pdf->setVariable('dsLoja',$session->dsLoja);
-            $pdf->setVariable('logo','<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+            $pdf->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
             $pdf->setVariable('dataAtual',date("d/m/Y"));
             $pdf->setVariable('horaAtual',date("h:i:s"));
 
@@ -804,7 +804,7 @@ class RelatorioCaixaController extends RelatorioController
             $viewModel->setVariable('totalCartaoDebito',$resultDetCartaoDebito->current());
             $viewModel->setVariable('cdLoja',$session->cdLoja);
             $viewModel->setVariable('dsLoja',$session->dsLoja);
-            $viewModel->setVariable('logo','<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+            $viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
             $viewModel->setVariable('dataAtual',date("d/m/Y"));
             $viewModel->setVariable('horaAtual',date("h:i:s"));
             $viewModel->setVariable('detalhamento',$this->getTable('caixa-table')->detalhamentoCaixa($session->cdLoja,$numeroCaixa,$dataCaixa));
@@ -885,7 +885,7 @@ class RelatorioCaixaController extends RelatorioController
             $pdf->setVariable('totalCartaoDebito',$resultDetCartaoDebito->current());
             $pdf->setVariable('cdLoja',$session->cdLoja);
             $pdf->setVariable('dsLoja',$session->dsLoja);
-            $pdf->setVariable('logo','<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+            $pdf->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
             $pdf->setVariable('dataAtual',date("d/m/Y"));
             $pdf->setVariable('horaAtual',date("h:i:s"));
             $pdf->setVariable('detalhamento',$this->getTable('caixa-table')->detalhamentoCaixa($session->cdLoja,$numeroCaixa,$dataCaixa));

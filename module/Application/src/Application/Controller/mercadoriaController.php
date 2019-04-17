@@ -75,10 +75,10 @@ class MercadoriaController extends AbstractActionController{
 
         $mercadorias = $this->getTable()->fetchAll($param, $pageNumber);
 		$util     = new \Util;
-
         $view = new ViewModel(array(
             "messages" => $messages,
             "mercadorias" => $mercadorias,
+			"precos"    => $precosVenda,
 			"util"     => $util,
         ));
 
@@ -336,6 +336,7 @@ class MercadoriaController extends AbstractActionController{
         $sm = $this->getServiceLocator();
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         try {
+
             $dbAdapter->getDriver()->getConnection()->beginTransaction();
             $id = (int) $this->params()->fromQuery('id');
 

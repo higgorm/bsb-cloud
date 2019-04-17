@@ -224,8 +224,8 @@
                                                     </li>
 												</ul>
 											</li>
-											<!--<li class="">
-												<a href="/agenda" class="auto">
+											<li class="">
+												<a href="/agenda/index" class="auto">
 													<span class="pull-right text-muted">
 														<i class="i i-circle-sm-o text"></i>
 														<i class="i i-circle-sm text-active"></i>
@@ -234,7 +234,7 @@
 													<span class="font-bold">Agenda</span>
 												</a>
 											</li>
-											-->
+
 											<li class="">
 												<a href="/pedido/lista-tablet" class="auto">
 													<span class="pull-right text-muted">
@@ -287,8 +287,7 @@
 													<span class="font-bold">Nota Fiscal Eletrônica</span>
 												</a>
 												<ul class="nav dk">
-												
-													
+
                                                     <li>
                                                         <a href="/nota/avulsa" class="auto">
                                                             <i class="i i-dot"></i>
@@ -333,7 +332,30 @@
                                                     </li>
                                                 </ul>
 											</li>
-
+                                            <li class="">
+                                                <a href="#" class="auto">
+                                                    <span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+                                                        <i class="i i-circle-sm text-active"></i>
+                                                    </span>
+                                                    <i class="fa fa-users"></i>
+                                                    <span class="font-bold">CRM</span>
+                                                </a>
+                                                <ul class="nav dk">
+                                                    <li>
+                                                        <a href="/mail/analise" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Análise</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/mail/crm" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>E-MAIL</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
                                             <li class="<?php echo ($url[0] != '/agenda/index') ? '' : '' ?>">
                                                 <a href="#" class="auto">
                                                     <span class="pull-right text-muted">
@@ -346,14 +368,14 @@
                                                 <ul class="nav dk">
                                                     <!-- RELATORIO ATENDIMENTO -->
                                                     <li class="">
-                                                       <!-- <a href="#" class="auto">
+                                                        <a href="#" class="auto">
                                                             <span class="pull-right text-muted">
                                                                 <i class="i i-circle-sm-o text"></i>
                                                                 <i class="i i-circle-sm text-active"></i>
                                                             </span>
                                                             <i class="i i-dot icon"></i>
                                                             <span class="font-bold">Atendimento</span>
-                                                        </a>-->
+                                                        </a>
                                                         <ul class="nav dk">
                                                             <li >
                                                                 <a href="/relatorio-atendimento/pesquisa" class="auto">
@@ -421,7 +443,7 @@
                                                     </li>
 
                                                     <!-- RELATORIO ESTOQE -->
-                                                   <!-- <li class="">
+                                                    <li class="">
                                                         <a href="#" class="auto">
                                                             <span class="pull-right text-muted">
                                                                 <i class="i i-circle-sm-o text"></i>
@@ -438,7 +460,7 @@
                                                                 </a>
                                                             </li>
                                                         </ul>
-                                                    </li>-->
+                                                    </li>
 
                                                     <!-- RELATORIO GERENCIAL -->
                                                     <li class="">
@@ -466,55 +488,6 @@
                                                                 </a>
                                                             </li>
                                                         </ul>
-                                                    </li>
-
-                                                </ul>
-                                            </li>
-
-
-
-
-
-                                            <li class="<?php echo ($url[0] != '') ? '' : '' ?>">
-                                                <a href="#" class="auto">
-                                                    <span class="pull-right text-muted">
-                                                        <i class="i i-circle-sm-o text"></i>
-                                                        <i class="i i-circle-sm text-active"></i>
-                                                    </span>
-                                                    <i class="i i-graph icon"></i>
-                                                    <span class="font-bold">Central de Relatórios</span>
-                                                </a>
-                                                <ul class="nav dk">
-                                                    <!-- RELATORIO ATENDIMENTO -->
-                                                    <li class="">
-                                                       <!-- <a href="#" class="auto">
-                                                            <span class="pull-right text-muted">
-                                                                <i class="i i-circle-sm-o text"></i>
-                                                                <i class="i i-circle-sm text-active"></i>
-                                                            </span>
-                                                            <i class="i i-dot icon"></i>
-                                                            <span class="font-bold">Atendimento</span>
-                                                        </a>-->
-                                                        <ul class="nav dk">
-                                                            <li >
-                                                                <a href="" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Relatórios</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <!-- RELATORIO AGENDAMENTO -->
-                                                    <li class="">
-                                                        <a href="#" class="auto">
-                                                            <span class="pull-right text-muted">
-                                                                <i class="i i-circle-sm-o text"></i>
-                                                                <i class="i i-circle-sm text-active"></i>
-                                                            </span>
-                                                            <i class="i i-dot icon"></i>
-                                                            <span class="font-bold">relatorio</span>
-                                                        </a>
                                                         <ul class="nav dk">
                                                             <li >
                                                                 <a href="/relatorio-pedido/pesquisa-multi-loja" class="auto">
@@ -528,30 +501,6 @@
                                                 </ul>
                                             </li>
 
-
-
-
-
-
-
-
-
-
-                                            <?php if ($url[0] == '/agenda/index'): ?>
-                                                <li class="active">
-                                                    <a href="#" class="auto">
-                                                        <i class="i i-calendar"></i>
-                                                        <span class="font-bold">CALENDÁRIO</span>
-                                                    </a>
-                                                    <ul>
-                                                        <li>
-                                                            <span>
-                                                                <div id="txtCalendario"></div>
-                                                            </span>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            <?php endif; ?>
                                         </ul>
                                     </nav>
                                     <!-- / nav -->

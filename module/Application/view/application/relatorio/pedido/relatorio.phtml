@@ -5,16 +5,16 @@
     <body>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td width="8%" align="left">
-                    <?php echo @$this->logo ?>
+                <td width="15%" align="left">
+                    <?php echo $this->logo ?>
                 </td>
-                <td width="77%" align="left">
-                    <b><?php echo htmlentities(@$this->dsLoja); ?></b><br>
-                    Sistema de Gest&atilde;o Empresarial <?php //echo VERSAO_GESTAO_EMPRESARIAL ?><br>
-                    <b>RELAT&oacute;RIO DE PEDIDO</b>
+                <td width="70%" align="left">
+                    <b><?php echo utf8_encode(@$this->dsLoja); ?></b><br>
+                    Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL ?><br>
+                    <b>Relatório de pedido</b>
                 </td>
                 <td width="15%" align="right">
-                    
+                    <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
                 </td>
             </tr>
             <tr>

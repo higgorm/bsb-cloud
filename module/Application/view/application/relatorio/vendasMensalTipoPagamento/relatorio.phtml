@@ -11,13 +11,13 @@ hr{margin-bottom:2.5px!important; margin-top:0px!important};
 <body>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="8%" align="left">
+    <td width="15%" align="left">
     	<?php echo $this->logo ?> 
     </td>
-    <td width="77%" align="left">
+    <td width="70%" align="left">
     	  <b><?php echo htmlentities($this->dsLoja); ?></b><br>
     	  Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?><br>
-	      <b><?php echo htmlentities("Relatório de Vendas Mensais por Tipo de Pagamento")?></b>
+	      <b><?php echo "Relat&oacute;rio de Vendas Mensais por Tipo de Pagamento" ?></b>
     </td>
     <td width="15%" align="right">
     <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
@@ -54,9 +54,9 @@ hr{margin-bottom:2.5px!important; margin-top:0px!important};
     <th width="7%" class="text-right" align="right" nowrap><?php echo htmlentities("Anual")?></th>
   </tr>
   <?php
-  
+
 	$totalGeral = Array();
-  
+
   	foreach($this->lista as $linha)
 	{
 		print '<tr>

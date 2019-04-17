@@ -160,21 +160,21 @@ class Module {
                     $table = new Model\FuncionarioTable($adapter);
                     return $table;
                 },
-//                "agendamento_franquia" => function($sm) {
-//                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-//                    $table = new Model\AgendamentoFranquiaTable($adapter);
-//                    return $table;
-//                },
-//                "agendamento_franquia_table" => function($sm) {
-//                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-//                    $table = new Model\AgendamentoFranquiaTable($adapter);
-//                    return $table;
-//                },
-//                "agendamento_franquia_servicos" => function($sm) {
-//                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-//                    $table = new Model\AgendamentoFranquiaServicosTable($adapter);
-//                    return $table;
-//                },
+                "agendamento_franquia" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\AgendamentoFranquiaTable($adapter);
+                    return $table;
+                },
+                "agendamento_franquia_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\AgendamentoFranquiaTable($adapter);
+                    return $table;
+                },
+                "agendamento_franquia_servicos" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\AgendamentoFranquiaServicosTable($adapter);
+                    return $table;
+                },
                 "mercadoria_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new Model\MercadoriaTable($adapter);

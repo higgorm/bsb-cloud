@@ -142,6 +142,8 @@ return array(
         'relatorio-pedido/detalhe-multi-loja',
 		'relatorio-nota/pesquisa',
         'relatorio-nota/relatorio',
+        'relatorio-vendas-secao/pesquisa',
+        'relatorio-vendas-secao/relatorio',
 
         //CAIXA
         'caixa/index',

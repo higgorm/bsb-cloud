@@ -10,13 +10,13 @@
 <body>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="8%" align="left">
+    <td width="15%" align="left">
     	<?php echo $this->logo ?> 
     </td>
-    <td width="77%" align="left">
-    	  <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+    <td width="70%" align="left">
+    	  <b><?php echo utf8_encode($this->dsLoja); ?></b><br>
     	  Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?><br>
-	      <b><?php echo htmlentities("RELATÓRIO INVENTÁRIO DE ESTOQUE")?></b>
+	      <b><?php echo utf8_encode("Relatório inventário de estoque")?></b>
     </td>
     <td width="15%" align="right">
     <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
@@ -30,9 +30,9 @@
   <tr>
     <td colspan="7" >
     	Tipo Mercadoria / Se&ccedil;&atilde;o:<br>
-    	Livro de pre&ccedil;os: <?php echo htmlentities($this->nrLivroPreco);?><br>
-    	Ordem: <?php echo htmlentities($this->ordem);?><br>
-    	Apenas mercadoria com estoque positivo: <?php echo htmlentities(($this->estoquePositivo == 1 ? "Sim" : "Não"));?>
+    	Livro de pre&ccedil;os: <?php echo utf8_encode($this->nrLivroPreco);?><br>
+    	Ordem: <?php echo utf8_encode($this->ordem);?><br>
+    	Apenas mercadoria com estoque positivo: <?php echo utf8_encode(($this->estoquePositivo == 1 ? "Sim" : "Não"));?>
     </td>
   </tr>
   
@@ -42,9 +42,9 @@
   <tr>
     <th width="7%" class="text-left" align="left">C&oacute;digo</th>
     <th width="40%" class="text-left" align="left">Descri&ccedil;&atilde;o</th>
-    <th width="10%" class="text-left" align="left"><?php echo htmlentities("Cód. origem")?></th>
-    <th width="10%" class="text-right" align="right"><?php echo htmlentities("Preço custo")?></th>
-    <th width="10%" class="text-right" align="right"><?php echo htmlentities("Preço venda")?></th>
+    <th width="10%" class="text-left" align="left"><?php echo utf8_encode("Cód. origem")?></th>
+    <th width="10%" class="text-right" align="right"><?php echo utf8_encode("Preço custo")?></th>
+    <th width="10%" class="text-right" align="right"><?php echo utf8_encode("Preço venda")?></th>
     <th width="10%" class="text-right" align="right">Quantidade</th>
     <th width="13%" class="text-right" align="right">Custo total</th>
   </tr>
@@ -58,7 +58,7 @@
 	{
 		print '<tr>
 			    <td class="text-left" align="left">'.$linha["Cd_Mercadoria"].'</td>
-			    <td class="text-left" align="left">'.htmlentities($linha["DescricaoMercadoria"]).'</td>
+			    <td class="text-left" align="left">'.utf8_encode($linha["DescricaoMercadoria"]).'</td>
 			    <td class="text-right" align="right"></td>
 			    <td class="text-right" align="right">'.number_format($linha["VL_Preco_Venda"],2,",",".").'</td>
 			    <td class="text-right" align="right">'.number_format($linha["VL_Preco_Compra"],2,",",".").'</td>

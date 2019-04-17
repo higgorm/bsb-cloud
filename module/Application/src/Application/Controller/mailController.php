@@ -34,6 +34,7 @@ class MailController extends AbstractActionController
     public function getTable($table)
     {
         $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
         return $sm->get($table);
     }
 
@@ -238,7 +239,7 @@ class MailController extends AbstractActionController
         $pdf->setVariables(array(
             'dsLoja' => $session->dsLoja,
             'dsPesquisa' => $tipoAtendimento,
-            'logo' => '<img src="' . realpath(__DIR__ . '/../../../../../public/img') . '/logo-relatorio.png" alt="logo"  />',
+            'logo' => '<img src="' . realpath(__DIR__ . '/../../../../../public/img') . '/logo-orange-small.png" alt="logo"  />',
             'arrMail' => $arrMail,
             'dataAtual' => date("d/m/Y"),
             'horaAtual' => date("h:i:s"),
@@ -299,17 +300,22 @@ class MailController extends AbstractActionController
     }
 
     public function verClientesAction(){
-        $sm = $this->getServiceLocator();
-        $session = new Container("orangeSessionContainer");
-        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-        $array = $this->getTable("mail_table")->getAnalise($session->cdLoja);
 
+        $session = new Container("orangeSessionContainer");
+
+        $array = $this->getTable("mail_table")->getAnalise($session->cdLoja);
+        $arrMail = array();
         try {
             $tipo = $this->params()->fromQuery('tipo');
 
-            foreach($array[$tipo] as $id){
-                $arrMail[$id] = $this->getTable("cliente_table")->getId($id);
+            if (is_array($array)) {
+                if(isset($array[$tipo])) {
+                    foreach($array[$tipo] as $id){
+                        $arrMail[$id] = $this->getTable("cliente_table")->getId($id);
+                    }
+                }
             }
+
             $view = new ViewModel(array(
                 'arrMail' => $arrMail
             ));
@@ -320,7 +326,8 @@ class MailController extends AbstractActionController
             return $view;
 
         } catch (Exception $e) {
-            $dbAdapter->getDriver()->getConnection()->rollback();
+
+            return false;
         }
     }
 

@@ -82,6 +82,9 @@ class relatorioNotaController  extends RelatorioController
     		$viewModel = new ViewModel();
     		$viewModel->setTerminal(true);
     		$viewModel->setVariable('lista',$results);
+            $viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
+            $viewModel->setVariable('dataAtual',date("d/m/Y"));
+            $viewModel->setVariable('horaAtual',date("h:i:s"));
     		$viewModel->setTemplate("application/relatorio/nota/relatorio.phtml");
     		return $viewModel;
     	}
@@ -114,7 +117,10 @@ class relatorioNotaController  extends RelatorioController
 
     		// To set view variables
     		$pdf->setVariables(array(
-    				'lista'=>$results
+                'dataAtual' => date("d/m/Y"),
+                'horaAtual' => date("h:i:s"),
+                'logo' => '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-orange-small.png" alt="logo"  />',
+                'lista'=>$results
     		));
 
     		$pdf->setTemplate("application/relatorio/nota/relatorio.phtml");

@@ -1,6 +1,6 @@
 <?php
 /**
- * Classe responsável pelo acesso REST das entidades
+ * Classe responsÃ¡vel pelo acesso REST das entidades
  *
  * @category Api
  * @package  Controller
@@ -26,15 +26,12 @@
       */
      public function getList()
      {
-         return new JsonModel(array('mensagem'=> 'Nada a listar'));
-
-         //$notaFiscalService = new NotaFiscalService( $this->getServiceLocator(),541);
-         //$listaNfe   = $notaFiscalService->getArrayList(array());
-         //return new JsonModel($listaNfe);
+         $this->response->setStatusCode(Response::STATUS_CODE_400);
+         //return new JsonModel(array('mensagem'=> 'Nada a listar'));
      }
 
      /**
-      * Retorna uma única entidade
+      * Retorna uma Ãºnica entidade
       *
       *
       * @param int $id  Id da entidade
@@ -44,7 +41,8 @@
      public function get($id)
      {
          // TODO: Implement get() method.
-         return new JsonModel(array('mensagem'=> 'Nada a listar por id'));
+         $this->response->setStatusCode(Response::STATUS_CODE_400);
+         //return new JsonModel(array('mensagem'=> 'Nada a listar por id'));
      }
 
      /**
@@ -56,36 +54,34 @@
       */
      public function create ($data)
      {
-         //$this­>response­>getHeaders()­>addHeaderLine('Content­ type','applicationjson');
          if (empty($data)) {
-             //$this­>response­>setStatusCode(Response::STATUS_CODE_400);
-             return new JsonModel(array('mensagem'=>'Nenhum dado foi  enviado'));
+             $this->response->setStatusCode(Response::STATUS_CODE_400);
+
          }
      }
 
      /**
       * Atualiza uma entidade
-      * @param  int $id O código da entidade a ser atualizada
+      * @param  int $id O cÃ³digo da entidade a ser atualizada
       * @param  array $data Os dados sendo alterados
       *
       * @return array       Retorna a entidade atualizada
       */
      public function update($id, $data)
      {
-         //$this­>response­>setStatusCode(Response::STATUS_CODE_401);
-         return new JsonModel(array('mensagem'=>'Você precisa estar  logado'));
+         $this->response->setStatusCode(Response::STATUS_CODE_401);
      }
 
      /**
       * Exclui uma entidade
       *
-      * @param  int $id Id da entidade sendo excluída
+      * @param  int $id Id da entidade sendo excluÃ­da
       *
       * @return int
       */
       public function delete($id)
       {
-        //$this­>response­>setStatusCode(Response::STATUS_CODE_401);
-        return new JsonModel(array('mensagem'=>'Você precisa estar  logado'));
+        $this->response->setStatusCode(Response::STATUS_CODE_401);
+
       }
  }

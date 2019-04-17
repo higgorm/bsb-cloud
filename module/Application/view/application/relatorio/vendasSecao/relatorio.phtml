@@ -30,9 +30,9 @@ function imprimevalores($dataGrafico, $totalAnual)
                     <?php echo $this->logo ?>
                 </td>
                 <td width="77%" align="left">
-                    <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+                    <b><?php echo utf8_encode($this->dsLoja); ?></b><br>
                     Sistema de Gestão Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL ?><br>
-                    <b><?php echo "Relatório de Vendas Mensais por Seção no ano de {$this->ano} na loja {$this->dsLoja}" ?></b>
+                    <b><?php echo utf8_encode("Relatório de Vendas Mensais por Seção no ano de {$this->ano} na loja {$this->dsLoja}") ?></b>
                 </td>
                 <td width="15%" align="right">
                     <h6><?php echo $this->horaAtual ?><br><?php echo $this->dataAtual ?></h6>
@@ -45,19 +45,19 @@ function imprimevalores($dataGrafico, $totalAnual)
         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
             <tr>
                 <th width="10%" class="text-left" align="left" nowrap>Tipo</th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Jan") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Fev") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Mar") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Abr") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Mai") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Jun") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Jul") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Ago") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Set") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Out") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Nov") ?></th>
-                <th width="6%" class="text-right" align="right"><?php echo htmlentities("Dez") ?></th>
-                <th width="7%" class="text-right" align="right" nowrap><?php echo htmlentities("Anual") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Jan") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Fev") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Mar") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Abr") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Mai") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Jun") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Jul") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Ago") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Set") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Out") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Nov") ?></th>
+                <th width="6%" class="text-right" align="right"><?php echo utf8_encode("Dez") ?></th>
+                <th width="7%" class="text-right" align="right" nowrap><?php echo utf8_encode("Anual") ?></th>
             </tr>
             <tr>
                 <td colspan="14"><hr></td>
@@ -86,7 +86,7 @@ function imprimevalores($dataGrafico, $totalAnual)
             foreach ($this->lista as $linha) {
 
                 print '<tr>
-			    <td class="text-left produtoServico" align="left">' . $linha["CD_TIPO_mercadoria"] . ' ' . htmlentities($linha["DS_Tipo_Mercadoria"]) . '</td>
+			    <td class="text-left produtoServico" align="left">' . $linha["CD_TIPO_mercadoria"] . ' ' . utf8_encode($linha["DS_Tipo_Mercadoria"]) . '</td>
 			    <td class="text-right" align="right">' . number_format($linha["Vendas01"], 2, ",", ".") . '</td>
 			    <td class="text-right" align="right">' . number_format($linha["Vendas02"], 2, ",", ".") . '</td>
     			<td class="text-right" align="right">' . number_format($linha["Vendas03"], 2, ",", ".") . '</td>
@@ -118,7 +118,7 @@ function imprimevalores($dataGrafico, $totalAnual)
                 $totalGeral[12]["Anual"] = $totalGeral[12]["Anual"] + number_format((float) $linha["TotalAnual"], 2, ",", ".");
 
 
-                $dataGrafico[] = array(htmlentities($linha["DS_Tipo_Mercadoria"]) => $linha["TotalAnual"]);
+                $dataGrafico[] = array(utf8_encode($linha["DS_Tipo_Mercadoria"]) => $linha["TotalAnual"]);
             }
             ?>
 

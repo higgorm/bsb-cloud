@@ -64,14 +64,14 @@ class FranquiaMacaTable extends AbstractTableGateway {
         if ($this->getId($cdLoja, $nrMaca)) {
             $this->update($data, array("cd_loja" => $cdLoja, "nr_maca" => $nrMaca));
         } else {
-            $nextVal = "SELECT MAX(nr_maca)+1 AS nr_maca FROM TB_FRANQUIA_MACA where CD_LOJA = ? ";
+
+            $nextVal = "SELECT ISNULL(MAX(nr_maca),0)+1 AS nr_maca FROM dbo.TB_FRANQUIA_MACA where CD_LOJA = ? ";
             $statement = $this->adapter->createStatement($nextVal);
             $result = $statement->execute(array("cd_loja"=>$cdLoja));
 
             foreach ($result as $res) {
                 $data['nr_maca'] = $res['nr_maca'];
             }
-
             $this->insert($data);
         }
     }

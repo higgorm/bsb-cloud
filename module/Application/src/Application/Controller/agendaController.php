@@ -28,6 +28,7 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
 class AgendaController extends AbstractActionController {
 
     protected $macaTable;
+    protected $agendamentoFranquiaTable;
     protected $_intervalo = 30;
     protected $_horaInicio = '08';
     protected $_minutoInicio = '00';
@@ -87,15 +88,19 @@ class AgendaController extends AbstractActionController {
      * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
      */
     public function indexAction() {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+        $session = new Container("orangeSessionContainer");
+        if( @$session->cdBase ){
+            $statement = $dbAdapter->query("USE BDGE_".$session->cdBase);
+            $statement->execute();
+        }
+
         $form = new CadastroClienteAgenda($dbAdapter);
         $terminal = $this->params()->fromQuery('modal') == 'show' ? true : false;
-		
-		$session = new Container("orangeSessionContainer");
-		if( @$session->cdBase ){
-			$statement = $this->adapter->query("USE BDGE_".$session->cdBase);
-			$statement->execute();
-		}
+
 		
         $dataAtual = $this->params()->fromQuery('dataAtual');
         $dataInicio = $datafim = (!empty($dataAtual)) ? $dataAtual : date('d/m/Y');
@@ -219,7 +224,15 @@ class AgendaController extends AbstractActionController {
     }
 
     public function cadastrarClienteAgendaAction() {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+        $session = new Container("orangeSessionContainer");
+        if( @$session->cdBase ){
+            $statement = $dbAdapter->query("USE BDGE_".$session->cdBase);
+            $statement->execute();
+        }
+
         $form = new CadastroClienteAgenda($dbAdapter);
 
         $session = new Container("orangeSessionContainer");
@@ -267,14 +280,20 @@ class AgendaController extends AbstractActionController {
     }
 
     public function agendamentoClienteAction() {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+        $session = new Container("orangeSessionContainer");
+        if( @$session->cdBase ){
+            $statement = $dbAdapter->query("USE BDGE_".$session->cdBase);
+            $statement->execute();
+        }
 
         try {
             $form = new CadastroClienteAgenda($dbAdapter);
 
             if ($this->getRequest()->isPost()) {
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
-                $sm = $this->getServiceLocator($dbAdapter);
 
                 $param = array();
                 $param['total_venda'] = 0;
@@ -287,7 +306,6 @@ class AgendaController extends AbstractActionController {
                 $param['st_contatado'] = 'N';
                 $param['cd_funcionario'] = $param['cdop'];
 
-                $session = new Container("orangeSessionContainer");
                 $param['cd_loja'] = $session->cdLoja;
                 $param['dt_horario'] = date('d/m/Y H:i:s', strtotime(str_replace('/', '-', $param['dt_atendimento'] . ' ' . $param['hr_atendimento'])));
                 $param['dt_atendimento'] = date('d/m/Y H:i:s', strtotime(str_replace('/', '-', $param['dt_atendimento'] . ' ' . $param['hr_atendimento'])));
@@ -310,6 +328,7 @@ class AgendaController extends AbstractActionController {
                 $modelCliente = new AgendamentoFranquia();
                 $modelCliente->exchangeArray($param);
                 $sm->get("agendamento_franquia_table")->save($modelCliente);
+
 
                 // agendamento mercadoria
                 $modelCliente = new AgendamentoFranquiaServicos();

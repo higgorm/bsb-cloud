@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Relat�rio</title>
+<title>Relatório</title>
 <style type="text/css">
 <!--
 .style1 {font-family: Verdana, Arial, Helvetica, sans-serif}
@@ -10,13 +10,13 @@
 <body>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="8%" align="left">
+    <td width="15%" align="left">
     	<?php echo $this->logo ?>
     </td>
-    <td width="77%" align="left">
-    	  <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+    <td width="70%" align="left">
+    	  <b><?php echo utf8_encode($this->dsLoja); ?></b><br>
           <b>Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?></b><br>
-	      <b><?php echo htmlentities('Versão 2.0') ?></b>
+	      <b>Enviar e-mail</b>
     </td>
     <td width="15%" align="right">
     <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>

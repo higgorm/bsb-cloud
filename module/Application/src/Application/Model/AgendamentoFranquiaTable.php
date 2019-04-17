@@ -20,6 +20,7 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
 	public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
+        $this->resultSetPrototype->setArrayObjectPrototype(new AgendamentoFranquia());
         $this->initialize();
 		
 		$session = new Container("orangeSessionContainer");
@@ -68,6 +69,7 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
         );
 
         if ($this->getId($tableData)) {
+
             $this->update($data, array('cd_cliente' => (int) $tableData->cd_cliente,
                 'nr_maca' => (int) $tableData->nr_maca,
                 'cd_loja' => (int) $tableData->cd_loja,
@@ -213,18 +215,23 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
 
     public function atualizaAgendamentoFranquia($dados)
     {
-        $pedidostatement = $this->adapter->query("UPDATE
-                                                    TB_AGENDAMENTO_FRANQUIA
-                                                SET
-                                                    ST_CLIENTE_CHEGOU = 'S',
-                                                    NR_PEDIDO = ?,
-                                                    CD_CLIENTE = ?
-                                                WHERE
-                                                    CD_LOJA    = ? AND
-                                                    NR_MACA    = ? AND
-                                                    DT_HORARIO = ? ");
+        try{
+            $statement = $this->adapter->query("UPDATE
+                                                        TB_AGENDAMENTO_FRANQUIA
+                                                    SET
+                                                        ST_CLIENTE_CHEGOU = 'S',
+                                                        NR_PEDIDO = ?,
+                                                        CD_CLIENTE = ?
+                                                    WHERE
+                                                        CD_LOJA    = ? AND
+                                                        NR_MACA    = ? AND
+                                                        DT_HORARIO = ? ");
 
-        $pedidostatement->execute($dados);
+            $statement->execute($dados);
+
+        }catch(Exception $e){
+            return false;
+        }
     }
 
     public function getAgendamentoByNumeroPedido($nrPedido)

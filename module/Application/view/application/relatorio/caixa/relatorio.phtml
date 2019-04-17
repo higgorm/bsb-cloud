@@ -12,13 +12,13 @@
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="8%" align="left">
+    <td width="15%" align="left">
     	<?php echo $this->logo ?>
     </td>
-    <td width="77%" align="left">
-    	   <b><?php echo htmlentities($this->dsLoja); ?></b><br>
+    <td width="70%" align="left">
+    	   <b><?php echo utf8_encode($this->dsLoja); ?></b><br>
     	  Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL?><br>
-	      <b>RELAT&Oacute;RIO DE CAIXA RESUMIDO</b>
+	      <b>Relat&oacute;rio de caixa resumido</b>
     </td>
     <td width="15%" align="right">
     <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
@@ -33,9 +33,9 @@
     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
         <tr>
             <td colspan="6" >
-                Loja: <?php echo htmlentities($this->cdLoja." - ".$this->dsLoja);?><br/>
+                Loja: <?php echo utf8_encode($this->cdLoja." - ".$this->dsLoja);?><br/>
                 N&uacute;mero do caixa: <?php echo $this->numeroCaixa; ?><br/>
-                Operador: <?php echo htmlentities(@$this->total["CD_FUNCIONARIO"]." - ".$this->total["DS_FUNCIONARIO"])?><br/>
+                Operador: <?php echo utf8_encode(@$this->total["CD_FUNCIONARIO"]." - ".$this->total["DS_FUNCIONARIO"])?><br/>
                 Data: <?php echo $this->total["DT_ENTRADA"] ?>&nbsp;&nbsp;&nbsp;Hora de abertura: <?php echo $this->total["HORA_ENTRADA"] ?>&nbsp;&nbsp;&nbsp;Hora de fechamento: <?php echo $this->total["HORA_SAIDA"] ?>
                 <hr>
             </td>
@@ -75,9 +75,9 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
     <tr>
         <td colspan="6" >
-            Loja: <?php echo htmlentities($this->cdLoja." - ".$this->dsLoja);?><br/>
+            Loja: <?php echo utf8_encode($this->cdLoja." - ".$this->dsLoja);?><br/>
             N&uacute;mero do caixa: <?php echo $this->numeroCaixa; ?><br/>
-            Operador: <?php echo htmlentities(@$this->total["CD_FUNCIONARIO"]." - ".$this->total["DS_FUNCIONARIO"])?><br/>
+            Operador: <?php echo utf8_encode(@$this->total["CD_FUNCIONARIO"]." - ".$this->total["DS_FUNCIONARIO"])?><br/>
             Data: <?php echo $this->total["DT_ENTRADA"] ?>&nbsp;&nbsp;&nbsp;Hora de abertura: <?php echo $this->total["HORA_ENTRADA"] ?>&nbsp;&nbsp;&nbsp;Hora de fechamento: <?php echo $this->total["HORA_SAIDA"] ?>
             <hr>
         </td>

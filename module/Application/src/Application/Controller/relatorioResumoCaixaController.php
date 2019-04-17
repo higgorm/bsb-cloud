@@ -89,7 +89,7 @@ class relatorioResumoCaixaController extends RelatorioController
 
             $view = new ViewModel();
             $view->setTerminal(true);
-            $view->setVariable('logo', '<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+            $view->setVariable('logo', '<img src="/img/logo-orange-small.png" alt="logotipo"/>');
             $view->setVariable("cdLoja", $session->cdLoja);
             $view->setVariable("dsLoja", $session->dsLoja);
             $view->setVariable("dtAbertura", $dtAbertura);
@@ -142,7 +142,7 @@ class relatorioResumoCaixaController extends RelatorioController
             $pdf->setOption('paperSize', 'a4'); // Defaults to "8x11"
             $pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
 
-            $pdf->setVariable("logo",'<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+            $pdf->setVariable("logo",'<img src="/img/logo-orange-small.png" alt="logotipo"/>');
             $pdf->setVariable("cdLoja", $session->cdLoja);
             $pdf->setVariable("dsLoja", $session->dsLoja);
             $pdf->setVariable("dtAbertura", $dtAbertura);

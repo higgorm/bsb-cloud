@@ -35,14 +35,17 @@ class MercadoriaTable extends AbstractTableGateway {
         $select = new Select();
         //$where = new Where();
 		
-		$where = 'DT_EXCLUSAO IS NULL';
+		$where = 'M.DT_EXCLUSAO IS NULL';
         foreach ($param as $field => $search) {
             $where = $where . ' AND ' . $field . " like '%" . $search . "%'";  
         }
 
-        $select->from($this->table)
-            ->where($where)
-            ->order("DS_MERCADORIA");
+        $select->from(array('M' => $this->table))
+        ->join(array('R' => 'RL_PRAZO_LIVRO_PRECOS'), ' M.CD_MERCADORIA = R.CD_MERCADORIA','VL_PRECO_VENDA','LEFT')
+        ->where($where)
+        ->order("M.DS_MERCADORIA DESC");
+        //echo $select->getSqlString();
+        //exit;
 
         $adapter = new DbSelect($select, $this->adapter);
         $paginator = new Paginator($adapter);

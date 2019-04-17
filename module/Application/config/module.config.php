@@ -21,6 +21,7 @@ return array(
             'Application\Controller\RelatorioAgendamento' => 'Application\Controller\relatorioAgendamentoController',
             'Application\Controller\RelatorioAtendimento' => 'Application\Controller\relatorioAtendimentoController',
             'Application\Controller\RelatorioVendasMensalTipoPagamento' => 'Application\Controller\relatorioVendasMensalTipoPagamentoController',
+            'Application\Controller\RelatorioVendasSecao' => 'Application\Controller\relatorioVendasSecaoController',
             'Application\Controller\RelatorioInventarioEstoque' => 'Application\Controller\relatorioInventarioEstoqueController',
             'Application\Controller\RelatorioCaixaResumido' => 'Application\Controller\relatorioCaixaResumidoController',
             'Application\Controller\RelatorioResumoCaixa' => 'Application\Controller\relatorioResumoCaixaController',

@@ -120,7 +120,7 @@ class IndexController extends AbstractActionController {
             // get the db adapter
             $sm = $this->getServiceLocator();
             $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-			
+
 			$statement = $dbAdapter->query("USE LOGIN");
 			$statement->execute();
 
