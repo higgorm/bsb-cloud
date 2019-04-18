@@ -193,6 +193,14 @@ return array(
         'ajax/get-classificacao-financeira',
         'ajax/get-operador-loja',
 
+        //ACL controller's
+        'perfil/index',
+        'perfil/cadastrar',
+        'perfil/editar',
+        'usuario/index',
+        'usuario/cadastrar',
+        'usuario/editar',
+
 
     ),
     'atendente' => array(
@@ -284,6 +292,9 @@ return array(
         'relatorio-agendamento/pesquisa',
         'relatorio-agendamento/filtro',
         'relatorio-agendamento/relatorio',
+
+
+
     ),
     'gerente' => array(
         // INDEX

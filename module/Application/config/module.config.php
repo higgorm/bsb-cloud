@@ -39,6 +39,10 @@ return array(
             'Application\Controller\ContasPagar' => 'Application\Controller\contasPagarController',
             'Application\Controller\Estoque' => 'Application\Controller\estoqueController',
             'Application\Controller\Ajax' => 'Application\Controller\AjaxController',
+
+            //acl
+            'Application\Controller\Perfil' => 'Application\Controller\PerfilController',
+            'Application\Controller\Usuario' => 'Application\Controller\UsuarioController',
         ),
     ),
 

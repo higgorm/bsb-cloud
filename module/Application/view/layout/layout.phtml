@@ -174,6 +174,32 @@
                                                     <span class="font-bold">PAINEL INICIAL</span>
                                                 </a>
                                             </li>
+                                            <li class="">
+                                                <a href="#" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+                                                    <i class="fa fa-lock"></i>
+                                                    <span class="font-bold">Controle de Acesso</span>
+                                                </a>
+                                                <ul class="nav dk">
+                                                    <li>
+                                                        <a href="/perfil/index" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Perfis do sistema</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <ul class="nav dk">
+                                                    <li>
+                                                        <a href="/usuario/index" class="auto">
+                                                            <i class="i i-dot"></i>
+                                                            <span>Usuários Web</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
 											<li class="">
 												<a href="#" class="auto">
 													<span class="pull-right text-muted">
@@ -256,26 +282,7 @@
 												</a>
 											</li>
 											
-											<li class="">
-												<a href="/contas-pagar" class="auto">
-													<span class="pull-right text-muted">
-														<i class="i i-circle-sm-o text"></i>
-														<i class="i i-circle-sm text-active"></i>
-													</span>
-													<i class="fa fa-paperclip"></i>
-													<span class="font-bold">Contas à Pagar</span>
-												</a>
-											</li>
-											<li class="">
-												<a href="/contas-receber" class="auto">
-													<span class="pull-right text-muted">
-														<i class="i i-circle-sm-o text"></i>
-														<i class="i i-circle-sm text-active"></i>
-													</span>
-													<i class="fa fa-money"></i>
-													<span class="font-bold">Contas à Receber</span>
-												</a>
-											</li>
+
 											
 											<li class="">
 												<a href="" class="auto">
@@ -333,6 +340,106 @@
                                                 </ul>
 											</li>
                                             <li class="">
+                                                <a href="/contas-pagar" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+                                                    <i class="fa fa-paperclip"></i>
+                                                    <span class="font-bold">Contas à Pagar</span>
+                                                </a>
+                                            </li>
+                                            <li class="">
+                                                <a href="/contas-receber" class="auto">
+													<span class="pull-right text-muted">
+														<i class="i i-circle-sm-o text"></i>
+														<i class="i i-circle-sm text-active"></i>
+													</span>
+                                                    <i class="fa fa-money"></i>
+                                                    <span class="font-bold">Contas à Receber</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="<?php echo ($url[0] != '/agenda/index') ? '' : '' ?>">
+                                                <a href="#" class="auto">
+                                                    <span class="pull-right text-muted">
+                                                        <i class="i i-circle-sm-o text"></i>
+                                                        <i class="i i-circle-sm text-active"></i>
+                                                    </span>
+                                                    <i class="i i-graph icon"></i>
+                                                    <span class="font-bold">Relatórios</span>
+                                                </a>
+                                                <ul class="nav dk">
+                                                    <!-- RELATORIO ATENDIMENTO -->
+                                                    <li >
+                                                        <a href="/relatorio-atendimento/pesquisa" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Atendimento - Produtos / Serviços Vendidos</span>
+                                                        </a>
+                                                    </li>
+
+													<li class="">
+														<a href="/relatorio-nota/pesquisa" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Notas</span>
+                                                        </a>
+													</li>
+
+                                                    <li >
+                                                        <a href="/relatorio-pedido/pesquisa" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Pedidos</span>
+                                                        </a>
+                                                    </li>
+
+
+                                                    <!-- RELATORIO AGENDAMENTO -->
+                                                    <li >
+                                                        <a href="/relatorio-agendamento/pesquisa" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Agendamentos</span>
+                                                        </a>
+                                                    </li>
+                                                    <!-- RELATORIO CAIXA -->
+                                                    <li >
+                                                        <a href="/relatorio-caixa/pesquisa" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Caixa</span>
+                                                        </a>
+                                                    </li>
+                                                    <li >
+                                                        <a href="/relatorio-resumo-caixa/pesquisa" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Resumo de Caixa</span>
+                                                        </a>
+                                                    </li>
+
+                                                    <!-- RELATORIO ESTOQE -->
+                                                    <li >
+                                                        <a href="/relatorio-inventario-estoque/pesquisa" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Invent&aacute;rio de Estoque</span>
+                                                        </a>
+                                                    </li>
+
+                                                    <!-- RELATORIO GERENCIAL -->
+                                                    <li >
+                                                        <a href="/relatorio-vendas-mensal-tipo-pagamento/pesquisa" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Vendas Mensais Por Tipo de Pagamento</span>
+                                                        </a>
+                                                    </li>
+
+
+                                                    <li >
+                                                        <a href="/relatorio-pedido/pesquisa-multi-loja" class="auto">
+                                                            <i class="i i-dots"></i>
+                                                            <span>Multi-Loja</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="">
                                                 <a href="#" class="auto">
                                                     <span class="pull-right text-muted">
 														<i class="i i-circle-sm-o text"></i>
@@ -356,151 +463,6 @@
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li class="<?php echo ($url[0] != '/agenda/index') ? '' : '' ?>">
-                                                <a href="#" class="auto">
-                                                    <span class="pull-right text-muted">
-                                                        <i class="i i-circle-sm-o text"></i>
-                                                        <i class="i i-circle-sm text-active"></i>
-                                                    </span>
-                                                    <i class="i i-graph icon"></i>
-                                                    <span class="font-bold">Relatórios</span>
-                                                </a>
-                                                <ul class="nav dk">
-                                                    <!-- RELATORIO ATENDIMENTO -->
-                                                    <li class="">
-                                                        <a href="#" class="auto">
-                                                            <span class="pull-right text-muted">
-                                                                <i class="i i-circle-sm-o text"></i>
-                                                                <i class="i i-circle-sm text-active"></i>
-                                                            </span>
-                                                            <i class="i i-dot icon"></i>
-                                                            <span class="font-bold">Atendimento</span>
-                                                        </a>
-                                                        <ul class="nav dk">
-                                                            <li >
-                                                                <a href="/relatorio-atendimento/pesquisa" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Produtos / Serviços Vendidos</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-													<li class="">
-														<a href="/relatorio-nota/pesquisa" class="auto">
-                                                            <span class="pull-right text-muted">
-                                                                <i class="i i-circle-sm-o text"></i>
-                                                                <i class="i i-circle-sm text-active"></i>
-                                                            </span>
-                                                            <i class="i i-dot icon"></i>
-                                                            <span class="font-bold">Nota</span>
-                                                        </a>
-													</li> 
-
-                                                    <!-- RELATORIO AGENDAMENTO -->
-                                                    <li class="">
-                                                        <a href="#" class="auto">
-                                                            <span class="pull-right text-muted">
-                                                                <i class="i i-circle-sm-o text"></i>
-                                                                <i class="i i-circle-sm text-active"></i>
-                                                            </span>
-                                                            <i class="i i-dot icon"></i>
-                                                            <span class="font-bold">Agendamento</span>
-                                                        </a>
-                                                        <ul class="nav dk">
-                                                            <li >
-                                                                <a href="/relatorio-agendamento/pesquisa" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Relatório de Agendamentos</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <!-- RELATORIO CAIXA -->
-                                                    <li class="">
-                                                        <a href="#" class="auto">
-                                                            <span class="pull-right text-muted">
-                                                                <i class="i i-circle-sm-o text"></i>
-                                                                <i class="i i-circle-sm text-active"></i>
-                                                            </span>
-                                                            <i class="i i-dot icon"></i>
-                                                            <span class="font-bold">Caixa</span>
-                                                        </a>
-                                                        <ul class="nav dk">
-                                                            <li >
-                                                                <a href="/relatorio-caixa/pesquisa" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Caixa</span>
-                                                                </a>
-                                                            </li>
-                                                            <li >
-                                                                <a href="/relatorio-resumo-caixa/pesquisa" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Resumo de Caixa</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <!-- RELATORIO ESTOQE -->
-                                                    <li class="">
-                                                        <a href="#" class="auto">
-                                                            <span class="pull-right text-muted">
-                                                                <i class="i i-circle-sm-o text"></i>
-                                                                <i class="i i-circle-sm text-active"></i>
-                                                            </span>
-                                                            <i class="i i-dot icon"></i>
-                                                            <span class="font-bold">Estoque</span>
-                                                        </a>
-                                                        <ul class="nav dk">
-                                                            <li >
-                                                                <a href="/relatorio-inventario-estoque/pesquisa" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Invent&aacute;rio de Estoque</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-
-                                                    <!-- RELATORIO GERENCIAL -->
-                                                    <li class="">
-                                                        <a href="#" class="auto">
-                                                            <span class="pull-right text-muted">
-                                                                <i class="i i-circle-sm-o text"></i>
-                                                                <i class="i i-circle-sm text-active"></i>
-                                                            </span>
-                                                            <i class="i i-dot icon"></i>
-                                                            <span class="font-bold">Gerencial</span>
-                                                        </a>
-                                                        <ul class="nav dk">
-                                                            <li >
-                                                                <a href="/relatorio-vendas-mensal-tipo-pagamento/pesquisa" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Vendas Mensais Por Tipo de Pagamento</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-														<ul class="nav dk">
-                                                            <li >
-                                                                <a href="/relatorio-pedido/pesquisa" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Pedidos</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                        <ul class="nav dk">
-                                                            <li >
-                                                                <a href="/relatorio-pedido/pesquisa-multi-loja" class="auto">
-                                                                    <i class="i i-dots"></i>
-                                                                    <span>Multi-Loja</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-
-                                                </ul>
-                                            </li>
-
                                         </ul>
                                     </nav>
                                     <!-- / nav -->
