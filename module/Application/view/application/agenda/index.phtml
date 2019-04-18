@@ -116,13 +116,13 @@
                                                     echo '<tr><td onclick="javascript:abreModal(\'' . $value['idcliente'] . '\',\'' . $value['id'] . '\',\'' . trim($value['maca']) . '\',\'' . trim($value['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
                                                 }
                                             } else {
-                                                echo '<tr><td onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
+                                                echo '<tr><td title="Clique para agendar" onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;-&nbsp;</td></tr>';
                                             }
 
                                             $horaNova = strtotime("$hora + $intervalo minutes");
                                             $hora = date("H:i", $horaNova);
                                         } else {
-                                            echo '<tr><td onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
+                                            echo '<tr><td title="Clique para agendar" onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;-&nbsp;</td></tr>';
 
                                             $horaNova = strtotime("$hora + $intervalo minutes");
                                             $hora = date("H:i", $horaNova);
