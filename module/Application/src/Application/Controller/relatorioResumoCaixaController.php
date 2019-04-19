@@ -63,7 +63,7 @@ class relatorioResumoCaixaController extends RelatorioController
 
             $caixa = array();
 
-            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, $dtAbertura, $dtFechamento);
+            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, date('Ymd',strtotime($dtAbertura)), date('Ymd',strtotime($dtFechamento)));
             foreach($totalCaixa as $result){
                 $DT = date("d/m/Y", strtotime($result['DT_MOVIMENTO']));
                 $caixa[$DT] = array(
@@ -113,7 +113,8 @@ class relatorioResumoCaixaController extends RelatorioController
             $dtFechamento = ($post->get('pdf_dtFinal')) ? $post->get('pdf_dtFinal') : NULL;
             $caixa = array();
 
-            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, $dtAbertura, $dtFechamento);
+           // $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, $dtAbertura, $dtFechamento);
+            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, date('Ymd',strtotime($dtAbertura)), date('Ymd',strtotime($dtFechamento)));
             foreach($totalCaixa as $result){
                 $DT = date("d/m/Y", strtotime($result['DT_MOVIMENTO']));
                 $caixa[$DT] = array(

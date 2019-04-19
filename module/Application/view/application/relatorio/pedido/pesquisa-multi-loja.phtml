@@ -32,9 +32,14 @@
                         <div class="form-group">
                         <label for="" class="control-label text-info">Ano de Referência</label>
                           <select class="selectpicker form-control" name="ano">
-                            <option>...</option>
-                            <option value="2016" <?php echo ($ano == '2016' ? 'selected' : '') ?>>2016</option>
-                            <option value="2017" <?php echo ($ano == '2017' ? 'selected' : '') ?>>2017</option>
+                                <option>...</option>
+                                <option value="2016" <?php echo ($ano == '2016' ? 'selected' : '') ?>>2016</option>
+                                <option value="2017" <?php echo ($ano == '2017' ? 'selected' : '') ?>>2017</option>
+                                <option value="2018" <?php echo ($ano == '2018' ? 'selected' : '') ?>>2018</option>
+                                <option value="2019" <?php echo ($ano == '2019' ? 'selected' : '') ?>>2019</option>
+                                <option value="2020" <?php echo ($ano == '2020' ? 'selected' : '') ?>>2020</option>
+                                <option value="2021" <?php echo ($ano == '2021' ? 'selected' : '') ?>>2021</option>
+                                <option value="2022" <?php echo ($ano == '2022' ? 'selected' : '') ?>>2022</option>
                           </select>  
                         </div>
                       </div>
@@ -60,7 +65,7 @@
                       </div>
                       <div class="x_panel">
                         <div>
-                          <h5>Acumulado do dia 1° até hoje:</h5> <h4 style="color: #FF8C00"><?php echo $total['TOTAL']?></h4> 
+                          <h5>Acumulado do dia 1° até hoje:</h5> <h4 style="color: #FF8C00"><?php echo number_format($total['TOTAL'],2,",",".") ?></h4>
                         </div>
 						<!--
                         <div>
@@ -68,7 +73,7 @@
                         </div>  
                         -->
                         <div>
-                          <h5>Média de vendas diárias:</h5> <h4 style="color: #FF8C00"><?php echo $total['MEDIA']?></h4> 
+                          <h5>Média de vendas diárias:</h5> <h4 style="color: #FF8C00"><?php echo number_format($total['MEDIA'],2,",",".") ?></h4>
                         </div>
 
                       </div>
@@ -81,7 +86,9 @@
 
                   <div >
                     <p></p>
-					<?php echo var_dump( $lista ); ?>
+					<?php foreach ($lista as $pedido): ?>
+                        <?php  var_dump( $pedido ); ?>
+                    <?php endforeach; ?>
                     <div class="table-responsive" style="padding: 20px" >
                       <table class="table">
                         <thead>
@@ -99,310 +106,310 @@
                         <tbody>
                           <tr class="even pointer">
                             <td class=" ">01/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="/relatorio-pedido/detalhe-multi-loja" class="auto">Ver</a></td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">02/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="chartjs2_bsb.html">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">03/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="morisjs_bsb.html">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">04/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="echarts_bsb.html">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">05/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">06/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">07/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">08/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">09/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">10/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">11/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">12/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">13/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">14/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">15/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">16/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">17/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">18/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">19/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">20/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">21/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">22/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 </td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">23/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 </td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="even pointer">
                             <td class=" ">24/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="odd pointer">
                             <td class=" ">25/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="odd pointer">
                             <td class=" ">26/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="odd pointer">
                             <td class=" ">27/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="odd pointer">
                             <td class=" ">28/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="odd pointer">
                             <td class=" ">29/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="odd pointer">
                             <td class=" ">30/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45 </td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>
                           <tr class="odd pointer">
                             <td class=" ">31/03</td>
-                            <td class="a-right a-right ">R$7,45 </td>
-                            <td class="a-right a-right ">R$19,45</td>
-                            <td class="a-right a-right ">R$23,05</td>
-                            <td class="a-right a-right ">R$19,00</td>
-                            <td class="a-right a-right ">R$9.45</td>
+                            <td class="a-right a-right ">R$0,00 </td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
+                            <td class="a-right a-right ">R$0,00</td>
                             <td class=" last"><a href="#">Ver</a>
                             </td>
                           </tr>

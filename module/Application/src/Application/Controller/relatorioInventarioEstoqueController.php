@@ -79,7 +79,7 @@ class RelatorioInventarioEstoqueController  extends RelatorioController
      *
      * @return \Zend\View\Model\ViewModel|\DOMPDFModule\View\Model\PdfModel
      */
-    public function relatorioInventarioEstoqueAction()
+    public function relatorioAction()
     {
     	 
     	//get session
@@ -156,7 +156,7 @@ class RelatorioInventarioEstoqueController  extends RelatorioController
     			$sql .= "	ORDER BY ".$dsOrdem;
     		}else {
     			$dsOrdem = " DescricaoMercadoria ";
-    			$dsLabelOrdem = "Produto / Serviço ";
+    			$dsLabelOrdem = "Produto / Serviï¿½o ";
     			$sql .= "	ORDER BY ".$dsOrdem;
     		}
     		

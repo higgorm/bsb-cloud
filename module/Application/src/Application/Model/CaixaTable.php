@@ -246,7 +246,7 @@ class CaixaTable extends AbstractTableGateway {
 						 WHERE
 	    				    CXP.CD_LOJA      = ? AND
 						    CXP.NR_CAIXA     = ? AND
-							CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							CXP.DT_EMISSAO   = ? AND
 							CXP.CD_TIPO_PAGAMENTO = 1 AND
 							CXP.ST_CANCELADO <> 'S'";
 
@@ -263,7 +263,7 @@ class CaixaTable extends AbstractTableGateway {
 						 WHERE
 	    				    CXP.CD_LOJA      = ? AND
 						    CXP.NR_CAIXA     = ? AND
-							CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							CXP.DT_EMISSAO   = ? AND
 							CXP.CD_TIPO_PAGAMENTO = 2 AND
 							CXP.ST_CANCELADO <> 'S'";
 
@@ -277,7 +277,7 @@ class CaixaTable extends AbstractTableGateway {
 							    	WHERE
 	    								CXP.CD_LOJA      		= ? AND
 								    	CXP.NR_CAIXA     		= ? AND
-								    	CXP.DT_EMISSAO   		= CONVERT(VARCHAR(10),?,103) AND
+								    	CXP.DT_EMISSAO   		= ? AND
 								    	CXP.CD_TIPO_PAGAMENTO 	= 2 AND
 								    	CXP.DT_EMISSAO 			=  CXP.DT_VENCIMENTO AND
 								    	CXP.ST_CANCELADO <> 'S'";
@@ -292,7 +292,7 @@ class CaixaTable extends AbstractTableGateway {
 							    	WHERE
 	    								CXP.CD_LOJA      		= ? AND
 								    	CXP.NR_CAIXA     		= ? AND
-								    	CXP.DT_EMISSAO   		= CONVERT(VARCHAR(10),?,103) AND
+								    	CXP.DT_EMISSAO   		= ? AND
 								    	CXP.CD_TIPO_PAGAMENTO 	= 2 AND
 								    	CXP.DT_EMISSAO 			<>  CXP.DT_VENCIMENTO AND
 								    	CXP.ST_CANCELADO <> 'S'";
@@ -309,7 +309,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      = ? AND
 							    	CXP.NR_CAIXA     = ? AND
-							    	CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   = ? AND
 							    	CXP.CD_TIPO_PAGAMENTO = 5 AND
 							    	CXP.ST_CANCELADO <> 'S'";
 
@@ -325,7 +325,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      = ? AND
 							    	CXP.NR_CAIXA     = ? AND
-							    	CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   = ? AND
 							    	CXP.CD_TIPO_PAGAMENTO = 12 AND
 							    	CXP.ST_CANCELADO <> 'S'";
 
@@ -341,7 +341,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      = ? AND
 							    	CXP.NR_CAIXA     = ? AND
-							    	CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   = ? AND
 							    	CXP.CD_TIPO_PAGAMENTO = 11 AND
 							    	CXP.ST_CANCELADO <> 'S'";
 
@@ -357,7 +357,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      = ? AND
 							    	CXP.NR_CAIXA     = ? AND
-							    	CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   = ? AND
 							    	CXP.CD_TIPO_PAGAMENTO = 10 AND
 							    	CXP.ST_CANCELADO <> 'S'";
 
@@ -373,7 +373,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      		= ? AND
 							    	CXP.NR_CAIXA     		= ? AND
-							    	CXP.DT_EMISSAO   		= CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   		= ? AND
 							    	CXP.CD_TIPO_PAGAMENTO 	= 3 AND
 							    	CXP.ST_CANCELADO <> 'S'
     			";
@@ -390,7 +390,7 @@ class CaixaTable extends AbstractTableGateway {
 							    	WHERE
     									CXP.CD_LOJA           = ? AND
 								    	CXP.NR_CAIXA     	  = ? AND
-								    	CXP.DT_EMISSAO   	  =  CONVERT(VARCHAR(10),?,103) AND
+								    	CXP.DT_EMISSAO   	  = ? AND
 								    	CXP.CD_TIPO_PAGAMENTO = 4 AND
 								    	CXP.ST_CANCELADO <> 'S'";
 
@@ -406,7 +406,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      = ? AND
 							    	CXP.NR_CAIXA     = ? AND
-							    	CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   = ? AND
 							    	CXP.CD_TIPO_PAGAMENTO = 8 AND
 							    	CXP.ST_CANCELADO <> 'S'";
 
@@ -422,7 +422,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      = ? AND
 							    	CXP.NR_CAIXA     = ? AND
-							    	CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   = ? AND
 							    	CXP.CD_TIPO_PAGAMENTO = 6 AND
 							    	CXP.ST_CANCELADO <> 'S'";
 
@@ -438,7 +438,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      = ? AND
 							    	CXP.NR_CAIXA     = ? AND
-							    	CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   = ? AND
 							    	CXP.CD_TIPO_PAGAMENTO = 7 AND
 							    	CXP.ST_CANCELADO <> 'S'";
 
@@ -453,7 +453,7 @@ class CaixaTable extends AbstractTableGateway {
 								WHERE
     									CD_LOJA = ?
 									AND NR_CAIXA = ?
-									AND DT_MOVIMENTO = CONVERT(VARCHAR(10),?,103)
+									AND DT_MOVIMENTO = ?
 									AND ST_CANCELADO <> 'S'
 									AND CD_TIPO_MOVIMENTO_CAIXA NOT IN (1, 2, 4, 5, 6, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
 							";
@@ -469,7 +469,7 @@ class CaixaTable extends AbstractTableGateway {
 								WHERE
     									CD_LOJA = ?
 									AND NR_CAIXA = ?
-									AND DT_MOVIMENTO = CONVERT(VARCHAR(10),?,103)
+									AND DT_MOVIMENTO = ?
 									AND ST_CANCELADO <> 'S'
 									AND CD_TIPO_MOVIMENTO_CAIXA NOT IN (1, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
 							";
@@ -486,7 +486,7 @@ class CaixaTable extends AbstractTableGateway {
 						    	WHERE
 	    							CXP.CD_LOJA      = ? AND
 							    	CXP.NR_CAIXA     = ? AND
-							    	CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+							    	CXP.DT_EMISSAO   = ? AND
 							    	CXP.CD_TIPO_PAGAMENTO = 10 AND
 							    	CXP.ST_CANCELADO <> 'S'";
                 $sql = $this->adapter->query($sql);
@@ -566,7 +566,7 @@ class CaixaTable extends AbstractTableGateway {
                                 TB_CAIXA_PAGAMENTO  CXP
                              WHERE
                                 CXP.CD_LOJA      = ? AND
-                                CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+                                CXP.DT_EMISSAO   = ? AND
                                 CXP.CD_TIPO_PAGAMENTO = 1 AND
                                 CXP.ST_CANCELADO <> 'S'";
 
@@ -585,7 +585,7 @@ class CaixaTable extends AbstractTableGateway {
                                 TB_CAIXA_PAGAMENTO  CXP
                              WHERE
                                 CXP.CD_LOJA      = ? AND
-                                CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+                                CXP.DT_EMISSAO   = ? AND
                                 CXP.CD_TIPO_PAGAMENTO = 2 AND
                                 CXP.ST_CANCELADO <> 'S'";
 
@@ -602,7 +602,7 @@ class CaixaTable extends AbstractTableGateway {
                                         FROM TB_CAIXA_PAGAMENTO  CXP
                                         WHERE
                                             CXP.CD_LOJA      		= ? AND
-                                            CXP.DT_EMISSAO   		= CONVERT(VARCHAR(10),?,103) AND
+                                            CXP.DT_EMISSAO   		= ? AND
                                             CXP.CD_TIPO_PAGAMENTO 	= 2 AND
                                             CXP.DT_EMISSAO 			<>  CXP.DT_VENCIMENTO AND
                                             CXP.ST_CANCELADO <> 'S'";
@@ -622,7 +622,7 @@ class CaixaTable extends AbstractTableGateway {
                                         TB_CAIXA_PAGAMENTO  CXP
                                     WHERE
                                         CXP.CD_LOJA      = ? AND
-                                        CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+                                        CXP.DT_EMISSAO   = ? AND
                                         CXP.CD_TIPO_PAGAMENTO = 5 AND
                                         CXP.ST_CANCELADO <> 'S'";
 
@@ -641,7 +641,7 @@ class CaixaTable extends AbstractTableGateway {
                                         TB_CAIXA_PAGAMENTO  CXP
                                     WHERE
                                         CXP.CD_LOJA      		= ? AND
-                                        CXP.DT_EMISSAO   		= CONVERT(VARCHAR(10),?,103) AND
+                                        CXP.DT_EMISSAO   		= ? AND
                                         CXP.CD_TIPO_PAGAMENTO 	= 3 AND
                                         CXP.ST_CANCELADO <> 'S'
                     ";
@@ -661,7 +661,7 @@ class CaixaTable extends AbstractTableGateway {
                                         TB_CAIXA_PAGAMENTO  CXP
                                     WHERE
                                         CXP.CD_LOJA      = ? AND
-                                        CXP.DT_EMISSAO   = CONVERT(VARCHAR(10),?,103) AND
+                                        CXP.DT_EMISSAO   = ? AND
                                         CXP.CD_TIPO_PAGAMENTO = 8 AND
                                         CXP.ST_CANCELADO <> 'S'";
 

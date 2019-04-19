@@ -129,8 +129,8 @@ class relatorioPedidoController  extends RelatorioController
 								DIA		= P.DT_PEDIDO,
 								TOTAL	= SUM(P.VL_TOTAL_LIQUIDO )
 						FROM TB_PEDIDO P
-						WHERE P.DT_PEDIDO BETWEEN 	'".$ano.$mes."01' 
-												AND '".$ano.$mes."30'
+						WHERE 
+						  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
 						GROUP BY P.CD_LOJA, P.DT_PEDIDO
 						ORDER BY P.CD_LOJA, P.DT_PEDIDO DESC ";
     	$statementList   	= $dbAdapter->query($sql);
@@ -143,8 +143,8 @@ class relatorioPedidoController  extends RelatorioController
 									DIA		= P.DT_PEDIDO,
 									TOTAL	= SUM(P.VL_TOTAL_LIQUIDO )
 							FROM TB_PEDIDO P
-							WHERE P.DT_PEDIDO BETWEEN 	'".$ano.$mes."01' 
-													AND '".$ano.$mes."30'
+							WHERE 
+							  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
 							GROUP BY P.CD_LOJA, P.DT_PEDIDO
 						) AS QUERY";
 		$statementList   	= $dbAdapter->query($sql);

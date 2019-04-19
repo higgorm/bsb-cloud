@@ -34,7 +34,7 @@ class RelatorioAtendimentoTable {
 															P.CD_LOJA = ?
 															AND P.ST_PEDIDO = 'F'
 															AND P.CD_TIPO_PEDIDO IN ( 1, 2, 5, 10 )
-														    AND P.DT_PEDIDO BETWEEN CONVERT(VARCHAR(10),?,103) AND CONVERT(VARCHAR(10),?,103)
+														    AND P.DT_PEDIDO BETWEEN ? AND ?
 													  GROUP BY PM.CD_MERCADORIA
 												  ) AS RESUMO");
 
@@ -57,7 +57,7 @@ class RelatorioAtendimentoTable {
                                                 P.CD_LOJA = ? AND
                                                 P.ST_PEDIDO = 'F' AND
                                                 P.CD_TIPO_PEDIDO IN ( 1, 2, 5, 10 ) AND
-                                                P.DT_PEDIDO BETWEEN  CONVERT(VARCHAR(10),?,103) AND CONVERT(VARCHAR(10),?,103)
+                                                P.DT_PEDIDO BETWEEN  ? AND ?
                                              GROUP BY PM.CD_MERCADORIA, M.DS_MERCADORIA
                                              ORDER BY 4 DESC
     	");

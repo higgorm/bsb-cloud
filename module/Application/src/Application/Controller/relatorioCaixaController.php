@@ -102,8 +102,8 @@ class RelatorioCaixaController extends RelatorioController
 	                 WHERE A.CD_LOJA    = ".$session->cdLoja." ";
 
 
-		$sqlSummy .=" AND A.DT_ENTRADA  BETWEEN CONVERT(VARCHAR(10),'".$dataDeInicio."',103) AND CONVERT(VARCHAR(10),'".$dataDeTermino."',103) ";
-		$sqlList  .=" AND A.DT_ENTRADA  BETWEEN CONVERT(VARCHAR(10),'".$dataDeInicio."',103) AND CONVERT(VARCHAR(10),'".$dataDeTermino."',103) ";
+		$sqlSummy .=" AND A.DT_ENTRADA  BETWEEN '".date('Ymd', strtotime($dataDeInicio))."' AND '".date('Ymd', strtotime($dataDeTermino))."' ";
+		$sqlList  .=" AND A.DT_ENTRADA  BETWEEN '".date('Ymd', strtotime($dataDeInicio))."' AND '".date('Ymd', strtotime($dataDeTermino))."' ";
 
 
 		if($stCaixa=="A")

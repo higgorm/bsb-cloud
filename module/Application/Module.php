@@ -69,13 +69,7 @@ class Module {
 
         //you set your role
         $session = new Container("orangeSessionContainer");
-        if ($session->usuario == "ORANGE") {
-            $session->userRole = 'admin';
-        } else if ($session->stGerente == true) {
-            $session->userRole = 'gerente';
-        } else {
-            $session->userRole = 'atendente';
-        }
+        $session->userRole = 'admin';
 
         if (($nameRoute != 'api')
             && (!$e->getViewModel()->acl->isAllowed($session->userRole, $route))) {
