@@ -197,9 +197,9 @@ return array(
         'perfil/index',
         'perfil/cadastrar',
         'perfil/editar',
-        'usuario/index',
-        'usuario/cadastrar',
-        'usuario/editar',
+        'usuario-web/index',
+        'usuario-web/cadastro',
+        'usuario-web/inativar',
 
     )
 );

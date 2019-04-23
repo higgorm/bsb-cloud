@@ -13,6 +13,7 @@ namespace Application;
 use Application\Model\LojaTable;
 use Application\Model\CargoTable;
 use Application\Model\Servicos;
+use Application\Model\UsuarioWebTable;
 use Zend\Session\Container;
 use Application\Model\FranquiaMacaTable;
 use Application\Model\ClienteTable;
@@ -273,6 +274,11 @@ class Module {
                         $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                         $table = new Model\FornecedorTable($adapter);
                         return $table;
+                },
+                "usuario_web_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new UsuarioWebTable($adapter);
+                    return $table;
                 },
             ),
         );

@@ -67,11 +67,6 @@
                         <div>
                           <h5>Acumulado do dia 1° até hoje:</h5> <h4 style="color: #FF8C00"><?php echo number_format($total['TOTAL'],2,",",".") ?></h4>
                         </div>
-						<!--
-                        <div>
-                          <h5>Dia da semana de maior venda:</h5> <h4 style="color: #FF8C00">Quinta Feira</h4> 
-                        </div>  
-                        -->
                         <div>
                           <h5>Média de vendas diárias:</h5> <h4 style="color: #FF8C00"><?php echo number_format($total['MEDIA'],2,",",".") ?></h4>
                         </div>
@@ -86,334 +81,29 @@
 
                   <div >
                     <p></p>
-					<?php foreach ($lista as $pedido): ?>
-                        <?php  var_dump( $pedido ); ?>
-                    <?php endforeach; ?>
                     <div class="table-responsive" style="padding: 20px" >
                       <table class="table">
                         <thead>
                           <tr class="headings" style="background-color:#FF8C00; color: #fff">
-                            <th class="column-title">Dia/Mês</th>
-                            <th class="column-title">Loja 01</th>
-                            <th class="column-title">Loja 02</th>
-                            <th class="column-title">Loja 03</th>
-                            <th class="column-title">Loja 04 </th>
-                            <th class="column-title">Loja 05 </th>
+                              <th class="column-title">Dia/Mês</th>
+
+                              <?php foreach ($lojas as $loja): ?>
+                                  <?php  echo "<th class=\"column-title\">Loja 0" . $loja['CD_LOJA'] ."</th>"; ?>
+                              <?php endforeach; ?>
                             <th class="column-title no-link last" ><span class="nobr">Detalhes</span></th>
                           </tr>
                         </thead>
-						
                         <tbody>
-                          <tr class="even pointer">
-                            <td class=" ">01/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="/relatorio-pedido/detalhe-multi-loja" class="auto">Ver</a></td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">02/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="chartjs2_bsb.html">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">03/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="morisjs_bsb.html">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">04/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="echarts_bsb.html">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">05/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">06/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">07/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">08/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">09/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">10/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">11/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">12/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">13/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">14/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">15/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">16/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">17/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">18/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">19/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">20/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">21/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 <i class="success fa fa-long-arrow-down"></i></td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">22/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">23/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class=" ">24/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class=" ">25/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class=" ">26/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class=" ">27/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class=" ">28/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class=" ">29/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class=" ">30/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class=" ">31/03</td>
-                            <td class="a-right a-right ">R$0,00 </td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class="a-right a-right ">R$0,00</td>
-                            <td class=" last"><a href="#">Ver</a>
-                            </td>
-                          </tr>
-                  
+                        <?php foreach ($lista as $pedido): ?>
+                         <?php $k++; ?>
+                         <tr class="<?php echo ($k % 2 > 0) ? "even pointer" : "odd pointer"; ?>">
+                             <?php foreach ($lojas as $loja): ?>
+                                 <?php echo " <td class=\" \">".$pedido['DIA']."</td>" ?>
+                                 <?php  echo "<td class=\"a-right a-right \">". number_format($pedido['TOTAL'],2,",",".") ."</td>"; ?>
+                                 <td class=" last"><a href="/relatorio-pedido/detalhe-multi-loja" attr-id-loja="<?php echo $loja['CD_LOJA'] ?>" attr-id-dia="<?php echo $pedido['DATA'] ?>" class="auto">Ver</a></td>
+                             <?php endforeach; ?>
+                         </tr>
+                        <?php endforeach; ?>
                         </tbody>
                       </table>
                     </div>
@@ -426,8 +116,13 @@
     </div>
 
 
-
-
+    <?php
+        //trait for graphics
+        foreach($graficos as $data) {
+             $graficoLoja[]  = "'".$data['LOJA']."'";
+             $graficoValor[] = "{ value:'".round($data['VALOR'],2)."',   name:'".$data['LOJA']."'}";
+        }
+    ?>
     <script type="text/javascript" src="/relatorios/nprogress/nprogress.js"></script>
     <script type="text/javascript" src="/relatorios/fastclick/lib/fastclick.js"></script>
 
@@ -661,7 +356,7 @@
             legend: {
               x: 'center',
               y: 'bottom',
-              data: ['Loja 1', 'Loja 2', 'Loja 3', 'Loja 4', 'Loja 5']
+              data:[<?php echo is_array($graficoLoja) ? implode($graficoLoja,",") : '' ?>]
             },
             toolbox: {
               show: true,
@@ -692,22 +387,7 @@
               name: 'Total de Vendas',
               type: 'pie',
               center: ['50%', '50%'],
-              data: [{
-                value: 335,
-                name: 'Loja 1'
-              }, {
-                value: 310,
-                name: 'Loja 2'
-              }, {
-                value: 234,
-                name: 'Loja 3'
-              }, {
-                value: 135,
-                name: 'Loja 4'
-              }, {
-                value: 1548,
-                name: 'Loja 5'
-              }]
+              data: [ <?php echo is_array($graficoValor) ? implode($graficoValor,",") : '' ?>]
             }]
           });         
 

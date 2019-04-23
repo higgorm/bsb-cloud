@@ -460,7 +460,7 @@ class PedidoController extends AbstractActionController
             $valorTotalPedido = 0;
 
 
-            //1 - Recupero o agendamento pelo n�mero do pedido
+            //1 - Recupero o agendamento pelo número do pedido
             $statement = $dbAdapter->query("SELECT
                                                 CD_LOJA,
                                                 NR_MACA,
@@ -859,6 +859,7 @@ class PedidoController extends AbstractActionController
             $dbAdapter->getDriver()->getConnection()->commit();
 
             $viewModel = new ViewModel();
+            $viewModel->setTemplate("application/pedido/salvar-pedido.phtml");
             $viewModel->setTerminal(true);
             return $viewModel;
         } catch (Exception $e) {

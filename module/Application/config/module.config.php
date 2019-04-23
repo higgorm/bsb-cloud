@@ -42,7 +42,7 @@ return array(
 
             //acl
             'Application\Controller\Perfil' => 'Application\Controller\PerfilController',
-            'Application\Controller\Usuario' => 'Application\Controller\UsuarioController',
+            'Application\Controller\UsuarioWeb' => 'Application\Controller\UsuarioWebController',
         ),
     ),
 

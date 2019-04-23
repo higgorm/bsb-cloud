@@ -134,7 +134,7 @@ class LojaTable extends AbstractTableGateway {
         $row = $rowset->current();
 
         if (!row) {
-            throw new \Exception("Identificador $id  n�o existe no banco de dados!");
+            throw new \Exception("Identificador $id  não existe no banco de dados!");
         }
 
         return $row;

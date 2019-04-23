@@ -126,13 +126,14 @@ class relatorioPedidoController  extends RelatorioController
 		$mes 	= ($post->get('mes') ? $post->get('mes') : date('m') );
     	//query
     	$sql 		= " SELECT	LOJA    = P.CD_LOJA,
-								DIA		= P.DT_PEDIDO,
+								DIA		= CONCAT(DAY(P.DT_PEDIDO),'/',MONTH(P.DT_PEDIDO)),
+								DATA	= P.DT_PEDIDO,
 								TOTAL	= SUM(P.VL_TOTAL_LIQUIDO )
 						FROM TB_PEDIDO P
 						WHERE 
 						  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
 						GROUP BY P.CD_LOJA, P.DT_PEDIDO
-						ORDER BY P.CD_LOJA, P.DT_PEDIDO DESC ";
+						ORDER BY P.CD_LOJA, P.DT_PEDIDO ASC ";
     	$statementList   	= $dbAdapter->query($sql);
     	$results 			= $statementList->execute();
 		
@@ -149,12 +150,33 @@ class relatorioPedidoController  extends RelatorioController
 						) AS QUERY";
 		$statementList   	= $dbAdapter->query($sql);
 		$totais				= $statementList->execute();
+
+        $sql 		= "	SELECT	DISTINCT  P.CD_LOJA		
+							FROM TB_PEDIDO P
+							WHERE 
+							  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
+							GROUP BY P.CD_LOJA";
+        $statementList   	= $dbAdapter->query($sql);
+        $lojas				= $statementList->execute();
+
+        //query
+        $sql 		= " SELECT	LOJA    = CONCAT('Loja ',P.CD_LOJA),
+								VALOR	= SUM(P.VL_TOTAL_LIQUIDO )
+						FROM TB_PEDIDO P
+						WHERE 
+						  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
+						GROUP BY P.CD_LOJA
+						ORDER BY P.CD_LOJA DESC ";
+        $statementList   	= $dbAdapter->query($sql);
+        $graphics			= $statementList->execute();
     		 
     	$viewModel = new ViewModel();
-    	$viewModel->setVariable('lista',$results);
+    	$viewModel->setVariable('lista',iterator_to_array($results));
 		$viewModel->setVariable('ano',$ano);
 		$viewModel->setVariable('mes',$mes);
 		$viewModel->setVariable('totais',$totais);
+        $viewModel->setVariable('lojas',iterator_to_array($lojas));
+        $viewModel->setVariable('graficos',iterator_to_array($graphics));
     	$viewModel->setTemplate("application/relatorio/pedido/pesquisa-multi-loja.phtml");
     		
 		return $viewModel;
