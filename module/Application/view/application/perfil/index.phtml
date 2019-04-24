@@ -33,47 +33,42 @@
                     <table class="table table-striped m-b-none" data-ride="datatables">
                         <thead>
                         <tr >
-                            <!-- th nowrap>#</th -->
+                            <th nowrap>#</th>
                             <th nowrap>Nome do Perfil</th>
-                            <th nowrap>Status</th>
+                            <th nowrap>Ativo</th>
                             <th nowrap>A&ccedil;&otilde;es</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <?php //if (count($cartoes)) : ?>
-                            <?php //foreach ($cartoes as $dado): ?>
+                        <?php if (count($perfis)) : ?>
+                            <?php foreach ($perfis as $dado): ?>
                                 <tr>
-                                    <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
-                                    <td align="left">Nome do perfil 1<?php //echo utf8_encode($dado['NM_PERFIL']) ?></td>
-                                    <td align="left">Ativo <?php //echo utf8_encode($dado['ST_PERFIL']) ?></td>
+                                    <td align="right"><?php echo utf8_encode($dado['CD_PERFIL_WEB'])  ?></td>
+                                    <td align="left"><?php echo utf8_encode($dado['DS_NOME']) ?></td>
+                                    <td align="left"><?php echo ($dado['ST_ATIVO']== 'S' ? 'Sim' : 'Não') ?></td>
                                     <td  align="left">
-                                        <a href="/perfil/editar?id=<?php //echo $dado['CD_PERFIL'] ?>" title="Editar"><i class="fa fa-pencil"></i></a>
-                                        <a href="/perfil/index"  title="Remover/Inativar"><i class="fa fa-trash-o"></i></a>
+                                        <?php if ($dado['ST_ATIVO']== 'S') : ?>
+                                            <a href="/perfil-web/edicao?id=<?php echo $dado['CD_PERFIL_WEB'] ?>" title="Editar"><i class="fa fa-pencil"></i></a>
+                                        | <a href="/perfil-web/inativar?id=<?php echo $dado['CD_PERFIL_WEB'] ?>"  title="Inativar"><i class="fa fa-trash-o"></i></a>
+                                        <?php else: ?>
+                                        <a href="/perfil-web/ativar?id=<?php echo $dado['CD_PERFIL_WEB'] ?>"  title="Ativar"><i class="fa fa-check"></i></a>
+                                        <?php endif; ?>
                                     </td>
                                     </th>
                                 </tr>
-                                <tr>
-                                    <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
-                                    <td align="left">Nome do perfil 2<?php //echo utf8_encode($dado['NM_PERFIL']) ?></td>
-                                    <td align="left">Inativo <?php //echo utf8_encode($dado['ST_PERFIL']) ?></td>
-                                    <td  align="left">
-                                        &nbsp;
-                                    </td>
-                                    </th>
-                                </tr>
-                            <?php //endforeach; ?>
-                        <?php //endif; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                         </tbody>
                         <tfoot>
                         <tr>
-                            <!-- th nowrap>#</th -->
+                            <th nowrap>#</th>
                             <th nowrap>Nome do Perfil</th>
-                            <th nowrap>Status</th>
+                            <th nowrap>Ativo</th>
                             <th nowrap>A&ccedil;&otilde;es</th
                         </tr>
                         </tfoot>
                     </table>
-
+                    <?php echo $this->paginationControl($perfis, 'Sliding', 'partials/paginator/control.phtml') ?>
                 </div>
             </div>
         </div>
@@ -83,7 +78,7 @@
     $(document).ready(function() {
 
         $("#btnNovo").click(function() {
-            window.location = "/perfil/cadastrar";
+            window.location = "/perfil-web/cadastro";
         });
     });
 </script>

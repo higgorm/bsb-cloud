@@ -90,9 +90,12 @@
                                     <td align="left"><?php echo utf8_encode($dado['DS_EMAIL']) ?></td>
                                     <td align="left"><?php echo ($dado['ST_ATIVO']== 'S' ? 'Sim' : 'Não') ?></td>
                                     <td  align="left">
-                                        <a href="/usuario-web/cadastro?id=<?php echo $dado['CD_USUARIO_WEB'] ?>" title="Editar"><i class="fa fa-pencil"></i></a>
-                                        |
-                                        <a href="/usuario-web/inativar"  title="Remover/Inativar"><i class="fa fa-trash-o"></i></a>
+                                        <?php if ($dado['ST_ATIVO']== 'S') : ?>
+                                            <a href="/usuario-web/edicao?id=<?php echo $dado['CD_USUARIO_WEB'] ?>" title="Editar"><i class="fa fa-pencil"></i></a>
+                                        | <a href="/usuario-web/inativar?id=<?php echo $dado['CD_USUARIO_WEB'] ?>"  title="Inativar"><i class="fa fa-trash-o"></i></a>
+                                        <?php else: ?>
+                                        <a href="/usuario-web/ativar?id=<?php echo $dado['CD_USUARIO_WEB'] ?>"  title="Ativar"><i class="fa fa-check"></i></a>
+                                        <?php endif; ?>
                                     </td>
                                     </th>
                                 </tr>
@@ -120,7 +123,7 @@
     $(document).ready(function() {
 
         $("#btnNovo").click(function() {
-            window.location = "/usuario-web/cadastrar";
+            window.location = "/usuario-web/cadastro";
         });
     });
 </script>

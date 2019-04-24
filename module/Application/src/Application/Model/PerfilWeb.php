@@ -7,11 +7,12 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\Factory as InputFactory;
 
-class Uf implements InputFilterAwareInterface
+class PerfilWeb implements InputFilterAwareInterface
 {
 
-	public $cd_uf;
-	public $ds_uf;
+	public $cd_perfil_web;
+	public $ds_nome;
+    public $st_ativo;
 
 	protected $inputFilter;
 
@@ -25,13 +26,14 @@ class Uf implements InputFilterAwareInterface
     }
 
 	public function setInputFilter(InputFilterInterface $inputFilter){
-		throw new \Exception( "UF Exception filter");
+		throw new \Exception( "PerfilWeb Exception filter");
 	}
 
 	public function exchangeArray($data) {
 
-		$this->cd_uf = (isset($data["cd_uf"])) ? $data["cd_uf"] : null;
-		$this->ds_uf = (isset($data["ds_uf"])) ? $data["ds_uf"] : null;
+		$this->cd_perfil_web  = (isset($data["cd_perfil_web"])) ? $data["cd_perfil_web"] : null;
+		$this->ds_nome        = (isset($data["ds_nome"])) ? $data["ds_nome"] : null;
+        $this->st_ativo       = (isset($data["st_ativo"])) ? $data["st_ativo"] : 'S';
 
 	}
 }

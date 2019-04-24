@@ -193,13 +193,17 @@ return array(
         'ajax/get-classificacao-financeira',
         'ajax/get-operador-loja',
 
-        //ACL controller's
-        'perfil/index',
-        'perfil/cadastrar',
-        'perfil/editar',
+        //ACL controller's -  Admin for Users
+        'perfil-web/index',
+        'perfil-web/cadastro',
+        'perfil-web/edicao',
+        'perfil-web/inativar',
+        'perfil-web/ativar',
         'usuario-web/index',
         'usuario-web/cadastro',
+        'usuario-web/edicao',
         'usuario-web/inativar',
+        'usuario-web/ativar',
 
     )
 );

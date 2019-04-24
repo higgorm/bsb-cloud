@@ -40,8 +40,8 @@ return array(
             'Application\Controller\Estoque' => 'Application\Controller\estoqueController',
             'Application\Controller\Ajax' => 'Application\Controller\AjaxController',
 
-            //acl
-            'Application\Controller\Perfil' => 'Application\Controller\PerfilController',
+            //acl admin-user
+            'Application\Controller\PerfilWeb' => 'Application\Controller\PerfilWebController',
             'Application\Controller\UsuarioWeb' => 'Application\Controller\UsuarioWebController',
         ),
     ),

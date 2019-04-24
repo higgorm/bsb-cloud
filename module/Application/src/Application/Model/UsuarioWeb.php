@@ -18,6 +18,7 @@ class UsuarioWeb implements InputFilterAwareInterface
     public $ds_email;
     public $nr_telefone;
     public $st_ativo;
+    public $cd_perfil_web;
 
 	protected $inputFilter;
 
@@ -117,6 +118,8 @@ class UsuarioWeb implements InputFilterAwareInterface
         $this->ds_nome = (isset($data["ds_nome"])) ? $data["ds_nome"] : null;
         $this->ds_email = (isset($data["ds_email"])) ? $data["ds_email"] : null;
         $this->nr_telefone = (isset($data["nr_telefone"])) ? $data["nr_telefone"] : null;
-        $this->st_ativo = (isset($data["st_ativo"])) ? $data["st_ativo"] : null;
+        $this->st_ativo = (isset($data["st_ativo"])) ? $data["st_ativo"] : 'S';
+        $this->cd_perfil_web = (isset($data["cd_perfil_web"])) ? $data["cd_perfil_web"] : null;
+
 	}
 }

@@ -10,14 +10,8 @@
 
 namespace Application;
 
-use Application\Model\LojaTable;
-use Application\Model\CargoTable;
-use Application\Model\Servicos;
-use Application\Model\UsuarioWebTable;
+use Application\Model;
 use Zend\Session\Container;
-use Application\Model\FranquiaMacaTable;
-use Application\Model\ClienteTable;
-use Application\Model\TabelaTable;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
@@ -277,7 +271,17 @@ class Module {
                 },
                 "usuario_web_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new UsuarioWebTable($adapter);
+                    $table = new Model\UsuarioWebTable($adapter);
+                    return $table;
+                },
+                "perfil_web_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\PerfilWebTable($adapter);
+                    return $table;
+                },
+                 "perfil_web_menu_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\PerfilWebMenuTable($adapter);
                     return $table;
                 },
             ),

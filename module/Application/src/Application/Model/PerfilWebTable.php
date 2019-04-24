@@ -12,19 +12,33 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Session\Container;
 
-class UsuarioWebTable extends AbstractTableGateway {
+class PerfilWebTable extends AbstractTableGateway {
 
-    protected $table = "TB_USUARIO_WEB";
+    protected $table = "TB_PERFIL_WEB";
 
     public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
-        $this->resultSetPrototype->setArrayObjectPrototype(new UsuarioWeb());
+        $this->resultSetPrototype->setArrayObjectPrototype(new PerfilWeb());
         $this->initialize();
 
         $statement = $this->adapter->query("USE LOGIN ");
         $statement->execute();
 		
+    }
+
+    public function listPerfil()
+    {
+        $statement = $this->adapter->query('SELECT CD_PERFIL_WEB, DS_NOME FROM '.$this->table);
+        $result = $statement->execute();
+
+        $selectData = array('' => 'Selecione');
+
+        foreach ($result as $res) {
+            $selectData[$res['CD_PERFIL_WEB']] = utf8_encode($res['DS_NOME']);
+        }
+
+        return $selectData;
     }
 
     public function fetchAll(Array $param = array(), $currentPage = "1", $countPerPage = "10")
@@ -37,7 +51,7 @@ class UsuarioWebTable extends AbstractTableGateway {
 
         $select->from($this->table)
             ->where($where)
-            ->order("DS_USUARIO");
+            ->order("DS_NOME");
 
         $adapter = new DbSelect($select, $this->adapter);
         $paginator = new Paginator($adapter);
@@ -49,8 +63,9 @@ class UsuarioWebTable extends AbstractTableGateway {
 
     public function nextId()
     {
+
         $select = $this->getSql()->select();
-        $select->columns(array(new Expression('max(cd_usuario_web)+1 as cd_usuario_web')));
+        $select->columns(array(new Expression('ISNULL(MAX(cd_perfil_web),0) + 1 as cd_perfil_web')));
         $rowset = $this->selectWith($select);
         $row = $rowset->current();
 
@@ -58,7 +73,7 @@ class UsuarioWebTable extends AbstractTableGateway {
             return 1;
         }
 
-        return $row->cd_usuario_web;
+        return $row->cd_perfil_web;
     }
 
     public function getId($id)
@@ -67,17 +82,11 @@ class UsuarioWebTable extends AbstractTableGateway {
 
         $select = $this->getSql()->select();
         $select->columns(
-            array('cd_usuario_web',
-                'cd_loja',
-                'ds_usuario',
-                'ds_senha',
-                'ds_nome',
-                'ds_email',
-                'nr_telefone',
-                'st_ativo',
-                'cd_perfil_web'
+            array('cd_perfil_web',
+                  'ds_nome',
+                   'st_ativo'
             ))
-            ->where(array('cd_usuario_web' => $id));
+            ->where(array('cd_perfil_web' => $id));
 
         $rowset = $this->selectWith($select);
         $row = $rowset->current();
@@ -85,49 +94,36 @@ class UsuarioWebTable extends AbstractTableGateway {
         return $row;
     }
 
-    public function save($tableData, $saveNewPassword = false)
+
+    public function save($tableData)
     {
-        $isNew= false;
+        $isNew = false;
 
         try {
-            if ($tableData->cd_usuario_web) {
-                $base = $this->getId($tableData->cd_usuario_web);
+            if ($tableData->cd_perfil_web) {
+                $base = $this->getId($tableData->cd_perfil_web);
             } else {
                 $isNew= true;
                 $tableData->st_ativo = 'S';
             }
 
             $data = array(
-             //  "cd_usuario_web" => (isset($tableData->cd_usuario_web)) ? (int)$tableData->cd_usuario_web : $base->cd_usuario_web,
-                "cd_loja" => (isset($tableData->cd_loja)) ? (int)$tableData->cd_loja : $base->cd_loja,
-                "ds_usuario" => (isset($tableData->ds_usuario)) ? trim(utf8_decode($tableData->ds_usuario)) : trim($base->ds_usuario),
                 "ds_nome" => (isset($tableData->ds_nome)) ? trim(utf8_decode($tableData->ds_nome)) : trim($base->ds_nome),
-                "ds_email" => (isset($tableData->ds_email)) ? $tableData->ds_email : $base->ds_email,
-                "nr_telefone" => (isset($tableData->nr_telefone)) ? $tableData->nr_telefone : $base->nr_telefone,
-                "st_ativo" => (isset($tableData->st_ativo)) ? $tableData->st_ativo : $base->st_ativo,
-                "cd_perfil_web" => (isset($tableData->cd_perfil_web)) ? (int)$tableData->cd_perfil_web : $base->cd_perfil_web
-
+                "st_ativo" => (isset($tableData->st_ativo)) ? $tableData->st_ativo : $base->st_ativo
             );
 
             if ($isNew) {
-                $data["cd_usuario_web"] = $this->nextId();
+                $data["cd_perfil_web"] = $this->nextId();
             }
-
-            if ($saveNewPassword) {
-                $data["ds_senha"] = (isset($tableData->ds_senha)) ? $tableData->ds_senha : $base->ds_senha;
-            }
-            //die(var_dump($data));
-
+//var_dump($tableData,$data,$isNew);exit;
             if (!$isNew) {
-                if(!$this->update($data, array("cd_usuario_web" => $tableData->cd_usuario_web)))
+                if(!$this->update($data, array("cd_perfil_web" => $tableData->cd_perfil_web)))
                     throw new \Exception ;
-
             } else {
-
                 if(!$this->insert($data))
                     throw new \Exception;
             }
-            return $data['cd_usuario_web'];
+            return $data['cd_perfil_web'];
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -135,15 +131,15 @@ class UsuarioWebTable extends AbstractTableGateway {
 
     public function inativar($id)
     {
+
         $id = (int) $id;
 
         if ($this->getId($id)) {
             $data = array(
-                'st_ativo'	=>  'N'
+                'st_ativo'	=> 'N'
             );
 
-            return $this->update($data, array("cd_usuario_web" => $id));
-
+            return $this->update($data, array("cd_perfil_web" => $id));
 
         } else {
             throw new \Exception("Identificador $id  não existe no banco de dados!");
@@ -152,48 +148,42 @@ class UsuarioWebTable extends AbstractTableGateway {
 
     public function ativar($id)
     {
+
         $id = (int) $id;
 
         if ($this->getId($id)) {
             $data = array(
-                'st_ativo'	=>  'S'
+                'st_ativo'	=> 'S'
             );
 
-            return $this->update($data, array("cd_usuario_web" => $id));
-
+            return $this->update($data, array("cd_perfil_web" => $id));
 
         } else {
             throw new \Exception("Identificador $id  não existe no banco de dados!");
         }
     }
 
-    public function buscarUsuario($dsNome)
+    public function buscarPerfil($dsNome)
     {
         $statement = $this->adapter->query(
             " SELECT 	
-                  CD_USUARIO_WEB
-                  ,CD_LOJA
-                  ,DS_USUARIO
-                  ,DS_SENHA
+                  CD_PERFIL_WEB
                   ,DS_NOME
-                  ,DS_EMAIL
-                  ,NR_TELEFONE
                   ,ST_ATIVO
-                  ,CD_PERFIL_WEB
-             FROM TB_USUARIO_WEB 
-             WHERE UPPER(DS_USUARIO) LIKE '" . strtoupper($dsNome) . "%' 
-             ORDER BY DS_USUARIO ");
+             FROM  ". $this->table ." 
+             WHERE UPPER(DS_NOME) LIKE '" . strtoupper($dsNome) . "%' 
+             ORDER BY DS_NOME ");
 
         return $statement->execute();
     }
 
-    public function getLojaUsuarioWebForSelectOptions($id = null)
+    public function getPerfilUsuarioWebForSelectOptions($id = null)
     {
-        $sql = "SELECT l.CD_LOJA, l.DS_RAZAOSOCIAL  FROM TB_LOJA l ";
+        $sql = "SELECT CD_PERFIL_WEB, DS_NOME  FROM ".$this->table;
         $params= array();
 
         if ($id != null) {
-            $sql .= " WHERE l.CD_LOJA = ?";
+            $sql .= " WHERE CD_PERFIL_WEB = ?";
             $params =  array($id);
         }
 

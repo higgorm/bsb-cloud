@@ -1,43 +1,41 @@
 <?php
-
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
+* Zend Framework (http://framework.zend.com/)
+*
+* @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+* @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+* @license   http://framework.zend.com/license/new-bsd New BSD License
+*/
 
 namespace Application\Controller;
 
 use Zend\I18n\View\Helper\DateFormat;
-use Application\Form\UsuarioWebForm;
-use Application\Form\UsuarioWebSearchForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
-use Application\Model\UsuarioWeb;
-use Application\Model\UsuarioWebTable;
+use Application\Model\PerfilWeb;
+use Application\Model\PerfilWebTable;
 use Zend\Db\Adapter\Driver\ConnectionInterface;
+
 /**
  *
- * @author HIGOR
+ * @author higgor.m@gmail.com
  *
  */
-class UsuarioWebController extends AbstractActionController
+class PerfilWebController extends AbstractActionController
 {
 
-    protected $usuarioWebTable;
-
+    protected $perfilWebTable;
+    
     public function getTable()
     {
-        if (!$this->usuarioWebTable) {
+        if (!$this->perfilWebTable) {
             // get the db adapter
             $sm = $this->getServiceLocator();
-            $this->usuarioWebTable = $sm->get("usuario_web_table");
+            $this->perfilWebTable = $sm->get("perfil_web_table");
         }
 
-        return $this->usuarioWebTable;
+        return $this->perfilWebTable;
     }
 
     public function getTables($table)
@@ -48,11 +46,11 @@ class UsuarioWebController extends AbstractActionController
 
     /**
      * (non-PHPdoc)
-     * @see \Zend\Mvc\Controller\AbstractActionController::usuarioWebAction()
+     * @see \Zend\Mvc\Controller\AbstractActionController::perfilWebAction()
      */
     public function indexAction()
     {
-        $searchForm = new UsuarioWebSearchForm();
+
         $request = $this->getRequest();
         $messages = $this->flashMessenger()->getMessages();
         $parametros = array();
@@ -72,21 +70,18 @@ class UsuarioWebController extends AbstractActionController
                     $param[$key] = trim($value);
                 }
             }
-
-            $searchForm->setData($post);
         }
-		
-        $usuarios = $this->getTable()->fetchAll($param, $pageNumber);
-		$util     = new \Util;
+
+        $perfis = $this->getTable()->fetchAll($param, $pageNumber);
+        $util     = new \Util;
 
         $view = new ViewModel(array(
-            "form"    => $searchForm,
             "messages" => $messages,
-            "usuarios" => $usuarios,
-			"util"     => $util,
+            "perfis" => $perfis,
+            "util"     => $util,
         ));
 
-        $view->setTemplate("application/usuario/index.phtml");
+        $view->setTemplate("application/perfil/index.phtml");
         $view->setTerminal($terminal);
         return $view;
     }
@@ -105,29 +100,29 @@ class UsuarioWebController extends AbstractActionController
             try {
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
                 $data = $request->getPost();
+                //save perfil
+                $data->cd_perfil_web = $this->getTable()->save($data);
+                //save menus of perfil
+                $this->getTables('perfil_web_menu_table')->save($data);
 
-                $this->getTable()->save($data,true);
+                //commit transaction
                 $dbAdapter->getDriver()->getConnection()->commit();
 
                 $message = array("success" => "Cadastro efetuado com sucesso");
                 $this->flashMessenger()->addMessage($message);
-                return $this->redirect()->toUrl("/usuario-web/index?pg=1");
+                return $this->redirect()->toUrl("/perfil-web/index?pg=1");
 
             } catch (Exception $e) {
                 $dbAdapter->getDriver()->getConnection()->rollback();
             }
         }
 
-        $usuario    = array('');
-        $loja       = $this->getTable()->getLojaUsuarioWebForSelectOptions();
-        $perfil     = $this->getTables('perfil_web_table')->getPerfilUsuarioWebForSelectOptions();
+        $perfil = array('');
 
         $view = new ViewModel(array(
-            "usuario" 	    => $usuario,
-            "lojaUsuario"   => $loja,
-            "perfilUsuario" => $perfil,
+            "perfil" 	  => $perfil,
         ));
-        $view->setTemplate("application/usuario/cadastro.phtml");
+        $view->setTemplate("application/perfil/cadastro.phtml");
         $view->setTerminal($terminal);
 
         return $view;
@@ -147,12 +142,17 @@ class UsuarioWebController extends AbstractActionController
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
                 $data = $request->getPost();
 
-                $this->getTable()->save($data,false);
+                //save perfil
+                $this->getTable()->save($data);
+
+                //save menus of perfil
+                $this->getTables('perfil_web_menu_table')->save($data);
+
                 $dbAdapter->getDriver()->getConnection()->commit();
 
                 $message = array("success" => "Alteração efetuada com sucesso");
                 $this->flashMessenger()->addMessage($message);
-                return $this->redirect()->toUrl("/usuario-web/index?pg=1");
+                return $this->redirect()->toUrl("/perfil-web/index?pg=1");
 
             } catch (Exception $e) {
                 $dbAdapter->getDriver()->getConnection()->rollback();
@@ -161,24 +161,26 @@ class UsuarioWebController extends AbstractActionController
 
         $id = (int) $this->params()->fromQuery('id');
         if( $id > 0 ){
-            $usuario    = $this->getTable()->getId($id);
-        } else {
-            $usuario    = array('');
+            $perfil   = $this->getTable()->getId($id);
+            $menus     = $this->getTables('perfil_web_menu_table')->buscarMenusPerfil($id);
+
+        }else{
+            $perfil = array('');
+            $menus = array('');
         }
 
-        $loja       = $this->getTable()->getLojaUsuarioWebForSelectOptions();
-        $perfil     = $this->getTables('perfil_web_table')->getPerfilUsuarioWebForSelectOptions();
 
         $view = new ViewModel(array(
-            "usuario" 	        => $usuario,
-            "lojaUsuario"       => $loja,
-            "perfilUsuario" 	=> $perfil,
+            "perfil" 	=> $perfil,
+            "menus" 	=> $menus,
         ));
-        $view->setTemplate("application/usuario/edicao.phtml");
+
+        $view->setTemplate("application/perfil/edicao.phtml");
         $view->setTerminal($terminal);
 
         return $view;
     }
+
 
     public function inativarAction()
     {
@@ -227,6 +229,5 @@ class UsuarioWebController extends AbstractActionController
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
     }
-
 
 }
