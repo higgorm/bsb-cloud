@@ -177,6 +177,34 @@ class PerfilWebTable extends AbstractTableGateway {
         return $statement->execute();
     }
 
+
+
+    public function getMenusPerfil($id)
+    {
+        $sql =  " SELECT
+                      PWM.CD_MENU
+	                , MW.CD_MENU_PAI
+                  FROM  ". $this->table ." PW
+                  INNER JOIN TB_PERFIL_WEB_MENUS PWM ON PWM.CD_PERFIL_WEB = PW.CD_PERFIL_WEB
+                  INNER JOIN TB_MENU_WEB MW ON MW.CD_MENU = PWM.CD_MENU
+                  WHERE PW.ST_ATIVO = 'S' ";
+
+        $params= array();
+        if ($id != null) {
+            $sql .= " AND PW.CD_PERFIL_WEB = ?";
+            $params =  array($id);
+        }
+
+        $sql .= " ORDER BY MW.CD_MENU,ISNULL(MW.CD_MENU_PAI,MW.CD_MENU) ";
+
+        $statement = $this->adapter->query($sql);
+        $resultset = $statement->execute($params);
+        $results   = iterator_to_array($resultset,false);
+        $results = array_column($results,'CD_MENU');
+
+        return $results;
+    }
+
     public function getPerfilUsuarioWebForSelectOptions($id = null)
     {
         $sql = "SELECT CD_PERFIL_WEB, DS_NOME  FROM ".$this->table;

@@ -194,6 +194,7 @@ return array(
         'ajax/get-operador-loja',
 
         //ACL controller's -  Admin for Users
+        'menu-web/index',
         'perfil-web/index',
         'perfil-web/cadastro',
         'perfil-web/edicao',

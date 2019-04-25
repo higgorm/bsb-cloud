@@ -41,6 +41,7 @@ return array(
             'Application\Controller\Ajax' => 'Application\Controller\AjaxController',
 
             //acl admin-user
+            'Application\Controller\MenuWeb' => 'Application\Controller\MenuWebController',
             'Application\Controller\PerfilWeb' => 'Application\Controller\PerfilWebController',
             'Application\Controller\UsuarioWeb' => 'Application\Controller\UsuarioWebController',
         ),

@@ -64,7 +64,7 @@ class LojaTable extends AbstractTableGateway {
         $row = $rowset->current();
 
         if (!$row) {
-            throw new \Exception("Identificador $id  n�o existe no banco de dados!");
+            throw new \Exception("Identificador $id  não existe no banco de dados!");
         }
 		
         return $row;
@@ -91,9 +91,12 @@ class LojaTable extends AbstractTableGateway {
         $statement = $this->adapter->query("SELECT TB_LOJA.*, 
 												TB_USUARIO_WEB.DS_USUARIO,
 												TB_USUARIO_WEB.DS_NOME,
+												TB_USUARIO_WEB.CD_PERFIL_WEB,
+												TB_PERFIL_WEB.DS_NOME AS DS_PERFIL_WEB,
 												TB_USUARIO_WEB.ST_ATIVO
 											FROM TB_LOJA
 											LEFT JOIN TB_USUARIO_WEB ON TB_USUARIO_WEB.CD_LOJA = TB_LOJA.CD_LOJA
+											LEFT JOIN TB_PERFIL_WEB ON TB_PERFIL_WEB.CD_PERFIL_WEB = TB_USUARIO_WEB.CD_PERFIL_WEB
 											WHERE TB_USUARIO_WEB.DS_USUARIO = '".$ds_usuario."'");
 
         $results = $statement->execute();     

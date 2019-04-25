@@ -111,12 +111,12 @@ class Module {
                 //Services de banco de ddos
                 "loja_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new LojaTable($adapter);
+                    $table = new Model\LojaTable($adapter);
                     return $table;
                 },
                 "cliente_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new ClienteTable($adapter);
+                    $table = new Model\ClienteTable($adapter);
                     return $table;
                 },
                /* "tabela_table" => function($sm) {
@@ -126,12 +126,12 @@ class Module {
                 },*/
 				"cargo_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new CargoTable($adapter);
+                    $table = new Model\CargoTable($adapter);
                     return $table;
                 },
                 "franquia_maca_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new FranquiaMacaTable($adapter);
+                    $table = new Model\FranquiaMacaTable($adapter);
                     return $table;
                 },
                 "servicos_table" => function($sm) {
@@ -282,6 +282,11 @@ class Module {
                  "perfil_web_menu_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new Model\PerfilWebMenuTable($adapter);
+                    return $table;
+                },
+                "menu_web_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\MenuWebTable($adapter);
                     return $table;
                 },
             ),

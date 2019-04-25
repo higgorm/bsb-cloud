@@ -24,26 +24,24 @@ use Zend\Session\Container;
 class IndexController extends AbstractActionController {
 
     protected $lojaTable;
-    protected $cargoTable;
+    protected $perfilWebTable;
 
     public function getLojaTable() {
         if (!$this->lojaTable) {
             // get the db adapter
-            $sm = $this->getServiceLocator();
-            $this->lojaTable = $sm->get("loja_table");
+            $this->lojaTable = $this->getTable("loja_table");
         }
 
         return $this->lojaTable;
     }
 
-    public function getCargoTable() {
-        if (!$this->cargoTable) {
+    public function getPerfilWebTable() {
+        if (!$this->perfilWebTable) {
             // get the db adapter
-            $sm = $this->getServiceLocator();
-            $this->cargoTable = $sm->get("cargo_table");
+            $this->perfilWebTable = $this->getTable("perfil_web_table");
         }
 
-        return $this->cargoTable;
+        return $this->perfilWebTable;
     }
 
     public function getTable($table) {
@@ -131,11 +129,10 @@ class IndexController extends AbstractActionController {
             $authAdapter->setTableName('TB_USUARIO_WEB')
                     ->setIdentityColumn('DS_USUARIO')
                     ->setCredentialColumn('DS_SENHA');
-					//->setCredentialTreatment('ST_ATIVO = "S"');
 
             // pass authentication information to auth adapter
             $authAdapter->setIdentity($post->get('username'))
-                    ->setCredential( md5( $post->get('password') ));
+                        ->setCredential( md5( $post->get('password') ));
 
             // create auth service and set adapter
             // auth services provides storage after authenticate
@@ -148,19 +145,23 @@ class IndexController extends AbstractActionController {
             // check if authentication was successful
             // if authentication was successful, user information is stored automatically by adapter
             if ($result->isValid()) {
-				
+
 				$res = $this->getLojaTable()->getDadosLogin($result->getIdentity());
-				if( $res['ST_RECEBER_CHAVE'] == 'S' ){
+
+				if( $res['ST_ATIVO'] == 'S' ){
 					//set in session the value of LOJA selected
 					$session = new Container("orangeSessionContainer");
 					$session->cdLoja = '1';
 					$session->cdBase = $res['CD_LOJA'];
 					$session->usuario = $res['DS_USUARIO'];
-					//$session->stGerente = ($rst['st_gerente'] == "S") ? true : false;
-					//$session->cdFuncionario = $rst['CD_FUNCIONARIO'];
+                    $session->cdPerfilWeb = (int)$res['CD_PERFIL_WEB'];
+                    $session->dsPerfilWeb = $res['DS_PERFIL_WEB'];
+
+                    //set in session menu's of user profile
+                    $menus = $this->getPerfilWebTable()->getMenusPerfil($session->cdPerfilWeb);
+                    $session->menuPerfilWeb = $menus;
 
 					// redirect to dashboard page
-					
 					return $this->redirect()->toRoute('painel');
 				}else{
 					$this->flashMessenger()->addMessage("Cliente n&atilde;o habilitado");
