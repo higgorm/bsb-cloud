@@ -153,7 +153,9 @@ class IndexController extends AbstractActionController {
 					$session = new Container("orangeSessionContainer");
 					$session->cdLoja = '1';
 					$session->cdBase = $res['CD_LOJA'];
+                    $session->dsLoja = $res['DS_LOJA'];
 					$session->usuario = $res['DS_USUARIO'];
+                    $session->email     = $res['DS_EMAIL'];
                     $session->cdPerfilWeb = (int)$res['CD_PERFIL_WEB'];
                     $session->dsPerfilWeb = $res['DS_PERFIL_WEB'];
 

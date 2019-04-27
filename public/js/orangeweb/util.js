@@ -44,16 +44,19 @@ var Util = {
                 var options = "";
                 $.each(data, function(key, value) {
                     if (key == 'data') {
-                        options += '<tr>';
-                        options += '    <td><input type="radio" name="co_mercadoria" value="' + data.data.CD_MERCADORIA + '"/>' + value.CD_MERCADORIA + '</td>';
-                        options += '    <td>' + decodeURIComponent(escape(value.DS_MERCADORIA)) + '</td>';
-                        options += '    <td>' + formatReal(value.NR_QTDE_ESTOQUE) + '</td>';
-                        options += '    <td>' + formatReal(value.NR_QTDE_RESERVA) + '</td>';
-                        options += '    <td>' + formatReal(value.QTDE_DISPONIVEL) + '</td>';
-                        options += '    <td>' + formatReal(value.VL_PRECO_AVISTA) + '</td>';
-                        options += '    <td>' + formatReal(value.VL_PRECO_VENDA) + '</td>';
-                        options += '    <td>' + formatReal(value.VL_PRECO_VENDA_PROMOCAO) + '</td>';
-                        options += '</tr>';
+
+                        $.each(value, function(keyMercadoria, mercadoriaValue) {
+                            options += '<tr>';
+                            options += '    <td><input type="radio" name="co_mercadoria" value="' + mercadoriaValue.CD_MERCADORIA + '"/>' + mercadoriaValue.CD_MERCADORIA + '</td>';
+                            options += '    <td>' + decodeURIComponent(escape(mercadoriaValue.DS_MERCADORIA)) + '</td>';
+                            options += '    <td>' + formatReal(mercadoriaValue.NR_QTDE_ESTOQUE) + '</td>';
+                            options += '    <td>' + formatReal(mercadoriaValue.NR_QTDE_RESERVA) + '</td>';
+                            options += '    <td>' + formatReal(mercadoriaValue.QTDE_DISPONIVEL) + '</td>';
+                            options += '    <td>' + formatReal(mercadoriaValue.VL_PRECO_AVISTA) + '</td>';
+                            options += '    <td>' + formatReal(mercadoriaValue.VL_PRECO_VENDA) + '</td>';
+                            options += '    <td>' + formatReal(mercadoriaValue.VL_PRECO_VENDA_PROMOCAO) + '</td>';
+                            options += '</tr>';
+                        });
                     }
                 });
                 $('#tListaMercadoria').append(options);
@@ -80,12 +83,16 @@ var Util = {
                 var options = "";
                 $.each(data, function(key, value) {
                     if (key == 'data') {
-                        options += '<tr>';
-                        options += '    <td><input type="radio" name="co_cliente" value="' + data.data.CD_CLIENTE + '"/>' + value.CD_CLIENTE + '</td>';
-                        options += '    <td>' + value.DS_NOME_RAZAO_SOCIAL + '</td>';
-                        options += '    <td>' + value.DS_FANTASIA + '</td>';
-                        options += '    <td>' + value.NR_CGC_CPF + '</td>';
-                        options += '</tr>';
+
+                        $.each(value, function(keyCliente, cliente) {
+                            options += '<tr>';
+                            options += '    <td><input type="radio" name="co_cliente" value="' + cliente.CD_CLIENTE + '"/>' + cliente.CD_CLIENTE + '</td>';
+                            options += '    <td>' + decodeURIComponent(escape(cliente.DS_NOME_RAZAO_SOCIAL)) + '</td>';
+                            options += '    <td>' + cliente.DS_FANTASIA + '</td>';
+                            options += '    <td>' + cliente.NR_CGC_CPF + '</td>';
+                            options += '</tr>';
+                        });
+
                     }
                 });
                 $('#tListaCliente').append(options);

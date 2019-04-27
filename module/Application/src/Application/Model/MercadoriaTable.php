@@ -35,15 +35,17 @@ class MercadoriaTable extends AbstractTableGateway {
         $select = new Select();
         //$where = new Where();
 		
-		$where = 'M.DT_EXCLUSAO IS NULL';
+		$where = 'M.DT_EXCLUSAO IS NULL  AND R.CD_PRAZO = 1';
         foreach ($param as $field => $search) {
             $where = $where . ' AND ' . $field . " like '%" . $search . "%'";  
         }
 
         $select->from(array('M' => $this->table))
-        ->join(array('R' => 'RL_PRAZO_LIVRO_PRECOS'), ' M.CD_MERCADORIA = R.CD_MERCADORIA','VL_PRECO_VENDA','LEFT')
-        ->where($where)
-        ->order("M.DS_MERCADORIA DESC");
+            ->join(array('R' => 'RL_PRAZO_LIVRO_PRECOS'), ' M.CD_MERCADORIA = R.CD_MERCADORIA','VL_PRECO_VENDA','LEFT')
+            ->where($where)
+            ->order("M.DS_MERCADORIA DESC");
+
+        //$select->quantifier('DISTINCT');
         //echo $select->getSqlString();
         //exit;
 
@@ -187,7 +189,7 @@ class MercadoriaTable extends AbstractTableGateway {
                         LEFT JOIN TB_ESTOQUE E ON E.CD_MERCADORIA = M.CD_MERCADORIA
                         INNER JOIN RL_PRAZO_LIVRO_PRECOS PLP ON PLP.CD_MERCADORIA = M.CD_MERCADORIA
                         LEFT JOIN TB_FABRICANTE F ON F.CD_FABRICANTE = M.CD_FABRICANTE
-                    WHERE 1=1 ";
+                    WHERE M.DT_EXCLUSAO IS NULL AND PLP.CD_PRAZO=1 ";
 
         if($arrParam['st_tipo_pesquisa'] == 1){
             $select .= " AND M.CD_MERCADORIA = ".$arrParam['codigoMercadoria'];
@@ -227,9 +229,9 @@ class MercadoriaTable extends AbstractTableGateway {
 		
         //$param = array($arrParam['codigoMercadoria']);
         $statement = $this->adapter->query($select);
-        $result = $statement->execute();
+        $results = $statement->execute();
 
-        return $result->current();
+        return iterator_to_array($results,false);
     }
     public function getTiposMercadoriaSecao(){
 

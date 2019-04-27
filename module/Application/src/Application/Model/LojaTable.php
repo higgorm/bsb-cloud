@@ -91,6 +91,7 @@ class LojaTable extends AbstractTableGateway {
         $statement = $this->adapter->query("SELECT TB_LOJA.*, 
 												TB_USUARIO_WEB.DS_USUARIO,
 												TB_USUARIO_WEB.DS_NOME,
+												TB_USUARIO_WEB.DS_EMAIL,
 												TB_USUARIO_WEB.CD_PERFIL_WEB,
 												TB_PERFIL_WEB.DS_NOME AS DS_PERFIL_WEB,
 												TB_USUARIO_WEB.ST_ATIVO

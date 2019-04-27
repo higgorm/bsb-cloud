@@ -67,13 +67,13 @@ var Nota = {
 			var vlUnt		  = $("#vl_preco_unitario").val();
 			var vlTot		  = $("#vl_tot").val();
 			var totalNota     = parseFloat( $("#totalNota").val() );
-			oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria' + cdMercadoria + '" value="' + cdMercadoria + '" class=\"btn btn-info\" onclick=\"verificaStatus($(this))\"><i class=\"icon-white\"></i></button>'
+			oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria" value="' + cdMercadoria + '" class="btn btn-info" onclick="verificaStatus($(this))"><i class="icon-white"></i></button>'
 														+ ' <input type="hidden" name="cdMercadoria[]" value="' + cdMercadoria + '" /> ',
 														//+ ' <input type="hidden" name="stServico-' + value.CD_MERCADORIA + '" value="' + value.ST_SERVICO + '" /> ',
 														dscMercadoria + ' <input type="hidden" name="ds_mercadoria-' + cdMercadoria + '" value="' + dscMercadoria + '" /> ',
 														qtdVendida + ' <input type="hidden" name="qtdVendida-' + cdMercadoria + '" value="' + qtdVendida + '" /> ',
 														vlUnt + ' <input type="hidden" name="vl_preco_unitario-' + cdMercadoria + '" value="' + vlUnt + '" /> ',
-														vlTot + ' <input type="hidden" name="vl_tot-' + cdMercadoria + '" value="' + vlTot + '" /> '
+														vlTot + ' <input type="hidden" name="vl_tot-' + cdMercadoria + '" id="vl_tot-' + cdMercadoria + '" value="' + vlTot + '" /> '
 													]);
 			totalNota = formatReal( totalNota  + ( qtdVendida * vlUnt )); 
 											
@@ -85,23 +85,23 @@ var Nota = {
 		$("#btnExcluirMercadoria").click( function(){
 			
 			var totalNota     = parseFloat( $("#totalNota").val() );
-			var totalExcluido = 0;
+			var totalExcluido =  parseFloat(0);
 			
 			var numCheckboxMarcados = 0;
             $("button[type='button'][name^='chkMercadoria']").each(function() {
-				if ($(this).html() == "<i class=\"icon-white icon-ok\"></i>")
+				if ($(this).html() == '<i class="icon-white icon-ok"></i>')
                 {
                     //remove a mercadoria
-					//alert(oTablePedido.fnGetPosition($(this).closest('tr').get(0)) );
-					//totalExcluido = totalExcluido + $("#vl_tot-"+$("#chkMercadoria").val()).val(); 
+					totalExcluido = totalExcluido +  parseFloat($("#vl_tot-"+$(this).val()).val());
                     oTablePedido.fnDeleteRow(oTablePedido.fnGetPosition($(this).closest('tr').get(0)));
                     numCheckboxMarcados++;
                 }
             });
-            $("#chkTodos").removeAttr("checked");//Desmarca a op��o todos
-			//alert( totalExcluido );
-			//$("#totalNota").val( totalNota - totalExcluido);
-			//$("#totalNota").change();
+            $("#chkTodos").removeAttr("checked");//Desmarca a opção todos
+
+			$("#totalNota").val( formatReal(parseFloat(totalNota) - parseFloat(totalExcluido)));
+			$("#totalNota").change();
+            //calculaTotalNota();
 		});
 		
 		$("#CD_MERCADORIA").change(function (){
@@ -126,11 +126,14 @@ var Nota = {
 						var options = "";
 						$.each(data, function(key, value) {
 							if (key == 'data') {
-								//alert( value.DS_MERCADORIA );
-								$("#CD_MERCADORIA").val(value.CD_MERCADORIA);
-								$("#qtd_mercadoria").val('1');
-								$("#ds_mercadoria").val(decodeURIComponent(escape(value.DS_MERCADORIA)));
-								$("#vl_preco_unitario").val(formatReal(value.VL_PRECO_VENDA));
+
+                                $.each(value, function(keyMercadoria, mercadoriaValue) {
+                                    $("#CD_MERCADORIA").val(mercadoriaValue.CD_MERCADORIA);
+                                    $("#qtd_mercadoria").val('1');
+                                    $("#ds_mercadoria").val(decodeURIComponent(escape(mercadoriaValue.DS_MERCADORIA)));
+                                    $("#vl_preco_unitario").val(formatReal(mercadoriaValue.VL_PRECO_VENDA));
+                                });
+
 								$("#vl_preco_unitario").blur();								
 							}
 						});
@@ -215,10 +218,10 @@ var Nota = {
 		//console.log(data);
 		
 		verificaStatus = function(button) {
-            if (button.html() == "<i class=\"icon-white\"></i>") {
-                button.html("<i class=\"icon-white icon-ok\"></i>");
+            if (button.html() == '<i class="icon-white"></i>') {
+                button.html('<i class="icon-white icon-ok"></i>');
             }else{
-                button.html("<i class=\"icon-white\"></i>");
+                button.html('<i class="icon-white"></i>');
             }
         }
 		
@@ -231,7 +234,7 @@ var Nota = {
 		calculaTotalNota = function(){
 			
 			$.each(oTablePedido, function(key, value) {
-				console.log(value);
+				//console.log(value);
 			});
 		}
     },

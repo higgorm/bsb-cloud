@@ -78,7 +78,7 @@ class MercadoriaController extends AbstractActionController{
         $view = new ViewModel(array(
             "messages" => $messages,
             "mercadorias" => $mercadorias,
-			"precos"    => $precosVenda,
+			//"precos"    => $precosVenda,
 			"util"     => $util,
         ));
 
@@ -322,7 +322,7 @@ class MercadoriaController extends AbstractActionController{
         }
         $arrPedido = $this->getServiceLocator()->get('mercadoria_table')->pesquisaMercadoriaPorParamentro($arrParams);
 
-        if (count($arrPedido)) {
+        if ($arrPedido) {
             echo json_encode(array('result' => 'success', 'data' => $arrPedido));
             exit;
         }

@@ -196,7 +196,7 @@
 										<input type="hidden" name="tpAmb" id="tpAmb" />
 										<input type="hidden" name="nProt" id="nProt" />
 										<button id="btnCancelarNota" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Ok</button>
-										<button id="btnVoltar"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+										<button id="btnVoltar"   type="button"  data-dismiss="modal"   class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
 									</div>
 								</form>
 							</div>
@@ -231,7 +231,7 @@
 										<input type="hidden" name="modCCe" id="modCCe" />
 										<input type="hidden" name="tpAmbCCe" id="tpAmbCCe" />
 										<button id="btnCCe" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Ok</button>
-										<button id="btnVoltar"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+										<button id="btnVoltar"  type="button"  data-dismiss="modal"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
 									</div>
 								</form>
 							</div>
@@ -268,7 +268,7 @@
 										<input type="hidden" name="nProt" id="nProt" />
 										<input type="hidden" name="dataemis" id="dataemis" />
 										<button id="btnCancelarNota" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Ok</button>
-										<button id="btnVoltar"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+										<button id="btnVoltar"  type="button"  data-dismiss="modal" class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
 									</div>
 								</form>
 							</div>
@@ -284,7 +284,7 @@
         $("#btnNovaNota").click(function() {
             window.location = "/nota/avulsa";
         });
-	
+
     });
 	
 	function cancelaNota(chave, mod, tpAmb, nProt) {

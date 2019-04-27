@@ -3,7 +3,7 @@
 return array(
     'admin' => array(
 
-        // LAYOUT
+        // LAYOUT and PAINEL CONTROLLER
         'index/',
         'index/logout',
         'index/login',
@@ -14,13 +14,14 @@ return array(
         'home',
         'home/default',
         'js/fullcalendar',
-
-        // PAINEL CONTROLLER
         'painel/index',
         'Application\Controller\Painel/index',
-		
-		// PERFIL
-		'perfil/index',
+
+        // AJAX
+        'ajax/get-cidade-por-uf',
+        'ajax/get-historico-movimentacao',
+        'ajax/get-classificacao-financeira',
+        'ajax/get-operador-loja',
 
         // CLIENTE CONTROLLER
         'cliente/index',
@@ -69,8 +70,6 @@ return array(
         'agenda/verificaagenda',
         'agenda/atendecliente',
         'agenda/limpaagendamento',
-
-        // MACA CONTROLLER
         'maca/index',
         'maca/cadastrar',
 
@@ -166,13 +165,14 @@ return array(
         'mail/analise',
         'mail/ver-clientes',
 
-        //CONTAS
+        //CONTAS a receber
         'contas-receber/index',
         'contas-receber/pesquisa',
         'contas-receber/cadastrar',
         'contas-receber/editar',
         'contas-receber/buscarcliente',
 
+        //CONTAS a pagar
         'contas-pagar/index',
         'contas-pagar/pesquisa',
         'contas-pagar/cadastrar',
@@ -187,19 +187,19 @@ return array(
         'estoque/editar',
         'estoque/remover',
 
-        // AJAX
-        'ajax/get-cidade-por-uf',
-        'ajax/get-historico-movimentacao',
-        'ajax/get-classificacao-financeira',
-        'ajax/get-operador-loja',
 
         //ACL controller's -  Admin for Users
         'menu-web/index',
+
+
         'perfil-web/index',
         'perfil-web/cadastro',
         'perfil-web/edicao',
         'perfil-web/inativar',
         'perfil-web/ativar',
+        'perfil-web/meusDados',
+
+
         'usuario-web/index',
         'usuario-web/cadastro',
         'usuario-web/edicao',

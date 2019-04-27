@@ -230,4 +230,23 @@ class PerfilWebController extends AbstractActionController
         }
     }
 
+    public function meusDadosAction(){
+
+        $session = new Container("orangeSessionContainer");
+
+        $view = new ViewModel(array(
+                'usuario'=>$session->usuario,
+                'perfil'=>$session->dsPerfilWeb,
+                'cdLoja'=> $session->cdLoja,
+                'dsLoja'=> $session->dsLoja,
+                'email'=>$session->email
+            )
+        );
+        $view->setTemplate("application/perfil/meusDados.phtml");
+        $view->setTerminal(false);
+
+        return $view;
+    }
+
+
 }

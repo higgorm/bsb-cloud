@@ -266,12 +266,41 @@ class ClienteTable extends AbstractTableGateway
         if($arrParam['st_tipo_pesquisa'] == 4){
             $select .= " AND C.NR_CGC_CPF like '".$arrParam['codigoCliente']."%' ";
         }
-		
-        //$param = array($arrParam['codigoMercadoria']);
+
         $statement = $this->adapter->query($select);
         $result = $statement->execute();
 
         return $result->current();
+    }
+
+
+    public function pesquisaClientePedidoPorParametro($arrParam)
+    {
+        $select = "SELECT C.*
+                    FROM TB_CLIENTE C
+                    WHERE DT_EXCLUSAO IS NULL ";
+
+        if($arrParam['st_tipo_pesquisa'] == 1){
+            $select .= " AND C.CD_CLIENTE = ".$arrParam['codigoCliente'];
+        }
+
+        if($arrParam['st_tipo_pesquisa'] == 2){
+            $select .= " AND C.DS_NOME_RAZAO_SOCIAL like '".$arrParam['codigoCliente']."%' ";
+        }
+
+        if($arrParam['st_tipo_pesquisa'] == 3){
+            $select .= " AND C.DS_FANTASIA like '".$arrParam['codigoCliente']."%' ";
+        }
+
+        if($arrParam['st_tipo_pesquisa'] == 4){
+            $select .= " AND C.NR_CGC_CPF like '".$arrParam['codigoCliente']."%' ";
+        }
+
+        $statement = $this->adapter->query($select);
+        $results = $statement->execute();
+
+        return iterator_to_array($results,false);
+
     }
 
 }

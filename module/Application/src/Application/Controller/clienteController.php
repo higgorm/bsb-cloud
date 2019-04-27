@@ -530,9 +530,9 @@ class ClienteController extends AbstractActionController
         foreach (@$post as $k => $v) {
             $arrParams[$k] = $v;
         }
-        $arrPedido = $this->getTable()->pesquisaClientePorParamentro($arrParams);
+        $arrPedido = $this->getTable()->pesquisaClientePedidoPorParametro($arrParams);
 
-        if (count($arrPedido)) {
+        if ($arrPedido) {
             echo json_encode(array('result' => 'success', 'data' => $arrPedido));
             exit;
         }
