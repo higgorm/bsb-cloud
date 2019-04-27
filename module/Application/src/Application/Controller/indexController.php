@@ -159,6 +159,7 @@ class IndexController extends AbstractActionController {
                     $session->cdPerfilWeb = (int)$res['CD_PERFIL_WEB'];
                     $session->dsPerfilWeb = $res['DS_PERFIL_WEB'];
 
+
                     //set in session menu's of user profile
                     $menus = $this->getPerfilWebTable()->getMenusPerfil($session->cdPerfilWeb);
                     $session->menuPerfilWeb = $menus;

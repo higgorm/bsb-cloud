@@ -30,29 +30,32 @@ class Module {
     public function initAcl(MvcEvent $e) {
 
         $acl = new \Zend\Permissions\Acl\Acl();
-        $roles = include __DIR__ . '/config/module.acl.roles.php';
+
+        $roles = $this->getFileRoles($e);
+        //$roles = $this->getRoles($e,false);
+
         $allResources = array();
         foreach ($roles as $role => $resources) {
-
+            //var_dump($role);
             $role = new \Zend\Permissions\Acl\Role\GenericRole($role);
             $acl->addRole($role);
 
-            $allResources = array_merge($resources, $allResources);
+            //$allResources = array_merge($resources, $allResources);
 
             //adding resources
             foreach ($resources as $resource) {
                 // Edit 4
                 if (!$acl->hasResource($resource))
                     $acl->addResource(new \Zend\Permissions\Acl\Resource\GenericResource($resource));
-            }
-            //adding restrictions
-            foreach ($allResources as $resource) {
+
                 $acl->allow($role, $resource);
             }
+            //adding restrictions
+            //foreach ($allResources as $resource) {
+            //$acl->allow($role, $resource);
+            //}
         }
-        //testing
-        //var_dump($acl->isAllowed('admin','home'));
-        //true
+
         //setting to view
         $e->getViewModel()->acl = $acl;
     }
@@ -64,15 +67,35 @@ class Module {
 
         //you set your role
         $session = new Container("orangeSessionContainer");
-        $session->userRole = 'admin';
+        $session->userRole = $session->cdPerfilWeb;
 
-        if (($nameRoute != 'api')
-            && (!$e->getViewModel()->acl->isAllowed($session->userRole, $route))) {
+
+        if (isset($session->userRole) && !$e -> getViewModel() -> acl ->hasResource($route)) {
             $response = $e->getResponse();
-            //location to page or what ever
+            $response->getHeaders()->addHeaderLine('Location', $e->getRequest()->getBaseUrl() . '/404');
+            $response->setStatusCode(404);
+        } else if(isset($session->userRole) && !$e -> getViewModel() -> acl -> isAllowed($session->userRole, $route)) {
+            $response = $e->getResponse();
             $response->getHeaders()->addHeaderLine('Location', $e->getRequest()->getBaseUrl() . '/404');
             $response->setStatusCode(404);
         }
+    }
+
+    public function getFileRoles(MvcEvent $e){
+        $roles = include __DIR__ . '/config/module.acl.roles.php';
+        return $roles;
+    }
+
+    public function getDbRoles(MvcEvent $e){
+        // I take it that your adapter is already configured
+        $dbAdapter = $e->getApplication()->getServiceManager()->get('Zend\Db\Adapter\Adapter');;
+        $results = $dbAdapter->query('SELECT * FROM LOGIN.dbo.ACL');
+        // making the roles array
+        $roles = array();
+        foreach($results as $result){
+            $roles[$result['user_role']][] = $result['resource'];
+        }
+        return $roles;
     }
 
     public function setPhpSettings(MvcEvent $e) {

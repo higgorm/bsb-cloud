@@ -1,7 +1,42 @@
 <?php
 
 return array(
-    'admin' => array(
+
+    '1' => array(
+
+        // LAYOUT and PAINEL CONTROLLER
+        'index/',
+        'index/logout',
+        'index/login',
+        'index/index',
+        'index/validasenha',
+        'Application\Controller\Index/index',
+        'layout/login',
+        'home',
+        'home/default',
+        'js/fullcalendar',
+        'painel/index',
+        'Application\Controller\Painel/index',
+
+
+        //ACL controller's -  Admin for Users
+        'menu-web/index',
+
+        'perfil-web/index',
+        'perfil-web/cadastro',
+        'perfil-web/edicao',
+        'perfil-web/inativar',
+        'perfil-web/ativar',
+        'perfil-web/meusDados',
+
+        'usuario-web/index',
+        'usuario-web/cadastro',
+        'usuario-web/edicao',
+        'usuario-web/inativar',
+        'usuario-web/ativar',
+
+    ),
+    '3' => array(
 
         // LAYOUT and PAINEL CONTROLLER
         'index/',
@@ -36,7 +71,7 @@ return array(
 		'cliente/modal-pesquisa-lista-cliente',
 		'cliente/pesquisa-cliente-por-paramentro',
 		'cliente/recupera-cliente-por-codigo',
-		
+
 		// MERCADORIAS
 		'mercadoria/index',
 		'mercadoria/editar',
@@ -47,7 +82,7 @@ return array(
 		'mercadoria/modal-pesquisa-lista-mercadoria',
 		'mercadoria/pesquisa-mercadoria-por-paramentro',
 		'mercadoria/recupera-mercadoria-por-codigo',
-		
+
 		// TABELA
 		'tabela/forma-pagamento',
 		'tabela/forma-pagamento-editar',
@@ -58,7 +93,7 @@ return array(
 		'tabela/cartao',
 		'tabela/cartao-cadastrar',
 		'tabela/cartao-editar',
-		
+
         // AGENDA CONTROLLER
         'agenda/agendamento-cliente',
         'agenda/index',
@@ -96,7 +131,7 @@ return array(
         'pedido/pesquisa-mercadoria-por-paramentro',
         'pedido/cpf-nota',
         'pedido/recupera-historico-por-data',
-		
+
 		// NOTA CONTROLLER
 		'nota/lista',
 		'nota/avulsa',
@@ -186,25 +221,6 @@ return array(
         'estoque/cadastrar',
         'estoque/editar',
         'estoque/remover',
-
-
-        //ACL controller's -  Admin for Users
-        'menu-web/index',
-
-
-        'perfil-web/index',
-        'perfil-web/cadastro',
-        'perfil-web/edicao',
-        'perfil-web/inativar',
-        'perfil-web/ativar',
-        'perfil-web/meusDados',
-
-
-        'usuario-web/index',
-        'usuario-web/cadastro',
-        'usuario-web/edicao',
-        'usuario-web/inativar',
-        'usuario-web/ativar',
 
     )
 );
