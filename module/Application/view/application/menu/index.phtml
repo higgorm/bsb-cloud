@@ -31,6 +31,7 @@
                             <th nowrap>Menu Pai</th>
                             <th nowrap>Url</th>
                             <th nowrap>Ícone</th>
+                            <th nowrap>Ações</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -42,6 +43,10 @@
                                     <td align="right"><?php echo $dado['CD_MENU_PAI']  ?></td>
                                     <td align="left"><?php echo utf8_encode($dado['DS_URL']) ?></td>
                                     <td align="left"><?php echo utf8_encode($dado['DS_ICONE']) ?></td>
+                                    <td align="left">
+                                        <a href="/menu-web/editar?id=<?php echo $dado['CD_MENU'] ?>" title="Editar"><i class="fa fa-pencil"></i></a> |
+                                        <a href="/menu-web/resources?id=<?php echo $dado['CD_MENU'] ?>" title="Resources - ACL"><i class="fa fa-circle-o"></i></a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -53,6 +58,7 @@
                             <th nowrap>Menu Pai</th>
                             <th nowrap>Url</th>
                             <th nowrap>Ícone</th>
+                            <th nowrap>Ações</th>
                         </tr>
                         </tfoot>
                     </table>
