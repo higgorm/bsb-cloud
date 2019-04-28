@@ -31,8 +31,8 @@ class Module {
 
         $acl = new \Zend\Permissions\Acl\Acl();
 
-        $roles = $this->getFileRoles($e);
-        //$roles = $this->getRoles($e,false);
+        //$roles = $this->getFileRoles($e);
+        $roles = $this->getDbRoles($e);
 
         $allResources = array();
         foreach ($roles as $role => $resources) {
@@ -88,13 +88,16 @@ class Module {
 
     public function getDbRoles(MvcEvent $e){
         // I take it that your adapter is already configured
-        $dbAdapter = $e->getApplication()->getServiceManager()->get('Zend\Db\Adapter\Adapter');;
-        $results = $dbAdapter->query('SELECT * FROM LOGIN.dbo.ACL');
+        $dbAdapter  = $e->getApplication()->getServiceManager()->get('Zend\Db\Adapter\Adapter');;
+        $resultset  = $dbAdapter->query('SELECT * FROM LOGIN.DBO.TB_MENU_WEB_RESOURCE');
+        $results    = $resultset->execute();
         // making the roles array
         $roles = array();
+
         foreach($results as $result){
-            $roles[$result['user_role']][] = $result['resource'];
+            $roles[$result['CD_PERFIL_WEB']][] = $result['DS_MENU_RESOURCE'];
         }
+
         return $roles;
     }
 
