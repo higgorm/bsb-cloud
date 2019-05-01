@@ -147,6 +147,52 @@ class NotaController extends AbstractActionController{
 		return $this->redirect()->toUrl("/nota/lista?".$msg);
 	}
 
+    public function inutilizarAction(){
+        $sm                     = $this->getServiceLocator();
+        $dbAdapter              = $sm->get('Zend\Db\Adapter\Adapter');
+        $session                = new Container("orangeSessionContainer");
+        $defaultconfigfolder    = getcwd() . '\vendor\config';
+        $defaultpathConfig      = $defaultconfigfolder .'\config_'.$session->cdBase.'.json';
+        $viewModel              = new ViewModel();
+        $request                = $this->getRequest();
+        $post                   = $request->getPost();
+
+
+        //Dados da NFe (ide)
+        try {
+            $table      = new NotaTable($dbAdapter);
+            $config     = $table->getConfig('1');
+            $tpAmb      = 2; //$config[0]['tp_amb'];      // 1 - produção // 2 - Homologação
+        } catch (Exception $e) {
+            throw new \ErrorException('Erro ao obter dados da configurção.',503);
+        }
+
+        if ($request->isPost()) {
+            try {
+                $aResposta  = array();
+                $data       = $request->getPost();
+
+                $nfe  = new ToolsNFe(getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+                $nfe->setModelo(55);                //55 nfe - 65 nfce
+
+                $xml = $nfe->sefazInutiliza($data->nr_serie, $data->nr_inicio, $data->nf_final, $data->ds_justificativa, $tpAmb, $aResposta);
+                echo '<br><br><PRE>';
+                echo htmlspecialchars($nfe->soapDebug);
+                echo '</PRE><BR>';
+                print_r($aResposta);
+                echo "<br>";
+
+
+            } catch (Exception $e) {
+                $dbAdapter->getDriver()->getConnection()->rollback();
+            }
+        }
+
+        $viewModel->setVariable('config', $config[0]);
+        $viewModel->setTerminal(false);
+        return $viewModel;
+    }
+
 	public function configurarAction(){
 
 		$sm = $this->getServiceLocator();

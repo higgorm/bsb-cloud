@@ -16,6 +16,17 @@
                         <label>Funcionalidades do Perfil: </label>
                     </div>
                     <div class="col-md-10">
+
+                        <div class="col-xs-3 col-md-3">
+                            <label>Painel Inicial</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="35" <?php echo (in_array(35,$menus) ? 'checked' : '') ?> readonly/>&nbsp;Painel Inicial e ACL diversos
+                            </label>
+                            <hr/>
+                        </div>
+
                         <div class="col-xs-3 col-md-3">
                             <label>Menu Controle de acesso </label>
                         </div>
@@ -112,6 +123,10 @@
                             <br/>
                             <label>
                                 <input type="checkbox" name="cd_menu[]" id="ckMenu" value="16"  <?php echo (in_array(16,$menus) ? 'checked' : '') ?> />&nbsp;Listar NF-e
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="34"  <?php echo (in_array(34,$menus) ? 'checked' : '') ?> />&nbsp;Inutilizar NF-e
                             </label>
                             <br/>
                             <label>

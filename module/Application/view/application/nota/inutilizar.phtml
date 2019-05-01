@@ -1,0 +1,49 @@
+<section class="panel panel-default">
+	<div class="main">
+		<div class="row-fluid">
+			<div class="panel-body">
+				<div class="widget-header">
+					<h3>Inutilizar NF-e</h3>
+				</div>
+
+					<form class="form"  id="validation-form" action="/nota/inutilizar" method="post" role="form">
+						<fieldset>
+							<legend>Dados Remetente</legend>
+                            <div class="col-sm-12">
+                                <label>Modelo NF-e:</label>&nbsp;55
+                            </div>
+							<div class="col-sm-4">
+								<label>Série da NF-e:</label>
+								<input type="number" name="nr_serie" id="nr_serie" class="form-control" value="<?php echo $config['NR_SERIE']?>" required />
+							</div>
+							<div class="col-sm-4">
+								<label>Número da NF-e inicial a ser inutilizada :</label>
+								<input type="number" name="nr_inicio" id="nr_inicio" class="form-control" value="" required />
+							</div>
+
+							<div class="col-sm-4">
+								<label>Número da NF-e final a ser inutilizada:</label>
+								<input type="number" name="nf_final" id="nf_final" class="form-control" value="" required />
+							</div>
+							<div class="col-sm-12">
+								<label>Justificativa do pedido de inutilização:</label>
+								<textarea name="ds_justificativa" id="ds_justificativa" class="form-control" value="" required></textarea>
+
+							</div>
+
+						</fieldset>	
+
+						<div class="controls">
+							<div class="col-sm-12">
+								<hr>
+								<button type="submit" class="btn btn-success"> Inutilizar </button>
+								<a href="/nota/inutilizar">
+									<button type="button" class="btn btn-danger">Cancelar</button>
+								</a>
+							</div>
+						</div>
+					</form>
+			</div>
+		</div>
+	</div>
+</section>	

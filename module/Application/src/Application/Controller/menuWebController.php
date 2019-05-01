@@ -84,4 +84,89 @@ class MenuWebController extends AbstractActionController
         return $view;
     }
 
+    public function cadastroAction()
+    {
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $session = new Container("orangeSessionContainer");
+        $request = $this->getRequest();
+        $post = $request->getPost();
+        $terminal = $this->params()->fromQuery('modal') == 'show' ? true : false;
+
+        if ($request->isPost()) {
+            try {
+                $dbAdapter->getDriver()->getConnection()->beginTransaction();
+                $data = $request->getPost();
+                //save menu
+                $this->getTable()->save($data);
+
+                //commit transaction
+                $dbAdapter->getDriver()->getConnection()->commit();
+
+                $message = array("success" => "Cadastro efetuado com sucesso");
+                $this->flashMessenger()->addMessage($message);
+                return $this->redirect()->toUrl("/menu-web/index?pg=1");
+
+            } catch (Exception $e) {
+                $dbAdapter->getDriver()->getConnection()->rollback();
+            }
+        }
+
+        $menu = array('');
+
+        $view = new ViewModel(array(
+            "menu" 	  => $menu,
+        ));
+        $view->setTemplate("application/menu/cadastro.phtml");
+        $view->setTerminal($terminal);
+
+        return $view;
+    }
+
+    public function edicaoAction()
+    {
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $session = new Container("orangeSessionContainer");
+        $request = $this->getRequest();
+        $post = $request->getPost();
+        $terminal = $this->params()->fromQuery('modal') == 'show' ? true : false;
+
+        if ($request->isPost()) {
+            try {
+                $dbAdapter->getDriver()->getConnection()->beginTransaction();
+                $data = $request->getPost();
+
+                //save menu
+                $this->getTable()->save($data);
+
+                $dbAdapter->getDriver()->getConnection()->commit();
+
+                $message = array("success" => "Alteração efetuada com sucesso");
+                $this->flashMessenger()->addMessage($message);
+                return $this->redirect()->toUrl("/menu-web/index?pg=1");
+
+            } catch (Exception $e) {
+                $dbAdapter->getDriver()->getConnection()->rollback();
+            }
+        }
+
+        $id = (int) $this->params()->fromQuery('id');
+        if( $id > 0 ){
+            $menu    = $this->getTable()->getId($id);
+        } else {
+            $menu = array('');
+        }
+
+
+        $view = new ViewModel(array(
+            "menu" 	=> $menu
+        ));
+
+        $view->setTemplate("application/menu/edicao.phtml");
+        $view->setTerminal($terminal);
+
+        return $view;
+    }
+
 }

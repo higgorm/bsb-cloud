@@ -89,7 +89,10 @@ class Module {
     public function getDbRoles(MvcEvent $e){
         // I take it that your adapter is already configured
         $dbAdapter  = $e->getApplication()->getServiceManager()->get('Zend\Db\Adapter\Adapter');;
-        $resultset  = $dbAdapter->query('SELECT * FROM LOGIN.DBO.TB_MENU_WEB_RESOURCE');
+        $resultset  = $dbAdapter->query('SELECT PWM.CD_PERFIL_WEB , MWR.DS_MENU_RESOURCE 
+                                            FROM LOGIN.DBO.TB_MENU_WEB_RESOURCE MWR
+                                                INNER JOIN LOGIN.DBO.TB_PERFIL_WEB_MENUS PWM ON PWM.CD_MENU = MWR.CD_MENU
+                                                    ORDER BY 1');
         $results    = $resultset->execute();
         // making the roles array
         $roles = array();

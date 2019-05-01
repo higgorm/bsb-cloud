@@ -184,6 +184,14 @@
                         </a>
                     </li>
                     <?php endif; ?>
+                    <?php if (in_array_menu($session->menuPerfilWeb, 34)) : ?>
+                        <li>
+                            <a href="/nota/inutilizar" class="auto">
+                                <i class="i i-dot"></i>
+                                <span>Inutilizar NF-e</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
                     <?php if (in_array_menu($session->menuPerfilWeb, 17)) : ?>
                     <li>
                         <a href="/nota/consulta-receita" class="auto">

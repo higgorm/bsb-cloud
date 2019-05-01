@@ -17,17 +17,21 @@ return array(
         'js/fullcalendar',
         'painel/index',
         'Application\Controller\Painel/index',
-
+        'perfil-web/meusDados',
 
         //ACL controller's -  Admin for Users
         'menu-web/index',
+        'nota/inutilizar',
+        'menu-web/cadastro',
+        'menu-web/edicao',
+        'menu-web/resources',
 
         'perfil-web/index',
         'perfil-web/cadastro',
         'perfil-web/edicao',
         'perfil-web/inativar',
         'perfil-web/ativar',
-        'perfil-web/meusDados',
+
 
         'usuario-web/index',
         'usuario-web/cadastro',
@@ -51,6 +55,7 @@ return array(
         'js/fullcalendar',
         'painel/index',
         'Application\Controller\Painel/index',
+        'perfil-web/meusDados',
 
         // AJAX
         'ajax/get-cidade-por-uf',
@@ -148,6 +153,7 @@ return array(
 		'nota/abrir',
 		'nota/visualiza-danfe',
 		'nota/save-nota',
+        'nota/inutilizar',
 
         // RELATORIO CONTROLLER
         'relatorio/index',
