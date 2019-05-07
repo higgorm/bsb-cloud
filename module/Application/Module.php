@@ -36,11 +36,9 @@ class Module {
 
         $allResources = array();
         foreach ($roles as $role => $resources) {
-            //var_dump($role);
+
             $role = new \Zend\Permissions\Acl\Role\GenericRole($role);
             $acl->addRole($role);
-
-            //$allResources = array_merge($resources, $allResources);
 
             //adding resources
             foreach ($resources as $resource) {
@@ -50,12 +48,7 @@ class Module {
 
                 $acl->allow($role, $resource);
             }
-            //adding restrictions
-            //foreach ($allResources as $resource) {
-            //$acl->allow($role, $resource);
-            //}
         }
-
         //setting to view
         $e->getViewModel()->acl = $acl;
     }
@@ -316,6 +309,11 @@ class Module {
                 "menu_web_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new Model\MenuWebTable($adapter);
+                    return $table;
+                },
+                "menu_web_resource_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\MenuWebResourceTable($adapter);
                     return $table;
                 },
             ),

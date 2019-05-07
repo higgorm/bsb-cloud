@@ -1,0 +1,97 @@
+﻿<?php if (count($messages)) : ?>
+    <?php
+    foreach ($messages as $value):
+        $key = key($value);
+        $message = current($value);
+        ?>
+        <div class="alert alert-<?php echo $key ?>">
+            <button type="button" class="close" data-dismiss="alert" >&times;</button>
+            <?php echo $message ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+<section class="panel panel-default">
+    <div class="main">
+		<div class="row-fluid">
+            <div class="panel-body">
+				<h3 class="tit">ACL - Configurar Rotas</h3>
+				    <hr />
+                        <form action="/menu-web/resources" method="post">
+                            <input type="hidden" name="cd_menu" value="<?php echo $menu->cd_menu ?>" />
+                                 <div class="col-xs-9 col-md-9">
+                                    <label>Item do menu: </label>
+                                    <b><?php echo utf8_encode($menu->ds_menu) ?></b>
+                                </div>
+                                <div class="col-xs-9 col-md-9">
+                                    <label>Uri da rota: </label>
+                                    <input class="form-control" type="text" name="ds_menu_resource" id="ds_menu_resource" maxlength="80" placeholder="Ex: nomedomodulo/nomedacontroller" required />
+                                </div>
+                                <div class="col-xs-3 col-md-3" style="margin-top:5px;">
+                                    <br/>
+                                    <button type="submit" class="btn btn-primary">
+                                        Adicionar
+                                    </button>
+                                </div>
+                        </form>
+
+                        <div class="row-fluid" id="result">
+                            <div class="widget stacked" >
+                                <div class="controls">
+
+                                    <div class="col-sm-12">
+                                        <br/>
+                                       Rotas cadastradas
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-striped m-b-none" data-ride="datatables">
+                                        <thead>
+                                        <tr >
+                                            <th nowrap class="col-sm-10">Uri/Rota</th>
+                                            <th nowrap class="col-sm-2">Remover</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php if ($resources) : ?>
+                                            <?php foreach ($resources as $resource): ?>
+                                                <tr>
+                                                    <td align="left"><?php echo utf8_encode($resource['DS_MENU_RESOURCE']) ?></td>
+                                                    <td align="left">
+                                                        <a href="/menu-web/removerResource?id=<?php echo $resource['CD_MENU_WEB_RESOURCE'] ?>" title="Cuidado! Remover Rotas - ACL. ">
+                                                            <i class="fa fa-trash-o"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th nowrap class="col-sm-10">Uri/Rota</th>
+                                            <th nowrap class="col-sm-2">Remover</th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                    <?php echo $this->paginationControl($resources, 'Sliding', 'partials/paginator/control-no-form.phtml') ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+						<div class="col-md-12">&nbsp;</div>
+						<div class="btn-group btn-group-justified col-md-12">
+
+							<div class="col-md-12">
+								<a href="/menu-web/index"><button type="button" class="btn btn-default pull-right">
+                                    <i class="i i-back"></i>
+									Cancelar
+								</button></a>
+							</div>
+						</div>
+					</div>
+
+			</div>
+		</div>
+	</div>
+</section>
+			

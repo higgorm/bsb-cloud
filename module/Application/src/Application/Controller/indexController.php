@@ -15,6 +15,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as AuthAdapter;
 use Zend\Authentication\Result as Result;
 use Zend\Session\Container;
+use Zend\Session;
 
 /**
  *
@@ -158,6 +159,7 @@ class IndexController extends AbstractActionController {
                     $session->email     = $res['DS_EMAIL'];
                     $session->cdPerfilWeb = (int)$res['CD_PERFIL_WEB'];
                     $session->dsPerfilWeb = $res['DS_PERFIL_WEB'];
+                    $session->setExpirationSeconds(60*5); //05 minutos
 
 
                     //set in session menu's of user profile

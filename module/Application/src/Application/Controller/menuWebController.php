@@ -169,4 +169,69 @@ class MenuWebController extends AbstractActionController
         return $view;
     }
 
+    public function resourcesAction()
+    {
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $session = new Container("orangeSessionContainer");
+        $request = $this->getRequest();
+        $post = $request->getPost();
+
+        $cdMenu    = (int) $this->params()->fromQuery('id');
+        $resources = array();
+        $menu      = array('cd_menu'=>$cdMenu);
+
+        if ($request->isPost()) {
+            try {
+                $dbAdapter->getDriver()->getConnection()->beginTransaction();
+                $data = $request->getPost();
+                //save resources
+                $this->getTables('menu_web_resource_table')->save($data);
+
+                //commit transaction
+                $dbAdapter->getDriver()->getConnection()->commit();
+
+                $message = array("success" => "Cadastro de rota efetuado com sucesso");
+                $this->flashMessenger()->addMessage($message);
+                return $this->redirect()->toUrl("/menu-web/resources?id=".$data->cd_menu);
+
+            } catch (Exception $e) {
+                $dbAdapter->getDriver()->getConnection()->rollback();
+            }
+        }
+
+        try {
+             //Recupera a lista de resources do menu
+             if($cdMenu) {
+                 $menu          = $this->getTable()->getId($cdMenu);
+                 $resources     = $this->getTables('menu_web_resource_table')->fetchAll(array('CD_MENU'=>$cdMenu));
+             }
+        } catch (Exception $e) {
+            throw new Exception("Erro ao recuperar a lista de resources deste item de menu");
+        }
+
+
+        $view = new ViewModel(array(
+            "resources" => $resources,
+            "menu" 	    => $menu
+        ));
+        $view->setTemplate("application/menu/resources.phtml");
+        $view->setTerminal(false);
+
+        return $view;
+    }
+
+    public function removerResourceAction()
+    {
+
+        $cdMenuWebResource    = (int) $this->params()->fromQuery('id');
+        $resource             = $this->getTables('menu_web_resource_table')->getId($cdMenuWebResource);
+
+        $this->getTables('menu_web_resource_table')->remove($cdMenuWebResource);
+
+        return $this->redirect()->toUrl("/menu-web/resources?id=".$resource->cd_menu);
+
+    }
+
+
 }
