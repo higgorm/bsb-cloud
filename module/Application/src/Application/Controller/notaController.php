@@ -156,7 +156,11 @@ class NotaController extends AbstractActionController{
         $viewModel              = new ViewModel();
         $request                = $this->getRequest();
         $post                   = $request->getPost();
+        $msg                    = "";
 
+        //Verifica se existe  o diretorio "inutilizadas", senão cria
+        if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\inutilizadas\\' ))
+            @mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\inutilizadas\\');
 
         //Dados da NFe (ide)
         try {
@@ -171,23 +175,27 @@ class NotaController extends AbstractActionController{
             try {
                 $aResposta  = array();
                 $data       = $request->getPost();
-
-                $nfe  = new ToolsNFe(getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
-                $nfe->setModelo(55);                //55 nfe - 65 nfce
+                $nfe        = new ToolsNFe(getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+                $nfe->setModelo(55);             //55 nfe - 65 nfce
 
                 $xml = $nfe->sefazInutiliza($data->nr_serie, $data->nr_inicio, $data->nf_final, $data->ds_justificativa, $tpAmb, $aResposta);
-                echo '<br><br><PRE>';
-                echo htmlspecialchars($nfe->soapDebug);
-                echo '</PRE><BR>';
-                print_r($aResposta);
-                echo "<br>";
+               // echo '<br><br><PRE>';
+               // print_r($aResposta['nProt']);
+               // echo '</PRE><BR>';
 
+                if ( $aResposta['nProt'] != '') {
+                    $msg = array("success" => $aResposta['xMotivo']);
+                } else{
+                    $msg = array("error" => $aResposta['xMotivo']);
+                }
 
             } catch (Exception $e) {
                 $dbAdapter->getDriver()->getConnection()->rollback();
+                $msg =  array("error" =>$e->getMessage());
             }
         }
 
+        $viewModel->setVariable('messages', array($msg));
         $viewModel->setVariable('config', $config[0]);
         $viewModel->setTerminal(false);
         return $viewModel;

@@ -73,7 +73,7 @@
 										<select class="form-control" name="natOp" id="natOp">
 											<option>Selecione</option>
 											<?php foreach( $cfop as $res ): ?>
-												<option value="<?php echo $res['CD_NATUREZA_OPERACAO']?>" <?php if($res['CD_NATUREZA_OPERACAO'] == $dado['CD_NATUREZA_OPERACAO']) echo "selected"?>><?php echo utf8_encode($res['DS_NATUREZA_OPERACAO']) ?></option>
+												<option value="<?php echo $res['CD_NATUREZA_OPERACAO']?>" <?php if($res['CD_NATUREZA_OPERACAO'] == $dado['CD_NATUREZA_OPERACAO']) echo "selected"?>><?php echo utf8_encode($res['CD_NATUREZA_OPERACAO']." - ".$res['DS_NATUREZA_OPERACAO']) ?></option>
 											<?php endforeach; ?>
 										</select>
 									</div>

@@ -1,33 +1,59 @@
+<?php if (is_array($messages)) : ?>
+    <?php
+        foreach ($messages as $value):
+            @$key = key($value);
+            @$message = current($value);
+
+            if ($key) :
+     ?>
+                <div class="alert alert-<?php echo $key ?>">
+                    <button type="button" class="close" data-dismiss="alert" >&times;</button>
+                    <?php echo $message ?>
+                </div>
+            <?php endif; ?>
+    <?php endforeach; ?>
+<?php endif; ?>
 <section class="panel panel-default">
 	<div class="main">
 		<div class="row-fluid">
 			<div class="panel-body">
 				<div class="widget-header">
-					<h3>Inutilizar NF-e</h3>
+					<h3>Inutilização de NF-e</h3>
 				</div>
 
 					<form class="form"  id="validation-form" action="/nota/inutilizar" method="post" role="form">
 						<fieldset>
-							<legend>Dados Remetente</legend>
-                            <div class="col-sm-12">
-                                <label>Modelo NF-e:</label>&nbsp;55
-                            </div>
-							<div class="col-sm-4">
-								<label>Série da NF-e:</label>
+							<legend>Informações obrigatórias</legend>
+
+							<div class="col-sm-2">
+								<label class="control-label text-info">Série da NF-e:</label>
 								<input type="number" name="nr_serie" id="nr_serie" class="form-control" value="<?php echo $config['NR_SERIE']?>" required />
 							</div>
-							<div class="col-sm-4">
-								<label>Número da NF-e inicial a ser inutilizada :</label>
+							<div class="col-sm-2">
+								<label class="control-label text-info">Número da nota inicial :</label>
 								<input type="number" name="nr_inicio" id="nr_inicio" class="form-control" value="" required />
 							</div>
 
-							<div class="col-sm-4">
-								<label>Número da NF-e final a ser inutilizada:</label>
+							<div class="col-sm-2">
+								<label class="control-label text-info">Número da nota final:</label>
 								<input type="number" name="nf_final" id="nf_final" class="form-control" value="" required />
 							</div>
+                            <div class="col-sm-1">
+                                <label class="control-label text-info">Ano:</label><br>
+                                <?php echo date("Y") ?>
+                            </div>
+                            <div class="col-sm-1">
+                                <label class="control-label text-info">Tipo:</label><br>
+                                <input type="radio" value="55" name="mod" checked />NFe
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                <input type="radio" value="65" name="mod"  disabled />NFCe
+                            </div>
+
 							<div class="col-sm-12">
-								<label>Justificativa do pedido de inutilização:</label>
-								<textarea name="ds_justificativa" id="ds_justificativa" class="form-control" value="" required></textarea>
+								<label class="control-label text-info">Justificativa do pedido de inutilização:</label>
+								<textarea name="ds_justificativa" id="ds_justificativa" class="form-control" title="A justificativa deve ter entre 15 e 255 digitos!!" value="" required></textarea>
 
 							</div>
 
@@ -35,11 +61,14 @@
 
 						<div class="controls">
 							<div class="col-sm-12">
-								<hr>
-								<button type="submit" class="btn btn-success"> Inutilizar </button>
-								<a href="/nota/inutilizar">
-									<button type="button" class="btn btn-danger">Cancelar</button>
-								</a>
+
+                                <span class="text-danger">Obs.: Este processo irá inutilizar na SEFAZ a faixa de notas fiscais eletrônicas informada abaixo!</span>
+                                <hr>
+								<button type="submit" class="btn btn-primary btn"> Inutilizar </button>
+                                <button type="button" class="btn btn-default btn" onclick="javascript:window.location.href='/nota/inutilizar'" value="">
+                                    <i class="i i-back"></i>
+                                    Cancelar
+                                </button>
 							</div>
 						</div>
 					</form>

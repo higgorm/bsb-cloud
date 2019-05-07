@@ -59,7 +59,7 @@ INSERT INTO [LOGIN].[dbo].TB_MENU_WEB
 	VALUES (1,'Controle de Acesso',NULL,NULL,'fa fa-lock','S');
 
 INSERT INTO [LOGIN].[dbo].TB_MENU_WEB
-	VALUES (1,'Menus do sistema',1,'/menu-web/index',NULL,'S');
+	VALUES (2,'Menus do sistema',1,'/menu-web/index',NULL,'S');
 
 INSERT INTO [LOGIN].[dbo].TB_MENU_WEB
 	VALUES (3,'Perfis do sistema',1,'/perfil-web/index',NULL,'S');
@@ -256,12 +256,17 @@ INSERT INTO  [LOGIN].[dbo].[TB_PERFIL_WEB_MENUS]
 --Perfil Básico I
  UPDATE [LOGIN].[dbo].[TB_USUARIO_WEB]
   SET [CD_PERFIL_WEB] = 2
-   WHERE [CD_PERFIL_WEB] = NULL;
+   WHERE [CD_PERFIL_WEB] IS NULL;
 
 UPDATE [LOGIN].[dbo].[TB_USUARIO_WEB]
   SET   CD_PERFIL_WEB  = 2,
 		 ST_ATIVO = 'S'
    WHERE [CD_USUARIO_WEB] = 6; -- bsbgestao
+
+UPDATE [LOGIN].[dbo].[TB_USUARIO_WEB]
+  SET   CD_PERFIL_WEB  = 3,
+		 ST_ATIVO = 'S'
+   WHERE [CD_USUARIO_WEB] = 58; -- bsbweb
 
 --Perfil Administrador de usuários
 UPDATE [LOGIN].[dbo].[TB_USUARIO_WEB]
@@ -448,6 +453,8 @@ INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
 --RESOURCES DO MENU INUTILIZAR NFE
 INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
 (DS_MENU_RESOURCE,CD_MENU) VALUES('nota/inutilizar',34);
+INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
+(DS_MENU_RESOURCE,CD_MENU) VALUES('nota/listarInutilizadas',34);
 
 --RESOURCES DO MENU EMITIR NFE
 INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
