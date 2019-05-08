@@ -121,5 +121,15 @@ class MenuWebTable extends AbstractTableGateway {
         }
     }
 
+    public function getMenuPai()
+    {
+
+        $select     = "SELECT cd_menu, ds_menu FROM ". $this->table ." WHERE cd_menu_pai IS NULL";
+        $statement  = $this->adapter->query($select);
+        $result     = $statement->execute();
+
+        return $result;
+
+    }
 
 }

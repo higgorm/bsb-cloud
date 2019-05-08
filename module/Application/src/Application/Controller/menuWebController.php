@@ -112,10 +112,12 @@ class MenuWebController extends AbstractActionController
             }
         }
 
-        $menu = array('');
+        $menu    = array('');
+        $menuPai =  $this->getTable()->getMenuPai();
 
         $view = new ViewModel(array(
             "menu" 	  => $menu,
+            "menuPai" => $menuPai
         ));
         $view->setTemplate("application/menu/cadastro.phtml");
         $view->setTerminal($terminal);
@@ -159,8 +161,11 @@ class MenuWebController extends AbstractActionController
         }
 
 
+        $menuPai =  $this->getTable()->getMenuPai();
+
         $view = new ViewModel(array(
-            "menu" 	=> $menu
+            "menu" 	  => $menu,
+            "menuPai" => $menuPai
         ));
 
         $view->setTemplate("application/menu/edicao.phtml");

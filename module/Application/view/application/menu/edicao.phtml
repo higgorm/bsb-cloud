@@ -15,8 +15,11 @@
                             <label>Menu Pai: </label>
                             <select name="cd_menu_pai" class="form-control">
                                 <option VALUE="">Selecione...</option>
-                                <?php foreach( $menuPai as $menu){
-                                    echo '<option value="'.$menu['cd_menu'].'">"'.$menu['cd_menu'] . ' - ' . utf8_encode($menu['ds_menu']) .'</option>';
+                                <?php foreach( $menuPai as $menuoption){
+                                    echo '<option value="'.$menuoption['cd_menu'].'" '.
+                                         (($menu->cd_menu_pai == $menuoption['cd_menu']) ? " selected " : "") .'>'.
+                                         $menuoption['cd_menu'] . ' - ' . utf8_encode($menuoption['ds_menu']) .
+                                        '</option>';
                                 }?>
                             </select>
                         </div>

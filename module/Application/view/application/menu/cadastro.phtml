@@ -14,8 +14,8 @@
                             <label>Menu Pai: </label>
                             <select name="cd_menu_pai" class="form-control">
                                 <option VALUE="">Selecione...</option>
-                                <?php foreach( $menuPai as $menu){
-                                    echo '<option value="'.$menu['cd_menu'].'">"'.$menu['cd_menu'] . ' - ' . utf8_encode($menu['ds_menu']) .'</option>';
+                                <?php foreach( $menuPai as $menu){ var_dump($menu);
+                                    echo '<option value="'.$menu['cd_menu'].'">'.$menu['cd_menu'] . ' - ' . utf8_encode($menu['ds_menu']) .'</option>';
                                 }?>
                             </select>
                         </div>
