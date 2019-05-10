@@ -100,18 +100,38 @@ class UsuarioWebController extends AbstractActionController
         $request = $this->getRequest();
         $post = $request->getPost();
         $terminal = $this->params()->fromQuery('modal') == 'show' ? true : false;
+        $salvar = true;
+        $messages = $this->flashMessenger()->getMessages();
 
         if ($request->isPost()) {
             try {
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
                 $data = $request->getPost();
 
-                $this->getTable()->save($data,true);
-                $dbAdapter->getDriver()->getConnection()->commit();
+                if(empty($data->ds_senha)) {
+                    $message = array("danger" => "Campo Senha é obrigatório!");
+                    $salvar = false;
+                } else if (empty($data->ds_confirmacao_senha)) {
+                    $message = array("danger" => "Campo de Confirmação da senha é obrigatório!");
+                    $salvar = false;
+                } else if ($data->ds_confirmacao_senha !== $data->ds_senha) {
+                    $message = array("danger" => "A Senha e a Confirmação da senha são diferentes!");
+                    $salvar = false;
+                }
 
-                $message = array("success" => "Cadastro efetuado com sucesso");
+
+                if ($salvar) {
+                    $this->getTable()->save($data,true);
+                    $dbAdapter->getDriver()->getConnection()->commit();
+                    $message = array("success" => "Cadastro efetuado com sucesso");
+                    $redirect = "/usuario-web/index?pg=1";
+                } else {
+                    $redirect = "/usuario-web/cadastro";
+                }
+
+
                 $this->flashMessenger()->addMessage($message);
-                return $this->redirect()->toUrl("/usuario-web/index?pg=1");
+                return $this->redirect()->toUrl($redirect);
 
             } catch (Exception $e) {
                 $dbAdapter->getDriver()->getConnection()->rollback();
@@ -126,6 +146,7 @@ class UsuarioWebController extends AbstractActionController
             "usuario" 	    => $usuario,
             "lojaUsuario"   => $loja,
             "perfilUsuario" => $perfil,
+            "messages" => $messages,
         ));
         $view->setTemplate("application/usuario/cadastro.phtml");
         $view->setTerminal($terminal);
@@ -141,25 +162,47 @@ class UsuarioWebController extends AbstractActionController
         $request = $this->getRequest();
         $post = $request->getPost();
         $terminal = $this->params()->fromQuery('modal') == 'show' ? true : false;
+        $salvar = true;
+        $salvarNovaSenha = false;
+        $id = (int) $this->params()->fromQuery('id');
+        $messages = $this->flashMessenger()->getMessages();
 
         if ($request->isPost()) {
             try {
-                $dbAdapter->getDriver()->getConnection()->beginTransaction();
                 $data = $request->getPost();
 
-                $this->getTable()->save($data,false);
-                $dbAdapter->getDriver()->getConnection()->commit();
+                if(!empty($data->ds_confirmacao_senha) && empty($data->ds_senha)) {
+                    $message = array("danger" => "Campo senha é obrigatório!");
+                    $salvar = false;
+                } else if (empty($data->ds_confirmacao_senha) && !empty($data->ds_senha)) {
+                    $message = array("danger" => "Campo de Confirmação da senha é obrigatório!");
+                    $salvar = false;
+                } else if ((!empty($data->ds_senha)) && ($data->ds_confirmacao_senha !== $data->ds_senha)) {
+                    $message = array("danger" => "A senha e a Confirmação da senha são diferentes!");
+                    $salvar = false;
+                } else if (!empty($data->ds_senha) && !empty($data->ds_confirmacao_senha)) {
+                    $salvarNovaSenha = true;
+                }
 
-                $message = array("success" => "Alteração efetuada com sucesso");
+                if ($salvar) {
+                    $dbAdapter->getDriver()->getConnection()->beginTransaction();
+                    $this->getTable()->save($data,$salvarNovaSenha);
+                    $dbAdapter->getDriver()->getConnection()->commit();
+                    $message = array("success" => "Alteração efetuada com sucesso");
+                    $redirect = "/usuario-web/index?pg=1";
+                } else {
+                    $redirect = "/usuario-web/edicao?id=".$data->cd_usuario_web;
+                }
+
                 $this->flashMessenger()->addMessage($message);
-                return $this->redirect()->toUrl("/usuario-web/index?pg=1");
+                return $this->redirect()->toUrl($redirect);
 
             } catch (Exception $e) {
                 $dbAdapter->getDriver()->getConnection()->rollback();
             }
         }
 
-        $id = (int) $this->params()->fromQuery('id');
+
         if( $id > 0 ){
             $usuario    = $this->getTable()->getId($id);
         } else {
@@ -173,6 +216,7 @@ class UsuarioWebController extends AbstractActionController
             "usuario" 	        => $usuario,
             "lojaUsuario"       => $loja,
             "perfilUsuario" 	=> $perfil,
+            "messages"          => $messages,
         ));
         $view->setTemplate("application/usuario/edicao.phtml");
         $view->setTerminal($terminal);

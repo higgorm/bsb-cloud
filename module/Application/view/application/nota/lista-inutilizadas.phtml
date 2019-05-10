@@ -1,0 +1,74 @@
+<section class="panel panel-default">
+    <div class="main">
+
+        <div class="row-fluid" id="result">
+            <div class="widget stacked" >
+
+                <div class="panel-body">
+                    <table class="table table-striped m-b-none" data-ride="datatables">
+                        <thead>
+                            <tr >
+                                <th nowrap>Tipo</th>
+                                <th nowrap>Ano</th>
+                                <th nowrap>Série</th>
+                                <th nowrap>A partir de</th>
+                                <th nowrap>Até</th>
+                                <th nowrap>Protocolo</th>
+                                <th nowrap>Retorno</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($listaNfe)) : ?>
+                                <?php foreach ($listaNfe as $nfe): ?>
+                                    <tr>
+                                        <td align="left">Nf-e</td>
+                                        <td align="left">-</td>
+                                        <td align="left">-</td>
+                                        <td align="left">-</td>
+                                        <td align="left">                             <?php if ($nfe->DT_PROTOCOLO_DATA == ''){
+                                                                                                echo '';
+                                                                                        }else{
+                                                                                                echo datE('d/m/y', strtotime($nfe['dEmi'])); 
+                                                                                                
+                                                                                             }?></td>
+                                        <td align="left"><?php echo number_format($nfe['ISSQNtot_vServ'],2) ?></td>
+                                        <td align="left">
+											<?php if( $nfe->DS_PROTOCOLO == ''){
+												echo 'Não enviada';
+											} else {
+												if( $nfe->DS_CANCELA_PROTOCOLO == '' ){
+													echo 'Enviada';
+												}else{
+													echo 'Nota Cancelada';
+												}
+											}?>
+										</td>
+                                        </th>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th nowrap>Tipo</th>
+                                <th nowrap>Ano</th>
+                                <th nowrap>Série</th>
+                                <th nowrap>A partir de</th>
+                                <th nowrap>Até</th>
+                                <th nowrap>Protocolo</th>
+                                <th nowrap>Retorno</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+				</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<script>
+    $(document).ready(function() {
+        $("#btnFechoar").click(function() {
+            $('#historicoModal').modal('close');
+        });
+    });
+</script>

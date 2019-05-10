@@ -109,14 +109,15 @@ class UsuarioWebTable extends AbstractTableGateway {
 
             );
 
-            if ($isNew) {
-                $data["cd_usuario_web"] = $this->nextId();
-            }
+            //if ($isNew) {
+            //   $data["cd_usuario_web"] = $this->nextId();
+            //}
 
             if ($saveNewPassword) {
                 $data["ds_senha"] = (isset($tableData->ds_senha)) ? $tableData->ds_senha : $base->ds_senha;
+                $data["ds_senha"] = strtoupper(md5( $data["ds_senha"]));
             }
-            //die(var_dump($data));
+            //die(var_dump($isNew,$saveNewPassword,$data,$tableData));
 
             if (!$isNew) {
                 if(!$this->update($data, array("cd_usuario_web" => $tableData->cd_usuario_web)))

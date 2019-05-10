@@ -26,16 +26,16 @@
 							<legend>Informações obrigatórias</legend>
 
 							<div class="col-sm-2">
-								<label class="control-label text-info">Série da NF-e:</label>
+								<label class="control-label text-info">Série:</label>
 								<input type="number" name="nr_serie" id="nr_serie" class="form-control" value="<?php echo $config['NR_SERIE']?>" required />
 							</div>
 							<div class="col-sm-2">
-								<label class="control-label text-info">Número da nota inicial :</label>
+								<label class="control-label text-info">Númeração inicial :</label>
 								<input type="number" name="nr_inicio" id="nr_inicio" class="form-control" value="" required />
 							</div>
 
 							<div class="col-sm-2">
-								<label class="control-label text-info">Número da nota final:</label>
+								<label class="control-label text-info">Númeração final:</label>
 								<input type="number" name="nf_final" id="nf_final" class="form-control" value="" required />
 							</div>
                             <div class="col-sm-1">
@@ -52,7 +52,7 @@
                             </div>
 
 							<div class="col-sm-12">
-								<label class="control-label text-info">Justificativa do pedido de inutilização:</label>
+								<label class="control-label text-info">Justificativa para a inutilização:</label>
 								<textarea name="ds_justificativa" id="ds_justificativa" class="form-control" title="A justificativa deve ter entre 15 e 255 digitos!!" value="" required></textarea>
 
 							</div>
@@ -62,9 +62,15 @@
 						<div class="controls">
 							<div class="col-sm-12">
 
-                                <span class="text-danger">Obs.: Este processo irá inutilizar na SEFAZ a faixa de notas fiscais eletrônicas informada abaixo!</span>
+                                <span class="text-danger">
+                                    Obs.: <br/>
+                                    Quando for um único número, informe-o nos campos   Numeração Inicial e Numeração Final.<br/>
+                                    O intervalo não pode ser superior a 1000 (mil) números, e não pode conter notas fiscais, que já tenham sido autorizadas, denegadas ou inutilizadas anteriormente.<br/>
+                                    Caso possua dúvidas referente qual informação preencher ou o prazo para inutilizar uma faixa, entre em contato com o seu Consultor Tributário ou com Órgão Competente do seu Estado.
+                                </span>
                                 <hr>
-								<button type="submit" class="btn btn-primary btn"> Inutilizar </button>
+								<button type="submit" class="btn btn-primary btn"> Inutilizar Faixa</button>
+                                <button type="button" class="btn btn-default btn" id="btnVisualizarHistorico"> Histórico de inutilização </button>
                                 <button type="button" class="btn btn-default btn" onclick="javascript:window.location.href='/nota/inutilizar'" value="">
                                     <i class="i i-back"></i>
                                     Cancelar
@@ -75,4 +81,30 @@
 			</div>
 		</div>
 	</div>
-</section>	
+
+
+    <!-- Modal para histórcio-->
+    <div id="historicoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="historicoModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="window.location.reload();" data-dismiss="modal">X</button>
+                    <i class="icon-search icon-white"></i>
+                    <span class="text-info-modal"><?php echo "Histórico de inutilização" ?></span>
+                </div>
+                <div id="bodyHistoricoModal" class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+
+        $('#btnVisualizarHistorico').click(function () {
+            $('#bodyHistoricoModal').html('');
+            $('#bodyHistoricoModal').load('/nota/listaInutilizadas');
+            $('#historicoModal').modal('show');
+        });
+    });
+</script>

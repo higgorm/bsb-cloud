@@ -85,6 +85,43 @@ class NotaController extends AbstractActionController{
         return $viewModel;
 	}
 
+
+    public function listaInutilizadasAction(){
+        $notaFiscalService = new NotaFiscalService( $this->getServiceLocator());
+
+        $request    = $this->getRequest();
+        $messages   = $this->flashMessenger()->getMessages();
+        $pageNumber = (int) $this->params()->fromQuery('pg');
+        $param      = array();
+
+        if ($pageNumber == 0) {
+            $pageNumber = 1;
+        }
+
+        if ($request->isPost()) {
+            $post = $request->getPost();
+
+            foreach ($post as $key => $value) {
+                if (!empty($value)) {
+                    $param[$key] = trim($value);
+                }
+            }
+        }
+
+        $listaNfe   = $notaFiscalService->getList($param, $pageNumber);
+
+        $viewModel  = new ViewModel();
+        $viewModel->setTerminal(true);
+        $viewModel->setVariable('listaNfe', $listaNfe);
+
+        if( $this->params()->fromQuery('error') )
+            $viewModel->setVariable('error', $this->params()->fromQuery('error'));
+        if( $this->params()->fromQuery('success') )
+            $viewModel->setVariable('success', $this->params()->fromQuery('success'));
+
+        return $viewModel;
+    }
+
 	public function avulsaAction(){
 
 		// get the db adapter
@@ -1915,4 +1952,5 @@ class NotaController extends AbstractActionController{
 		$response->setHeaders($headers);
 		return $response;
 	}
+
 }
