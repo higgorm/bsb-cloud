@@ -24,6 +24,7 @@ use NFePHP\Common\Files\FilesFolders;
 use NFePHP\NFe\MakeNFe;
 use NFePHP\Common\Certificate\open_pkcs12_read;
 use Application\Model\NotaTable;
+use Application\Model\NotaInutilizadaTable;
 use Application\Model\TabelaTable;
 use Application\Model\MercadoriaTable;
 use ZipArchive;
@@ -87,11 +88,12 @@ class NotaController extends AbstractActionController{
 
 
     public function listaInutilizadasAction(){
-        $notaFiscalService = new NotaFiscalService( $this->getServiceLocator());
+        // get the db adapter
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
 
         $request    = $this->getRequest();
         $messages   = $this->flashMessenger()->getMessages();
-        $pageNumber = (int) $this->params()->fromQuery('pg');
         $param      = array();
 
         if ($pageNumber == 0) {
@@ -107,8 +109,8 @@ class NotaController extends AbstractActionController{
                 }
             }
         }
-
-        $listaNfe   = $notaFiscalService->getList($param, $pageNumber);
+        $notaInutilizada  = new NotaInutilizadaTable($dbAdapter);
+        $listaNfe         = $notaInutilizada->listHistorico();
 
         $viewModel  = new ViewModel();
         $viewModel->setTerminal(true);
@@ -195,6 +197,7 @@ class NotaController extends AbstractActionController{
         $post                   = $request->getPost();
         $msg                    = "";
 
+
         //Verifica se existe  o diretorio "inutilizadas", senão cria
         if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\inutilizadas\\' ))
             @mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\inutilizadas\\');
@@ -203,8 +206,8 @@ class NotaController extends AbstractActionController{
         try {
             $table      = new NotaTable($dbAdapter);
             $config     = $table->getConfig('1');
-            $tpAmb      = 2; //$config[0]['tp_amb'];      // 1 - produção // 2 - Homologação
-        } catch (Exception $e) {
+            $tpAmb      = $config[0]['tp_amb'];      // 1 - produção // 2 - Homologação
+        } catch (\Exception $e) {
             throw new \ErrorException('Erro ao obter dados da configurção.',503);
         }
 
@@ -215,20 +218,29 @@ class NotaController extends AbstractActionController{
                 $nfe        = new ToolsNFe(getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
                 $nfe->setModelo(55);             //55 nfe - 65 nfce
 
-                $xml = $nfe->sefazInutiliza($data->nr_serie, $data->nr_inicio, $data->nf_final, $data->ds_justificativa, $tpAmb, $aResposta);
-               // echo '<br><br><PRE>';
-               // print_r($aResposta['nProt']);
+                $xml = @$nfe->sefazInutiliza($data->nr_serie, $data->nr_inicio, $data->nf_final, $data->ds_justificativa, $tpAmb, $aResposta);
+                //echo '<br><br><PRE>';
+               // var_dump($config,$data,$aResposta);
                // echo '</PRE><BR>';
+               // exit;
 
-                if ( $aResposta['nProt'] != '') {
-                    $msg = array("success" => $aResposta['xMotivo']);
+
+                if ( $aResposta['nProt'] != '' &&  $aResposta['cStat']== "102") {
+                    $msg = array("success" => "Enviado com sucesso: ". $aResposta['xMotivo']);
+                } else if ( $aResposta['nProt'] != '') {
+                    $msg = array("danger" =>  $aResposta['xMotivo']);
                 } else{
-                    $msg = array("error" => $aResposta['xMotivo']);
+                    $msg = array("danger" =>  $aResposta['xMotivo']);
                 }
 
-            } catch (Exception $e) {
+                $data->cd_loja = $session->cdBase;
+                $data->cd_usuario = $session->cdUsuario;
+                $notaInutilizada  = new NotaInutilizadaTable($dbAdapter);
+                $notaInutilizada->save($data,$aResposta);
+
+            } catch (\Exception $e) {
                 $dbAdapter->getDriver()->getConnection()->rollback();
-                $msg =  array("error" =>$e->getMessage());
+                $msg =  array("danger" =>"Erro: ". $e->getMessage());
             }
         }
 

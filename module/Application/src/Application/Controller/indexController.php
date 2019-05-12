@@ -155,12 +155,12 @@ class IndexController extends AbstractActionController {
 					$session->cdLoja = '1';
 					$session->cdBase = $res['CD_LOJA'];
                     $session->dsLoja = $res['DS_LOJA'];
+                    $session->cdUsuario = $res['CD_USUARIO_WEB'];
 					$session->usuario = $res['DS_USUARIO'];
                     $session->email     = $res['DS_EMAIL'];
                     $session->cdPerfilWeb = (int)$res['CD_PERFIL_WEB'];
                     $session->dsPerfilWeb = $res['DS_PERFIL_WEB'];
                     $session->setExpirationSeconds(60*30); //30 minutos
-
 
                     //set in session menu's of user profile
                     $menus = $this->getPerfilWebTable()->getMenusPerfil($session->cdPerfilWeb);

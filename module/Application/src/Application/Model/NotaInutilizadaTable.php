@@ -32,9 +32,27 @@ class NotaInutilizadaTable extends AbstractTableGateway {
 
     public function listHistorico()
     {
-        $statement = $this->adapter->query('SELECT *  FROM '.$this->table . ' ORDER BY CD_NFE_INUTILILIZADA DESC');
-        $result = $statement->execute();
-        return $selectData;
+        $select     = 'SELECT 
+                           TP_AMBIENTE
+                          ,NR_SERIE
+                          ,NR_ANO
+                          ,NR_FAIXA_INICIAL
+                          ,NR_FAIXA_FINAL
+                          ,DS_JUSTIFICATIVA
+                          ,DS_X_MOTIVO
+                          ,CONVERT(VARCHAR(20), DH_RECEBIMENTO, 120) AS DH_RECEBIMENTO 
+                          ,TP_MODELO
+                          ,NR_VERSAO
+                          ,NR_VERSAO_APLICACAO
+                          ,CD_UF
+                          ,NU_CNPJ
+                          ,NU_PROTOCOLO
+                          ,BSTAT
+                          ,CSTAT
+                FROM '. $this->table . ' ORDER BY CD_NFE_INUTILILIZADA DESC';
+        $statement  = $this->adapter->query($select);
+        $result     = $statement->execute();
+        return $result;
     }
 
     public function nextId()
@@ -51,9 +69,13 @@ class NotaInutilizadaTable extends AbstractTableGateway {
         return $row->cd_nfe_inutililizada;
     }
 
-    public function save($tableData)
+    public function save($tableData, $respostaSefaz)
     {
         $isNew = false;
+
+        if(is_array($respostaSefaz)) {
+            $respostaSefaz = (object) $respostaSefaz;
+        }
 
         try {
             if ($tableData->cd_nfe_inutililizada) {
@@ -63,23 +85,33 @@ class NotaInutilizadaTable extends AbstractTableGateway {
             }
 
             $data = array(
-                "tp_ambiente"       => (isset($tableData->tp_ambiente)) ? $tableData->tp_ambiente   : $base->tp_ambiente,
-                "cd_loja"           => (isset($tableData->cd_loja))     ? $tableData->cd_loja       : $base->cd_loja,
-                "tp_nfe"            => (isset($tableData->tp_nfe))      ? $tableData->tp_nfe        : $base->tp_nfe,
-                "nr_serie"          => (isset($tableData->nr_serie))    ? $tableData->nr_serie      : $base->nr_serie,
-                "nr_ano"            => (isset($tableData->nr_ano))      ? $tableData->nr_ano        : $base->nr_ano,
-                "nr_faixa_inicial"  => (isset($tableData->nr_faixa_inicial))    ? $tableData->nr_faixa_inicial  : $base->nr_faixa_inicial,
-                "nr_faixa_final"    => (isset($tableData->nr_faixa_final))      ? $tableData->nr_faixa_final    : $base->nr_faixa_final,
-                "ds_justificativa"  => (isset($tableData->ds_justificativa))    ? $tableData->ds_justificativa  : $base->ds_justificativa,
-                "ds_retorno_nfe"    => (isset($tableData->ds_retorno_nfe))      ? $tableData->ds_retorno_nfe    : $base->ds_retorno_nfe,
-                "cd_usuario"        => (isset($tableData->cd_usuario))          ? $tableData->cd_usuario    : $base->cd_usuario,
-                "dt_registro"       => (isset($tableData->dt_registro))         ? $tableData->dt_registro   : $base->dt_registro
+                "ds_justificativa"  => (isset($tableData->ds_justificativa))  ? utf8_decode($tableData->ds_justificativa)    : $base->ds_justificativa,
+                "cd_usuario"        => (isset($tableData->cd_usuario))     ? $tableData->cd_usuario : $base->cd_usuario,
+                "cd_loja"           => (isset($tableData->cd_loja))        ? $tableData->cd_loja    : $base->cd_loja,
+
+                "tp_ambiente"       => (isset($respostaSefaz->tpAmb))      ? $respostaSefaz->tpAmb    : $base->tp_ambiente,
+                "tp_modelo"         => (isset($respostaSefaz->mod))        ? $respostaSefaz->mod      : $base->tp_modelo,
+                "nr_serie"          => (isset($respostaSefaz->serie))      ? $respostaSefaz->serie    : $base->nr_serie,
+                "nr_ano"            => (isset($respostaSefaz->ano))        ? $respostaSefaz->ano      : $base->nr_ano,
+                "nr_faixa_inicial"  => (isset($respostaSefaz->nNFIni))     ? $respostaSefaz->nNFIni   : $base->nr_faixa_inicial,
+                "nr_faixa_final"    => (isset($respostaSefaz->nNFFin))     ? $respostaSefaz->nNFFin   : $base->nr_faixa_final,
+                "ds_x_motivo"       => (isset($respostaSefaz->xMotivo))    ? $respostaSefaz->xMotivo  : $base->ds_x_motivo,
+                "dh_recebimento"    => (isset($respostaSefaz->dhRecbto))   ? $respostaSefaz->dhRecbto : $base->dh_recebimento,
+                "nr_versao"         => (isset($respostaSefaz->versao))     ? $respostaSefaz->versao   : $base->nr_versao,
+                "nr_versao_aplicacao" => (isset($respostaSefaz->verAplic)) ? $respostaSefaz->verAplic : $base->nr_versao_aplicacao,
+                "cd_uf"             => (isset($respostaSefaz->cUF))        ? $respostaSefaz->cUF      : $base->cd_uf,
+                "nu_cnpj"           => (isset($respostaSefaz->CNPJ))       ? $respostaSefaz->CNPJ     : $base->nu_cnpj,
+                "nu_protocolo"      => (isset($respostaSefaz->nProt))      ? $respostaSefaz->nProt    : $base->nu_protocolo,
+                "bStat"             => (isset($respostaSefaz->bStat))      ? $respostaSefaz->bStat    : $base->bstat,
+                "cStat"             => (isset($respostaSefaz->cStat))      ? $respostaSefaz->cStat    : $base->cstat,
             );
 
             if ($isNew) {
                 $data["cd_nfe_inutililizada"] = $this->nextId();
+                $dhEmi = date("Ymd H:i:s", strtotime($data['dh_recebimento']));
+                $data['dh_recebimento'] = $dhEmi;
             }
-//var_dump($tableData,$data,$isNew);exit;
+//var_dump($tableData,$respostaSefaz,$data);exit;
             if (!$isNew) {
                 if(!$this->update($data, array("cd_nfe_inutililizada" => $tableData->cd_nfe_inutililizada)))
                     throw new \Exception ;
