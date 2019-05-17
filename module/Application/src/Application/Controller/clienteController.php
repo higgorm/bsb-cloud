@@ -154,7 +154,7 @@ class ClienteController extends AbstractActionController
             $view->setTemplate("application/cliente/form.phtml");
 
             return $view;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
     }
@@ -171,7 +171,8 @@ class ClienteController extends AbstractActionController
 			try {
 				$dbAdapter->getDriver()->getConnection()->beginTransaction();
 				$data = $request->getPost();
-				
+
+                $data->usuarioultimaalteracao = $session->usuario;
 				$this->getTable()->save($data);
 				$dbAdapter->getDriver()->getConnection()->commit();
 
@@ -516,11 +517,12 @@ class ClienteController extends AbstractActionController
         $arrCliente = $this->getTable()->getId($data['cd_cliente']);
 
         if (count($arrCliente)) {
+            array_walk_recursive($arrCliente, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
             echo json_encode(array('result' => 'success', 'data' => $arrCliente));
-            exit;
+        } else {
+            echo json_encode(array('result' => 'erro', 'message' => $data['cd_cliente']));
         }
 
-        echo json_encode(array('result' => 'erro', 'message' => $data['cd_cliente']));
         exit;
     }
 	
@@ -533,12 +535,13 @@ class ClienteController extends AbstractActionController
         $arrPedido = $this->getTable()->pesquisaClientePedidoPorParametro($arrParams);
 
         if ($arrPedido) {
+            array_walk_recursive($arrPedido, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
             echo json_encode(array('result' => 'success', 'data' => $arrPedido));
-            exit;
+
+        } else {
+            echo json_encode(array('result' => 'erro', 'message' => 'Cliente não encontrado.'));
         }
 
-        echo json_encode(array('result' => 'erro', 'message' => 'Mercadoria não encontrada.'));
         exit;
     }
-
 }

@@ -161,12 +161,12 @@ var Nota = {
 		
 		$("#natOp").change(function () {
 			$("#cfop").val( $("#natOp").val());
-			$("#xNatOp").val( $("#natOp :selected").text() );
+			$("#xNatOp").val( decodeURIComponent(escape($("#natOp :selected").text())) );
 		});
 		
 		$("#cfop").change(function () {
 			$("#natOp").val( $("#cfop").val());
-			$("#xNatOp").val(  $("#natOp :selected").text() );
+			$("#xNatOp").val(  decodeURIComponent(escape($("#natOp :selected").text())) );
 		});
 		//Copiar total para total de Retenção
 		$("#totalNota").change(function(){

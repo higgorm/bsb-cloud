@@ -89,7 +89,7 @@
 									<div class="col-md-12">&nbsp;</div>
 									<div class="col-md-12">
 										<label class="control-label text-info">Informações Adicionais:</label><br>
-										<textarea name="infadc" id="infadc" class="form-control" rows="6"><?php echo @$nota['infCpl'] ?></textarea>
+										<textarea name="infadc" id="infadc" class="form-control" rows="6"><?php echo $nota['infCpl'] ?></textarea>
 									</div>
 									<div class="col-md-12">&nbsp;</div>
 								</fieldset>
@@ -102,7 +102,7 @@
 										<div class="col-md-7">
 											<label class="control-label text-info" for="name">Nome / Razão Social:</label><br>
 											<!--<div id="ds_nome_razao_social" class="autocomplete"></div>-->
-											<input name="destNome" id="destNome" class="form-control"  maxlength="255" value="<?php echo utf8_decode(@$nota['Dest_xNome']) ?>"/>
+											<input name="destNome" id="destNome" class="form-control"  maxlength="255" value="<?php echo utf8_encode(@$nota['Dest_xNome']) ?>"/>
 										</div>
 
 										<div class="col-md-3">
@@ -140,7 +140,7 @@
 													<i class="fa fa-search"></i>
 												</button>
 											</div>
-											<div class="col-md-3">
+											<div class="col-md-5">
 												<label>Descrição</label><br>
 												<input type="text" class="form-control" id="ds_mercadoria" name="ds_mercadoria" maxlength="120" />
 											</div>
@@ -157,7 +157,7 @@
 												<label>Total</label><br>
 												<input type="text" class="form-control" id="vl_tot" name="vl_tot" readonly />
 											</div>
-											<div class="col-md-2">
+											<div class="col-md-12">
 												<label>&nbsp;</label><br>
 												<button id="btnIncluirMercadoria" class="btn btn-primary" type="button"><i class="icon-white icon-plus"></i>&nbsp;Adicionar a nota</button>
 											</div>

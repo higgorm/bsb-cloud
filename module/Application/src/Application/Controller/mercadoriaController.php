@@ -143,7 +143,7 @@ class MercadoriaController extends AbstractActionController{
 				'ICMS_CST'						=> $post->get('situacaoTributaria'),
 				'ICMS_modBC'					=> $post->get('ICMS_modBC'),
 				'ST_SERVICO'					=> $post->get('flg_tipo'),
-				'DT_UltimaAlteracao'			=> date('Ymd H:m'),
+				'DT_UltimaAlteracao'			=> date('Ymd H:i'),
 				'UsuarioUltimaAlteracao'		=> 'OrangeWeb'
 			);
 			
@@ -220,7 +220,7 @@ class MercadoriaController extends AbstractActionController{
 				'ICMS_CST '		                => $post->get('situacaoTributaria'),
 				'ICMS_modBC'					=> $post->get('ICMS_modBC'),
 				'ST_SERVICO'					=> $post->get('flg_tipo'),
-				'DT_UltimaAlteracao'			=> date('Ymd H:m'),
+				'DT_UltimaAlteracao'			=> date('Ymd H:i'),
 				'UsuarioUltimaAlteracao'		=> 'OrangeWeb',
 				'CD_GRUPO'						=> '01',
 				'CD_SUBGRUPO'					=> '01',
@@ -243,8 +243,8 @@ class MercadoriaController extends AbstractActionController{
 				'VL_PRECO_COMPRA'				=> ( $post->get('vl_compra') == '' ? 0 : $post->get('vl_compra') ),
 				'VL_PRECO_VENDA'	 			=> $post->get('vl_venda'),
 				'ST_FOLHA_ROSTO'				=> '',
-				'DT_ALTERACAO'					=> date('Ymd H:m'),
-				'DT_UltimaAlteracao'			=> date('Ymd H:m'),
+				'DT_ALTERACAO'					=> date('Ymd H:i'),
+				'DT_UltimaAlteracao'			=> date('Ymd H:i'),
 				'UsuarioUltimaAlteracao'		=> 'OrangeWeb'
 			);
 			$livro_preco = $this->getTable()->insere_livro_preco( $array );
@@ -257,7 +257,7 @@ class MercadoriaController extends AbstractActionController{
 				'VL_PRECO_VENDA_PROMOCAO'		=> '0',
 				'NR_PERCENTUAL_ACRESCIMO'		=> '0',
 				'ST_TIPO_REAJUSTE'				=> '2',
-				'DT_UltimaAlteracao'			=> date('Ymd H:m'),
+				'DT_UltimaAlteracao'			=> date('Ymd H:i'),
 				'UsuarioUltimaAlteracao'		=> 'OrangeWeb'
 			);
 			$preco = $this->getTable()->insere_preco( $array );

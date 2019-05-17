@@ -24,12 +24,12 @@
 						</div>
 						<div class="col-xs-4 col-md-4">        
 							<label>Nome: </label>    
-							<input class="form-control" type="text" name="ds_nome_razao_social" value="<?php echo utf8_decode( @$cliente->ds_nome_razao_social ) ?>" maxlength="120" required="required">    
+							<input class="form-control" type="text" name="ds_nome_razao_social" value="<?php echo utf8_encode( @$cliente->ds_nome_razao_social ) ?>" maxlength="120" required="required">
 						</div>	
 						
 						<div class="col-xs-4 col-md-4" id="FANTASIA">        
 							<label>Nome Fantasia: </label>        
-							<input class="form-control" type="text" name="ds_fantasia" value="<?php echo utf8_decode( @$cliente->ds_fantasia ) ?>" maxlength="50">    
+							<input class="form-control" type="text" name="ds_fantasia" value="<?php echo utf8_encode( @$cliente->ds_fantasia ) ?>" maxlength="50">
 						</div>
 						<div class="col-xs-2 col-md-2" id="cpf">        
 							<label>CPF: </label>        

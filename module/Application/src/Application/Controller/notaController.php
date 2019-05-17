@@ -497,6 +497,10 @@ class NotaController extends AbstractActionController{
 			$viewModel->setVariable('config', $config);
 			$viewModel->setVariable('cfop', $cfop);
 
+
+            $viewModel->setVariable('logotipoExistente', file_exists(getcwd() . '\public\clientes\\'.$session->cdBase.'\logo.jpg'));
+            $viewModel->setVariable('logotipoCliente', '\\clientes\\'.$session->cdBase.'\logo.jpg');
+
 			return $viewModel;
 		}
 	}
@@ -1519,6 +1523,7 @@ class NotaController extends AbstractActionController{
 			$vRetPrev = $post->get('retPrev_total');
 		}
 		$resp = $nfe->tagretTrib($vRetPIS, $vRetCOFINS, $vRetCSLL, $vBCIRRF, $vIRRF, $vBCRetPrev, $vRetPrev );
+
 
 		if( $bReenvia ){
 			$table->atualiza_nota($nfeGe['infNFE'], $nfeGe);

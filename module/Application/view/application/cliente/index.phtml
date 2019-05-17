@@ -91,7 +91,7 @@
                                 <!-- th nowrap>#</th -->
                                 <th nowrap>Cliente</th>
                                 <th nowrap>Sexo</th>
-                                <th nowrap>CPF</th>
+                                <th nowrap>CPF/CNPJ</th>
                                 <th nowrap>Endere&ccedil;o</th>
                                 <th nowrap>Telefone(s)</th>
                                 <th nowrap>Email</th>
@@ -103,10 +103,10 @@
                                 <?php foreach ($clientes as $cliente): ?>
                                     <tr>
                                         <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
-                                        <td align="left"><?php echo utf8_decode($cliente->DS_NOME_RAZAO_SOCIAL) ?></td>
+                                        <td align="left"><?php echo utf8_encode($cliente->DS_NOME_RAZAO_SOCIAL) ?></td>
                                         <td align="left"><?php echo $cliente->DS_SEXO ?></td>
-                                        <td align="right"><?php echo ( strlen( $cliente->NR_CGC_CPF ) > 11 ? $util->mask($cliente->NR_CGC_CPF,'##.###.###/####-##') : $util->mask($cliente->NR_CGC_CPF,'###.###.###-##') ); ?></td>
-                                        <td align="center"><?php echo utf8_decode($cliente->DS_ENDERECO) ?></td>
+                                        <td align="right" nowrap><?php echo ( strlen( $cliente->NR_CGC_CPF ) > 11 ? $util->mask($cliente->NR_CGC_CPF,'##.###.###/####-##') : $util->mask($cliente->NR_CGC_CPF,'###.###.###-##') ); ?></td>
+                                        <td align="center"><?php echo utf8_encode($cliente->DS_ENDERECO) ?></td>
                                         <td align="center"><?php echo $cliente->DS_FONE1 . " / " . $cliente->DS_FONE2 ?></td>
                                         <td align="left"><?php echo utf8_decode($cliente->DS_EMAIL) ?></td>
                                         <td  align="center">
@@ -123,7 +123,7 @@
                                 <!-- th nowrap>#</th -->
                                 <th nowrap>Cliente</th>
                                 <th nowrap>Sexo</th>
-                                <th nowrap>CPF</th>
+                                <th nowrap>CPF/CNPJ</th>
                                 <th nowrap>Endere&ccedil;o</th>
                                 <th nowrap>Telefone(s)</th>
                                 <th nowrap>Email</th>

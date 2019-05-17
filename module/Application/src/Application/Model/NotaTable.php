@@ -54,7 +54,7 @@ class NotaTable extends AbstractTableGateway
 		$select->from($this->table)
             ->where($where)
             ->order("infNFE DESC");
-			
+
 		$adapter = new DbSelect($select, $this->adapter);
         $paginator = new Paginator($adapter);
         $paginator->setCurrentPageNumber($currentPage);
@@ -124,10 +124,11 @@ class NotaTable extends AbstractTableGateway
 	}
 	
 	public function insere_nota( $array ){
+
 		$sql = new Sql($this->adapter);
 		$insert = $sql->insert( $this->table );
-		
 		$insert->values($array);
+
 		$selectString = $sql->getSqlStringForSqlObject($insert);
 		//$results = $this->adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE	);
 		
@@ -158,7 +159,7 @@ class NotaTable extends AbstractTableGateway
 		$update = $sql->update();
 		$update->table($this->table);
 		$update->set($array);
-		
+
 		if( $nota > 2147483647 ){ 
 			$update->where(array('DS_NFE_CHAVE' => $nota));
 		}else{

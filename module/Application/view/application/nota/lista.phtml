@@ -71,7 +71,7 @@
                                     <tr>
                                         <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
                                         <td align="left"><?php echo $nfe['infNFE'] ?></td>
-                                        <td align="left"><?php echo utf8_decode($nfe['Dest_xNome']) ?></td>
+                                        <td align="left"><?php echo utf8_encode($nfe['Dest_xNome']) ?></td>
                                         <td align="left">                             <?php if ($nfe->DT_PROTOCOLO_DATA == ''){
                                                                                                 echo '';
                                                                                         }else{
