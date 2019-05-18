@@ -108,7 +108,7 @@ class NotaInutilizadaTable extends AbstractTableGateway {
 
             if ($isNew) {
                 $data["cd_nfe_inutililizada"] = $this->nextId();
-                $dhEmi = date("Ymd H:i:s", strtotime($data['dh_recebimento']));
+                $dhEmi = date(FORMATO_ESCRITA_DATA_HORA, strtotime($data['dh_recebimento']));
                 $data['dh_recebimento'] = $dhEmi;
             }
 //var_dump($tableData,$respostaSefaz,$data);exit;

@@ -43,7 +43,7 @@
 							<label>Inscricao na Suframa: </label>        
 							<input class="form-control" type="text" name="ds_suframa" value="<?php echo @$cliente->ds_suframa ?>" maxlength="10">    
 						</div>
-						<div class="col-xs-2 col-md-2">        
+						<div class="col-xs-2 col-md-2 "id="inscEstadual">
 							<label>Inscricao Estadual: </label>        	
 							<input class="form-control" type="text" name="nr_insc_estadual" value="<?php echo @$cliente->nr_insc_estadual ?>" maxlength="15">    
 						</div>
@@ -265,15 +265,14 @@
 			document.getElementById('FANTASIA'	).style.display = 'none';
 			document.getElementById('SUFRAMA'	).style.display = 'none';
 			document.getElementById('cnpj'	    ).style.display = 'none';
-			
+            document.getElementById('inscEstadual' ).style.display = 'none';
 			document.getElementById('cpf'	    ).style.display = 'block';
-			
 			document.getElementById('ds_cpf').value = formataCampo(document.getElementById('ds_cpf').value,'###.###.###-##');
 		}else{
 			document.getElementById('FANTASIA'	).style.display = 'block';
 			document.getElementById('SUFRAMA'	).style.display = 'block';
 			document.getElementById('cnpj'		).style.display = 'block';
-			
+            document.getElementById('inscEstadual' ).style.display = 'block';
 			document.getElementById('cpf'	    ).style.display = 'none';
 			
 			document.getElementById('ds_cnpj').value = formataCampo(document.getElementById('ds_cnpj').value,'##.###.###/####-##');

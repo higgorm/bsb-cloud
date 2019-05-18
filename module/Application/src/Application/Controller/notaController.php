@@ -648,7 +648,7 @@ class NotaController extends AbstractActionController{
 		$nfeGe['mod'] = $mod;
 		if( $mod == '55' ){
 			$dhEmi = str_replace(" ", "T", date("Y-m-d H:i:sP", strtotime($post['dhEmi'])));//para versão 3.10 '2014-02-03T13:22:42-3.00' não informar para NFCe
-			$nfeGe['dEmi'] = date("Ymd H:i:s", strtotime($post['dhEmi']));
+			$nfeGe['dEmi'] = date(FORMATO_ESCRITA_DATA_HORA, strtotime($post['dhEmi']));
 			$indFinal = '1'; //0=Não; 1=Consumidor final;
 			$indPres = '9'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
 							//1=Operação presencial;
@@ -722,7 +722,7 @@ class NotaController extends AbstractActionController{
 			$nNF = $nr_nota;
 			$nfeGe['infNFE'] = $nr_nota;// numero da NFe
 			$dhSaiEnt = str_replace(" ", "T", date("Y-m-d H:i:sP", strtotime($post['dhEmi']))); //versão 2.00, 3.00 e 3.10
-			$nfeGe['dSaiEnt'] = date("Ymd H:i:s", strtotime($post['dhEmi']));
+			$nfeGe['dSaiEnt'] = date(FORMATO_ESCRITA_DATA_HORA, strtotime($post['dhEmi']));
 			$cDV = '4'; //digito verificador
 			$finNFe = $post->get('finNFe'); //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
 			$nfeGe['finNFe'] = $finNFe;

@@ -37,7 +37,7 @@ var Util = {
             },
             success: function(data) {
                 if (data.result == 'erro') {
-                    alert(data.result);
+                    alert(data.message);
                     return false;
                 }
 
@@ -48,7 +48,7 @@ var Util = {
                         $.each(value, function(keyMercadoria, mercadoriaValue) {
                             options += '<tr>';
                             options += '    <td><input type="radio" name="co_mercadoria" value="' + mercadoriaValue.CD_MERCADORIA + '"/>' + mercadoriaValue.CD_MERCADORIA + '</td>';
-                            options += '    <td>' + decodeURIComponent(escape(mercadoriaValue.DS_MERCADORIA)) + '</td>';
+                            options += '    <td>' + mercadoriaValue.DS_MERCADORIA + '</td>';
                             options += '    <td>' + formatReal(mercadoriaValue.NR_QTDE_ESTOQUE) + '</td>';
                             options += '    <td>' + formatReal(mercadoriaValue.NR_QTDE_RESERVA) + '</td>';
                             options += '    <td>' + formatReal(mercadoriaValue.QTDE_DISPONIVEL) + '</td>';
@@ -87,7 +87,7 @@ var Util = {
                         $.each(value, function(keyCliente, cliente) {
                             options += '<tr>';
                             options += '    <td><input type="radio" name="co_cliente" value="' + cliente.CD_CLIENTE + '"/>' + cliente.CD_CLIENTE + '</td>';
-                            options += '    <td>' + decodeURIComponent(escape(cliente.DS_NOME_RAZAO_SOCIAL)) + '</td>';
+                            options += '    <td>' + cliente.DS_NOME_RAZAO_SOCIAL + '</td>';
                             options += '    <td>' + cliente.DS_FANTASIA + '</td>';
                             options += '    <td>' + cliente.NR_CGC_CPF + '</td>';
                             options += '</tr>';

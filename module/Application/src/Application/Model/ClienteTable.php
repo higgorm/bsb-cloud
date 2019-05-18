@@ -162,7 +162,7 @@ class ClienteTable extends AbstractTableGateway
                 "tp_cliente" => (isset($tableData->tp_cliente)) ? $tableData->tp_cliente : $base->tp_cliente,
                 "ds_fone1" => (isset($tableData->ds_fone1)) ? $tableData->ds_fone1 : $base->ds_fone1,
                 "ds_fone2" => (isset($tableData->ds_fone2)) ? $tableData->ds_fone2 : $base->ds_fone2,
-                "dt_nascimento" => (isset($tableData->dt_nascimento)) ? date('Ymd H:i', strtotime($tableData->dt_nascimento . '/1990')) : date('Ymd H:i', strtotime($base->dt_nascimento)),
+                "dt_nascimento" => (isset($tableData->dt_nascimento)) ? date(FORMATO_ESCRITA_DATA_HORA, strtotime($tableData->dt_nascimento . '/1990')) : date(FORMATO_ESCRITA_DATA_HORA, strtotime($base->dt_nascimento)),
                 "ds_email" => (isset($tableData->ds_email)) ? $tableData->ds_email : $base->ds_email,
                 "cd_origem" => (isset($tableData->cd_origem)) ? $tableData->cd_origem : $base->cd_origem,
                  "st_cartao_fidelidade_entregue" => (isset($tableData->st_cartao_fidelidade_entregue)) ? $tableData->st_cartao_fidelidade_entregue : $base->st_cartao_fidelidade_entregue,
@@ -176,7 +176,7 @@ class ClienteTable extends AbstractTableGateway
                   "st_mala_direta" => (isset($tableData->st_mala_direta)) ? $tableData->st_mala_direta : $base->st_mala_direta,
                  "st_criticar_credito" => (isset($tableData->st_criticar_credito)) ? $tableData->st_criticar_credito : $base->st_criticar_credito,
                   "st_consignado" => (isset($tableData->st_consignado)) ? $tableData->st_consignado : $base->st_consignado,
-                  "dt_ultimaalteracao" => date('Ymd H:i'),
+                  "dt_ultimaalteracao" => date(FORMATO_ESCRITA_DATA_HORA),
                   "usuarioultimaalteracao" => (isset($tableData->usuarioultimaalteracao)) ? $tableData->usuarioultimaalteracao : $base->usuarioultimaalteracao,
 //  //                "st_envia_email" => (isset($tableData->st_envia_email)) ? $tableData->st_envia_email : $base->st_envia_email,
                   "st_envia_sms" => (isset($tableData->st_envia_sms)) ? $tableData->st_envia_sms : $base->st_envia_sms,
@@ -212,7 +212,7 @@ class ClienteTable extends AbstractTableGateway
         if ($this->getId($id)) {
             //$this->delete(array("cd_cliente" => $id));
 			$data = array(
-				'DT_EXCLUSAO'	=> date('Y-m-d H:m:s')
+				'DT_EXCLUSAO'	=> date(FORMATO_ESCRITA_DATA_HORA)
 			);
 			$this->update($data, array("cd_cliente" => $id));
 			
@@ -256,11 +256,11 @@ class ClienteTable extends AbstractTableGateway
         }
 
         if($arrParam['st_tipo_pesquisa'] == 2){
-            $select .= " AND C.DS_NOME_RAZAO_SOCIAL like '".$arrParam['codigoCliente']."%' ";
+            $select .= " AND C.DS_NOME_RAZAO_SOCIAL like '%".$arrParam['codigoCliente']."%' ";
         }
 		
 		if($arrParam['st_tipo_pesquisa'] == 3){
-            $select .= " AND C.DS_FANTASIA like '".$arrParam['codigoCliente']."%' ";
+            $select .= " AND C.DS_FANTASIA like '%".$arrParam['codigoCliente']."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 4){

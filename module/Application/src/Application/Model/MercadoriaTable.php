@@ -196,7 +196,7 @@ class MercadoriaTable extends AbstractTableGateway {
         }
 
         if($arrParam['st_tipo_pesquisa'] == 2){
-            $select .= " AND M.DS_MERCADORIA like '".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND M.DS_MERCADORIA like '%".$arrParam['codigoMercadoria']."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 3){
@@ -385,7 +385,7 @@ class MercadoriaTable extends AbstractTableGateway {
         if ($this->getId($id)) {
             //$this->delete(array("cd_cliente" => $id));
 			$data = array(
-				'DT_EXCLUSAO'	=> date('Y-m-d H:m:s')
+				'DT_EXCLUSAO'	=> date(FORMATO_ESCRITA_DATA_HORA)
 			);
 			$this->update($data, array("CD_MERCADORIA" => $id));
 			
