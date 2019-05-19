@@ -197,6 +197,7 @@ class PedidoController extends AbstractActionController
         $message = '';
 
         $pedido = $this->getServiceLocator()->get('pedido_table')->recuperaPedido($post);
+
         // se nao retornar registros, pedido inexistente
         if (!count($pedido)) {
             echo json_encode(array('result' => 'erro', 'message' => 'Pedido/Orçamento não cadastrado.'));
@@ -223,6 +224,7 @@ class PedidoController extends AbstractActionController
             'mercadoriaPedido' => $arrMercadoriaPedido,
         );
 
+        array_walk_recursive($arrPedido, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
         echo json_encode(array('result' => $result, 'data' => $arrPedido, 'message' => $message));
         exit;
     }
@@ -423,8 +425,6 @@ class PedidoController extends AbstractActionController
 
             /* @var $vendedores Zend\Db\ResultSet\ResultSet */
             $vendedores = $statement->execute(array($session->cdLoja));
-
-
 
             $viewModel = new ViewModel();
             $viewModel->setTerminal(true);
@@ -903,7 +903,7 @@ class PedidoController extends AbstractActionController
             if ($permitirPedido == true) { //Se o tipo do pedido é diferente de 4, 6 e 7
                 //verifica o estoque disponível
                 if (($estoqueDisponivel <= 0) && ($liberaSemEstoque == false)) { // Se a quantidade disponível for menor ou igual a zero e não liberar sem estoque
-                    throw new \Exception("A mercadoria/serviço não pode ser liberada sem estoque");
+                    throw new \Exception(utf8_decode("A mercadoria/serviço não pode ser liberada sem estoque"));
                 } else {
                     //Verifica o estoque dos insumos da composição da mercadoria
                     //numeros de insumos da composição

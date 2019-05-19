@@ -1,33 +1,38 @@
 <div  class="controls form-inline fluid">
-    <div id="alertaDeInclusao" class="alert">
+    <div id="alertaDeInclusao" class="alert alert-danger">
         <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
         <strong>Alerta: </strong> Informe o produto / servi&ccedil;o  a ser adicionado.
     </div>
-    <div id="alertaDeExclusao" class="alert">
+    <div id="alertaDeExclusao" class="alert alert-danger">
         <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
         <strong>Alerta: </strong> Voc&ecirc; n&atilde;o selecionou nenhum produto / servi&ccedil;o.
     </div>
-    <div id="alertaDeDuplicidade" class="alert">
+    <div id="alertaDeDuplicidade" class="alert alert-danger">
         <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
         <strong>Alerta: </strong> Voc&ecirc; j&aacute; adicionou este produto / servi&ccedil;o  ao pedido.
     </div>
-    <div id="alertaDeInclusaoProfissional" class="alert">
+    <div id="alertaDeInclusaoProfissional" class="alert alert-danger">
         <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
         <strong>Alerta: </strong> Voc&ecirc; ainda n&atilde;o informou o profissional.
     </div>
-    <div id="alertaDeValidacaoEstoque" class="alert">
+    <div id="alertaDeValidacaoEstoque" class="alert alert-danger">
         <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
         <strong>Alerta: </strong><span id="txtAlertaDeValidacaoEstoque"></span>
     </div>
-    <label class="control-label text-info" for="name"><?php echo utf8_encode("Nome do Cliente") ?>:</label>&nbsp;
-    <span><?php echo $nmClienteSelecionado ?></span>
 </div>
         <form name="frmPedidoTablet" id="frmPedidoTablet" method="post">
             <input type="hidden" name="nrPedido" id="nrPedido" value="<?php echo $nrPedido ?>" />
             <input type="hidden" name="tpPedido" id="tpPedido" value="<?php echo $tpPedido ?>" />
             <div class="row-fluid">
+                <div class="span8">
+                    <label class="control-label text-info" for="nmCliente"><?php echo utf8_encode("Nome do Cliente") ?>:</label>&nbsp;
+                    <input type="text" name="nmCliente" id="cliente"  class="form-control" />
+                    <div class="col-md-12">&nbsp;</div>
+                </div>
+            </div>
+            <div class="row-fluid">
                     <div class="span8">
-                        <label class="control-label text-info" for="name"><?php echo "Produto / Serviço" ?>:&nbsp;</label>
+                        <label class="control-label text-info" for="comboSelectServico"><?php echo "Produto / Serviço" ?>:&nbsp;</label>
                         <select name="comboSelectServico" id="comboSelectServico" class="form-control">
                             <option value="">Selecione...</option>
                             <?php

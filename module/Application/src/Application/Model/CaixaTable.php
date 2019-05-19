@@ -65,7 +65,7 @@ class CaixaTable extends AbstractTableGateway {
         $row = $rowset->current();
 
         if (!$row) {
-            throw new \Exception("Cargo / Usu�rio $username  n�o existe no banco de dados!");
+            throw new \Exception("Cargo / Usuário $username  não existe no banco de dados!");
         }
 
         return $row;
@@ -97,7 +97,7 @@ class CaixaTable extends AbstractTableGateway {
         $row = $rowset->current();
 
         if (!row) {
-            throw new \Exception("Cargo $id  n�o existe no banco de dados!");
+            throw new \Exception("Cargo $id  não existe no banco de dados!");
         }
 
         return $row;

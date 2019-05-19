@@ -396,7 +396,7 @@
                                         <option value="">Selecione...</option>
                                         <?php
                                         if (!empty($listaSupervisor)) {
-                                            echo '<option value="ORANGE">ORANGE</option>';
+                                            //echo '<option value="ORANGE">ORANGE</option>';
                                             foreach ($listaSupervisor as $operador) {
                                                 echo "<option value='" . $operador["DS_LOGIN"] . "'>" . substr(utf8_encode($operador["DS_LOGIN"]), 0, 15) . "</option>";
                                             }

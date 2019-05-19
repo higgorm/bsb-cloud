@@ -420,20 +420,20 @@
             var total;
             var desc;
             var totalGeral;
-                
+
             if(operacao)
             {
-                total = parseFloat($('#txtVlTotal').val().replace(/\./g, "").replace(",",  ".")) + parseFloat(vlTotal.replace(/\./g, "").replace(",",  "."));
-                desc = parseFloat($('#txtVlDesconto').val().replace(/\./g, "").replace(",",  ".")) + parseFloat(vlDesconto.replace(/\./g, "").replace(",",  "."));
-                totalGeral = total - desc;
+                total = parseFloat($('#txtVlTotal').val().replace(",",  ".")) + parseFloat(vlTotal.replace(/\./g, "").replace(",",  "."));
+                desc = parseFloat($('#txtVlDesconto').val().replace(",",  ".")) + parseFloat(vlDesconto.replace(/\./g, "").replace(",",  "."));
+                totalGeral =  total - desc;
             }
             else
             {
-                total = parseFloat($('#txtVlTotal').val().replace(/\./g, "").replace(",",  ".")) - parseFloat(vlTotal.replace(/\./g, "").replace(",",  "."));
-                desc = parseFloat($('#txtVlDesconto').val().replace(/\./g, "").replace(",",  ".")) - parseFloat(vlDesconto.replace(/\./g, "").replace(",",  "."));
+                total = parseFloat($('#txtVlTotal').val().replace(",",  ".")) - parseFloat(vlTotal.replace(/\./g, "").replace(",",  "."));
+                desc = parseFloat($('#txtVlDesconto').val().replace(",",  ".")) - parseFloat(vlDesconto.replace(/\./g, "").replace(",",  "."));
                 totalGeral = total + desc;
             }
-            
+
             $('#txtVlTotal').val(formatReal(total));
             $('#txtVlDesconto').val(formatReal(desc));
             $('#txtTotalGeral').val(formatReal(totalGeral));

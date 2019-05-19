@@ -218,6 +218,12 @@ class IndexController extends AbstractActionController {
             $sm = $this->getServiceLocator();
             $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
 
+            $session = new Container("orangeSessionContainer");
+            if( @$session->cdBase ){
+                $statement = $dbAdapter->query("USE BDGE_".$session->cdBase);
+                $statement->execute();
+            }
+
             $authAdapter = new AuthAdapter($dbAdapter);
             $authAdapter->setTableName('AdmUsuario')
                     ->setIdentityColumn('desLogin')

@@ -316,7 +316,8 @@ class AgendaController extends AbstractActionController {
                     $param['ds_nome'] = $this->getRequest()->getPost('ds_nome_razao_social');
                     $modelCliente = new ClienteRapido();
                     $modelCliente->exchangeArray($param);
-                    $param['cd_cliente'] = $param['cd_cliente_rapido'] = $sm->get("cliente_rapido_table")->save($modelCliente);
+                    $param['cd_cliente'] = 1; //consumidor
+                    $param['cd_cliente_rapido'] = $sm->get("cliente_rapido_table")->save($modelCliente);
                 } else {
                     // salva registro no CLIENTE
                     $modelCliente = new Cliente();

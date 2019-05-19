@@ -144,11 +144,12 @@ class FranquiaMacaTable extends AbstractTableGateway {
                                                         tfm.NR_MACA,
                                                         tfm.DS_IDENTIFICACAO,
                                                         taf.DT_HORARIO,
-                                                        tc.DS_NOME_RAZAO_SOCIAL,
+                                                        DS_NOME_RAZAO_SOCIAL = CASE WHEN ( tc.CD_CLIENTE IS NULL or taf.CD_CLIENTE = 1 ) THEN FCR.DS_NOME ELSE tc.DS_NOME_RAZAO_SOCIAL END,
                                                         tc.CD_CLIENTE
                                                     from TB_FRANQUIA_MACA tfm
                                                     left join TB_AGENDAMENTO_FRANQUIA taf on tfm.CD_LOJA = taf.CD_LOJA and tfm.NR_MACA = taf.NR_MACA
                                                     left join TB_CLIENTE tc on taf.CD_CLIENTE = tc.CD_CLIENTE
+                                                    left join TB_FRANQUIA_CLIENTE_RAPIDO fcr on taf.CD_CLIENTE = fcr.CD_CLIENTE
                                                     where tfm.CD_LOJA = ?
                                                             and tfm.NR_MACA = ?
                                                             and CONVERT(VARCHAR(10),taf.DT_HORARIO,103) between CONVERT(VARCHAR(10),?,103) and CONVERT(VARCHAR(10),?,103)
@@ -169,7 +170,7 @@ class FranquiaMacaTable extends AbstractTableGateway {
         $dtFim = $dtFim . ' 23:59:59';
 
         $sql = "SELECT DISTINCT a.CD_CLIENTE, a.DT_HORARIO, a.NR_MACA,
-                    DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN SUBSTRING(CR.DS_NOME,0,10) ELSE SUBSTRING(C.DS_FANTASIA,0,10) END,
+                    DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN SUBSTRING(CR.DS_NOME,0,10) ELSE SUBSTRING(C.DS_NOME_RAZAO_SOCIAL,0,10) END,
                     --DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN left(CR.DS_NOME,CHARINDEX(' ',CR.DS_NOME)) ELSE left(C.DS_NOME_RAZAO_SOCIAL,CHARINDEX(' ',C.DS_NOME_RAZAO_SOCIAL)) END,
                     DS_FONE1 = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN CR.DS_FONE1 ELSE C.DS_FONE1 END,
                     ST_PEDIDO = ISNULL( p.ST_PEDIDO, 'A' ), p.NR_PEDIDO,

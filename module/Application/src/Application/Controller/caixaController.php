@@ -222,9 +222,9 @@ class CaixaController extends AbstractActionController {
                     if(!$objPedido->recebePedido($recebe, $session->cdLoja, $value))
                     {
                         $dbAdapter->getDriver()->getConnection()->rollback();                         
-                        throw new \Exception('Erro ao gravar PEDIDO');
+                        throw new Exception('Erro ao gravar PEDIDO');
                     }
-                    
+
                     $cdCliente = $objPedido->getIdClientePedido($value, $session->cdLoja);
                     $nrLancamentoCaixa = $objCaixa->getNrLancamentoCaixa();                                        
                     
@@ -247,9 +247,9 @@ class CaixaController extends AbstractActionController {
                     if(!$objCaixa->insereCaixa($dadosC))
                     {
                         $dbAdapter->getDriver()->getConnection()->rollback();
-                        throw new \Exception;
+                       // throw new \Exception;
                     }
-                    
+
                     //inserir RL_CAIXA_PEDIDO
                     $rlCP = array();
                     $rlCP['CD_LOJA'] = $session->cdLoja;
@@ -259,9 +259,9 @@ class CaixaController extends AbstractActionController {
                     if(!$objPedido->insereRLCaixaPedido($rlCP))
                     {
                         $dbAdapter->getDriver()->getConnection()->rollback();
-                        throw new \Exception;
+                       // throw new \Exception;
                     }
-                                    
+
                     foreach ($data['frPagamento'] as $k => $v) {
                         $nrParcela = $k + 1;
                         $vlTotalTroco += (float)$data['vlTroco'][$k];
@@ -299,7 +299,7 @@ class CaixaController extends AbstractActionController {
                         if(!$objPedido->recebePedidoPagamento($dadosPP))
                         {
                             $dbAdapter->getDriver()->getConnection()->rollback();
-                            throw new \Exception;
+                            //throw new \Exception;
                         }
                         
                         //inserir TB_CAIXA_PAGAMENTO
@@ -332,7 +332,7 @@ class CaixaController extends AbstractActionController {
                         if(!$objCaixa->insereCaixaPagamento($dadosCP))
                         {
                             $dbAdapter->getDriver()->getConnection()->rollback();
-                            throw new \Exception;
+                            //throw new \Exception;
                         }
                             
                     }                                        
@@ -341,7 +341,7 @@ class CaixaController extends AbstractActionController {
                 if(!$objCaixa->atualizaValoresCaixa($vlTotalBruto, (float)($vlTotalBruto-$vlTotalTroco), $session->cdLoja, $nrLancamentoCaixa, $data['nrCaixa']))
                 {
                     $dbAdapter->getDriver()->getConnection()->rollback();
-                    throw new \Exception;
+                   // throw new \Exception;
                 }
 
                 $dbAdapter->getDriver()->getConnection()->commit();
@@ -364,7 +364,7 @@ class CaixaController extends AbstractActionController {
             return $view;
         } catch (\Exception $e) {            
             $dbAdapter->getDriver()->getConnection()->rollback();
-            echo $e->getMessage();
+            print_r($e); exit;
         }
     }
     
