@@ -78,7 +78,7 @@ class ContasPagarTable extends AbstractTableGateway
 
         $select = new Select();
         $select ->from($this->table)
-            ->columns(array(new Expression('ISNULL(MAX(NR_DOCUMENTO_CP),0)+1 as NR_DOCUMENTO_CP')))
+            ->columns(array(new Expression('COALESCE(MAX(NR_DOCUMENTO_CP),0)+1 as NR_DOCUMENTO_CP')))
             ->where(new Expression('CD_LOJA = '.$cdLoja));
         $rowset = $this->selectWith($select);
         $row = $rowset->current();

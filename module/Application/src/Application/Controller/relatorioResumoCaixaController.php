@@ -63,7 +63,7 @@ class relatorioResumoCaixaController extends RelatorioController
 
             $caixa = array();
 
-            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, date('Ymd',strtotime($dtAbertura)), date('Ymd',strtotime($dtFechamento)));
+            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, date(FORMATO_ESCRITA_DATA,strtotime($dtAbertura)), date(FORMATO_ESCRITA_DATA,strtotime($dtFechamento)));
             foreach($totalCaixa as $result){
                 $DT = date("d/m/Y", strtotime($result['DT_MOVIMENTO']));
                 $caixa[$DT] = array(
@@ -114,7 +114,7 @@ class relatorioResumoCaixaController extends RelatorioController
             $caixa = array();
 
            // $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, $dtAbertura, $dtFechamento);
-            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, date('Ymd',strtotime($dtAbertura)), date('Ymd',strtotime($dtFechamento)));
+            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, date(FORMATO_ESCRITA_DATA,strtotime($dtAbertura)), date(FORMATO_ESCRITA_DATA,strtotime($dtFechamento)));
             foreach($totalCaixa as $result){
                 $DT = date("d/m/Y", strtotime($result['DT_MOVIMENTO']));
                 $caixa[$DT] = array(

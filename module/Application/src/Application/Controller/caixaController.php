@@ -213,7 +213,7 @@ class CaixaController extends AbstractActionController {
                 $arrNrPedido = explode(',', $data['nrPedido']);
                 $vlTotalTroco = 0;
                 $vlTotalBruto = 0;                
-                
+
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
 
                 foreach ($arrNrPedido as $value) {                    
@@ -222,18 +222,19 @@ class CaixaController extends AbstractActionController {
                     if(!$objPedido->recebePedido($recebe, $session->cdLoja, $value))
                     {
                         $dbAdapter->getDriver()->getConnection()->rollback();                         
-                        throw new Exception('Erro ao gravar PEDIDO');
+                        throw new \Exception('Erro ao inserir registros do PEDIDO.');
                     }
 
                     $cdCliente = $objPedido->getIdClientePedido($value, $session->cdLoja);
-                    $nrLancamentoCaixa = $objCaixa->getNrLancamentoCaixa();                                        
-                    
+                    $nrLancamentoCaixa = $objCaixa->getNrLancamentoCaixa();
+                    $nrCaixa = ($data['nrCaixa'] == "") ? 1 : $data['nrCaixa'];
+
                     //inserir TB_CAIXA
                     $dadosC = array();
                     $dadosC["CD_LOJA"] = $session->cdLoja;
                     $dadosC["NR_LANCAMENTO_CAIXA"] = $nrLancamentoCaixa;
-                    $dadosC["NR_CAIXA"] = $data['nrCaixa'];
-                    $dadosC["DT_MOVIMENTO"] = date('d/m/Y');
+                    $dadosC["NR_CAIXA"] =   $nrCaixa;
+                    $dadosC["DT_MOVIMENTO"] = date(FORMATO_ESCRITA_DATA);
                     $dadosC["CD_TIPO_MOVIMENTO_CAIXA"] = 1;
                     $dadosC["DS_COMPL_MOVIMENTO"] = 'Pedido de Venda';
                     $dadosC["NR_DOCUMENTO"] = NULL;
@@ -243,23 +244,24 @@ class CaixaController extends AbstractActionController {
                     $dadosC["ST_CARREG_INTERNO"] = '';
                     $dadosC["DS_USUARIO"] = $session->usuario;
                     $dadosC["CD_CLASSE_FINANCEIRA"] = NULL;
-                    $dadosC["SerialHD"] = '';                    
+                    $dadosC["SerialHD"] = '';
+
                     if(!$objCaixa->insereCaixa($dadosC))
                     {
                         $dbAdapter->getDriver()->getConnection()->rollback();
-                       // throw new \Exception;
+                        throw new \Exception("Erro ao inserir registro do caixa");
                     }
 
                     //inserir RL_CAIXA_PEDIDO
                     $rlCP = array();
                     $rlCP['CD_LOJA'] = $session->cdLoja;
-                    $rlCP['NR_CAIXA'] = $data['nrCaixa'];
+                    $rlCP['NR_CAIXA'] = $nrCaixa;
                     $rlCP['NR_PEDIDO'] = $value;
                     $rlCP['NR_LANCAMENTO_CAIXA'] = $nrLancamentoCaixa;                    
                     if(!$objPedido->insereRLCaixaPedido($rlCP))
                     {
                         $dbAdapter->getDriver()->getConnection()->rollback();
-                       // throw new \Exception;
+                        throw new \Exception("Erro ao inserir registro da RL CaixaPedido");
                     }
 
                     foreach ($data['frPagamento'] as $k => $v) {
@@ -299,13 +301,13 @@ class CaixaController extends AbstractActionController {
                         if(!$objPedido->recebePedidoPagamento($dadosPP))
                         {
                             $dbAdapter->getDriver()->getConnection()->rollback();
-                            //throw new \Exception;
+                            throw new \Exception("Erro ao inserir registros do pagamento do pedido");
                         }
                         
                         //inserir TB_CAIXA_PAGAMENTO
                         $dadosCP = array();
                         $dadosCP['CD_LOJA'] = $session->cdLoja;
-                        $dadosCP['NR_CAIXA'] = $data['nrCaixa'];
+                        $dadosCP['NR_CAIXA'] = $nrCaixa;
                         $dadosCP['NR_LANCAMENTO_CAIXA'] = $nrLancamentoCaixa;
                         $dadosCP['CD_PLANO_PAGAMENTO'] = $v;
                         $dadosCP['NR_PARCELA'] = $nrParcela;
@@ -332,16 +334,16 @@ class CaixaController extends AbstractActionController {
                         if(!$objCaixa->insereCaixaPagamento($dadosCP))
                         {
                             $dbAdapter->getDriver()->getConnection()->rollback();
-                            //throw new \Exception;
+                            throw new \Exception("Erro ao inserir registro de pagamento no caixa");
                         }
                             
                     }                                        
                 }                                    
                 
-                if(!$objCaixa->atualizaValoresCaixa($vlTotalBruto, (float)($vlTotalBruto-$vlTotalTroco), $session->cdLoja, $nrLancamentoCaixa, $data['nrCaixa']))
+                if(!$objCaixa->atualizaValoresCaixa($vlTotalBruto, (float)($vlTotalBruto-$vlTotalTroco), $session->cdLoja, $nrLancamentoCaixa, $nrCaixa))
                 {
                     $dbAdapter->getDriver()->getConnection()->rollback();
-                   // throw new \Exception;
+                    throw new \Exception("Erro ao atualizar valores do caixa");
                 }
 
                 $dbAdapter->getDriver()->getConnection()->commit();
@@ -364,7 +366,7 @@ class CaixaController extends AbstractActionController {
             return $view;
         } catch (\Exception $e) {            
             $dbAdapter->getDriver()->getConnection()->rollback();
-            print_r($e); exit;
+            echo $e->getMessage();exit;
         }
     }
     

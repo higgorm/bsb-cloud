@@ -73,58 +73,60 @@
                     <i class="fa fa-qrcode"></i>
                     <span class="font-bold">Cadastros</span>
                 </a>
-
-                <?php if (in_array_menu($session->menuPerfilWeb, 6)) : ?>
                 <ul class="nav dk">
+                <?php if (in_array_menu($session->menuPerfilWeb, 6)) : ?>
+
                     <li>
                         <a href="/cliente" class="auto">
                             <i class="i i-dot"></i>
                             <span>Clientes</span>
                         </a>
                     </li>
-                </ul>
+
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 7)) : ?>
-                <ul class="nav dk">
+
                     <li>
                         <a href="/mercadoria" class="auto">
                             <i class="i i-dot"></i>
                             <span>Serviço/Mercadoria</span>
                         </a>
                     </li>
-                </ul>
+
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 8)) : ?>
-                <ul class="nav dk">
+
                     <li>
                         <a href="/tabela/cfop" class="auto">
                             <i class="i i-dot"></i>
                             <span>CFOP</span>
                         </a>
                     </li>
-                </ul>
+
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 9)) : ?>
-                <ul class="nav dk">
+
                     <li>
                         <a href="/tabela/cartao" class="auto">
                             <i class="i i-dot"></i>
                             <span>Cartões</span>
                         </a>
                     </li>
-                </ul>
+
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 10)) : ?>
-                <ul class="nav dk">
+
                     <li>
                         <a href="/tabela/forma-pagamento" class="auto">
                             <i class="i i-dot"></i>
                             <span>Forma de Pagamento</span>
                         </a>
                     </li>
-                </ul>
+
                 <?php endif; ?>
-            </li>
+
+                </ul>
+        </li>
         <?php endif; ?>
 
         <?php if (in_array_menu_pai($session->menuPerfilWeb, array(11))) : ?>

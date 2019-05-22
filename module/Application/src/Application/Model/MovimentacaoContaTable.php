@@ -35,7 +35,7 @@ class MovimentacaoContaTable extends AbstractTableGateway
         $select = new Select();
 
         $result = $select ->from($this->table)
-            ->columns(array(new Expression('max(NR_LACAMENTO)+1 as NR_SEQ_MOV_ESTOQUE')))
+            ->columns(array(new Expression('COALESCE(max(NR_LACAMENTO),0)+1 as NR_SEQ_MOV_ESTOQUE')))
             ->where(new Expression('CD_LOJA = '.$cdLoja));
         $rowset = $this->selectWith($result);
         $row = $rowset->current();

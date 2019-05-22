@@ -44,18 +44,18 @@
                     <div class="controls">
                         <div class="col-md-4">
                             <label class="control-label text-info" for="nr_cgc_cpf"><?php echo utf8_encode("CPF / CNPJ") ?></label>
-                            <input name="NR_CGF_CPF" id="NR_CGF_CPF" class="form-control" value="<?php echo $post['NR_CGF_CPF']?>" maxlength="255"/>
+                            <input name="NR_CGC_CPF_EMISSOR" id="NR_CGF_CPF" class="form-control" value="<?php echo $post['NR_CGF_CPF']?>" maxlength="255"/>
                         </div>
                     </div>
 
                     <div class="controls">
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">Faixa de Valores</label>
-                            <input id="minValor" name="minValor"  type="number" class="dataP form-control" value="<?php echo $post['minValor']?>" maxlength="10" />
+                            <input id="minValor" name="minValor"  type="text" class="moeda form-control" value="<?php echo $post['minValor']?>" maxlength="10" />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">&nbsp;</label>
-                            <input id="maxValor" name="maxValor" type="number" class="dataP form-control" value="<?php echo $post['maxValor']?>" maxlength="10" />
+                            <input id="maxValor" name="maxValor" type="text" class="moeda form-control" value="<?php echo $post['maxValor']?>" maxlength="10" />
                         </div>
                     </div>
 
@@ -87,11 +87,11 @@
                     <div class="controls">
                         <div class="col-md-2">
                             <label class="control-label text-info">Número NF</label>
-                            <input id="NR_NOTA" name="NR_NOTA" class="dataP form-control" value="<?php echo $post['NR_NOTA']?>" maxlength="10" />
+                            <input id="NR_NOTA" name="NR_NOTA" class="dataP form-control" value="<?php echo $post['NR_NOTA']?>" maxlength="7" />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">Número Doc</label>
-                            <input id="NR_DOCUMENTO_CR" name="NR_DOCUMENTO_CR" class="dataP form-control" value="<?php echo $post['NR_DOCUMENTO_CR']?>" maxlength="10" />
+                            <input id="NR_DOCUMENTO_CR" name="NR_DOCUMENTO_CR" class="dataP form-control" value="<?php echo $post['NR_DOCUMENTO_CR']?>" maxlength="7" />
                         </div>
                     </div>
                     <br>
@@ -172,14 +172,27 @@
                                     </thead>
                                     <tbody>
                                         <?php if (count($contasReceber)) : ?>
-                                        <?php foreach ($contasReceber as $contaReceber): ?>
+                                        <?php foreach ($contasReceber as $contaReceber):
+                                                 $dataFormatadaEmissao = " - ";
+                                                 $dataFormatadaVencimento = " - ";
+
+                                                 if(!empty($contaReceber->EMISSAO)) {
+                                                    $dtEmissao = new DateTime($contaReceber->EMISSAO);
+                                                    $dataFormatadaEmissao = $dtEmissao->format('d-m-Y');
+                                                 }
+
+                                                 if(!empty($contaReceber->DT_VENCIMENTO)) {
+                                                     $dtVencime = new DateTime($contaReceber->DT_VENCIMENTO);
+                                                     $dataFormatadaVencimento = $dtVencime->format('d-m-Y');
+                                                 }
+                                         ?>
                                           <tr>
                                                 <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
                                                 <td align="left"><?php echo $contaReceber->NR_DOCUMENTO_CR ?></td>
                                                 <td align="left"><?php echo $contaReceber->NR_NOTA ?></td>
-                                                <td align="left"><?php echo $contaReceber->CD_CLIENTE.' - '.utf8_encode($contaReceber->DS_NOME_RAZAO_SOCIAL) ?></td>
-                                                <td align="left"><?php  $date = new DateTime($contaReceber->EMISSAO); echo $date->format('d-m-y'); ?> </td>
-                                                <td align="left"><?php $date = new DateTime($contaReceber->DT_VENCIMENTO); echo $date->format('d-m-y'); ?> </td>
+                                                <td align="left"><?php echo $contaReceber->CD_CLIENTE.' - '.utf8_encode($contaReceber->DS_EMISSOR) ?></td>
+                                                <td align="left"><?php echo $dataFormatadaEmissao ?> </td>
+                                                <td align="left"><?php echo $dataFormatadaVencimento ?> </td>
                                                 <td align="left"><?php echo number_format($contaReceber->VL_DOCUMENTO,2,",",".") ?></td>
                                                 <td align="center"><?php echo utf8_encode($contaReceber->DS_TIPO_PAGAMENTO) ?></td>
                                                 <td  align="center">
@@ -241,5 +254,7 @@
             $('#dtIni').val('');
             $('#dtFim').val('');
         });
+
+        $(".moeda").maskMoney({showSymbol:false, symbol:"", decimal:",", thousands:"."});
     });
 </script>

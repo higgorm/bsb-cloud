@@ -324,7 +324,7 @@ class MercadoriaTable extends AbstractTableGateway {
 	
 	public function getNextId(){
 		
-		$statement = $this->adapter->query('SELECT MAX(CD_MERCADORIA) AS nextID FROM '.$this->table );
+		$statement = $this->adapter->query('SELECT COALESCE(MAX(CD_MERCADORIA),0) + 1 AS nextID FROM '.$this->table );
 		
 		$results = $statement->execute();
 		$returnArray = array();

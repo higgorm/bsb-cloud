@@ -54,10 +54,14 @@ class PedidoTable extends AbstractTableGateway {
     }
     
     public function getNextNumeroPedido() {
-        $statement = $this->adapter->query("SELECT MAX(NR_PEDIDO) + 1 NR_PEDIDO  FROM TB_PEDIDO");
-        $results = $statement->execute();
-        $rowResult = $results->current();
-        return $rowResult["NR_PEDIDO"];
+        try {
+            $statement = $this->adapter->query("SELECT COALESCE(MAX(NR_PEDIDO),0) + 1 NR_PEDIDO  FROM TB_PEDIDO");
+            $results = $statement->execute();
+            $rowResult = $results->current();
+            return $rowResult["NR_PEDIDO"];
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public function inserePedido($pedido) {
@@ -85,7 +89,7 @@ class PedidoTable extends AbstractTableGateway {
 
             $statementUpdate->execute($pedido);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -113,7 +117,7 @@ class PedidoTable extends AbstractTableGateway {
                                                    CD_LOJA   = ?   ");
             $statementUpdate->execute($pedido);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -128,7 +132,7 @@ class PedidoTable extends AbstractTableGateway {
                                         ),
                                 array('NR_PEDIDO' => $nrPedido,
                                         'CD_LOJA' => $cdLoja));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -165,7 +169,7 @@ class PedidoTable extends AbstractTableGateway {
                                 array('cd_loja' => (int) $cd_loja,
                                         'nr_pedido' => (int) $nr_pedido));
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -207,7 +211,7 @@ class PedidoTable extends AbstractTableGateway {
             $statementUpdate->execute($data);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -500,7 +504,7 @@ class PedidoTable extends AbstractTableGateway {
 
             $statement->execute(array($session->cdLoja, $nrPedido));
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -530,7 +534,9 @@ class PedidoTable extends AbstractTableGateway {
 
             $statementInsert->execute($params);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            exit;
             return false;
         }
     }
@@ -546,7 +552,7 @@ class PedidoTable extends AbstractTableGateway {
             $statement = $this->adapter->query("DELETE TB_PEDIDO_MERCADORIA WHERE CD_LOJA   = ?  AND NR_PEDIDO = ? ");
             $statement->execute(array($loja, $pedido));
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }   
@@ -558,7 +564,7 @@ class PedidoTable extends AbstractTableGateway {
             $statement->execute($rlCP);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }

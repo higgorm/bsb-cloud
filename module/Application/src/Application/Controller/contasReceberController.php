@@ -103,49 +103,50 @@ class ContasReceberController extends AbstractActionController
             'ds_loja' => utf8_encode($session->dsLoja));
         $form = "cadastrar";
         $request = $this->getRequest();
-        $dataAtual = date('d-m-Y');
+        $dataAtual = date(FORMATO_ESCRITA_DATA);
 
         if ($request->isPost()) {
 
             if(!$_POST['DS_EMISSOR']){
-                $dsEmissor = $_POST['ds_nome_razao_social'];
+                $dsEmissor = utf8_decode($_POST['ds_nome_razao_social']);
             }else{
-                $dsEmissor = $_POST['DS_EMISSOR'];
+                $dsEmissor = utf8_decode($_POST['DS_EMISSOR']);
             }
 
             $alt = array(
                 'NR_LANCAMENTO_CR'          =>  $this->getTable('contas_receber_table')->nextId($session->cdLoja),
                 'DS_COMPL_HISTORICO'        =>  $_POST['DS_COMPL_HISTORICO'],
-                'CD_CLASSE_FINANCEIRA'      =>  $_POST['CD_CLASSE_FINANCEIRA'],
+                'CD_CLASSE_FINANCEIRA'      =>  !empty($_POST['CD_CLASSE_FINANCEIRA']) ? $_POST['CD_CLASSE_FINANCEIRA']  : NULL,
                 'NR_DOCUMENTO_CR'           =>  $_POST['NR_DOCUMENTO_CR'],
-                'DT_MOVIMENTO'              =>  $_POST['DT_MOVIMENTO'],
+                'DT_MOVIMENTO'              =>  !empty($_POST['DT_MOVIMENTO']) ? $_POST['DT_MOVIMENTO']  : NULL,
                 'CD_TIPO_PAGAMENTO'         =>  $_POST['CD_TIPO_PAGAMENTO'],
-                'NR_CGC_CPF_EMISSOR'        =>  $_POST['CPF_EMISSOR'],
+                'NR_CGC_CPF_EMISSOR'        =>  $_POST['NR_CGC_CPF_EMISSOR'],
                 'DS_EMISSOR'                =>  $dsEmissor,
                 'NR_FONE_EMISSOR'           =>  $_POST['NR_FONE_EMISSOR'],
-                'CD_CLIENTE'                =>  $_POST['cd_cliente'],
-                'CD_CARTAO'                 =>  $_POST['CD_CARTAO'],
+                'CD_CLIENTE'                =>  !empty($_POST['cd_cliente']) ? (int)$_POST['cd_cliente']  : NULL,
+                'CD_CARTAO'                 =>  !empty($_POST['CD_CARTAO']) ? (int)$_POST['CD_CARTAO']  : NULL,
                 'CD_BANCO'                  =>  $_POST['CD_BANCO'],
                 'CD_AGENCIA'                =>  $_POST['CD_AGENCIA'],
                 'NR_CONTA'                  =>  $_POST['NR_CONTA'],
                 'NR_CHEQUE'                 =>  $_POST['NR_CHEQUE'],
-                'DT_EMISSAO'                =>  $_POST['DT_EMISSAO'],
-                'DT_VENCIMENTO'             =>  $_POST['DT_VENCIMENTO'],
-                'VL_DOCUMENTO'              =>  $_POST['VL_DOCUMENTO'],
+                'NR_NOTA'                   =>  !empty($_POST['NR_NOTA']) ? (int)$_POST['NR_NOTA']  : NULL,
+                'DT_EMISSAO'                =>  !empty($_POST['DT_EMISSAO']) ? $_POST['DT_EMISSAO']  : NULL,
+                'DT_VENCIMENTO'             =>  !empty($_POST['DT_VENCIMENTO']) ? $_POST['DT_VENCIMENTO']  : NULL,
+                'VL_DOCUMENTO'              =>  !empty($_POST['VL_DOCUMENTO']) ? str_ireplace( ',', '.' ,str_ireplace( '.', '' ,$_POST['VL_DOCUMENTO']))  : 0.0,
                 'ST_CANCELADO'              =>  'N',
                 'CD_LOJA_FUNCIONARIO'       =>  $session->cdLoja,
-                'CD_FUNCIONARIO'            =>  $_POST['CD_FUNCIONARIO'],
+                'CD_FUNCIONARIO'            =>  !empty($_POST['CD_FUNCIONARIO']) ? (int)$_POST['CD_FUNCIONARIO']  : NULL,
                 'CD_LOJA'                   =>  $session->cdLoja,
                 'DS_OBSERVACAO'             =>  $_POST['DS_OBSERVACAO'],
                 'ST_TipoDocumento_CR'       =>  'C',
                 'DT_UltimaAlteracao'        =>  $dataAtual,
                 'UsuarioUltimaAlteracao'    =>  $session->usuario,
-                'CD_CENTRO_CUSTO'           =>  $_POST['CD_CENTRO_CUSTO']
+                'CD_CENTRO_CUSTO'           => !empty($_POST['CD_CENTRO_CUSTO']) ? $_POST['CD_CENTRO_CUSTO']  : NULL,
             );
             $dbAdapter->getDriver()->getConnection()->beginTransaction();
-            //VAR_DUMP($alt);
-            //die($alt);
+
             $result = $this->getTable('contas_receber_table')->save($alt);
+
             if($result){
                 $dbAdapter->getDriver()->getConnection()->commit();
 
@@ -204,29 +205,41 @@ class ContasReceberController extends AbstractActionController
 
             if ($request->isPost()) {
 
+                if(!$_POST['DS_EMISSOR']){
+                    $dsEmissor = utf8_decode($_POST['ds_nome_razao_social']);
+                }else{
+                    $dsEmissor = utf8_decode($_POST['DS_EMISSOR']);
+                }
+
                 $alt = array(
                     'DS_COMPL_HISTORICO'        =>  $_POST['DS_COMPL_HISTORICO'],
-                    'CD_CLASSE_FINANCEIRA'      =>  $_POST['CD_CLASSE_FINANCEIRA'],
+                    'CD_CLASSE_FINANCEIRA'      =>  !empty($_POST['CD_CLASSE_FINANCEIRA']) ? $_POST['CD_CLASSE_FINANCEIRA']  : NULL,
                     'NR_DOCUMENTO_CR'           =>  $_POST['NR_DOCUMENTO_CR'],
-                    'DT_MOVIMENTO'              =>  $_POST['DT_MOVIMENTO'],
+                    'DT_MOVIMENTO'              =>  !empty($_POST['DT_MOVIMENTO']) ? $_POST['DT_MOVIMENTO']  : NULL,
                     'CD_TIPO_PAGAMENTO'         =>  $_POST['CD_TIPO_PAGAMENTO'],
-                    'NR_CGC_CPF_EMISSOR'        =>  $_POST['CPF_EMISSOR'],
+                    'NR_CGC_CPF_EMISSOR'        =>  $_POST['NR_CGC_CPF_EMISSOR'],
+                    'DS_EMISSOR'                =>  $dsEmissor,
                     'NR_FONE_EMISSOR'           =>  $_POST['NR_FONE_EMISSOR'],
-                    'CD_CLIENTE'                =>  $_POST['cd_cliente'],
-                    'CD_CARTAO'                 =>  $_POST['CD_CARTAO'],
+                    'CD_CLIENTE'                =>  !empty($_POST['cd_cliente']) ? (int)$_POST['cd_cliente']  : NULL,
+                    'CD_CARTAO'                 =>  !empty($_POST['CD_CARTAO']) ? (int)$_POST['CD_CARTAO']  : NULL,
                     'CD_BANCO'                  =>  $_POST['CD_BANCO'],
                     'CD_AGENCIA'                =>  $_POST['CD_AGENCIA'],
                     'NR_CONTA'                  =>  $_POST['NR_CONTA'],
                     'NR_CHEQUE'                 =>  $_POST['NR_CHEQUE'],
-                    'DT_EMISSAO'                =>  $_POST['DT_EMISSAO'],
-                    'DT_VENCIMENTO'             =>  $_POST['DT_VENCIMENTO'],
-                    'VL_DOCUMENTO'              =>  $_POST['VL_DOCUMENTO'],
-                    'CD_FUNCIONARIO'            =>  $_POST['CD_FUNCIONARIO'],
+                    'NR_NOTA'                   =>  !empty($_POST['NR_NOTA']) ? (int)$_POST['NR_NOTA']  : NULL,
+                    'DT_EMISSAO'                =>  !empty($_POST['DT_EMISSAO']) ? $_POST['DT_EMISSAO']  : NULL,
+                    'DT_VENCIMENTO'             =>  !empty($_POST['DT_VENCIMENTO']) ? $_POST['DT_VENCIMENTO']  : NULL,
+                    'VL_DOCUMENTO'              =>  !empty($_POST['VL_DOCUMENTO']) ? str_ireplace( ',', '.' ,str_ireplace( '.', '' ,$_POST['VL_DOCUMENTO']))  : 0.0,
+                    'CD_LOJA_FUNCIONARIO'       =>  $session->cdLoja,
+                    'CD_FUNCIONARIO'            =>  !empty($_POST['CD_FUNCIONARIO']) ? (int)$_POST['CD_FUNCIONARIO']  : NULL,
+                    'CD_LOJA'                   =>  $session->cdLoja,
                     'DS_OBSERVACAO'             =>  $_POST['DS_OBSERVACAO'],
                     'DT_UltimaAlteracao'        =>  $dataAtual,
                     'UsuarioUltimaAlteracao'    =>  $session->usuario,
-                    'CD_CENTRO_CUSTO'           =>  $_POST['CD_CENTRO_CUSTO']
+                    'CD_CENTRO_CUSTO'           => !empty($_POST['CD_CENTRO_CUSTO']) ? $_POST['CD_CENTRO_CUSTO']  : NULL,
                 );
+
+
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
 
                 $result = $this->getTable('contas_receber_table')->change($alt,$session->cdLoja,$id);
@@ -235,20 +248,7 @@ class ContasReceberController extends AbstractActionController
                 }else{
                     $dbAdapter->getDriver()->getConnection()->rollback();
                 }
-                $viewModel = new ViewModel(array(
-                    'listaFuncionario'  => $this->getTable("functionario")->getListaFuncionarioLoja($session->cdLoja),
-                    'listaPagamento'    => $this->getTable("pedido_table")->listaTipoPagamento(),
-                    'listaBancos'       => $this->getTable("banco")->selectAll(),
-                    'listaCartao'       => $this->getTable("cartao")->selectAll(),
-                    'form'              => $form,
-                    'listaClassificacao'=> $this->getTable("classificacao_financeira_table")->listaClassiFinanceira("C"),
-                    'listaCentro'       => $this->getTable("centro_custo")->selectAll(),
-                    'loja'              => $loja
-                ));
-
-                $viewModel->setTemplate("application/receber/index.phtml");
-
-                return $viewModel;
+                $this->redirect()->toUrl("/contas-receber/index");
             }
             $ds_cliente = $this->getTable("cliente_table")->getId($post['CD_CLIENTE']);
             $form = "editar?id=".$id;

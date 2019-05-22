@@ -123,7 +123,7 @@
                                 <?php foreach ($servico as $serv) : ?>
                                     <tr>
                                         <td><?php echo $serv['CD_MERCADORIA'] ?></td>
-                                        <td><?php echo $serv['DS_MERCADORIA'] ?></td>
+                                        <td><?php echo utf8_encode($serv['DS_MERCADORIA']) ?></td>
                                         <td><?php echo number_format($serv['VL_PRECO_VENDA'], 2, ',', '.') ?></td>
                                         <td><?php echo number_format($serv['VL_PRECO_VENDA_PROMOCAO'], 2, ',', '.') ?></td>
                                         <td></td>
@@ -181,7 +181,7 @@
                     if (!isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
                         echo $this->formElement($form->get("submit"));
 						//echo $this->formElement($form->get("button"));
-						echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
+						//echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
                     }
                 }
                 ?>
@@ -218,7 +218,7 @@
                 <label class="control-label text-info" for="name">
                     <?php echo utf8_encode("Nome:") ?>
                 </label>
-                <?php $razao = (isset($dados['DS_NOME_RAZAO_SOCIAL'])) ? $dados['DS_NOME_RAZAO_SOCIAL'] : null ?>
+                <?php $razao = (isset($dados['DS_NOME_RAZAO_SOCIAL'])) ? utf8_encode($dados['DS_NOME_RAZAO_SOCIAL']) : null ?>
                 <?php echo $this->formElement($form->get("ds_nome_razao_social")->setAttribute('value', $razao)) ?>
             </div>
         </div>
@@ -264,7 +264,7 @@
         <div class="controls">
             <div class="col-md-10">
                 <label class="control-label text-info" for="name">
-                    <?php echo utf8_encode("Servi&ccedil;os:") ?>
+                    <?php echo "Servi&ccedil;os:" ?>
                 </label>
                 <?php echo $this->formElement($form->get("list_servico")) ?>
             </div>
@@ -297,7 +297,7 @@
                             <?php foreach ($servico as $serv) : ?>
                                 <tr>
                                     <td><?php echo $serv['CD_MERCADORIA'] ?></td>
-                                    <td><?php echo $serv['DS_MERCADORIA'] ?></td>
+                                    <td><?php echo utf8_encode($serv['DS_MERCADORIA']) ?></td>
                                     <td><?php echo number_format($serv['VL_PRECO_VENDA'], 2, ',', '.') ?></td>
                                     <td><?php echo number_format($serv['VL_PRECO_VENDA_PROMOCAO'], 2, ',', '.') ?></td>
                                     <td></td>
@@ -323,7 +323,7 @@
 
         <div class="controls">
             <div class="col-md-12">
-                <label for="" class="control-label text-info"><?php echo utf8_encode("Profissional:") ?></label>
+                <label for="" class="control-label text-info"><?php echo "Profissional:" ?></label>
                 <select class="form-control" id="cdFuncionario2" name="cdop">
                     <option selected="selected" value="">Selecione...</option>
                     <?php
@@ -353,7 +353,7 @@
                 if ($params['data'] >= date('d/m/Y')) {
                     if (!isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
                         echo $this->formElement($form->get("submit"));
-						echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
+						//echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
                     }
                 }
                 ?>

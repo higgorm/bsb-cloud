@@ -38,6 +38,7 @@ class ContasReceberTable extends AbstractTableGateway
         $dtIni = '10/10/1993';
 
         foreach ($param as $field => $search) {
+
             if($field == 'CD_TIPO_PAGAMENTO'){
                 $where->like('R.CD_TIPO_PAGAMENTO', '%' . $search . '%');
             }else if($field == 'minValor'){
@@ -72,8 +73,9 @@ class ContasReceberTable extends AbstractTableGateway
                 $where->like($field, '%' . $search . '%');
             }
         }
+
         $select->from(array('R' => $this->table))
-               ->join(array('C' =>'TB_CLIENTE'),'R.CD_CLIENTE = C.CD_CLIENTE')
+               ->join(array('C' =>'TB_CLIENTE'),'R.CD_CLIENTE = C.CD_CLIENTE', array(), 'left')
                ->join(array('T' => 'TB_TIPO_PAGAMENTO'), 'T.CD_TIPO_PAGAMENTO = R.CD_TIPO_PAGAMENTO')
                ->columns(array('R' => 'CD_CLIENTE',
                             'NR_LANCAMENTO_CR',
@@ -81,7 +83,9 @@ class ContasReceberTable extends AbstractTableGateway
                             'VL_DOCUMENTO',
                             'NR_NOTA',
                             'EMISSAO' => 'DT_EMISSAO',
-                            'DT_VENCIMENTO'
+                            'DT_VENCIMENTO',
+                            'CD_CLIENTE',
+                            'DS_EMISSOR',
                             ))
 
             ->where($where)
@@ -100,7 +104,7 @@ class ContasReceberTable extends AbstractTableGateway
 
         $select = new Select();
         $select ->from($this->table)
-                ->columns(array(new Expression('max(NR_LANCAMENTO_CR)+1 as NR_LANCAMENTO_CR')))
+                ->columns(array(new Expression('COALESCE(max(NR_LANCAMENTO_CR),0)+1 as NR_LANCAMENTO_CR')))
                 ->where(new Expression('CD_LOJA = '.$cdLoja));
         $rowset = $this->selectWith($select);
         $row = $rowset->current();

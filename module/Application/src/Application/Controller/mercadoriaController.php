@@ -120,7 +120,7 @@ class MercadoriaController extends AbstractActionController{
 		if( $request->isPost() ) {
 			$id = $post->get( 'CD_MERCADORIA' );
 			$array = array(
-				'DS_MERCADORIA'					=> utf8_encode($post->get('MERCADORIA')),
+				'DS_MERCADORIA'					=> utf8_decode($post->get('MERCADORIA')),
 				'CD_UNIDADE_VENDA'				=> $post->get('UNIDADE_VENDA'),
 				'DS_CFOP_EXTERNO'				=> $post->get('CFOP_EXTERNO'),
 				'DS_CFOP_INTERNO'				=> $post->get('CFOP_INTERNO'),
@@ -144,7 +144,8 @@ class MercadoriaController extends AbstractActionController{
 				'ICMS_modBC'					=> $post->get('ICMS_modBC'),
 				'ST_SERVICO'					=> $post->get('flg_tipo'),
 				'DT_UltimaAlteracao'			=> date(FORMATO_ESCRITA_DATA_HORA),
-				'UsuarioUltimaAlteracao'		=> 'OrangeWeb'
+				'UsuarioUltimaAlteracao'		=> 'OrangeWeb',
+                'CD_BARRAS'					    => $post->get('CD_BARRAS')
 			);
 			
 			$mercadoria = $this->getTable()->atualiza_mercadoria($id, $array);
@@ -196,7 +197,7 @@ class MercadoriaController extends AbstractActionController{
         if ($request->isPost()) {
 			$array = array(
 				'CD_MERCADORIA'					=> $this->getTable()->getNextId() + 1,
-				'DS_MERCADORIA'					=> utf8_encode($post->get('MERCADORIA')),
+				'DS_MERCADORIA'					=> utf8_decode($post->get('MERCADORIA')),
 				'CD_UNIDADE_VENDA'				=> $unidade,
 				'DS_CFOP_EXTERNO'				=> $post->get('CFOP_EXTERNO'),
 				'DS_CFOP_INTERNO'				=> $post->get('CFOP_INTERNO'),
@@ -232,7 +233,8 @@ class MercadoriaController extends AbstractActionController{
 				'NR_ALTURA'						=> '0',
 				'NR_PERCENTUAL_COMISSAO_INTERNO'=> '0',
 				'NR_PERCENTUAL_COMISSAO_EXTERNO'=> '0',
-				'IMPRIME_COMPOSICAO'			=> 'P'
+				'IMPRIME_COMPOSICAO'			=> 'P',
+                'CD_BARRAS'					    => $post->get('CD_BARRAS')
 			);
 			//die(var_dump($array));
 			$mercadoria = $this->getTable()->insere( $array );

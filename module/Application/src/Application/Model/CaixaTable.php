@@ -65,7 +65,7 @@ class CaixaTable extends AbstractTableGateway {
         $row = $rowset->current();
 
         if (!$row) {
-            throw new \Exception("Cargo / Usuário $username  não existe no banco de dados!");
+            throw new Exception("Cargo / Usuário $username  não existe no banco de dados!");
         }
 
         return $row;
@@ -73,7 +73,7 @@ class CaixaTable extends AbstractTableGateway {
 
     public function getNrLancamentoCaixa()
     {
-        $statement = $this->adapter->query("select MAX(NR_LANCAMENTO_CAIXA)+1 NR_LANCAMENTO_CAIXA from TB_CAIXA");
+        $statement = $this->adapter->query("select COALESCE(MAX(NR_LANCAMENTO_CAIXA),0)+1 NR_LANCAMENTO_CAIXA from TB_CAIXA");
         $results = $statement->execute();
         $rowResult = $results->current();
         return $rowResult["NR_LANCAMENTO_CAIXA"];
@@ -97,7 +97,7 @@ class CaixaTable extends AbstractTableGateway {
         $row = $rowset->current();
 
         if (!row) {
-            throw new \Exception("Cargo $id  não existe no banco de dados!");
+            throw new Exception("Cargo $id  não existe no banco de dados!");
         }
 
         return $row;
@@ -126,7 +126,7 @@ class CaixaTable extends AbstractTableGateway {
         try
         {
             return $this->insert($dados);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return false;
         }
     }
@@ -142,7 +142,7 @@ class CaixaTable extends AbstractTableGateway {
                                     'NR_LANCAMENTO_CAIXA' => $nrLancamentoCaixa,
                                     'NR_CAIXA' => $nrCaixa));
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return false;
         }
     }
@@ -158,7 +158,7 @@ class CaixaTable extends AbstractTableGateway {
             $statement->execute($dados);
 
             return true;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return false;
         }
     }

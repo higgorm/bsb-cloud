@@ -365,6 +365,7 @@ class AgendaController extends AbstractActionController {
         $sm = $this->getServiceLocator();
         $serviceServico = $sm->get('mercadoria_table');
         $resServico = $serviceServico->getComboPrecoServico($request->getPost('cd_servico'));
+        array_walk_recursive($resServico, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
         $response->setContent(\Zend\Json\Json::encode($resServico));
         return $response;
     }
@@ -425,7 +426,8 @@ class AgendaController extends AbstractActionController {
                 print json_encode(array('valido' => $retorno));
                 exit;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            echo $e->getMessage();
             $dbAdapter->getDriver()->getConnection()->rollback();
             exit;
         }
@@ -502,7 +504,7 @@ class AgendaController extends AbstractActionController {
                 $mercadoria["DS_LOCAL_RETIRADA"] = "";
                 $mercadoria["DS_OBSERVACAO"] = "";
 
-                //corre��o de bug para pre�o promocional
+                //correção de bug para preço promocional
                 $mercadoria["VL_PRECO_VENDA"] = ($precoNormal > $precoPromocao) ? $precoPromocao : $precoNormal;
 
                 $totalTotalVenda += $precoNormal;
@@ -537,7 +539,9 @@ class AgendaController extends AbstractActionController {
             $sm->get("agendamento_franquia")->atualizaAgendamentoFranquia(array($nrPedido, $post['cd_cliente'], $post['cd_loja'], $post["nr_maca"], $post["hratendimento"]));
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
             return false;
         }
     }

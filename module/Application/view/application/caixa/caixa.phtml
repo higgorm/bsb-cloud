@@ -46,25 +46,9 @@
                                                     <th></th>
                                                     <th>Nª pedido</th>
                                                     <th>Nome do cliente</th>
-                                                    <!-- th>Representante</th -->
                                                     <th>Valor bruto</th>
                                                     <th>Desconto</th>
-                                                    <!-- th>Vl frete</th -->
                                                     <th>Valor líquido</th>
-                                                    <!-- th>Frete</th>
-                                                    <th>CNPJ/CPF</th>
-                                                    <th>Cliente</th>
-                                                    <th>Fone do cliente</th>
-                                                    <th>Bco</th>
-                                                    <th>Agência</th>
-                                                    <th>C/C</th>
-                                                    <th>UF</th>
-                                                    <th>NF</th>
-                                                    <th>Tipo pedido</th>
-                                                    <th>Situação</th>
-                                                    <th>Nº cupom</th>
-                                                    <th>Subs. tributária</th>
-                                                    <th>Prazo</th -->
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -75,7 +59,7 @@
                                                         echo '<tr>
                                                                 <td><input type="checkbox" name="ckPedido[]" value="\''. $value['NR_PEDIDO'] .'\'" onclick="somaTotal(this.checked,\'' . (number_format($value['VL_TOTAL_BRUTO'], 2, ',', '.')) . '\',\'' . (number_format($desconto, 2, ',', '.')) . '\');"></td>
                                                                 <td>' . $value['NR_PEDIDO'] . '</td>
-                                                                <td>' . $value['DS_NOME_RAZAO_SOCIAL'] . '</td>
+                                                                <td>' . utf8_encode($value['DS_NOME_RAZAO_SOCIAL']) . '</td>
                                                                 <td>' . (number_format($value['VL_TOTAL_BRUTO'], 2, ',', '.')) . '</td>
                                                                 <td>' . (number_format($desconto, 2, ',', '.')) . '</td>
                                                                 <td>' . (number_format($value['VL_TOTAL_LIQUIDO'], 2, ',', '.')) . '</td>
@@ -96,21 +80,7 @@
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
-                                                    <!-- td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td -->
+
                                                 </tr>
                                             </tbody>
                                         </table>
