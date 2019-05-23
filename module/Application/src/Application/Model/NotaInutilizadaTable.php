@@ -49,10 +49,12 @@ class NotaInutilizadaTable extends AbstractTableGateway {
                           ,NU_PROTOCOLO
                           ,BSTAT
                           ,CSTAT
-                FROM '. $this->table . ' ORDER BY CD_NFE_INUTILILIZADA DESC';
+                FROM '. $this->table . ' 
+               
+                ORDER BY CD_NFE_INUTILILIZADA DESC';
         $statement  = $this->adapter->query($select);
         $result     = $statement->execute();
-        return $result;
+        return iterator_to_array($result,true);
     }
 
     public function nextId()

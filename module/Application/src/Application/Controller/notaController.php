@@ -363,6 +363,9 @@ class NotaController extends AbstractActionController{
 			//$tokenIBPT 	 = @$post->get('tokenIBPT');
 			//$tokenNFCe 	 = @$post->get('tokenNFCe');
 			//$tokenNFCeId = @$post->get('tokenNFCeId');
+            $tokenIBPT 	 = "";
+            $tokenNFCe 	 = "";
+            $tokenNFCeId = "";
 			if(is_uploaded_file($_FILES['certificado']['tmp_name'])){
 				//Fazer Upload
 				$uploadAdapter->setDestination( getcwd() . '\vendor\Certs\\' );
@@ -716,7 +719,7 @@ class NotaController extends AbstractActionController{
 			$nfeGe['tpNF'] = $tpNF;
 			$cNF = date('Ymd'); //numero aleatório da NF
 			$natOp = $post->get('xNatOp'); //natureza da operação
-			$nfeGe['natOp'] = $natOp;
+			$nfeGe['natOp'] = utf8_decode($natOp);
 			$serie = '1'; //serie da NFe
 			$nfeGe['serie'] = $serie;
 			$nNF = $nr_nota;
@@ -825,12 +828,12 @@ class NotaController extends AbstractActionController{
 			$fone = str_replace(array('.',',','/','-','(',')'),array('','','','','',''),$dest['DS_FONE1']);
 			$resp = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $destUF, $CEP, $cPais, $xPais, $fone);
 			//Passar para o array DB
-			$nfeGe['Dest_xLgr'] = $xLgr;
+			$nfeGe['Dest_xLgr'] = utf8_decode($xLgr);
 			$nfeGe['Dest_nro'] = $nro;
 			$nfeGe['Dest_xCpl'] = $xCpl;
-			$nfeGe['Dest_xBairro'] = $xBairro;
+			$nfeGe['Dest_xBairro'] = utf8_decode($xBairro);
 			$nfeGe['Dest_cMun'] = $cMun;
-			$nfeGe['Dest_xMun'] = $xMun;
+			$nfeGe['Dest_xMun'] = utf8_decode($xMun);
 			$nfeGe['Dest_UF'] = $UF;
 			$nfeGe['Dest_CEP'] = $CEP;
 			$nfeGe['Dest_fone'] = $fone;
@@ -898,7 +901,7 @@ class NotaController extends AbstractActionController{
 			$aP[] = array(
 				'nItem'		=> $i,
 				'cProd'     => $cdMercadoria,
-				'cEAN'      => '',
+				'cEAN'      => (empty($rowResult["CD_BARRAS"]) ? 'SEM GTIN' : $rowResult["CD_BARRAS"]),
 				'xProd'     => $dsMercadoria,
 				'NCM'       => $rowResult["DS_NCM"],
 				'NVE'       => "",
@@ -909,7 +912,7 @@ class NotaController extends AbstractActionController{
 				'qCom'      => number_format( $qtdVendida, 2, '.', ''),
 				'vUnCom'    => number_format( $vlPrecoVenda, 4, '.', ''),
 				'vProd'     => number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
-				'cEANTrib'  => '',
+				'cEANTrib'  => 'SEM GTIN',
 				'uTrib'     => $rowResult["CD_UNIDADE_VENDA"],
 				'qTrib'     => number_format( $qtdVendida, 2, '.', ''),
 				'vUnTrib'   => number_format( $vlPrecoVenda,4, '.', ''),

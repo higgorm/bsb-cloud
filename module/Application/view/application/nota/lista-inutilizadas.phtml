@@ -18,7 +18,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if ($listaNfe->valid()) : ?>
+                            <?php if (count($listaNfe) > 0) : ?>
                                 <?php foreach ($listaNfe as $nfe): ?>
                                     <tr>
                                         <td align="left"><?php echo $nfe['TP_MODELO'] ?></td>
