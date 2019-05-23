@@ -68,42 +68,52 @@
                         <tbody>
                             <?php if (count($listaNfe)) : ?>
                                 <?php foreach ($listaNfe as $nfe): ?>
+                                    <?php
+                                        $foiInutilizada = in_array($nfe->infNFE,$listaNfeInutilizadas);
+                                    ?>
                                     <tr>
                                         <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
-                                        <td align="left"><?php echo $nfe['infNFE'] ?></td>
-                                        <td align="left"><?php echo utf8_encode($nfe['Dest_xNome']) ?></td>
-                                        <td align="left">                             <?php if ($nfe->DT_PROTOCOLO_DATA == ''){
-                                                                                                echo '';
-                                                                                        }else{
-                                                                                                echo datE('d/m/y', strtotime($nfe['dEmi'])); 
-                                                                                                
-                                                                                             }?></td>
+                                        <td align="left"><?php echo $nfe->infNFE ?></td>
+                                        <td align="left"><?php echo utf8_encode($nfe->Dest_xNome) ?></td>
+                                        <td align="left">
+                                        <?php
+                                            if ($nfe->DT_PROTOCOLO_DATA == ''){
+                                                echo '';
+                                            } else {
+                                                echo datE('d/m/y', strtotime($nfe['dEmi']));
+                                            }
+                                         ?>
+                                        </td>
                                         <td align="left"><?php echo number_format($nfe['ISSQNtot_vServ'],2) ?></td>
                                         <td align="left">
-											<?php if( $nfe->DS_PROTOCOLO == ''){
-												echo 'Não enviada';
-											} else {
-												if( $nfe->DS_CANCELA_PROTOCOLO == '' ){
-													echo 'Enviada';
-												}else{
-													echo 'Nota Cancelada';
-												}
-											}?>
+											<?php
+                                                if ($foiInutilizada) {
+                                                    echo 'Inutilizada';
+                                                }else if( $nfe->DS_PROTOCOLO == ''){
+                                                    echo 'Não enviada';
+                                                } else {
+                                                    if( $nfe->DS_CANCELA_PROTOCOLO == '' ){
+                                                        echo 'Enviada';
+                                                    }else{
+                                                        echo 'Nota Cancelada';
+                                                    }
+                                                }
+											?>
 										</td>
 										<td align="left">
                                          <!-- <a href="/mercadoria/editar?id=<?php echo $nfe->infNFe ?>" ><i class="fa fa-pencil"></i></a> <!--  |-->
-										<?php if( $nfe->DS_PROTOCOLO && !$nfe->DS_CANCELA_PROTOCOLO): ?>
-											<a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>&replicar=1" data-toggle="tooltip" data-placement="top" title="Replicar NF-e"><i alt="Replicar NFe" class="fa fa-files-o"></i></a>&nbsp;|&nbsp;
-											<a alt="Enviar por E-mail" href="#" data-toggle="tooltip" data-placement="top" title="Enviar nota por E-mail" onclick="enviaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."','".date('Ym', strtotime($nfe->dEmi))."'"?>)"><span class="glyphicon glyphicon-envelope"></span></a>&nbsp;|&nbsp;
-											<a alt="Imprimir NFe" href="/nota/imprime-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE.'&data='.date('Ym', strtotime($nfe->dEmi))?>"data-toggle="tooltip" data-placement="top" title="Imprimir NF-e"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;|&nbsp;
-                                                                                        <a alt="Carta de Correção CCe" href="#" data-toggle="tooltip" data-placement="top" title="Carta de Correção CCe" onclick="cce(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'" ?>)"><i class= "fa fa-eraser"></i></a>&nbsp;|&nbsp;
-											<a alt="Cancelar NFe" href="#" data-toggle="tooltip" data-placement="top" title="Cancelar NF-e" onclick="cancelaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'".','."'".$nfe->DS_PROTOCOLO."'" ?>)"><i class="fa fa-times-circle"></i></a>
-                                        <?php else: ?>
-											<a alt="Visualizar NFe" target="_blank" href="/nota/visualiza-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE ?>" data-toggle="tooltip" data-placement="top" title="Pré-visualizar NF-e"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;|&nbsp;
-											<?php if( $nfe->DS_CANCELA_PROTOCOLO): ?>
-												<a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE']?>&replicar=1" ><i class="fa fa-files-o"></i></a>
+										<?php if( $nfe->DS_PROTOCOLO && !$nfe->DS_CANCELA_PROTOCOLO && !$foiInutilizada): ?>
+											<a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>&replicar=1" data-toggle="tooltip" data-placement="top" title="Replicar NF-e"><i alt="Replicar NFe" class="fa fa-files-o"></i></a>
+                                            &nbsp;|&nbsp;<a alt="Enviar por E-mail" href="#" data-toggle="tooltip" data-placement="top" title="Enviar nota por E-mail" onclick="enviaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."','".date('Ym', strtotime($nfe->dEmi))."'"?>)"><span class="glyphicon glyphicon-envelope"></span></a>
+                                            &nbsp;|&nbsp;<a alt="Imprimir NFe" href="/nota/imprime-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE.'&data='.date('Ym', strtotime($nfe->dEmi))?>"data-toggle="tooltip" data-placement="top" title="Imprimir NF-e"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
+                                             | <a alt="Carta de Correção CCe" href="#" data-toggle="tooltip" data-placement="top" title="Carta de Correção CCe" onclick="cce(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'" ?>)"><i class= "fa fa-eraser"></i></a>
+											 | <a alt="Cancelar NFe" href="#" data-toggle="tooltip" data-placement="top" title="Cancelar NF-e" onclick="cancelaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'".','."'".$nfe->DS_PROTOCOLO."'" ?>)"><i class="fa fa-times-circle"></i></a>
+                                        <?php elseif(!$foiInutilizada): ?>
+											<a alt="Visualizar NFe" target="_blank" href="/nota/visualiza-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE ?>" data-toggle="tooltip" data-placement="top" title="Pré-visualizar NF-e"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
+											<?php if( $nfe->DS_CANCELA_PROTOCOLO && !$foiInutilizada): ?>
+                                                &nbsp;| <a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE']?>&replicar=1" ><i class="fa fa-files-o"></i></a>
 											<?php else: ?>
-												<a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>"data-toggle="tooltip" data-placement="top" title="Editar NF-e"><i class="fa fa-pencil"></i></a>
+                                                &nbsp;| <a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>"data-toggle="tooltip" data-placement="top" title="Editar NF-e"><i class="fa fa-pencil"></i></a>
 											<?php endif; ?>
 										<?php endif; ?>
 										</td>

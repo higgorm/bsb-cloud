@@ -5,13 +5,14 @@
  * Date: 16/02/2019
  * Time: 19:16
  *
- * Classe de serviço, a ser utilizada pelos Modulos de Api e Application
+ * Classe de serviï¿½o, a ser utilizada pelos Modulos de Api e Application
  *
  */
 
 namespace Application\Service;
 
 use Application\Model\NotaTable;
+use Application\Model\NotaInutilizadaTable;
 use Zend\Paginator;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Session\Container;
@@ -64,6 +65,25 @@ class NotaFiscalService
 
         return $listaNfe;
     }
+
+
+    /**
+     *
+     */
+    public function getListNumeroInutilizadas() {
+
+        $table = new notaInutilizadaTable($this->getDbAdapter());
+
+        $listaNfeNumeroInutilizada = $table->listNumeroNfeInutilizada();
+
+        if(is_array($listaNfeNumeroInutilizada)) {
+            return array_column($listaNfeNumeroInutilizada,'NR_FAIXA');
+        } else {
+            return array();
+        }
+
+    }
+
 
     /**
      * @param $param

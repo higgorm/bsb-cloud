@@ -73,10 +73,12 @@ class NotaController extends AbstractActionController{
         }
 
         $listaNfe   = $notaFiscalService->getList($param, $pageNumber);
+        $listaNfeInutilizadas   = $notaFiscalService->getListNumeroInutilizadas();
 
         $viewModel  = new ViewModel();
         $viewModel->setTerminal(false);
         $viewModel->setVariable('listaNfe', $listaNfe);
+        $viewModel->setVariable('listaNfeInutilizadas', $listaNfeInutilizadas);
 
 		if( $this->params()->fromQuery('error') )
 			$viewModel->setVariable('error', $this->params()->fromQuery('error'));

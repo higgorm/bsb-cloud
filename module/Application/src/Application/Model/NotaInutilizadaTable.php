@@ -57,6 +57,22 @@ class NotaInutilizadaTable extends AbstractTableGateway {
         return iterator_to_array($result,true);
     }
 
+    public function listNumeroNfeInutilizada()
+    {
+        $select     = 'SELECT 
+                              NR_FAIXA_INICIAL AS NR_FAIXA
+                          FROM '. $this->table . '
+                          WHERE CSTAT = 102
+                      UNION
+                      SELECT 
+                              NR_FAIXA_FINAL  AS NR_FAIXA
+                          FROM '. $this->table . '
+                          WHERE CSTAT = 102';
+        $statement  = $this->adapter->query($select);
+        $result     = $statement->execute();
+        return iterator_to_array($result,true);
+    }
+
     public function nextId()
     {
         $select = $this->getSql()->select();
