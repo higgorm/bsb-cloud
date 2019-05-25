@@ -17,7 +17,10 @@ use Zend\Paginator;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Session\Container;
 
-
+/**
+ * Class NotaFiscalService
+ * @package Application\Service
+ */
 class NotaFiscalService
 {
     /**
@@ -68,7 +71,7 @@ class NotaFiscalService
 
 
     /**
-     *
+     * @return array
      */
     public function getListNumeroInutilizadas() {
 

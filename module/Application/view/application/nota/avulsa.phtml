@@ -32,21 +32,29 @@
 									</div>
 									<div class="col-md-2">
 										<label class="control-label text-info">Finalidade da Nota</label><br>
-										<input type="radio" value="1" name="finNFe" Checked>Normal
+										<input type="radio" value="1" class="finalidadeNota"  name="finNFe" <?php if($nota['finNFe'] == '1') echo "checked" ?> />Normal
 									</div>
 									<div class="col-md-2">
 										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="2" name="finNFe">Complementar
+										<input type="radio" value="2" class="finalidadeNota"  name="finNFe" <?php if($nota['finNFe'] == '2') echo "checked" ?> />Complementar
 									</div>
 									<div class="col-md-2">
 										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="3" name="finNFe">Ajuste
+										<input type="radio" value="3" class="finalidadeNota"  name="finNFe" <?php if($nota['finNFe'] == '3') echo "checked" ?> />Ajuste
 									</div>
 									<div class="col-md-2">
 										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="4" name="finNFe">Devoluçao
+										<input type="radio" value="4" class="finalidadeNota" name="finNFe" <?php if($nota['finNFe'] == '4') echo "checked" ?>  />Devoluçao
 									</div>
-									<div class="col-md-12">&nbsp;</div>
+									<div class="col-md-12" id="divRefNfe">
+                                        <div class="col-md-4">
+                                            <label class="control-label text-info"></label><br/>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="control-label text-info">Chave da nota origem: </label>
+                                            <input type="text" class="form-control numbersOnly" id="refNFe" name="refNFe"  maxlength="44" value="<?php echo @$nfeReferenciada['refNFe']?>">
+                                        </div>
+                                    </div>
 									<div class="col-md-2">
 										<label class="control-label text-info">Autorização:</label><br>
 										<input type="text" value="<?php echo ( @$replicar == '1' ? '' : @$nota['DS_PROTOCOLO'] )?>" name="DS_PROTOCOLO" id="DS_PROTOCOLO" class="form-control" readonly />
@@ -63,7 +71,7 @@
 										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
 										<input type="radio" value="2" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '2') echo "checked" ?>>Outros
 									</div>
-									<div class="col-md-4">
+									<div class="col-md-3">
 										<label class="control-label text-info">Data de Emissão / Data Saída:</label><br>
 										<input class="form-control" type="date" name="dhEmi" id="dhEmi" value="<?php echo ( @$nota['dhEmi'] ? date('Y-m-d', $nota['dhEmi']) : date('Y-m-d'))?>" />
 									</div>
@@ -80,7 +88,7 @@
 									<div class="col-md-2">
 										<label class="control-label text-info">CFOP:</label><br>
 										<input type="hidden" name="xNatOp" id="xNatOp" />
-										<input type="text" name="cfop" id="cfop" class="form-control" value="<?php echo ( @$nota['CFOP'] ? @$nota['CFOP'] : $dado['CD_NATUREZA_OPERACAO'] ) ?>"/>
+										<input type="text" name="cfop" id="cfop" class="form-control numbersOnly" value="<?php echo ( @$nota['CFOP'] ? @$nota['CFOP'] : $dado['CD_NATUREZA_OPERACAO'] ) ?>"/>
 									</div>
 									<div class="col-md-3">
 										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
@@ -150,7 +158,7 @@
 											</div>
 											<div class="col-md-1">
 												<label>Qtd</label><br>
-												<input type="text" class="form-control" value="1" id="qtd_mercadoria" name="qtd_mercadoria" />
+												<input type="text" class="form-control numbersOnly" value="1" id="qtd_mercadoria" name="qtd_mercadoria" />
 												<!-- <input type="text" class="form-control" value="1" id="qtd_mercadoria" name="qtd_mercadoria" onKeyUp="moeda(this)"  /> -->
 											</div>
 											<div class="col-md-2">
@@ -472,6 +480,18 @@
 						event.preventDefault();
 					}
 			});
+
+			$(".finalidadeNota").click(function(){
+
+			   exibirDivRefNfe($(this).val());
+
+            });
+
+            $('.numbersOnly').keyup(function () {
+                this.value = this.value.replace(/[^0-9\.]/g,'');
+            });
+
+            exibirDivRefNfe($('input[name="finNFe"]:checked').val());
 		});
 	</script>
 <?php endforeach; ?>

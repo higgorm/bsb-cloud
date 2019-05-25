@@ -98,10 +98,6 @@ class NotaController extends AbstractActionController{
         $messages   = $this->flashMessenger()->getMessages();
         $param      = array();
 
-        if ($pageNumber == 0) {
-            $pageNumber = 1;
-        }
-
         if ($request->isPost()) {
             $post = $request->getPost();
 
@@ -315,6 +311,9 @@ class NotaController extends AbstractActionController{
 
 			$pathXmlUrlFileNFe  = 'wsnfe_4.00_mod55.xml';
 			$pathXmlUrlFileNFSe = '';
+            $pathXmlUrlFileCTe  = '';
+			$pathXmlUrlFileMDFe = '';
+            $pathXmlUrlFileCLe  = '';
 
 			if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\\' ))
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\\');
@@ -341,8 +340,11 @@ class NotaController extends AbstractActionController{
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFSe\saidas\\');
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFSe\temporarias\\');
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFSe\canceladas\\');
-
 			}
+
+            $pathCTeFiles   = "";
+            $pathMDFeFiles  = "";
+            $pathCLeFiles   = "";
 
 			if(is_uploaded_file($_FILES['logo']['tmp_name'])){
 				//Fazer Upload
@@ -356,8 +358,11 @@ class NotaController extends AbstractActionController{
 
 			$siteUrl = 'bsbgestao.com.br/bsbcloud'; //Verificar
 
-			$schemesNFe  = "\PL_009_V4\\";
-			$schemesNFSe = "";
+			$schemesNFe     = "\PL_009_V4\\";
+			$schemesNFSe    = "";
+            $schemesCTe     = "";
+            $schemesMDFe    = "";
+            $schemesCLe     = "";
 
 			$razaosocial = @$post->get('razaosocial');
 			$siglaUF 	 = @$post->get('siglaUF');
@@ -752,6 +757,14 @@ class NotaController extends AbstractActionController{
 			$nfeGe['DS_NFE_CHAVE'] = $chave;
 
 
+            //refNFe NFe referenciada
+            $refNFe = $post->get('refNFe');
+
+			if($finNFe == 4) { //4=Devolução/Retorno
+                if (!empty($refNFe)) {
+                    $resp = $nfe->tagrefNFe($refNFe);
+                }
+            }
 			//refNFe NFe referenciada
 			//$refNFe = '12345678901234567890123456789012345678901234';
 			//$resp = $nfe->tagrefNFe($refNFe);
@@ -1071,7 +1084,7 @@ class NotaController extends AbstractActionController{
 				}
 				//Preencher array IPI
 				$nr_ipi = number_format( $rowResult['NR_IPI'], 2, '.', '');
-				if( $ipi > 0 ){
+				if( $nr_ipi > 0 ){
 					$ipi = array(
 						'nItem' 	=> $i,
 						'cst' 		=> $rowResult['IPI_CST'],
@@ -1095,8 +1108,8 @@ class NotaController extends AbstractActionController{
 			$BaseCalculoPIS = ( $zeraBC != 'S' ? number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '') : '0.00' );
 			$ValorPIS       = ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $pPIS ) / 100, 2, '.', '') : '0.00');
 
-			if( $pisCST == 01 ||
-				$pisCST == 02 ){
+			if( $pisCST == "01" ||
+				$pisCST == "02" ){
 				$pis[] = array(
 					'nItem'		=> $i,
 					'cst'		=> $pisCST,
@@ -1107,12 +1120,12 @@ class NotaController extends AbstractActionController{
 					'vAliqProd'	=> ''
 				);
 				( $rowResult['ST_SERVICO'] == 'S' ? $totalPISISSQN = $totalPISISSQN + $ValorPIS : $totalPISICMS = $totalPISICMS + $ValorPIS );
-			}else if( 	$pisCST == 04 ||
-						$pisCST == 05 ||
-						$pisCST == 06 ||
-						$pisCST == 07 ||
-						$pisCST == 08 ||
-						$pisCST == 09 ){
+			}else if( 	$pisCST == "04" ||
+						$pisCST == "05" ||
+						$pisCST == "06" ||
+						$pisCST == "07" ||
+						$pisCST == "08" ||
+						$pisCST == "09" ){
 				$pis[] = array(
 					'nItem'		=> $i,
 					'cst'		=> $pisCST
@@ -1122,8 +1135,8 @@ class NotaController extends AbstractActionController{
 			$cofinsCST = $rowResult['COFINS_CST'];
 			$BaseCalculoCofins = ( $zeraBC != 'S' ? number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '') : '0.00' );
 			$ValorCofins       = ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $pCOFINS ) / 100, 2, '.', '' ) : '0.00' );
-			if( $cofinsCST == 01 ||
-				$cofinsCST == 01 ){
+			if( $cofinsCST == "01" ||
+				$cofinsCST == "01" ){
 				$cofins[] = array(
 					'nItem' 	=> $i,
 					'cst' 		=> $cofinsCST,
@@ -1134,12 +1147,12 @@ class NotaController extends AbstractActionController{
 					'vAliqProd' => ''
 				);
 				( $rowResult['ST_SERVICO'] == 'S' ? $totalCOFINSISSQN = $totalCOFINSISSQN + $ValorCofins : $totalCOFINSICMS = $totalCOFINSICMS + $ValorCofins );
-			}else if( 	$cofinsCST == 04 ||
-						$cofinsCST == 05 ||
-						$cofinsCST == 06 ||
-						$cofinsCST == 07 ||
-						$cofinsCST == 08 ||
-						$cofinsCST == 09 ){
+			}else if( 	$cofinsCST == "04" ||
+						$cofinsCST == "05" ||
+						$cofinsCST == "06" ||
+						$cofinsCST == "07" ||
+						$cofinsCST == "08" ||
+						$cofinsCST == "09" ){
 				$cofins[] = array(
 					'nItem' 	=> $i,
 					'cst' 		=> $cofinsCST
@@ -1281,6 +1294,7 @@ class NotaController extends AbstractActionController{
 
 		//TAG IPI
 		if( @$ipi ){
+            $totalIPI= 0;
 			foreach( @$ipi as $ip ){
 				$nItem 		= $ip['nItem'];
 				$cst 		= $ip['cst'];
@@ -1530,19 +1544,41 @@ class NotaController extends AbstractActionController{
 		$resp = $nfe->tagretTrib($vRetPIS, $vRetCOFINS, $vRetCSLL, $vBCIRRF, $vIRRF, $vBCRetPrev, $vRetPrev );
 
 
+        $nfeReferenciadaGe= array();
+        $nfeReferenciadaGe['CD_LOJA']              = $nfeGe['CD_LOJA'];
+        $nfeReferenciadaGe['NR_PEDIDO']            = $nfeGe['NR_PEDIDO'];
+        $nfeReferenciadaGe['infNFE']               = $nfeGe['infNFE'];
+        $nfeReferenciadaGe['refNFe']               = $refNFe;
+
 		if( $bReenvia ){
 			$table->atualiza_nota($nfeGe['infNFE'], $nfeGe);
+
 			$table->limpa_mercadorias($nfeGe['infNFE']);
+
 			foreach( $nfeMercadoria as $a){
 				$table->insere_mercadorias($a);
 			}
+
+            //Salva NFE Referenciada no banco
+            $table->limpa_nota_referenciada($nfeGe['infNFE']);
+            if ($nfeGe['finNFe'] == 4) { //devolução
+                $table->insere_nota_referenciada($nfeReferenciadaGe);
+            }
+
 		}else{
 			//Salva NFE no banco
 			$table->atualiza_nextId($nfeGe['infNFE']);
+
 			$table->insere_nota($nfeGe);
+
 			foreach( $nfeMercadoria as $a){
 				$table->insere_mercadorias($a);
 			}
+
+            //Salva NFE Referenciada no banco
+			if ($nfeGe['finNFe'] == 4) { //devolução
+                $table->insere_nota_referenciada($nfeReferenciadaGe);
+            }
 		}
 
 		//monta a NFe e retorna na tela
@@ -1891,9 +1927,10 @@ class NotaController extends AbstractActionController{
 			$total = $total + $merc['vProd'];
 		}
 
-		$nfe 		= $table->getNota($infNFe);
-        $cfop       = $cfopTable->selectAll_cfop();
-		$config     = $table->getConfig('1');
+		$nfe 		        = $table->getNota($infNFe);
+        $nfeReferenciada    = $table->getNotaReferenciada($infNFe);
+        $cfop               = $cfopTable->selectAll_cfop();
+		$config             = $table->getConfig('1');
 
 		$viewModel = new ViewModel();
 
@@ -1903,6 +1940,7 @@ class NotaController extends AbstractActionController{
 		$viewModel->setVariable('replicar', $replicar);
 		$viewModel->setVariable('nfe', $nfe);
 		$viewModel->setVariable('nfeMerc', $mercadoriasNota);
+        $viewModel->setVariable('nfeReferenciada', $nfeReferenciada);
 		$viewModel->setVariable('totalNota', $total);
 		$viewModel->setVariable('cfop', $cfop);
 		$viewModel->setVariable('config', $config);

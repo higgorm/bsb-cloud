@@ -13,11 +13,20 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Session\Container;
 
+/**
+ * Class NotaTable
+ * @package Application\Model
+ */
 class NotaTable extends AbstractTableGateway
 {
-	protected $table 		= "TB_NFE";
-	protected $table_config = "TB_NFE_CONFIG";
-	
+	protected $table 		        = "TB_NFE";
+	protected $table_config         = "TB_NFE_CONFIG";
+    protected $table_referenciada   = "TB_NFE_REFERENCIADAS";
+
+    /**
+     * NotaTable constructor.
+     * @param Adapter $adapter
+     */
 	public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
@@ -29,7 +38,11 @@ class NotaTable extends AbstractTableGateway
 			$statement->execute();
 		}
     }
-	
+
+    /**
+     * @param $cliente
+     * @return array
+     */
 	public function getConfig($cliente){
 		$statement = $this->adapter->query('SELECT * FROM '.$this->table_config.' WHERE CD_LOJA = '.$cliente );
 		
@@ -41,7 +54,13 @@ class NotaTable extends AbstractTableGateway
 		}
 		return $returnArray;
 	}
-	
+
+    /**
+     * @param array $param
+     * @param string $currentPage
+     * @param string $countPerPage
+     * @return Paginator
+     */
 	public function fetchAll(Array $param = array(), $currentPage = "1", $countPerPage = "10"){
 
 		$select = new Select();
@@ -63,6 +82,10 @@ class NotaTable extends AbstractTableGateway
         return $paginator;
 	}
 
+    /**
+     * @param array $param
+     * @return mixed
+     */
     public function fetchArray(Array $param = array()){
         $returnArray = array();
         $adapter = $this->adapter;
@@ -85,7 +108,11 @@ class NotaTable extends AbstractTableGateway
         return $results->current();
 
     }
-	
+
+    /**
+     * @param $nota
+     * @return array
+     */
 	public function getNota($nota){
 		$statement = $this->adapter->query('SELECT * FROM '.$this->table.' WHERE infNfe = '.$nota);
 		
@@ -97,7 +124,18 @@ class NotaTable extends AbstractTableGateway
 		}
 		return $returnArray;
 	}
-	
+
+	public function getNotaReferenciada($nota){
+        $statement = $this->adapter->query('SELECT * FROM '.$this->table_referenciada.' WHERE infNfe = '.$nota);
+
+        $results = $statement->execute();
+        return $results->current();
+    }
+
+    /**
+     * @param $nota
+     * @return array
+     */
 	public function getMercadoria($nota){
 		$statement = $this->adapter->query('SELECT * FROM TB_NFE_PRODUTOS WHERE infNfe = '.$nota);
 		
@@ -109,7 +147,12 @@ class NotaTable extends AbstractTableGateway
 		}
 		return $returnArray;	
 	}
-	
+
+    /**
+     * @param $cliente
+     * @param $array
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
 	public function atualiza_config( $cliente, $array ){
 
 		$sql = new Sql($this->adapter);
@@ -122,29 +165,35 @@ class NotaTable extends AbstractTableGateway
 		
 		return $results;
 	}
-	
-	public function insere_nota( $array ){
+
+    /**
+     * @param $array
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
+	public function insere_nota( $array ) {
 
 		$sql = new Sql($this->adapter);
 		$insert = $sql->insert( $this->table );
 		$insert->values($array);
 
 		$selectString = $sql->getSqlStringForSqlObject($insert);
-		//$results = $this->adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE	);
 		
 		$statement = $this->adapter->query( $selectString );
 		$results = $statement->execute();
 		
 		return $results;
 	}
-	
-	public function insere_mercadorias( $array){
+
+    /**
+     * @param $array
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
+	public function insere_mercadorias( $array) {
 		$sql = new Sql($this->adapter);
 		$insert = $sql->insert( 'TB_NFE_PRODUTOS' );
 		
 		$insert->values($array);
 		$selectString = $sql->getSqlStringForSqlObject($insert);
-		//$results = $this->adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE	);
 		
 		$statement = $this->adapter->query( $selectString );
 		$results = $statement->execute();
@@ -152,7 +201,29 @@ class NotaTable extends AbstractTableGateway
 		return $results;
 		
 	}
-	
+
+    /**
+     * @param $array
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
+	public function insere_nota_referenciada( $array ) {
+        $sql = new Sql($this->adapter);
+        $insert = $sql->insert( 'TB_NFE_REFERENCIADAS' );
+
+        $insert->values($array);
+        $selectString = $sql->getSqlStringForSqlObject($insert);
+
+        $statement = $this->adapter->query( $selectString );
+        $results = $statement->execute();
+
+        return $results;
+    }
+
+    /**
+     * @param $nota
+     * @param $array
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
 	public function atualiza_nota( $nota, $array ){
 
 		$sql = new Sql($this->adapter);
@@ -172,7 +243,13 @@ class NotaTable extends AbstractTableGateway
 		
 		return $results;	
 	}
-	
+
+    /**
+     * @param $infNFE
+     * @param $mercadoria
+     * @param $array
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
 	public function atualiza_mercadorias( $infNFE, $mercadoria, $array ){
 
 		$sql = new Sql($this->adapter);
@@ -180,21 +257,40 @@ class NotaTable extends AbstractTableGateway
 		$update->table('TB_NFE_PRODUTOS');
 		$update->set($array);
 		
-		$update->where(array('infNFE' => $nota, 'CD_MERCADORIA' => $mercadoria));
+		$update->where(array('infNFE' => $infNFE, 'CD_MERCADORIA' => $mercadoria));
 		
 		$statement = $sql->prepareStatementForSqlObject($update);
 		$results = $statement->execute();
 		
 		return $results;	
 	}
-	
+
+    /**
+     * @param $infNFE
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
 	public function limpa_mercadorias( $infNFE ){
 		
 		$statement = $this->adapter->query("DELETE FROM TB_NFE_PRODUTOS WHERE infNFE = ?");
 												
 		return $statement->execute(array($infNFE));
 	}
-	
+
+    /**
+     * @param $infNFE
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
+	public function limpa_nota_referenciada( $infNFE ){
+
+        $statement = $this->adapter->query("DELETE FROM TB_NFE_REFERENCIADAS WHERE infNFE = ?");
+
+        return $statement->execute(array($infNFE));
+    }
+
+    /**
+     * @param $cliente
+     * @return mixed
+     */
 	public function getNextId($cliente){
 		
 		$statement = $this->adapter->query('SELECT NR_NFE + 1 AS nextID FROM '.$this->table_config );//.' WHERE CD_LOJA = '.$cliente );
@@ -207,7 +303,11 @@ class NotaTable extends AbstractTableGateway
 		}
 		return $return;
 	}
-	
+
+    /**
+     * @param $ID
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
 	public function atualiza_nextId( $ID ){
 
 		$sql = new Sql($this->adapter);

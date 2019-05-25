@@ -47,6 +47,7 @@ var Nota = {
         });
 		//Inicializar
 		$("#xNatOp").val( $("#natOp :selected").text() );
+
 		
 		$("#nota").submit( function(){
 			if( $("#codCliente").val() == '' ) {
@@ -237,6 +238,17 @@ var Nota = {
 				//console.log(value);
 			});
 		}
+
+        exibirDivRefNfe = function (finalidade) {
+            if (finalidade == 4) {
+                $("#divRefNfe").css('visibility','visible');
+                $("#refNFe").attr('required',true);
+            } else {
+                $("#divRefNfe").css('visibility','hidden');
+                $("#refNFe").removeAttr('required');
+            }
+        }
+
     },
 	
 }
