@@ -108,9 +108,9 @@ class ContasReceberController extends AbstractActionController
         if ($request->isPost()) {
 
             if(!$_POST['DS_EMISSOR']){
-                $dsEmissor = utf8_decode($_POST['ds_nome_razao_social']);
+                $dsEmissor = ($_POST['ds_nome_razao_social']);
             }else{
-                $dsEmissor = utf8_decode($_POST['DS_EMISSOR']);
+                $dsEmissor = ($_POST['DS_EMISSOR']);
             }
 
             $alt = array(
@@ -118,7 +118,7 @@ class ContasReceberController extends AbstractActionController
                 'DS_COMPL_HISTORICO'        =>  $_POST['DS_COMPL_HISTORICO'],
                 'CD_CLASSE_FINANCEIRA'      =>  !empty($_POST['CD_CLASSE_FINANCEIRA']) ? $_POST['CD_CLASSE_FINANCEIRA']  : NULL,
                 'NR_DOCUMENTO_CR'           =>  $_POST['NR_DOCUMENTO_CR'],
-                'DT_MOVIMENTO'              =>  !empty($_POST['DT_MOVIMENTO']) ? $_POST['DT_MOVIMENTO']  : NULL,
+                'DT_MOVIMENTO'              =>  !empty($_POST['DT_MOVIMENTO']) ?  date(FORMATO_ESCRITA_DATA_HORA, strtotime($_POST['DT_MOVIMENTO']))  : NULL,
                 'CD_TIPO_PAGAMENTO'         =>  $_POST['CD_TIPO_PAGAMENTO'],
                 'NR_CGC_CPF_EMISSOR'        =>  $_POST['NR_CGC_CPF_EMISSOR'],
                 'DS_EMISSOR'                =>  $dsEmissor,
@@ -130,8 +130,8 @@ class ContasReceberController extends AbstractActionController
                 'NR_CONTA'                  =>  $_POST['NR_CONTA'],
                 'NR_CHEQUE'                 =>  $_POST['NR_CHEQUE'],
                 'NR_NOTA'                   =>  !empty($_POST['NR_NOTA']) ? (int)$_POST['NR_NOTA']  : NULL,
-                'DT_EMISSAO'                =>  !empty($_POST['DT_EMISSAO']) ? $_POST['DT_EMISSAO']  : NULL,
-                'DT_VENCIMENTO'             =>  !empty($_POST['DT_VENCIMENTO']) ? $_POST['DT_VENCIMENTO']  : NULL,
+                'DT_EMISSAO'                =>  !empty($_POST['DT_EMISSAO']) ? date(FORMATO_ESCRITA_DATA_HORA, strtotime($_POST['DT_EMISSAO']))  : NULL,
+                'DT_VENCIMENTO'             =>  !empty($_POST['DT_VENCIMENTO']) ? date(FORMATO_ESCRITA_DATA_HORA, strtotime($_POST['DT_VENCIMENTO']))  : NULL,
                 'VL_DOCUMENTO'              =>  !empty($_POST['VL_DOCUMENTO']) ? str_ireplace( ',', '.' ,str_ireplace( '.', '' ,$_POST['VL_DOCUMENTO']))  : 0.0,
                 'ST_CANCELADO'              =>  'N',
                 'CD_LOJA_FUNCIONARIO'       =>  $session->cdLoja,
@@ -206,16 +206,16 @@ class ContasReceberController extends AbstractActionController
             if ($request->isPost()) {
 
                 if(!$_POST['DS_EMISSOR']){
-                    $dsEmissor = utf8_decode($_POST['ds_nome_razao_social']);
+                    $dsEmissor = $_POST['ds_nome_razao_social'];
                 }else{
-                    $dsEmissor = utf8_decode($_POST['DS_EMISSOR']);
+                    $dsEmissor = $_POST['DS_EMISSOR'];
                 }
 
                 $alt = array(
                     'DS_COMPL_HISTORICO'        =>  $_POST['DS_COMPL_HISTORICO'],
                     'CD_CLASSE_FINANCEIRA'      =>  !empty($_POST['CD_CLASSE_FINANCEIRA']) ? $_POST['CD_CLASSE_FINANCEIRA']  : NULL,
                     'NR_DOCUMENTO_CR'           =>  $_POST['NR_DOCUMENTO_CR'],
-                    'DT_MOVIMENTO'              =>  !empty($_POST['DT_MOVIMENTO']) ? $_POST['DT_MOVIMENTO']  : NULL,
+                    'DT_MOVIMENTO'              =>  !empty($_POST['DT_MOVIMENTO']) ? date(FORMATO_ESCRITA_DATA_HORA, strtotime($_POST['DT_MOVIMENTO']))  : NULL,
                     'CD_TIPO_PAGAMENTO'         =>  $_POST['CD_TIPO_PAGAMENTO'],
                     'NR_CGC_CPF_EMISSOR'        =>  $_POST['NR_CGC_CPF_EMISSOR'],
                     'DS_EMISSOR'                =>  $dsEmissor,
@@ -227,8 +227,8 @@ class ContasReceberController extends AbstractActionController
                     'NR_CONTA'                  =>  $_POST['NR_CONTA'],
                     'NR_CHEQUE'                 =>  $_POST['NR_CHEQUE'],
                     'NR_NOTA'                   =>  !empty($_POST['NR_NOTA']) ? (int)$_POST['NR_NOTA']  : NULL,
-                    'DT_EMISSAO'                =>  !empty($_POST['DT_EMISSAO']) ? $_POST['DT_EMISSAO']  : NULL,
-                    'DT_VENCIMENTO'             =>  !empty($_POST['DT_VENCIMENTO']) ? $_POST['DT_VENCIMENTO']  : NULL,
+                    'DT_EMISSAO'                =>  !empty($_POST['DT_EMISSAO']) ? date(FORMATO_ESCRITA_DATA_HORA, strtotime($_POST['DT_EMISSAO']))  : NULL,
+                    'DT_VENCIMENTO'             =>  !empty($_POST['DT_VENCIMENTO']) ? date(FORMATO_ESCRITA_DATA_HORA, strtotime($_POST['DT_VENCIMENTO']))  : NULL,
                     'VL_DOCUMENTO'              =>  !empty($_POST['VL_DOCUMENTO']) ? str_ireplace( ',', '.' ,str_ireplace( '.', '' ,$_POST['VL_DOCUMENTO']))  : 0.0,
                     'CD_LOJA_FUNCIONARIO'       =>  $session->cdLoja,
                     'CD_FUNCIONARIO'            =>  !empty($_POST['CD_FUNCIONARIO']) ? (int)$_POST['CD_FUNCIONARIO']  : NULL,

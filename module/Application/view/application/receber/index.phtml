@@ -103,11 +103,13 @@
                             &nbsp;<input type="radio" name="rdVencimento" value="1" class="rdAusencia form-vertical" <?php if($post['rdVencimento'] == '1' ) echo  'checked="checked"' ?>>
                             Lançamento
                             <div class="controls">
-                                <div class="col-md-6" style="padding-left:0px;">
-                                    <input id="dtIni" name="dtIni" class="dataP form-control" value="<?php echo $post['dtIni']?>" maxlength="10" />
+                                <div class="col-md-6" >
+                                    <input class="dataP form-control" type="text" id="dtIni" name="dtIni"  value="<?php echo $post['dtIni']?>" maxlength="10">
+                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                                 </div>
-                                <div class="col-md-6" style="padding-left:3px;">
-                                    <input id="dtFim" name="dtFim" class="dataP form-control" value="<?php echo $post['dtFim']?>" maxlength="10" />
+                                <div class="col-md-6" >
+                                    <input class="dataP form-control" type="text" id="dtFim" name="dtFim"  value="<?php echo $post['dtFim']?>" maxlength="10">
+                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                                 </div>
                             </div>
                         </div>

@@ -51,11 +51,11 @@
                     <div class="controls">
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">Data Movimento</label>
-                            <input id="DT_MOVIMENTO" name="DT_MOVIMENTO" class="dataP form-control" value="<?php $date = new DateTime($post['DT_MOVIMENTO']); echo $date->format('d-m-y');?>" maxlength="10" />
+                            <input id="DT_MOVIMENTO" name="DT_MOVIMENTO" class="dataP form-control" required value="<?php $date = new DateTime($post['DT_MOVIMENTO']); echo $date->format('d-m-y');?>" maxlength="10" />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">Número Doc</label>
-                            <input id="DS_DOCUMENTO" name="DS_DOCUMENTO" class="form-control" value="<?php echo $post['DS_DOCUMENTO']?>" maxlength="10" />
+                            <input id="DS_DOCUMENTO" name="DS_DOCUMENTO" class="form-control"  value="<?php echo $post['DS_DOCUMENTO']?>" maxlength="10" />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">Valor Doc (R$)</label>

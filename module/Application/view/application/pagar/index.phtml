@@ -149,7 +149,7 @@
                                         <?php foreach ($contasPagar as $pagar):?>
                                             <tr>
                                                 <td><?php echo $pagar->DS_DOCUMENTO ?></td>
-                                                <td><?php echo (empty($pagar->DS_RAZAO_SOCIAL )) ? $pagar->DS_CREDOR : $pagar->DS_RAZAO_SOCIAL  ?></td>
+                                                <td><?php echo (empty($pagar->DS_RAZAO_SOCIAL )) ? utf8_decode($pagar->DS_CREDOR) : utf8_decode($pagar->DS_RAZAO_SOCIAL)  ?></td>
                                                 <td><?php  $date = new DateTime($pagar->DT_MOVIMENTO); echo $date->format('d-m-y'); ?> </td>
                                                 <td><?php echo number_format($pagar->VL_DOCUMENTO,2,",",".") ?></td>
                                                 <td> <a href="/contas-pagar/editar?id=<?php echo $pagar->NR_DOCUMENTO_CP ?>" ><i class="fa fa-pencil"></i></a> <!--  |
