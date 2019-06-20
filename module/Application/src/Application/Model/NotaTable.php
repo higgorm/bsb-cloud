@@ -114,9 +114,11 @@ class NotaTable extends AbstractTableGateway
      * @return array
      */
 	public function getNota($nota){
-		$statement = $this->adapter->query('SELECT * FROM '.$this->table.' WHERE infNfe = '.$nota);
+		$statement = $this->adapter->query('SELECT * 
+                                            FROM '.$this->table.' 
+                                            WHERE infNfe = ? ');
 		
-		$results = $statement->execute();
+		$results = $statement->execute(array('infNfe' =>  $nota));
 		$returnArray = array();
 		
 		foreach ($results as $result){
@@ -124,6 +126,30 @@ class NotaTable extends AbstractTableGateway
 		}
 		return $returnArray;
 	}
+
+    /**
+     * @param $nrPedido
+     * @param bool $res
+     * @return array|mixed
+     */
+    public function recuperaNotaPorNumeroPedido($nrPedido, $res = true) {
+
+        $select = "SELECT *
+                   FROM ".$this->table." 
+                   WHERE NR_PEDIDO =  ? ";
+
+        $statement = $this->adapter->query($select);
+        $results = $statement->execute(array('NR_PEDIDO' =>  $nrPedido));
+        if ($res) {
+            $returnArray = array();
+            foreach ($results as $result) {
+                $returnArray[] = $result;
+            }
+            return $returnArray;
+        } else {
+            return $results->current();
+        }
+    }
 
 	public function getNotaReferenciada($nota){
         $statement = $this->adapter->query('SELECT * FROM '.$this->table_referenciada.' WHERE infNfe = '.$nota);

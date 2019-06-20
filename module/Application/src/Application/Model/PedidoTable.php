@@ -265,10 +265,17 @@ class PedidoTable extends AbstractTableGateway {
         return $returnArray;
     }
 
+    /**
+     * @param $nuPedido
+     * @param bool $res
+     * @return array|mixed
+     */
     public function recuperaPedidoPorNumero($nuPedido, $res = true) {
+
         $select = "SELECT *
                    FROM TB_PEDIDO
-                   WHERE NR_PEDIDO = ?";
+                   WHERE NR_PEDIDO = ? AND 
+                        CD_LOJA = 1 ";
 
         $statement = $this->adapter->query($select);
         $results = $statement->execute(array('nr_pedido' => (int) $nuPedido));
@@ -281,8 +288,6 @@ class PedidoTable extends AbstractTableGateway {
         } else {
             return $results->current();
         }
-
-
     }
 
     public function recuperaMercadoriaNumeroPedido($nuPedido) {
@@ -293,6 +298,26 @@ class PedidoTable extends AbstractTableGateway {
         $statement = $this->adapter->query($select);
         $results = $statement->execute(array('nr_pedido' => (int) $nuPedido));
         return $results->current();
+    }
+
+    /**
+     * @param $nuPedido
+     * @return mixed
+     */
+    public function recuperaMercadoriasNumeroPedido($nuPedido) {
+        $select = "SELECT M.*
+                   FROM TB_PEDIDO_MERCADORIA M
+                   WHERE M.NR_PEDIDO = ?";
+
+        $statement      = $this->adapter->query($select);
+        $results        = $statement->execute(array('nr_pedido' => (int) $nuPedido));
+        $returnArray    = array();
+
+        foreach ($results as $result) {
+            $returnArray[] = $result;
+        }
+
+        return $returnArray;
     }
 
     public function listPrazo() {

@@ -1,0 +1,78 @@
+<script type="text/javascript" src="/js/orangeweb/nota/nota.js"></script>
+<section class="panel panel-default">
+	<div class="main">
+		<div class="row-fluid">
+			<div class="panel-body">
+				<div class="widget-header">
+					<h3>Emissão / Envio de NFe a partir do pedido</h3>
+				</div>
+				<?php if( @$erro ): ?>
+					<div class="col-sm-12">
+						<h3 class="text-danger text-center">Nota não pode ser emitida / enviada!</h3>
+						<h4  class="text-center">
+                            Motivo: <?php echo $erro; ?>
+                        </h4>
+
+						<a href="javascript:window.history.go(-1)">
+							<button type="button" class="btn btn-primary">
+								Voltar
+							</button>
+						</a>
+                        <a href="/caixa/caixa">
+                            <button type="button" class="btn btn-default">
+                                Ir para o caixa
+                            </button>
+                        </a>
+                        <a href="/nota/lista">
+                            <button type="button" class="btn btn-default">
+                                Ir para a lista de notas
+                            </button>
+                        </a>
+					</div>
+				<?php else: ?>
+					<?php if( @$retorno['prot']['0']['nProt'] == '' ): ?>
+						<div class="col-sm-12">
+                            <h3 class="text-danger text-center">Nota não enviada!</h3>
+							<h4 class="text-center">
+                                Motivo: <?php echo $retorno['prot']['0']['xMotivo']; ?>
+                            </h4>
+							<a href="javascript:window.history.go(-1)">
+								<button type="button" class="btn btn-primary"> 
+									Voltar 
+								</button>
+							</a>
+							<a href="/nota/lista">
+								<button type="button" class="btn btn-default">
+                                    Ir para a lista de notas
+								</button>
+							</a>
+						</div>
+					<?php else: ?>
+						<div class="col-sm-12">
+							<h3 class="text-success text-center">Envio com sucesso!</h3>
+
+                            <a href="javascript:window.history.go(-1)">
+                                <button type="button" class="btn btn-primary">
+                                    Voltar
+                                </button>
+                            </a>
+
+							<a href="/nota/imprime-danfe?nCh=<?php echo $retorno['prot']['0']['chNFe'].'&data='.$data?>">
+								<button type="button" class="btn btn-primary">
+									Imprimir danfe
+								</button>
+							</a>
+
+							<a href="/nota/avulsa">
+								<button type="button" class="btn btn-primary">
+									Enviar danfe por email
+								</button>
+							</a>
+						</div>
+					<?php endif; ?>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</section>
+	

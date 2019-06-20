@@ -2,6 +2,19 @@
     <div class="main">
         <div class="row-fluid">
             <div class="panel-body">
+                <?php if (count($this->flashMessenger()->getMessages())) : ?>
+                    <?php
+                    foreach ($this->flashMessenger()->getMessages() as $value):
+                        $key = key($value);
+                        $message = current($value);
+                        ?>
+                        <div class="alert alert-<?php echo $key ?>">
+                            <button type="button" class="close" data-dismiss="alert" >&times;</button>
+                            <?php echo $message ?>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
                 <div class="widget-header">
                     <h3>
                         Caixa 0<?php echo $nrCaixa; ?> - <?php echo $dtCaixa; ?>

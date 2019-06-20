@@ -27,6 +27,7 @@ use Application\Model\NotaTable;
 use Application\Model\NotaInutilizadaTable;
 use Application\Model\TabelaTable;
 use Application\Model\MercadoriaTable;
+use Application\Model\PedidoTable;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -519,14 +520,857 @@ class NotaController extends AbstractActionController{
 		}
 	}
 
+    /**
+     *
+     * Metódo que realmente ira cadastrar / gerar e enviar a NFE
+     * Utilizado por outros metodos como:  geraNfePedidoAction e geraNfeAction
+     *
+     * @param string|int|null $nrPedido
+     * @param Zend\Stdlib\Parameters $post
+     *
+     */
+	private function _gerarEnviarNfe( $nrPedido = "", $post = null) {
+
+        //array insercao no BD
+        $nfeGe = array();
+
+        //get Post
+        if(empty($post)){
+            $post = $this->getRequest()->getPost();
+        }
+
+        // get the db adapter
+        $sm         = $this->getServiceLocator();
+        $dbAdapter  = $sm->get('Zend\Db\Adapter\Adapter');
+
+        //get session
+        $session    = new Container("orangeSessionContainer");
+        $table      = new notaTable($dbAdapter);
+        $nfe        = new MakeNFe();
+        $nfeTools   = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+
+        //bkp e xml
+        $bkpMail = 'bkp-nfe@bsbgestao.com.br';
+
+        //Iniciar totais
+        $totalISSQN 		= 0;
+        $totalRetISS    	= 0;
+        $totalICMS  		= 0;
+        $totalBcISSQN 		= 0;
+        $totalBCICMS  		= 0;
+        $totalPISISSQN 		= 0;
+        $totalPISICMS 		= 0;
+        $totalCOFINSISSQN	= 0;
+        $totalCOFINSICMS	= 0;
+        $totalNota    		= 0;
+        $totalServ      	= 0;
+        $nfeGe['CD_LOJA']   = $session->cdLoja;
+        $nfeGe['NR_PEDIDO'] = !empty($nrPedido) ? $nrPedido : '0';
+
+        //Copiar CFOP para serviços/Mercadorias
+        $copiarCFOP               =  ($post->get('copiarCFOP')=='S') ;
+
+        //Preencher campos DMED
+        $nfeGe['DMED_NOME'] 	  = $post->get('nome_paciente');
+        $nfeGe['DMED_CPF'] 		  = $post->get('cpf_paciente');
+
+        if($post->get('nascimento_paciente') != "") {
+            $nfeGe['DMED_NASCIMENTO'] = date('Ymd',$post->get('nascimento_paciente'));
+        }
+
+
+        //Dados da NFe (ide)
+        $statement = $dbAdapter->query("SELECT  *
+										FROM TB_NFE_CONFIG
+										WHERE CD_LOJA  = ? ");
+
+        //Recupera parametros de configuração da NFE persitidos no Banco
+        $remetente = $statement->execute(array($session->cdLoja));
+
+        foreach ($remetente as $rem){
+            $cUF            = substr( $rem['CD_IBGE_CIDADE'], 0, 2 ); //codigo numerico do estado
+            $nfeGe['cUF']   = $cUF;
+            $tpImp          = '1'; //0=Sem geração de DANFE;
+                                    // 1=DANFE normal, Retrato;
+                                    //2=DANFE normal, Paisagem;
+                                    //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
+                                    //(o envio de mensagem eletrônica pode ser feita de forma simultânea com a impressão do DANFE;
+                                    //usar o tpImp=5 quando esta for a única forma de disponibilização do DANFE).
+            $tpEmis         = '1'; //1=Emissão normal (não em contingência);
+                                    //2=Contingência FS-IA, com impressão do DANFE em formulário de segurança;
+                                    //3=Contingência SCAN (Sistema de Contingência do Ambiente Nacional);
+                                    //4=Contingência DPEC (Declaração Prévia da Emissão em Contingência);
+                                    //5=Contingência FS-DA, com impressão do DANFE em formulário de segurança;
+                                    //6=Contingência SVC-AN (SEFAZ Virtual de Contingência do AN);
+                                    //7=Contingência SVC-RS (SEFAZ Virtual de Contingência do RS);
+                                    //9=Contingência off-line da NFC-e (as demais opções de contingência são válidas também para a NFC-e);
+
+            //Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de contingência 5 e 9.
+            $nfeGe['tpEmis']    = $tpEmis;
+            $tpAmb              = $rem['TP_AMBIENTE']; //1=Produção; 2=Homologação
+            $nfeGe['tpAmb']     = $tpAmb;
+            $procEmi            = '3'; 	//0=Emissão de NF-e com aplicativo do contribuinte;
+                                        //1=Emissão de NF-e avulsa pelo Fisco;
+                                        //2=Emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco;
+                                        //3=Emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
+
+            $verProc            = '1.00';	//versão do aplicativo emissor
+            $cMunFG             = $rem['CD_IBGE_CIDADE'];
+            $cMunicipio         = $cMunFG;
+            $nfeGe['cMunFG']    = $cMunFG;
+
+            $pCOFINS            = $rem['COFINS_pCOFINS'];
+            $pPIS               = number_format( $rem['PIS_pPIS'], 2, '.', '');
+            $pTributos          = $rem['NR_pTRIBUTOS'];
+            $pTributosEst       = $rem['NR_pTRIBUTOS_EST'];
+            $pTributosMun       = $rem['NR_pTRIBUTOS_MUN'];
+
+            //Dados do emitente
+            $CNPJ               = $rem['NR_CGC'];
+            $CPF                = '00000000000';
+            $xNome              = $rem['DS_RAZAO_SOCIAL'];
+            $xFant              = $rem['DS_FANTASIA'];
+            $IE                 = $rem['NR_INSC_ESTADUAL'];
+            $IEST               = '';
+            $IM                 = $rem['NR_INSC_ESTADUAL'];
+            $CNAE               = $rem['DS_CNAE'];
+            $CRT                = $rem['DS_REGIME_TRIBUTARIO'];
+            $resp               = $nfe->tagemit($CNPJ, $CPF, $xNome, $xFant, $IE, $IEST, $IM, $CNAE, $CRT);
+
+            //Passar para o array do DB
+            $nfeGe['Emi_CNPJCPF']   = $CNPJ;
+            $nfeGe['Emi_xNome']     = $xNome;
+            $nfeGe['Emi_xFant']     = $xFant;
+            $nfeGe['Emi_IEST']      = $IEST;
+            $nfeGe['Emi_IE']        = $IE;
+
+            //endereço do emitente
+            $xLgr                   = $rem['DS_LOGRADOURO'];
+            $nro                    = $rem['DS_NUMERO'];
+            $xCpl                   = $rem['DS_COMPLEMENTO'];
+            $xBairro                = $rem['DS_BAIRRO'];
+            $cMun                   = $rem['CD_IBGE_CIDADE'];
+            $xMun                   = $rem['DS_IBGE_CIDADE'];
+            $UF                     = $rem['CD_UF'];
+            $CEP                    = $rem['NR_CEP'];
+            $cPais                  = '1058';
+            $xPais                  = 'BRASIL';
+            $fone                   = $rem['DS_FONE'];
+            $resp                   = $nfe->tagenderEmit($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF, $CEP, $cPais, $xPais, $fone);
+
+            //Passar para o array do DB
+            $nfeGe['Emi_xLgr']      = $xLgr;
+            $nfeGe['Emi_nro']       = $nro;
+            $nfeGe['Emi_xCpl']      = $xCpl;
+            $nfeGe['Emi_xBairro']   = $xBairro;
+            $nfeGe['Emi_cMun']      = $cMun;
+            $nfeGe['Emi_xMun']      = $xMun;
+            $nfeGe['Emi_UF']        = $UF;
+            $nfeGe['Emi_CEP']       = $CEP;
+            $nfeGe['Emi_fone']      = $fone;
+
+            if ( $post['infNFE'] != '' && $post['DS_PROTOCOLO'] == '' ) {
+                $bReenvia = true;
+                $nr_nota = $post['infNFE'];
+            } else {
+                $bReenvia = false;
+                //Pegar ultima nota
+                if( $rem['NR_NFE'] > 0 )
+                    $nr_nota = $rem['NR_NFE'] + 1;
+                else
+                    $nr_nota = 1;
+            }
+
+            $zeraBC 	= $rem['ST_ZERAR_BC'];
+            $regime 	= $rem['DS_REGIME_TRIBUTARIO'];
+            $remEmail 	= $rem['DS_DANFE_eMail'];
+
+        } //end foreach remetente
+
+        //modelo da NFe 55 ou 65 essa última NFCe
+        $mod            = $post->get('mod');
+        $nfeGe['mod']   = $mod;
+
+        if ( $mod == '55' ) {
+            //para versão 3.10 '2014-02-03T13:22:42-3.00' não informar para NFCe
+            $dhEmi          = str_replace(" ", "T", date("Y-m-d H:i:sP", strtotime($post['dhEmi'])));
+            $nfeGe['dEmi']  = date(FORMATO_ESCRITA_DATA_HORA, strtotime($post['dhEmi']));
+            $indFinal       = '1'; //0=Não; 1=Consumidor final;
+            $indPres        = '9'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
+                                    //1=Operação presencial;
+                                    //2=Operação não presencial, pela Internet;
+                                    //3=Operação não presencial, Teleatendimento;
+                                    //4=NFC-e em operação com entrega a domicílio;
+                                    //9=Operação não presencial, outros.
+        } else {
+            $indFinal = '1'; //0=Não; 1=Consumidor final;
+            $indPres = '1'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
+                            //1=Operação presencial;
+                            //2=Operação não presencial, pela Internet;
+                            //3=Operação não presencial, Teleatendimento;
+                            //4=NFC-e em operação com entrega a domicílio;
+                            //9=Operação não presencial, outros.
+        }
+        $nfeGe['indPres'] = $indPres;
+
+
+        //destinatário
+        $statement = $dbAdapter->query("SELECT TOP 1 	CI.CD_UF,
+														CI.CD_IBGE,
+														CI.DS_MUNICIPIO,
+														C.*
+										FROM TB_CLIENTE C
+										LEFT JOIN TB_CIDADE_IBGE CI ON CI.CD_CIDADE = C.CD_CIDADE
+										WHERE C.CD_CLIENTE  = ? ");
+
+
+        //Parametros do Banco
+        $destinatario = $statement->execute(array($post->get('codCliente')));
+        $destCNPJ = '';
+        $destCPF  = '';
+        foreach( $destinatario as $dest ){
+
+            if ( $post[ 'cfop' ] < 2000 ) {
+                $idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+                $tpNF = '0';
+                $bInterna = True;
+            } elseif( $post[ 'cfop' ] < 3000 ) {
+                $idDest = '2'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+                $tpNF = '0';
+                $bInterna = false;
+            } elseif( $post[ 'cfop' ] < 4000 ) {
+                $idDest = '3'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+                $tpNF = '0';
+                $bInterna = false;
+            } elseif( $post[ 'cfop' ] < 6000 ) {
+                $idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+                $tpNF = '1';
+                $bInterna = True;
+            } elseif( $post[ 'cfop' ] < 7000 ) {
+                $idDest = '2'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+                $tpNF = '1';
+                $bInterna = false;
+            } elseif( $post[ 'cfop' ] < 8000 ) {
+                $idDest = '3'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+                $tpNF = '1';
+                $bInterna = false;
+            }
+
+            //UF do remetente diferente do UF do cliente
+            // Com operação interna
+            if ( $dest['CD_UF'] <> $UF && $idDest < 2 ) {
+                $idDest     = 2;
+                $bInterna   = false;
+            }
+
+            $nfeGe['tpNF']      = $tpNF;
+            $cNF                = date('Ymd'); //numero aleatório da NF
+            $natOp              = $post->get('xNatOp'); //natureza da operação
+            $nfeGe['natOp']     = utf8_decode($natOp);
+            $serie              = '1'; //serie da NFe
+            $nfeGe['serie']     = $serie;
+            $nNF                = $nr_nota;
+            $nfeGe['infNFE']    = $nr_nota;// numero da NFe
+            $dhSaiEnt           = str_replace(" ", "T", date("Y-m-d H:i:sP", strtotime($post['dhEmi']))); //versão 2.00, 3.00 e 3.10
+            $nfeGe['dSaiEnt']   = date(FORMATO_ESCRITA_DATA_HORA, strtotime($post['dhEmi']));
+            $cDV = '4';         //digito verificador
+            $finNFe             = $post->get('finNFe'); //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
+            $nfeGe['finNFe']    = $finNFe;
+            $dhCont             = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
+            $xJust              = ''; //Justificativa da entrada em contingência
+
+            //Numero e versão da NFe (infNFe)
+            //$chave = '35140258716523000119550000000280051760377394';
+            $tempData   = explode("-", $dhEmi);
+            $ano        = $tempData[0] - 2000;
+            $mes        = $tempData[1];
+            $cnpj       = $CNPJ;
+            $chave      = $nfe->montaChave($cUF, $ano, $mes, $cnpj, $mod, $serie, $nNF, $tpEmis, $cNF);
+            $versao     = '4.00';
+            $resp       = $nfe->taginfNFe($chave, $versao);
+
+            $cDV = substr($chave, -1); //digito verificador
+
+            //tag IDE
+            $resp = $nfe->tagide($cUF, $cNF, $natOp, $mod, $serie, $nNF, $dhEmi, $dhSaiEnt, $tpNF, $idDest, $cMunFG, $tpImp, $tpEmis, $cDV, $tpAmb, $finNFe, $indFinal, $indPres, $procEmi, $verProc, $dhCont, $xJust);
+            //Passar para o array DB
+            $nfeGe['DS_NFE_CHAVE'] = $chave;
+
+
+            //refNFe NFe referenciada
+            $refNFe = $post->get('refNFe');
+
+            if($finNFe == 4) { //4=Devolução/Retorno
+                if (!empty($refNFe)) {
+                    $resp = $nfe->tagrefNFe($refNFe);
+                }
+            }
+            //refNFe NFe referenciada
+            //$refNFe = '12345678901234567890123456789012345678901234';
+            //$resp = $nfe->tagrefNFe($refNFe);
+
+            //refNF Nota Fiscal 1A referenciada
+            //$cUF = '35';
+            //$AAMM = '1312';
+            //$CNPJ = '12345678901234';
+            //$mod = '1A';
+            //$serie = '0';
+            //$nNF = '1234';
+            //$resp = $nfe->tagrefNF($cUF, $AAMM, $CNPJ, $mod, $serie, $nNF);
+
+            //NFPref Nota Fiscal Produtor Rural referenciada
+            //$cUF = '35';
+            //$AAMM = '1312';
+            //$CNPJ = '12345678901234';
+            //$CPF = '123456789';
+            //$IE = '123456';
+            //$mod = '1';
+            //$serie = '0';
+            //$nNF = '1234';
+            //$resp = $nfe->tagrefNFP($cUF, $AAMM, $CNPJ, $CPF, $IE, $mod, $serie, $nNF);
+
+            //CTeref CTe referenciada
+            //$refCTe = '12345678901234567890123456789012345678901234';
+            //$resp = $nfe->tagrefCTe($refCTe);
+
+            //ECFref ECF referenciada
+            //$mod = '90';
+            //$nECF = '12243';
+            //$nCOO = '111';
+            //$resp = $nfe->tagrefECF($mod, $nECF, $nCOO);
+
+            $cpfCnpj = str_replace(array('.',',','/','-'),array('','','',''),$post->get('destCNPJ'));
+
+            if( strlen($cpfCnpj) > 11)
+                $destCNPJ = $cpfCnpj;
+            else
+                $destCPF = $cpfCnpj;
+
+
+            $idEstrangeiro  = '';
+            $xNome          = $dest['DS_NOME_RAZAO_SOCIAL'];
+            $indIEDest      = $dest['indIE'];
+            $IE             = $dest['NR_INSC_ESTADUAL'];
+            $ISUF           = $dest['DS_SUFRAMA'];
+            $email          = $dest['DS_EMAIL'];
+
+            if( strlen($dest['NR_INSC_MUNICIPAL']) > 1 ){
+                $IM = $dest['NR_INSC_MUNICIPAL'];
+            }else{
+                $IM = $dest['NR_INSC_ESTADUAL']; //Verificar
+            }
+
+            $resp = $nfe->tagdest($destCNPJ, $destCPF, $idEstrangeiro, $xNome, $indIEDest, $IE, $ISUF, $IM, $email);
+
+
+            //Passar para o array DB
+            $nfeGe['CD_CLIENTE']         = $post->get('codCliente');
+            $nfeGe['Dest_CNPJCPF']       = ( $destCNPJ != '' ? $destCNPJ : $destCPF );
+            $nfeGe['Dest_xNome']         = $xNome;
+            $nfeGe['Dest_IE']            = $IE;
+            $nfeGe['Dest_indIEDest']     = $indIEDest;
+            $nfeGe['Dest_idEstrangeiro'] = $idEstrangeiro;
+
+            //Endereço do destinatário
+            $xLgr                       = $dest['DS_ENDERECO'];
+            $nro                        = $dest['DS_NUMERO'];
+
+            if( $dest['DS_COMPLEMENTO'] )
+                $xCpl = $dest['DS_COMPLEMENTO'];
+            else
+                $xCpl = '';
+
+            $xBairro    = $dest['DS_BAIRRO'];
+            $cMun       = $dest['CD_IBGE'];
+            $xMun       = $dest['DS_MUNICIPIO'];
+            $destUF     = $dest['CD_UF'];
+            $CEP        = str_replace(array('.',',','/','-'),array('','','',''),$dest['NR_CEP']);
+            $cPais      = '1058';
+            $xPais      = 'BRASIL';
+            $fone       = str_replace(array('.',',','/','-','(',')'),array('','','','','',''),$dest['DS_FONE1']);
+            $resp       = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $destUF, $CEP, $cPais, $xPais, $fone);
+
+            //Passar para o array DB
+            $nfeGe['Dest_xLgr']         = utf8_decode($xLgr);
+            $nfeGe['Dest_nro']          = $nro;
+            $nfeGe['Dest_xCpl']         = $xCpl;
+            $nfeGe['Dest_xBairro']      = utf8_decode($xBairro);
+            $nfeGe['Dest_cMun']         = $cMun;
+            $nfeGe['Dest_xMun']         = utf8_decode($xMun);
+            $nfeGe['Dest_UF']           = $UF;
+            $nfeGe['Dest_CEP']          = $CEP;
+            $nfeGe['Dest_fone']         = $fone;
+            $nfeGe['Dest_CD_CIDADE']    = $dest['CD_CIDADE'];
+
+        } // end foreach  destinatarios
+
+        //Identificação do local de retirada (se diferente do emitente)
+            //$CNPJ = '12345678901234';
+            //$CPF = '';
+            //$xLgr = 'Rua Vanish';
+            //$nro = '000';
+            //$xCpl = 'Ghost';
+            //$xBairro = 'Assombrado';
+            //$cMun = '3509502';
+            //$xMun = 'Campinas';
+            //$UF = 'SP';
+            //$resp = $nfe->tagretirada($CNPJ, $CPF, $xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF);
+
+        //Identificação do local de Entrega (se diferente do destinatário)
+            //$CNPJ = '12345678901234';
+            //$CPF = '';
+            //$xLgr = 'Viela Mixuruca';
+            //$nro = '2';
+            //$xCpl = 'Quabrada do malandro';
+            //$xBairro = 'Favela Mau Olhado';
+            //$cMun = '3509502';
+            //$xMun = 'Campinas';
+            //$UF = 'SP';
+            //$resp = $nfe->tagentrega($CNPJ, $CPF, $xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF);
+
+        //Identificação dos autorizados para fazer o download da NFe (somente versão 3.1)
+        //$aAut = array('11111111111111','2222222','33333333333333');
+            //foreach ($aAut as $aut) {
+            //    if (strlen($aut) == 14) {
+            //        $resp = $nfe->tagautXML($aut);
+            //    } else {
+            //        $resp = $nfe->tagautXML('', $aut);
+            //    }
+            //}
+
+
+        //Recupera lista de mercadoria da tabela
+        $cdsMercadoria = $post->get('cdMercadoria');
+        $i = 1;
+        //produtos
+        foreach ($cdsMercadoria as $cdMercadoria) {
+            //Buscar dados da mercadoria
+            $statement = $dbAdapter->query("SELECT TOP 1 M.* , PLP.VL_PRECO_VENDA
+											FROM TB_MERCADORIA AS M
+												LEFT JOIN RL_PRAZO_LIVRO_PRECOS AS PLP ON M.CD_MERCADORIA = PLP.CD_MERCADORIA
+													AND PLP.CD_LIVRO = 1 AND PLP.CD_PRAZO = 1
+											WHERE		M.CD_MERCADORIA = ?");
+            $results = $statement->execute(array($cdMercadoria));
+            $rowResult = $results->current();
+            //$precoPromocao = $rowResult["VL_PRECO_VENDA"];
+
+            if( $bInterna ){
+                $sCFOP  = $rowResult['DS_CFOP_INTERNO'];
+                $picms  = $rowResult['NR_PERCENTUAL_ICMS_INTERNO'];
+            }else{
+                $sCFOP  = $rowResult['DS_CFOP_EXTERNO'];
+                $picms  = $rowResult['NR_PERCENTUAL_ICMS_EXTERNO'];
+            }
+
+            $qtdVendida   = $post->get('qtdVendida-'.$cdMercadoria);
+            $dsMercadoria = $post->get('ds_mercadoria-'.$cdMercadoria);
+            $vlPrecoVenda = $post->get('vl_preco_unitario-'.$cdMercadoria);
+
+            //Montar array da mercadoria
+            $aP[] = array(
+                'nItem'		=> $i,
+                'cProd'     => $cdMercadoria,
+                'cEAN'      => (empty($rowResult["CD_BARRAS"]) ? 'SEM GTIN' : $rowResult["CD_BARRAS"]),
+                'xProd'     => $dsMercadoria,
+                'NCM'       => $rowResult["DS_NCM"],
+                'NVE'       => "",
+                'CEST'      => $rowResult["CEST"],
+                'EXTIPI'    => '',
+                'CFOP'      => ($copiarCFOP) ?  $post->get('cfop') : $sCFOP,
+                'uCom'      => $rowResult["CD_UNIDADE_VENDA"],
+                'qCom'      => number_format( $qtdVendida, 2, '.', ''),
+                'vUnCom'    => number_format( $vlPrecoVenda, 4, '.', ''),
+                'vProd'     => number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
+                'cEANTrib'  => 'SEM GTIN',
+                'uTrib'     => $rowResult["CD_UNIDADE_VENDA"],
+                'qTrib'     => number_format( $qtdVendida, 2, '.', ''),
+                'vUnTrib'   => number_format( $vlPrecoVenda,4, '.', ''),
+                'vFrete'    => '',
+                'vSeg'      => '',
+                'vDesc'     => '',
+                'vOutro'    => '',
+                'indTot'    => '1',
+                'xPed'      => '1',
+                'nItemPed'  => $i,
+                'nFCI'      => ''
+            );
+            //Serviço??? Mercadoria??
+            if( $rowResult['ST_SERVICO'] == 'S' ){
+                $issqn[] = array(
+                    'nItem' 		=> $i,
+                    'vBC' 			=> ( $zeraBC != 'S' ? number_format(  $vlPrecoVenda * $qtdVendida, 2, '.', ''): '0.00' ),
+                    'vAliq' 		=> ( $zeraBC != 'S' ? number_format( $rowResult['VL_ISS'], 2, '.', '' ) : '0.00' ),
+                    'vISSQN' 		=> ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $rowResult['VL_ISS'] )/100, 2, '.', '') : '0.00' ),
+                    'cMunFG' 		=> $cMunicipio,
+                    'CLISTSERV' 	=> substr($rowResult['CLISTSERV'], 0, 2) . '.' . substr($rowResult['CLISTSERV'], 2 ),
+                    'vDeducao' 		=> '', //Verificar
+                    'vOutro' 		=> '', //Verificar
+                    'vDescIncond' 	=> '',
+                    'vDescCond' 	=> '',
+                    'vISSRet' 		=> ( $rowResult['VL_RET_ISS'] > 0 ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $rowResult['VL_RET_ISS'] )/100, 2, '.', '') : '' ),
+                    'indISS' 		=> $rowResult['ISSQN_indISS'],
+                    'cServico' 		=> '',//Verificar
+                    'cMun' 			=> '',//Verificar
+                    'cPais' 		=> '',//Verificar
+                    'nProcesso' 	=> '',//Verificar
+                    'indIncentivo' 	=> $rowResult['ISSQN_indIncentivo']
+                );
+                $totalServ  = $totalServ + ( $vlPrecoVenda * $qtdVendida );
+
+                $nfeMercadoria[] = array(
+                    'infNFE'			=> $nr_nota,
+                    'CD_MERCADORIA'     => $cdMercadoria,
+                    'nItem'				=> $i,
+                    'CD_LOJA'			=> '1',
+                    'xProd'				=> $dsMercadoria,
+                    'qCom'      		=> number_format( $qtdVendida, 2, '.', ''),
+                    'vUnCom'    		=> number_format( $vlPrecoVenda, 4, '.', ''),
+                    'vProd'    	 		=> number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
+                    'ISSQN_cMunFG'		=> $cMunicipio
+                );
+            } else {
+                $nfeMercadoria[] = array(
+                    'infNFE'			=> $nr_nota,
+                    'CD_MERCADORIA'     => $cdMercadoria,
+                    'nItem'				=> $i,
+                    'CD_LOJA'			=> '1',
+                    'xProd'				=> $dsMercadoria,
+                    'qCom'      		=> number_format( $qtdVendida, 2, '.', ''),
+                    'vUnCom'    		=> number_format( $vlPrecoVenda, 4, '.', ''),
+                    'vProd'    	 		=> number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' )
+                );
+
+                //montar array do ICMS de acordo com Situação Tributaria
+                $cst = $rowResult['ICMS_CST'];
+                $BaseCalculo = ( $zeraBC != 'S' ? number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '') : '0.00' );
+                $ValorICMS   = ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $picms)/100, 2, '.', '') : '0.00' );
+                if( $regime == '1' ){
+                    $icms[] = array(
+                        'nItem' 	=> $i,
+                        'orig'		=> $rowResult['ICMS_Orig'],
+                        'CSOSN'		=> $rowResult['DS_CSOSN']
+                    );
+                }else {
+                    if($cst == '00'){
+                        $icms[] = array(
+                            'nItem' 	=> $i,
+                            'orig'		=> $rowResult['ICMS_Orig'],
+                            'cst'		=> '00',
+                            'modBC'		=> $rowResult['ICMS_modBC'],
+                            'vBC'		=> $BaseCalculo,
+                            'pICMS'		=> number_format( $picms, 2, '.', ''),
+                            'vICMS'		=> $ValorICMS
+                        );
+                    }else if($cst == '10'){
+                        $icms[] = array(
+                            'nItem' 	=> $i,
+                            'orig'		=> $rowResult['ICMS_Orig'],
+                            'cst'		=> '10',
+                            'modBC'		=> $rowResult['ICMS_modBC'],
+                            'vBC'		=> $BaseCalculo,
+                            'pICMS'		=> number_format( $picms, 2, '.', ''),
+                            'vICMS'		=> $ValorICMS,
+                            'modBCST'	=> '4', //VERIFICAR
+                            'pMVAST'	=> $rowResult['NR_MVA'],
+                            'pRedBCST'	=> '', //Verificar
+                            'vBCST'		=> '', //Verificar
+                            'pICMSST'	=> '', //Verificar
+                            'vICMSST'	=> ''  //Verificar
+                        );
+                    }else if($cst == '20'){
+                        $icms[] = array(
+                            'nItem' 	=> $i,
+                            'orig'		=> $rowResult['ICMS_Orig'],
+                            'cst'		=> '20',
+                            'modBC'		=> $rowResult['ICMS_modBC'],
+                            'vBC'		=> $BaseCalculo,
+                            'pICMS'		=> number_format( $picms, 2, '.', ''),
+                            'vICMS'		=> $ValorICMS,
+                            'vICMSDeson'=> $rowResult['ICMS_vICMSDeson'],//Verificar
+                            'motDesICMS'=> $rowResult['ICMS_motDesICMS'] //Verificar
+                        );
+                    }else if($cst == '30'){
+                        $icms[] = array(
+                            'nItem' 	=> $i,
+                            'orig'		=> $rowResult['ICMS_Orig'],
+                            'cst'		=> '30',
+                            'modBCST'	=> '4', //VERIFICAR
+                            'pMVAST'	=> $rowResult['NR_MVA'],
+                            'pRedBCST'	=> '', //Verificar
+                            'vBCST'		=> '', //Verificar
+                            'pICMSST'	=> '', //Verificar
+                            'vICMSST'	=> '', //Verificar
+                            'pICMSST'	=> '', //Verificar
+                            'vICMSST'	=> '' //Verificar
+                        );
+                    }else if($cst == '40'){
+                        $icms[] = array(
+                            'nItem' 	=> $i,
+                            'orig'		=> $rowResult['ICMS_Orig'],
+                            'cst'		=> '40',
+                            'vICMSDeson'=> $rowResult['ICMS_vICMSDeson'],//Verificar
+                            'motDesICMS'=> $rowResult['ICMS_motDesICMS'] //Verificar
+                        );
+                    }else if($cst == '51'){
+                        $icms[] = array(
+                            'nItem' 	=> $i,
+                            'orig'		=> $rowResult['ICMS_Orig'],
+                            'cst'		=> '51',
+                            'modBC'		=> $rowResult['ICMS_modBC'],
+                            'pRedBC'	=> '', //Verificar
+                            'vBC'		=> $BaseCalculo,
+                            'pICMS'		=> number_format( $picms, 2, '.', ''),
+                            'vICMSOp'	=> $ValorICMS,
+                            'vICMS'		=> $ValorICMS
+                        );
+                    }else if($cst == '60'){
+
+                    }else if($cst == '70'){
+
+                    }else if($cst == '90'){
+                        $icms[] = array(
+                            'nItem' 	=> $i,
+                            'orig'		=> $rowResult['ICMS_Orig'],
+                            'cst'		=> '51',
+                            'modBC'		=> $rowResult['ICMS_modBC'],
+                        );
+                    }
+                }
+                //Preencher array IPI
+                $nr_ipi = number_format( $rowResult['NR_IPI'], 2, '.', '');
+                if( $nr_ipi > 0 ){
+                    $ipi = array(
+                        'nItem' 	=> $i,
+                        'cst' 		=> $rowResult['IPI_CST'],
+                        'clEnq'	 	=> '',
+                        'cnpjProd'	=> '',
+                        'cSelo'		=> '',
+                        'qSelo'		=> '',
+                        'cEnq'		=> '',
+                        'vBC'		=> number_format( $vlPrecoVenda * $qtdVendida, 2, '.', ''),
+                        'pIPI'		=> $nr_ipi,
+                        'qUnid'		=> '',
+                        'vUnid'		=> '',
+                        'vIPI'		=> number_format( ( $vlPrecoVenda * $qtdVendida ) * $nr_ipi, 2, '.', '')
+                    );
+                }
+                //Preencher array II
+
+            }
+            //Preencher array PIS
+            $pisCST = $rowResult['PIS_CST'];
+            $BaseCalculoPIS = ( $zeraBC != 'S' ? number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '') : '0.00' );
+            $ValorPIS       = ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $pPIS ) / 100, 2, '.', '') : '0.00');
+
+            if( $pisCST == "01" ||
+                $pisCST == "02" ){
+                $pis[] = array(
+                    'nItem'		=> $i,
+                    'cst'		=> $pisCST,
+                    'vBC'		=> $BaseCalculoPIS,
+                    'pPIS'		=> number_format( $pPIS, 2 ),
+                    'vPIS'		=> $ValorPIS,
+                    'qBCProd'	=> '',
+                    'vAliqProd'	=> ''
+                );
+                ( $rowResult['ST_SERVICO'] == 'S' ? $totalPISISSQN = $totalPISISSQN + $ValorPIS : $totalPISICMS = $totalPISICMS + $ValorPIS );
+            }else if( 	$pisCST == "04" ||
+                $pisCST == "05" ||
+                $pisCST == "06" ||
+                $pisCST == "07" ||
+                $pisCST == "08" ||
+                $pisCST == "09" ){
+                $pis[] = array(
+                    'nItem'		=> $i,
+                    'cst'		=> $pisCST
+                );
+            }
+            //Preencher array COFINS
+            $cofinsCST = $rowResult['COFINS_CST'];
+            $BaseCalculoCofins = ( $zeraBC != 'S' ? number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '') : '0.00' );
+            $ValorCofins       = ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $pCOFINS ) / 100, 2, '.', '' ) : '0.00' );
+            if( $cofinsCST == "01" ||
+                $cofinsCST == "01" ){
+                $cofins[] = array(
+                    'nItem' 	=> $i,
+                    'cst' 		=> $cofinsCST,
+                    'vBC' 		=> $BaseCalculoCofins,
+                    'pCOFINS'	=> number_format( $pCOFINS,2, '.', ''),
+                    'vCOFINS' 	=> $ValorCofins,
+                    'qBCProd' 	=> '',
+                    'vAliqProd' => ''
+                );
+                ( $rowResult['ST_SERVICO'] == 'S' ? $totalCOFINSISSQN = $totalCOFINSISSQN + $ValorCofins : $totalCOFINSICMS = $totalCOFINSICMS + $ValorCofins );
+            }else if( 	$cofinsCST == "04" ||
+                $cofinsCST == "05" ||
+                $cofinsCST == "06" ||
+                $cofinsCST == "07" ||
+                $cofinsCST == "08" ||
+                $cofinsCST == "09" ){
+                $cofins[] = array(
+                    'nItem' 	=> $i,
+                    'cst' 		=> $cofinsCST
+                );
+            }
+
+            //Incrementa nItem
+            $i = $i + 1;
+        }
+
+
+        var_dump($post,$nfeGe);
+        exit;
+    }
+
+
+
+    /*
+    * Criar uma nota NFE a partir de um pedido recebido no caixa
+     *
+     * @throws \Exception
+     */
+    public function geraNfePedidoAction(){
+
+        // session
+        $session    = new Container("orangeSessionContainer");
+
+        //variaveis iniciais
+        $erro           = "";
+        $motivo         = "";
+        $arrayProdutos  = array();
+        $retorno        = array();
+
+        //get request
+        $nrPedido   = $this->params()->fromQuery('nrPedido');
+        $post       = $this->getRequest()->getPost();
+
+        // get the db adapter
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+        try {
+            if ((int)$nrPedido > 0) {
+
+                if (!is_numeric($nrPedido)) {
+                    throw  new \Exception("Pedido nº{$nrPedido} inválido!",400);
+                }
+
+                //verifica se existe realmente o pedido
+                $pedidoTable     = new PedidoTable($dbAdapter);
+                $pedidoExistente = $pedidoTable->recuperaPedidoPorNumero($nrPedido,false);
+                if (!$pedidoExistente) {
+                    throw  new \Exception("Pedido nº{$nrPedido} não foi encontrado!",400);
+                }
+
+                //verifica se ja existe nfe gerada para este pedido
+                $notaTable     = new NotaTable($dbAdapter);
+                $notaExistente = $notaTable->recuperaNotaPorNumeroPedido($nrPedido,false);
+                if($notaExistente) {
+                    throw  new \Exception("A nota nº{$notaExistente['infNFE']} já está associada a este pedido nº{$nrPedido}!",400);
+                }
+
+                //Dados da NFe (configuração padrão)
+                $dadosConfiguracaoNF = $notaTable->getConfig($session->cdLoja);
+
+                //Recuperar dados dos produtos incluidos dentro pedido
+                $produtoExistente    =   $pedidoTable->recuperaMercadoriasNumeroPedido($nrPedido);
+
+                //Prepara um objeto Zend\Stdlib\Parameters
+                $post->set('infNFE','');
+                $post->set('nrPedido',$nrPedido);
+                $post->set('DS_PROTOCOLO','');
+                $post->set('copiarCFOP','N');
+                $post->set('nome_paciente',null);
+                $post->set('cpf_paciente',null);
+                $post->set('nascimento_paciente',null);
+                $post->set('codCliente',$pedidoExistente['CD_CLIENTE']);
+
+                $post->set('destNome','SUCESSO DISTRIBUIDORA');
+                $post->set('destCNPJ','04122615000141');
+                $post->set('cfop',"5102");//$dadosConfiguracaoNF['CD_NATUREZA_OPERACAO']
+                $post->set('natOp',"5102");//$dadosConfiguracaoNF['CD_NATUREZA_OPERACAO']
+                $post->set('xNatOp','5102 - Venda dentro do DF');
+                $post->set('mod',"55");  //55 nfe or 65 nfce
+                $post->set('dhEmi',date("d-m-Y"));
+                $post->set('indPag','0');
+                $post->set('finNFe','1');
+                $post->set('refNFe','');
+                $post->set('infadc','Nota fiscal associada ao pedido de número'.$nrPedido);
+
+                foreach ($produtoExistente as $key => $prod) {
+
+                    $codMercadoria      = $prod['CD_MERCADORIA'];
+                    $dscMercadoria      = '0350 - BARBER TRIM MAQUINA  PARA ACABAMENTO';
+                    $qtdVendida         =  $prod['NR_QTDE_VENDIDA'];
+                    $vlPrecoUnitario    =  $prod['VL_TOTAL_LIQUIDO'];
+                    $vlTotal            =  $vlPrecoUnitario * (int) $qtdVendida ;
+
+                    $post->set('ds_mercadoria-'.$codMercadoria,$dscMercadoria);
+                    $post->set('qtdVendida-'.$codMercadoria,$qtdVendida);
+                    $post->set('vl_preco_unitario-'.$codMercadoria,$vlPrecoUnitario);
+                    $post->set('vl_tot-'.$codMercadoria,$vlTotal);
+
+                    array_push($arrayProdutos,$codMercadoria);
+                }
+
+                $post->set('cdMercadoria',$arrayProdutos);
+
+                //Produtos
+                //Pedido 22
+                //Impostos
+
+                $post->set('retPis_bc','0.00'); //'64.00'
+                $post->set('retPis_aliq','0.00');
+                $post->set('retPis_total','0.00');
+
+                $post->set('retCofins_bc','0.00');//'64.00'
+                $post->set('retCofins_aliq','0.00');
+                $post->set('retCofins_total','0.00');
+
+                $post->set('retCsll_bc','0.00');//'64.00'
+                $post->set('retCsll_aliq','0.00');
+                $post->set('retCsll_total','0.00');
+
+                $post->set('retIrrf_bc','0.00');//'64.00'
+                $post->set('retIrrf_aliq','0.00');
+                $post->set('retIrrf_total','0.00');
+
+                $post->set('retPrev_bc','0.00');//'64.00'
+                $post->set('retPrev_aliq','0.00');
+                $post->set('retPrev_total','0.00');
+
+               // $post->set('save','');
+               // $post->set('emitir','');
+
+                //realiza a tentativa de geração e emissão da NFE
+                $retorno = $this->_gerarEnviarNfe($nrPedido,$post);
+
+            } else {
+                throw  new \Exception("Número de pedido inválido ou fornecido incorretamente!",400);
+            }
+        } catch (\Exception $e) {
+            $erro = $e->getMessage();
+        }
+
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(false);
+        $viewModel->setVariable('nrPedido', $nrPedido);
+        $viewModel->setVariable('erro', $erro);
+        $viewModel->setVariable('retorno', $retorno);
+        return $viewModel;
+    }
+
 	/*
-	* Criar nota
+	* Criar uma nota NFE avulsa
 	*/
 	public function geraNfeAction(){
 
-		@$post = $this->getRequest()->getPost();
-		//var_dump($post);
-		//exit;
+        //array insercao no BD
+        $nfeGe = array();
+
+        //get Post
+        @$post = $this->getRequest()->getPost();
+
 		// get the db adapter
         $sm         = $this->getServiceLocator();
         $dbAdapter  = $sm->get('Zend\Db\Adapter\Adapter');
@@ -537,8 +1381,6 @@ class NotaController extends AbstractActionController{
 		$nfe        = new MakeNFe();
 		$nfeTools   = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
 
-		//array insercao no BD
-		$nfeGe = array();
 
 		//bkp e xml
 		$bkpMail = 'bkp-nfe@bsbgestao.com.br';
@@ -709,7 +1551,7 @@ class NotaController extends AbstractActionController{
         $destinatario = $statement->execute(array($post->get('codCliente')));
 		$destCNPJ = '';
 		$destCPF  = '';
-		foreach( $destinatario as $dest ){
+		foreach( $destinatario as $dest ) {
 
 			if ( $post[ 'cfop' ] < 2000 ) {
 				$idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
