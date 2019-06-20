@@ -75,17 +75,17 @@ class ContasReceberTable extends AbstractTableGateway
         }
 
         $select->from(array('R' => $this->table))
-               ->join(array('C' =>'TB_CLIENTE'),'R.CD_CLIENTE = C.CD_CLIENTE', array(), 'left')
+               ->join(array('C' =>'TB_CLIENTE'),'R.CD_CLIENTE = C.CD_CLIENTE', array('DS_NOME_RAZAO_SOCIAL'), 'left')
                ->join(array('T' => 'TB_TIPO_PAGAMENTO'), 'T.CD_TIPO_PAGAMENTO = R.CD_TIPO_PAGAMENTO')
                ->columns(array('R' => 'CD_CLIENTE',
-                            'NR_LANCAMENTO_CR',
-                            'NR_DOCUMENTO_CR',
-                            'VL_DOCUMENTO',
-                            'NR_NOTA',
-                            'EMISSAO' => 'DT_EMISSAO',
-                            'DT_VENCIMENTO',
-                            'CD_CLIENTE',
-                            'DS_EMISSOR',
+                                'NR_LANCAMENTO_CR',
+                                'NR_DOCUMENTO_CR',
+                                'VL_DOCUMENTO',
+                                'NR_NOTA',
+                                'EMISSAO' => 'DT_EMISSAO',
+                                'DT_VENCIMENTO',
+                                'CD_CLIENTE'
+
                             ))
 
             ->where($where)

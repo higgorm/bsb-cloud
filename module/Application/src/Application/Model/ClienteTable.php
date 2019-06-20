@@ -144,6 +144,29 @@ class ClienteTable extends AbstractTableGateway
         return $row;
     }
 
+    public function getClientePorNrCgcCpf($nrCgcCpf)
+    {
+
+        $select = $this->getSql()->select();
+        $select->columns(
+            array('cd_cliente',
+            'ds_nome_razao_social',
+            'ds_fantasia',
+            'tp_cliente',
+            'nr_cgc_cpf',
+            'dt_exclusao',
+        ))
+        ->where(array(
+                'nr_cgc_cpf' => trim($nrCgcCpf),
+                'dt_exclusao' => ''
+        ));
+
+        $rowset = $this->selectWith($select);
+        $row = $rowset->current();
+
+        return $row;
+    }
+
 
     public function save($tableData)
     {
@@ -157,8 +180,8 @@ class ClienteTable extends AbstractTableGateway
 			
             $data = array(
                 "cd_cliente" => $tableData->cd_cliente,
-                "ds_nome_razao_social" => (isset($tableData->ds_nome_razao_social)) ? trim(utf8_decode($tableData->ds_nome_razao_social)) : trim($base->ds_nome_razao_social),
-                "ds_fantasia" => (isset($tableData->ds_fantasia)) ? trim(utf8_decode($tableData->ds_fantasia)) : trim($base->ds_fantasia),
+                "ds_nome_razao_social" => (isset($tableData->ds_nome_razao_social)) ? trim($tableData->ds_nome_razao_social) : trim($base->ds_nome_razao_social),
+                "ds_fantasia" => (isset($tableData->ds_fantasia)) ? trim(($tableData->ds_fantasia)) : trim($base->ds_fantasia),
                 "tp_cliente" => (isset($tableData->tp_cliente)) ? $tableData->tp_cliente : $base->tp_cliente,
                 "ds_fone1" => (isset($tableData->ds_fone1)) ? $tableData->ds_fone1 : $base->ds_fone1,
                 "ds_fone2" => (isset($tableData->ds_fone2)) ? $tableData->ds_fone2 : $base->ds_fone2,
@@ -168,8 +191,8 @@ class ClienteTable extends AbstractTableGateway
                  "st_cartao_fidelidade_entregue" => (isset($tableData->st_cartao_fidelidade_entregue)) ? $tableData->st_cartao_fidelidade_entregue : $base->st_cartao_fidelidade_entregue,
                  "nr_cgc_cpf" => (isset($tableData->nr_cgc_cpf)) ?  str_replace(array('.',',','/','-'),array('','','',''),$tableData->nr_cgc_cpf) : str_replace(array('.',',','/','-'),array('','','',''),$base->nr_cgc_cpf ),
                  "ds_sexo" => (isset($tableData->ds_sexo)) ? $tableData->ds_sexo : $base->ds_sexo,
-                 "ds_endereco" => (isset($tableData->ds_endereco)) ? utf8_decode($tableData->ds_endereco) : $base->ds_endereco,
-                 "ds_bairro" => (isset($tableData->ds_bairro)) ? utf8_decode($tableData->ds_bairro) : $base->ds_bairro,
+                 "ds_endereco" => (isset($tableData->ds_endereco)) ? $tableData->ds_endereco : $base->ds_endereco,
+                 "ds_bairro" => (isset($tableData->ds_bairro)) ? $tableData->ds_bairro : $base->ds_bairro,
                  "cd_cidade" => (isset($tableData->cd_cidade)) ? $tableData->cd_cidade : $base->cd_cidade,
                  "nr_cep" => (isset($tableData->nr_cep)) ? str_replace(array('.',',','/','-'),array('','','',''),$tableData->nr_cep) : $base->nr_cep,
                  "st_empresadogrupo" => (isset($tableData->st_empresadogrupo)) ? $tableData->st_empresadogrupo : $base->st_empresadogrupo,
@@ -185,7 +208,7 @@ class ClienteTable extends AbstractTableGateway
                   "indIE" => (isset($tableData->indIE)) ? $tableData->indIE : $base->indIE,
                   "ds_numero" => (isset($tableData->ds_numero)) ? $tableData->ds_numero : $base->ds_numero,
                   "nr_insc_municipal" => (isset($tableData->nr_insc_municipal)) ? $tableData->nr_insc_municipal : $base->nr_insc_municipal,
-                  "ds_complemento" => (isset($tableData->ds_complemento)) ? utf8_decode($tableData->ds_complemento) : $base->ds_complemento,
+                  "ds_complemento" => (isset($tableData->ds_complemento)) ? $tableData->ds_complemento : $base->ds_complemento,
             );
 			//die(var_dump($data));
 

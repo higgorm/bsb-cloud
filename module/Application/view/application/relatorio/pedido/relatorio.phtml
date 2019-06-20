@@ -18,14 +18,21 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="3"><hr></td>
+                <td colspan="3">
+                    <b>Legenda</b>: <br/>
+                    "C" - Cancelado <br/>
+                    "A" - Aberto <br/>
+                    "F" - Fechado
+                    <hr>
+                </td>
             </tr>
         </table>
         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
             <tr>
-                <td>Nº Pedido</td>
+                <td>Nr. Pedido</td>
                 <td>Data Pedido</td>
                 <td>Cod. Cliente</td>
+                <td>Status</td>
                 <td>Total Bruto</td>
                 <td>Total Liquido</td>
             </tr>
@@ -33,12 +40,15 @@
                     <tr>
                         <td><?php echo $pedido['NR_PEDIDO'] ?></td>
                         <td><?php echo datE('d/m/y', strtotime($pedido['DT_PEDIDO'])); ?></td>
-                        <td><?php echo $pedido['CD_CLIENTE'] ?></td>
-                        <td><?php echo number_format($pedido['VL_TOTAL_BRUTO'],2,",",".") ?></td> <?php $totalPedRec = $totalPedRec + $pedido['VL_TOTAL_BRUTO'] ;?>
-                        <td><?php echo number_format($pedido['VL_TOTAL_LIQUIDO'],2,",",".") ?></td><?php $totalPedRec = $totalPedRec + $pedido['VL_TOTAL_LIQUIDO'] ;?>
+                        <td><?php echo $pedido['CD_CLIENTE']."-".$pedido['DS_NOME_RAZAO_SOCIAL'] ?></td>
+                        <td><?php echo $pedido['ST_PEDIDO'] ?></td>
+                        <td><?php echo number_format($pedido['VL_TOTAL_BRUTO'],2,",",".") ?></td>
+                        <td><?php echo number_format($pedido['VL_TOTAL_LIQUIDO'],2,",",".") ?></td>
+                        <?php $totalPedRec = $totalPedRec + $pedido['VL_TOTAL_LIQUIDO'] ;?>
                     </tr>
                 <?php endforeach; ?>
-            <tr><td></td></tr><tr class="success">
+            <tr><td></td></tr>
+            <tr class="success">
                 <td>Total</td>
                 <td><?php echo number_format($totalPedRec,2,",",".") ?></td>
             </tr>

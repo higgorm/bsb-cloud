@@ -104,17 +104,22 @@ class TabelaTable extends AbstractTableGateway
 		return $results;
 	}
 
-	public function atualiza_cfop( $id, $array ){
-		$sql = new Sql($this->adapter);
-		$update = $sql->update();
-		$update->table('TB_NATUREZA_OPERACAO');
-		$update->set($array);
-		$update->where(array('CD_NATUREZA_OPERACAO' => $id));
+	public function atualiza_cfop( $id, $array ) {
+        try {
 
-		$statement = $sql->prepareStatementForSqlObject($update);
-		$results = $statement->execute();
+            $sql = new Sql($this->adapter);
+            $update = $sql->update();
+            $update->table('TB_NATUREZA_OPERACAO');
+            $update->set($array);
+            $update->where(array('CD_NATUREZA_OPERACAO' => $id));
 
-		return $results;
+            $statement = $sql->prepareStatementForSqlObject($update);
+            $results = $statement->execute();
+            return $results;
+        } catch (Exception $e) {
+            throw new \Exception("Erro ao atualizar o CFOP");
+        }
+
 	}
 
 	public function selectAll_cartao(){

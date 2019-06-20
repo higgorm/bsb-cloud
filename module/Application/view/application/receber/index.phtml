@@ -11,29 +11,29 @@
                 <form class="form-horizontal" id="validation-form" action="/contas-receber/pesquisa" novalidate="novalidate" method="post" role="form">
 
                     <div class="controls">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="text-info">Loja</label>
                             <input type="text" class="form-control" value="<?php echo $loja['ds_loja'] ?>" readonly="readonly"/>
                             <input type="hidden" id="CD_LOJA" name="CD_LOJA" class="form-control" value="<?php echo $loja['cd_loja'] ?>" />
                         </div>
                     </div>
 
-                    <div class="controls">
+                    <!--<div class="controls">
                         <div class="col-md-6">
                             <label class="control-label text-info" for="name">Vendedor</label>
                             <select name="CD_FUNCIONARIO" id="CD_FUNCIONARIO" class="form-control">
                                 <option value="">Selecione...</option>
-                                <?php if($listaFuncionario):?>
-                                    <?php foreach ($listaFuncionario as $funcionario):?>
-                                        <option value="<?php  echo $funcionario['CD_FUNCIONARIO'];?>"<?php if($post['CD_FUNCIONARIO'] == $funcionario['CD_FUNCIONARIO'] ) echo  'selected="selected"' ?>>
-                                            <?php echo $funcionario['DS_FUNCIONARIO'] ?>
+                                <?php /*if($listaFuncionario):*/?>
+                                    <?php /*foreach ($listaFuncionario as $funcionario):*/?>
+                                        <option value="<?php /* echo $funcionario['CD_FUNCIONARIO'];*/?>"<?php /*if($post['CD_FUNCIONARIO'] == $funcionario['CD_FUNCIONARIO'] ) echo  'selected="selected"' */?>>
+                                            <?php /*echo $funcionario['DS_FUNCIONARIO'] */?>
                                         </option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
+                                    <?php /*endforeach */?>
+                                <?php /*endif */?>
                             </select>
                         </div>
-                    </div>
-                    <br>
+                    </div>-->
+
                     <div class="controls">
                         <div class="col-md-4">
                             <label class="control-label text-info" for="name"><?php echo utf8_encode("Nome do Cliente") ?></label>
@@ -42,26 +42,15 @@
                     </div>
 
                     <div class="controls">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label class="control-label text-info" for="nr_cgc_cpf"><?php echo utf8_encode("CPF / CNPJ") ?></label>
                             <input name="NR_CGC_CPF_EMISSOR" id="NR_CGF_CPF" class="form-control" value="<?php echo $post['NR_CGF_CPF']?>" maxlength="255"/>
                         </div>
                     </div>
 
-                    <div class="controls">
-                        <div class="col-md-2">
-                            <label class="control-label text-info" for="name">Faixa de Valores</label>
-                            <input id="minValor" name="minValor"  type="text" class="moeda form-control" value="<?php echo $post['minValor']?>" maxlength="10" />
-                        </div>
-                        <div class="col-md-2">
-                            <label class="control-label text-info" for="name">&nbsp;</label>
-                            <input id="maxValor" name="maxValor" type="text" class="moeda form-control" value="<?php echo $post['maxValor']?>" maxlength="10" />
-                        </div>
-                    </div>
 
-                    <br>
                     <div class="controls">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label class="control-label text-info" for="name">Tipo de pagamento</label>
                             <select name="CD_TIPO_PAGAMENTO" id="CD_TIPO_PAGAMENTO" class="form-control">
                                 <option value="">Selecione...</option>
@@ -86,6 +75,19 @@
 
                     <div class="controls">
                         <div class="col-md-2">
+                            <label class="control-label text-info" for="name">Faixa de Valores</label>
+                            <input id="minValor" name="minValor"  type="text" class="moeda form-control" value="<?php echo $post['minValor']?>" maxlength="10" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label text-info" for="name">&nbsp;</label>
+                            <input id="maxValor" name="maxValor" type="text" class="moeda form-control" value="<?php echo $post['maxValor']?>" maxlength="10" />
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div class="controls">
+                        <div class="col-md-2">
                             <label class="control-label text-info">Número NF</label>
                             <input id="NR_NOTA" name="NR_NOTA" class="dataP form-control" value="<?php echo $post['NR_NOTA']?>" maxlength="7" />
                         </div>
@@ -96,14 +98,14 @@
                     </div>
                     <br>
                     <div class="controls">
-                        <div class="col-md-4" style="padding-right:0px;">
+                        <div class="col-md-4">
                             <label class="control-label text-info" for="name">Período</label>
                             <br><input type="radio" name="rdVencimento" value="0" class="rdAusencia form-vertical" <?php if($post['rdVencimento'] == '0' ) echo  'checked="checked"' ?>>
                             Vencimento
                             &nbsp;<input type="radio" name="rdVencimento" value="1" class="rdAusencia form-vertical" <?php if($post['rdVencimento'] == '1' ) echo  'checked="checked"' ?>>
                             Lançamento
                             <div class="controls">
-                                <div class="col-md-6" >
+                                <div class="col-md-6" style="padding-left:0!important">
                                     <input class="dataP form-control" type="text" id="dtIni" name="dtIni"  value="<?php echo $post['dtIni']?>" maxlength="10">
                                     <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                                 </div>
@@ -118,17 +120,17 @@
 
 
 
-                    <div class="controls">
+                   <!-- <div class="controls">
                         <div class="col-md-4" style="padding-right:0px;">
                             <label class="control-label text-info" for="name">Apenas</label>
-                            <br><input type="radio" name="rdApenas" value="0" class="rdAusencia form-vertical"  <?php if($post['rdApenas'] == '0' ) echo  'checked="checked"' ?>>
+                            <br><input type="radio" name="rdApenas" value="0" class="rdAusencia form-vertical"  <?php /*if($post['rdApenas'] == '0' ) echo  'checked="checked"' */?>>
                             Todos
-                            <br><input type="radio" name="rdApenas" value="1" class="rdAusencia form-vertical" <?php if($post['rdApenas'] == '1' ) echo  'checked="checked"' ?>>
+                            <br><input type="radio" name="rdApenas" value="1" class="rdAusencia form-vertical" <?php /*if($post['rdApenas'] == '1' ) echo  'checked="checked"' */?>>
                             Baixados
-                            <br><input type="radio" name="rdApenas" value="2" class="rdAusencia form-vertical" <?php if($post['rdApenas'] == '2' ) echo  'checked="checked"' ?>>
+                            <br><input type="radio" name="rdApenas" value="2" class="rdAusencia form-vertical" <?php /*if($post['rdApenas'] == '2' ) echo  'checked="checked"' */?>>
                             Abertos
                         </div>
-                    </div>
+                    </div>-->
 
                     <div class="controls">
                         <div class="col-sm-12">
@@ -165,7 +167,7 @@
                                         <th nowrap>Doc/Pedido</th>
                                         <th nowrap>Nota Fiscal</th>
                                         <th nowrap>Cliente</th>
-                                        <th nowrap>Lançamento</th>
+                                        <th nowrap>Data Emissão</th>
                                         <th nowrap>Vencimento</th>
                                         <th nowrap>Valor</th>
                                         <th nowrap>Tipo Pagamento</th>
@@ -189,19 +191,18 @@
                                                  }
                                          ?>
                                           <tr>
-                                                <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
+
                                                 <td align="left"><?php echo $contaReceber->NR_DOCUMENTO_CR ?></td>
                                                 <td align="left"><?php echo $contaReceber->NR_NOTA ?></td>
-                                                <td align="left"><?php echo $contaReceber->CD_CLIENTE.' - '.utf8_encode($contaReceber->DS_EMISSOR) ?></td>
+                                                <td align="left"><?php echo $contaReceber->CD_CLIENTE.' - '.$contaReceber->DS_NOME_RAZAO_SOCIAL ?></td>
                                                 <td align="left"><?php echo $dataFormatadaEmissao ?> </td>
                                                 <td align="left"><?php echo $dataFormatadaVencimento ?> </td>
                                                 <td align="left"><?php echo number_format($contaReceber->VL_DOCUMENTO,2,",",".") ?></td>
                                                 <td align="center"><?php echo utf8_encode($contaReceber->DS_TIPO_PAGAMENTO) ?></td>
                                                 <td  align="center">
-                                                      <a href="/contas-receber/editar?id=<?php echo $contaReceber->NR_LANCAMENTO_CR ?>" ><i class="fa fa-pencil"></i></a> <!--|
-                                            <a href="/cliente/remover?id=<?php echo $cliente->CD_CLIENTE ?>" ><i class="fa fa-trash-o"></i></a>-->
+                                                      <a href="/contas-receber/editar?id=<?php echo $contaReceber->NR_LANCAMENTO_CR ?>" ><i class="fa fa-pencil"></i></a>
                                                 </td>
-                                                </th>
+
                                             </tr>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
@@ -211,7 +212,7 @@
                                         <th nowrap>Doc/Pedido</th>
                                         <th nowrap>Nota Fiscal</th>
                                         <th nowrap>Cliente</th>
-                                        <th nowrap>Lançamento</th>
+                                        <th nowrap>Data Emissão</th>
                                         <th nowrap>Vencimento</th>
                                         <th nowrap>Valor</th>
                                         <th nowrap>Tipo pagamento</th>

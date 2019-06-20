@@ -195,8 +195,11 @@ class MercadoriaController extends AbstractActionController{
 		}
 
         if ($request->isPost()) {
+
+		    $cdMercadoria = $this->getTable()->getNextId() + 1;
+
 			$array = array(
-				'CD_MERCADORIA'					=> $this->getTable()->getNextId() + 1,
+				'CD_MERCADORIA'					=> $cdMercadoria,
 				'DS_MERCADORIA'					=> utf8_decode($post->get('MERCADORIA')),
 				'CD_UNIDADE_VENDA'				=> $unidade,
 				'DS_CFOP_EXTERNO'				=> $post->get('CFOP_EXTERNO'),
@@ -241,7 +244,7 @@ class MercadoriaController extends AbstractActionController{
 			
 			$array = array(
 				'CD_LIVRO'						=> '1',
-				'CD_MERCADORIA'					=> $this->getTable()->getNextId(),
+				'CD_MERCADORIA'					=> $cdMercadoria,
 				'VL_PRECO_COMPRA'				=> ( $post->get('vl_compra') == '' ? 0 : $post->get('vl_compra') ),
 				'VL_PRECO_VENDA'	 			=> $post->get('vl_venda'),
 				'ST_FOLHA_ROSTO'				=> '',
@@ -253,7 +256,7 @@ class MercadoriaController extends AbstractActionController{
 			
 			$array = array(
 				'CD_LIVRO'						=> '1',
-				'CD_MERCADORIA'					=> $this->getTable()->getNextId(),
+				'CD_MERCADORIA'					=> $cdMercadoria,
 				'CD_PRAZO'						=> '1',
 				'VL_PRECO_VENDA'				=> $post->get('vl_venda'),
 				'VL_PRECO_VENDA_PROMOCAO'		=> '0',
@@ -307,6 +310,7 @@ class MercadoriaController extends AbstractActionController{
         $arrMercadoria = $this->getServiceLocator()->get('mercadoria_table')->getComboPrecoServico(
                 $this->getRequest()->getPost()->get('CD_MERCADORIA'));
 
+        array_walk_recursive($arrMercadoria, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
         if (count($arrMercadoria)) {
             echo json_encode(array('result' => 'success', 'data' => $arrMercadoria));
             exit;
@@ -323,7 +327,7 @@ class MercadoriaController extends AbstractActionController{
             $arrParams[$k] = $v;
         }
         $arrPedido = $this->getServiceLocator()->get('mercadoria_table')->pesquisaMercadoriaPorParamentro($arrParams);
-
+        array_walk_recursive($arrPedido, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
         if ($arrPedido) {
             echo json_encode(array('result' => 'success', 'data' => $arrPedido));
             exit;
@@ -342,18 +346,17 @@ class MercadoriaController extends AbstractActionController{
             $dbAdapter->getDriver()->getConnection()->beginTransaction();
             $id = (int) $this->params()->fromQuery('id');
 
-            if ($this->getTable()->remove($id)) {
-                $message = array("success" => "Removido com sucesso");
-            } else {
-                $message = array("error" => "Não foi possível, este registro está em uso!");
-            }
-
+            $this->getTable()->remove($id);
+            $message = array("success" => "Removido com sucesso");
+            $this->flashMessenger()->addMessage($message);
             $dbAdapter->getDriver()->getConnection()->commit();
 
+        } catch (\Exception $e) {
+            $message = array("danger" => "Não foi possível, este registro está em uso!");
             $this->flashMessenger()->addMessage($message);
-            return $this->redirect()->toUrl("index?pg=1");
-        } catch (Exception $e) {
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
+
+        return $this->redirect()->toUrl("index?pg=1");
     }
 }

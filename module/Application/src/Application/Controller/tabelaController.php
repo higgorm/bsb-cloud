@@ -176,7 +176,7 @@ class TabelaController extends AbstractActionController{
 				$stSaida = 'S';
 			}
 			$array = array(
-				'CD_NATUREZA_OPERACAO' 	=> $cfop,
+				'CD_NATUREZA_OPERACAO' 	=> (int)$cfop,
 				'DS_NATUREZA_OPERACAO' 	=> utf8_decode($post->get('DS_NATUREZA_OPERACAO')),
 				'REGIME_ESPECIAL'		=> 'N',
 				'ST_SAIDA'				=> $stSaida,
@@ -205,7 +205,7 @@ class TabelaController extends AbstractActionController{
 		$terminal = false;
 
         if( $request->isPost() ) {
-			$id = $post->get( 'CD_NATUREZA_OPERACAO' );
+			$id = (int)$post->get( 'CD_NATUREZA_OPERACAO' );
 			if( $id < 4000 ){
 				$stSaida = 'N';
 			}else{

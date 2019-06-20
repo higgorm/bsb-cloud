@@ -169,30 +169,37 @@
                 <?php echo $this->formElement($form->get("fechar")) ?>
                 &nbsp;
                 <?php
-                if ($params['data'] >= date('d/m/Y')) {
-                    if (isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
-                        echo $this->formElement($form->get("return"));
+                    if ($params['data'] >= date('d/m/Y')) {
+                        if ((isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') && ( $params['stPedido'] != 'F')) {
+                            echo $this->formElement($form->get("return"));
+                        }
                     }
-                }
                 ?>
                 &nbsp;
                 <?php
-                if ($params['data'] >= date('d/m/Y')) {
-                    if (!isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
-                        echo $this->formElement($form->get("submit"));
-						//echo $this->formElement($form->get("button"));
-						//echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
+                    if ($params['data'] >= date('d/m/Y')) {
+                        if ($dados['ST_CLIENTE_CHEGOU'] != 'S') {
+                            if (!isset($dados['CD_CLIENTE'])) {
+                                echo $this->formElement($form->get("submit"));
+                                //echo $this->formElement($form->get("button"));
+
+                            } else {
+                                echo '&nbsp;<button type="submit" name="submit" class="btn btn-primary bntAgendarAtendimento" onclick="javascript:$(form).attr(\'action\', \'/agenda/agendamento-cliente\').submit();" value="">Salvar agendamento</button>';
+                            }
+                        }
                     }
-                }
                 ?>
                 &nbsp;
                 <?php
-                if ($params['data'] == date('d/m/Y')) {
-                    if ($params['stPedido'] == 'A') {
-                        echo $this->formElement($form->get("atender"));
+                    if ($params['data'] == date('d/m/Y')) {
+                        if ($params['stPedido'] == 'A')  {
+                            if(isset($dados) && $dados['NR_PEDIDO'] == '') {
+                                echo $this->formElement($form->get("atender"));
+                            }
+                        }
                     }
-                }
                 ?>
+
             </div>
         </div>
     </form>
@@ -218,7 +225,7 @@
                 <label class="control-label text-info" for="name">
                     <?php echo utf8_encode("Nome:") ?>
                 </label>
-                <?php $razao = (isset($dados['DS_NOME_RAZAO_SOCIAL'])) ? utf8_encode($dados['DS_NOME_RAZAO_SOCIAL']) : null ?>
+                <?php $razao = (isset($dados['DS_NOME_RAZAO_SOCIAL'])) ? $dados['DS_NOME_RAZAO_SOCIAL'] : null ?>
                 <?php echo $this->formElement($form->get("ds_nome_razao_social")->setAttribute('value', $razao)) ?>
             </div>
         </div>
@@ -342,28 +349,35 @@
                 <?php echo $this->formElement($form->get("fechar")) ?>
                 &nbsp;
                 <?php
-                if ($params['data'] >= date('d/m/Y')) {
-                    if (isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
-                        echo $this->formElement($form->get("return"));
+                    if ($params['data'] >= date('d/m/Y')) {
+                        if ((isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') && ( $params['stPedido'] != 'F')) {
+                            echo $this->formElement($form->get("return"));
+                        }
                     }
-                }
                 ?>
                 &nbsp;
                 <?php
-                if ($params['data'] >= date('d/m/Y')) {
-                    if (!isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
-                        echo $this->formElement($form->get("submit"));
-						//echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
+                    if ($params['data'] >= date('d/m/Y')) {
+                        if ($dados['ST_CLIENTE_CHEGOU'] != 'S') {
+                            if (!isset($dados['CD_CLIENTE'])) {
+                                echo $this->formElement($form->get("submit"));
+                                //echo $this->formElement($form->get("button"));
+
+                            } else {
+                                echo '&nbsp;<button type="submit" name="submit" class="btn btn-primary bntAgendarAtendimento" onclick="javascript:$(form).attr(\'action\', \'/agenda/agendamento-cliente\').submit();" value="">Salvar agendamento</button>';
+                            }
+                        }
                     }
-                }
                 ?>
                 &nbsp;
                 <?php
-                if ($params['data'] == date('d/m/Y')) {
-                    if ($params['stPedido'] == 'A') {
-                        echo $this->formElement($form->get("atender"));
+                    if ($params['data'] == date('d/m/Y')) {
+                        if ($params['stPedido'] == 'A')  {
+                            if(isset($dados) && $dados['NR_PEDIDO'] == '') {
+                                echo $this->formElement($form->get("atender"));
+                            }
+                        }
                     }
-                }
                 ?>
             </div>
         </div>

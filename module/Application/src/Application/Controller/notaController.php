@@ -89,6 +89,9 @@ class NotaController extends AbstractActionController{
 	}
 
 
+    /**
+     * @return ViewModel
+     */
     public function listaInutilizadasAction(){
         // get the db adapter
         $sm = $this->getServiceLocator();
@@ -114,11 +117,12 @@ class NotaController extends AbstractActionController{
         $viewModel->setTerminal(true);
         $viewModel->setVariable('listaNfe', $listaNfe);
 
-        if( $this->params()->fromQuery('error') )
-            $viewModel->setVariable('error', $this->params()->fromQuery('error'));
-        if( $this->params()->fromQuery('success') )
-            $viewModel->setVariable('success', $this->params()->fromQuery('success'));
+        //if( $this->params()->fromQuery('error') )
+       //     $viewModel->setVariable('error', $this->params()->fromQuery('error'));
+        //if( $this->params()->fromQuery('success') )
+        //    $viewModel->setVariable('success', $this->params()->fromQuery('success'));
 
+       // $viewModel->setTemplate("application/nota/lista-inutilizadas.phtml");
         return $viewModel;
     }
 
@@ -163,23 +167,28 @@ class NotaController extends AbstractActionController{
 
 		$viewModel = new ViewModel();
 
-		$nfe    	= new ToolsNFe(getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
-		$modelo 	= $post['modCCe'];
-		$tpAmb  	= $post['tpAmbCCe'];
-		$chave  	= $post['chaveCCe'];
-		$xCorrecao  = $post['xCorrecao'];
-		$nSeqEvento = 1;
+		try{
+            $nfe    	= new ToolsNFe(getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+            $modelo 	= $post['modCCe'];
+            $tpAmb  	= $post['tpAmbCCe'];
+            $chave  	= $post['chaveCCe'];
+            $xCorrecao  = $post['xCorrecao'];
+            $nSeqEvento = 1;
 
-		$aResposta = array();
+            $aResposta = array();
 
-		$nfe->setModelo($modelo);
-		$retorno = $nfe->sefazCCe($chave, $tpAmb, $xCorrecao, $nSeqEvento, $aResposta);
+            $nfe->setModelo($modelo);
+            $retorno = $nfe->sefazCCe($chave, $tpAmb, $xCorrecao, $nSeqEvento, $aResposta);
 
-		if( $aResposta['evento']['0']['nProt'] != ''){
-			$msg = 'sucess=Carta de Correção enviada com sucesso!';
-		}else{
-			$msg = 'error=Erro na Carta de Correção! '.$aResposta['evento']['0']['xMotivo'];
-		}
+            if( $aResposta['evento']['0']['nProt'] != ''){
+                $msg = 'sucess=Carta de Correção enviada com sucesso!';
+            }else{
+                $msg = 'error=Erro na Carta de Correção! '.$aResposta['evento']['0']['xMotivo'];
+            }
+
+        } catch(\Exception $e) {
+            $msg = 'error='.$e->getMessage();
+        }
 
 		return $this->redirect()->toUrl("/nota/lista?".$msg);
 	}
@@ -217,11 +226,6 @@ class NotaController extends AbstractActionController{
                 $nfe->setModelo(55);             //55 nfe - 65 nfce
 
                 $xml = @$nfe->sefazInutiliza($data->nr_serie, $data->nr_inicio, $data->nf_final, $data->ds_justificativa, $tpAmb, $aResposta);
-                //echo '<br><br><PRE>';
-               // var_dump($config,$data,$aResposta);
-               // echo '</PRE><BR>';
-               // exit;
-
 
                 if ( $aResposta['nProt'] != '' &&  $aResposta['cStat']== "102") {
                     $msg = array("success" => "Enviado com sucesso: ". $aResposta['xMotivo']);
@@ -521,18 +525,24 @@ class NotaController extends AbstractActionController{
 	public function geraNfeAction(){
 
 		@$post = $this->getRequest()->getPost();
+		//var_dump($post);
+		//exit;
 		// get the db adapter
-        $sm = $this->getServiceLocator();
-        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $sm         = $this->getServiceLocator();
+        $dbAdapter  = $sm->get('Zend\Db\Adapter\Adapter');
+
         //get session
-        $session = new Container("orangeSessionContainer");
-		$table = new notaTable($dbAdapter);
-		$nfe = new MakeNFe();
-		$nfeTools = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+        $session    = new Container("orangeSessionContainer");
+		$table      = new notaTable($dbAdapter);
+		$nfe        = new MakeNFe();
+		$nfeTools   = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+
 		//array insercao no BD
 		$nfeGe = array();
+
 		//bkp e xml
 		$bkpMail = 'bkp-nfe@bsbgestao.com.br';
+
 		//Iniciar totais
 		$totalISSQN 		= 0;
 		$totalRetISS    	= 0;
@@ -545,13 +555,19 @@ class NotaController extends AbstractActionController{
 		$totalCOFINSICMS	= 0;
 		$totalNota    		= 0;
 		$totalServ      	= 0;
-		$nfeGe['CD_LOJA'] = $session->cdLoja;
+		$nfeGe['CD_LOJA']   = $session->cdLoja;
 		$nfeGe['NR_PEDIDO'] = '0';
+
+		//Copiar CFOP para serviços/Mercadorias
+        $copiarCFOP               =  ($post->get('copiarCFOP')=='S') ;
+
 		//Preencher campos DMED
 		$nfeGe['DMED_NOME'] 	  = $post->get('nome_paciente');
 		$nfeGe['DMED_CPF'] 		  = $post->get('cpf_paciente');
-		if($post->get('nascimento_paciente') != "")
-			$nfeGe['DMED_NASCIMENTO'] = date('Ymd',$post->get('nascimento_paciente'));
+
+		if($post->get('nascimento_paciente') != "") {
+            $nfeGe['DMED_NASCIMENTO'] = date('Ymd',$post->get('nascimento_paciente'));
+        }
 
 		//Dados da NFe (ide)
 		$statement = $dbAdapter->query("SELECT  *
@@ -560,87 +576,89 @@ class NotaController extends AbstractActionController{
 
         //Parametros do Banco
         $remetente = $statement->execute(array($session->cdLoja));
-		foreach($remetente as $rem){
-			$cUF = substr( $rem['CD_IBGE_CIDADE'], 0, 2 ); //codigo numerico do estado
-			$nfeGe['cUF'] = $cUF;
-			$tpImp = '1'; //0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem;
-		              //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
-		              //(o envio de mensagem eletrônica pode ser feita de forma simultânea com a impressão do DANFE;
-		              //usar o tpImp=5 quando esta for a única forma de disponibilização do DANFE).
-			$tpEmis = '1'; //1=Emissão normal (não em contingência);
-		               //2=Contingência FS-IA, com impressão do DANFE em formulário de segurança;
-		               //3=Contingência SCAN (Sistema de Contingência do Ambiente Nacional);
-		               //4=Contingência DPEC (Declaração Prévia da Emissão em Contingência);
-		               //5=Contingência FS-DA, com impressão do DANFE em formulário de segurança;
-		               //6=Contingência SVC-AN (SEFAZ Virtual de Contingência do AN);
-		               //7=Contingência SVC-RS (SEFAZ Virtual de Contingência do RS);
-		               //9=Contingência off-line da NFC-e (as demais opções de contingência são válidas também para a NFC-e);
-		               //Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de contingência 5 e 9.
-			$nfeGe['tpEmis'] = $tpEmis;
-			$tpAmb = $rem['TP_AMBIENTE']; //1=Produção; 2=Homologação
-			$nfeGe['tpAmb'] = $tpAmb;
-			$procEmi = '3'; 	//0=Emissão de NF-e com aplicativo do contribuinte;
-								//1=Emissão de NF-e avulsa pelo Fisco;
-								//2=Emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco;
-								//3=Emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
-			$verProc = '1.00';	//versão do aplicativo emissor
-			$cMunFG  = $rem['CD_IBGE_CIDADE'];
-			$cMunicipio = $cMunFG;
-			$nfeGe['cMunFG'] = $cMunFG;
 
-			$pCOFINS   = $rem['COFINS_pCOFINS'];
-			$pPIS      = number_format( $rem['PIS_pPIS'], 2, '.', '');
-			$pTributos = $rem['NR_pTRIBUTOS'];
-			$pTributosEst = $rem['NR_pTRIBUTOS_EST'];
-			$pTributosMun = $rem['NR_pTRIBUTOS_MUN'];
+		foreach ($remetente as $rem){
+			$cUF            = substr( $rem['CD_IBGE_CIDADE'], 0, 2 ); //codigo numerico do estado
+			$nfeGe['cUF']   = $cUF;
+			$tpImp          = '1'; //0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem;
+                                  //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
+                                  //(o envio de mensagem eletrônica pode ser feita de forma simultânea com a impressão do DANFE;
+                                  //usar o tpImp=5 quando esta for a única forma de disponibilização do DANFE).
+			$tpEmis         = '1'; //1=Emissão normal (não em contingência);
+                                   //2=Contingência FS-IA, com impressão do DANFE em formulário de segurança;
+                                   //3=Contingência SCAN (Sistema de Contingência do Ambiente Nacional);
+                                   //4=Contingência DPEC (Declaração Prévia da Emissão em Contingência);
+                                   //5=Contingência FS-DA, com impressão do DANFE em formulário de segurança;
+                                   //6=Contingência SVC-AN (SEFAZ Virtual de Contingência do AN);
+                                   //7=Contingência SVC-RS (SEFAZ Virtual de Contingência do RS);
+                                   //9=Contingência off-line da NFC-e (as demais opções de contingência são válidas também para a NFC-e);
+                                   //Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de contingência 5 e 9.
+			$nfeGe['tpEmis']    = $tpEmis;
+			$tpAmb              = $rem['TP_AMBIENTE']; //1=Produção; 2=Homologação
+			$nfeGe['tpAmb']     = $tpAmb;
+			$procEmi            = '3'; 	//0=Emissão de NF-e com aplicativo do contribuinte;
+                                        //1=Emissão de NF-e avulsa pelo Fisco;
+                                        //2=Emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco;
+                                        //3=Emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
+			$verProc            = '1.00';	//versão do aplicativo emissor
+			$cMunFG             = $rem['CD_IBGE_CIDADE'];
+			$cMunicipio         = $cMunFG;
+			$nfeGe['cMunFG']    = $cMunFG;
+
+			$pCOFINS            = $rem['COFINS_pCOFINS'];
+			$pPIS               = number_format( $rem['PIS_pPIS'], 2, '.', '');
+			$pTributos          = $rem['NR_pTRIBUTOS'];
+			$pTributosEst       = $rem['NR_pTRIBUTOS_EST'];
+			$pTributosMun       = $rem['NR_pTRIBUTOS_MUN'];
 
 			//Dados do emitente
-			$CNPJ = $rem['NR_CGC'];
-			$CPF = '00000000000';
-			$xNome = $rem['DS_RAZAO_SOCIAL'];
-			$xFant = $rem['DS_FANTASIA'];
-			$IE = $rem['NR_INSC_ESTADUAL'];
-			$IEST = '';
-			$IM = $rem['NR_INSC_ESTADUAL'];
-			$CNAE = $rem['DS_CNAE'];
-			$CRT = $rem['DS_REGIME_TRIBUTARIO'];
-			$resp = $nfe->tagemit($CNPJ, $CPF, $xNome, $xFant, $IE, $IEST, $IM, $CNAE, $CRT);
+			$CNPJ               = $rem['NR_CGC'];
+			$CPF                = '00000000000';
+			$xNome              = $rem['DS_RAZAO_SOCIAL'];
+			$xFant              = $rem['DS_FANTASIA'];
+			$IE                 = $rem['NR_INSC_ESTADUAL'];
+			$IEST               = '';
+			$IM                 = $rem['NR_INSC_ESTADUAL'];
+			$CNAE               = $rem['DS_CNAE'];
+			$CRT                = $rem['DS_REGIME_TRIBUTARIO'];
+			$resp               = $nfe->tagemit($CNPJ, $CPF, $xNome, $xFant, $IE, $IEST, $IM, $CNAE, $CRT);
+
 			//Passar para o array do DB
-			$nfeGe['Emi_CNPJCPF'] = $CNPJ;
-			$nfeGe['Emi_xNome'] = $xNome;
-			$nfeGe['Emi_xFant'] = $xFant;
-			$nfeGe['Emi_IEST'] = $IEST;
-			$nfeGe['Emi_IE'] = $IE;
+			$nfeGe['Emi_CNPJCPF']   = $CNPJ;
+			$nfeGe['Emi_xNome']     = $xNome;
+			$nfeGe['Emi_xFant']     = $xFant;
+			$nfeGe['Emi_IEST']      = $IEST;
+			$nfeGe['Emi_IE']        = $IE;
 
 			//endereço do emitente
-			$xLgr = $rem['DS_LOGRADOURO'];
-			$nro = $rem['DS_NUMERO'];
-			$xCpl = $rem['DS_COMPLEMENTO'];
-			$xBairro = $rem['DS_BAIRRO'];
-			$cMun = $rem['CD_IBGE_CIDADE'];
-			$xMun = $rem['DS_IBGE_CIDADE'];
-			$UF = $rem['CD_UF'];
-			$CEP = $rem['NR_CEP'];
-			$cPais = '1058';
-			$xPais = 'BRASIL';
-			$fone = $rem['DS_FONE'];
+			$xLgr       = $rem['DS_LOGRADOURO'];
+			$nro        = $rem['DS_NUMERO'];
+			$xCpl       = $rem['DS_COMPLEMENTO'];
+			$xBairro    = $rem['DS_BAIRRO'];
+			$cMun       = $rem['CD_IBGE_CIDADE'];
+			$xMun       = $rem['DS_IBGE_CIDADE'];
+			$UF         = $rem['CD_UF'];
+			$CEP        = $rem['NR_CEP'];
+			$cPais      = '1058';
+			$xPais      = 'BRASIL';
+			$fone       = $rem['DS_FONE'];
+			$resp       = $nfe->tagenderEmit($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF, $CEP, $cPais, $xPais, $fone);
 
-			$resp = $nfe->tagenderEmit($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF, $CEP, $cPais, $xPais, $fone);
 			//Passar para o array do DB
-			$nfeGe['Emi_xLgr'] = $xLgr;
-			$nfeGe['Emi_nro'] = $nro;
-			$nfeGe['Emi_xCpl'] = $xCpl;
-			$nfeGe['Emi_xBairro'] = $xBairro;
-			$nfeGe['Emi_cMun'] = $cMun;
-			$nfeGe['Emi_xMun'] = $xMun;
-			$nfeGe['Emi_UF'] = $UF;
-			$nfeGe['Emi_CEP'] = $CEP;
-			$nfeGe['Emi_fone'] = $fone;
+			$nfeGe['Emi_xLgr']      = $xLgr;
+			$nfeGe['Emi_nro']       = $nro;
+			$nfeGe['Emi_xCpl']      = $xCpl;
+			$nfeGe['Emi_xBairro']   = $xBairro;
+			$nfeGe['Emi_cMun']      = $cMun;
+			$nfeGe['Emi_xMun']      = $xMun;
+			$nfeGe['Emi_UF']        = $UF;
+			$nfeGe['Emi_CEP']       = $CEP;
+			$nfeGe['Emi_fone']      = $fone;
 
-			if( $post['infNFE'] != '' && $post['DS_PROTOCOLO'] == '' ){
+			if ( $post['infNFE'] != '' && $post['DS_PROTOCOLO'] == '' ) {
 				$bReenvia = True;
 				$nr_nota = $post['infNFE'];
-			}else{
+			} else {
 				$bReenvia = False;
 				//Pegar ultima nota
 				if( $rem['NR_NFE'] > 0 )
@@ -654,9 +672,10 @@ class NotaController extends AbstractActionController{
 			$remEmail 	= $rem['DS_DANFE_eMail'];
 
 		}
-		$mod = '55';//$post->get('mod'); //modelo da NFe 55 ou 65 essa última NFCe
-		$nfeGe['mod'] = $mod;
-		if( $mod == '55' ){
+		$mod            = $post->get('mod'); //modelo da NFe 55 ou 65 essa última NFCe
+		$nfeGe['mod']   = $mod;
+
+		if ( $mod == '55' ) {
 			$dhEmi = str_replace(" ", "T", date("Y-m-d H:i:sP", strtotime($post['dhEmi'])));//para versão 3.10 '2014-02-03T13:22:42-3.00' não informar para NFCe
 			$nfeGe['dEmi'] = date(FORMATO_ESCRITA_DATA_HORA, strtotime($post['dhEmi']));
 			$indFinal = '1'; //0=Não; 1=Consumidor final;
@@ -666,7 +685,7 @@ class NotaController extends AbstractActionController{
 							//3=Operação não presencial, Teleatendimento;
 							//4=NFC-e em operação com entrega a domicílio;
 							//9=Operação não presencial, outros.
-		}else{
+		} else {
 			$indFinal = '1'; //0=Não; 1=Consumidor final;
 			$indPres = '1'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
 							//1=Operação presencial;
@@ -692,62 +711,64 @@ class NotaController extends AbstractActionController{
 		$destCPF  = '';
 		foreach( $destinatario as $dest ){
 
-			if( $post[ 'cfop' ] < 2000 ){
+			if ( $post[ 'cfop' ] < 2000 ) {
 				$idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 				$tpNF = '0';
 				$bInterna = True;
-			}elseif( $post[ 'cfop' ] < 3000 ){
+			} elseif( $post[ 'cfop' ] < 3000 ) {
 				$idDest = '2'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 				$tpNF = '0';
 				$bInterna = False;
-			}elseif( $post[ 'cfop' ] < 4000 ){
+			} elseif( $post[ 'cfop' ] < 4000 ) {
 				$idDest = '3'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 				$tpNF = '0';
 				$bInterna = False;
-			}elseif( $post[ 'cfop' ] < 6000 ){
+			} elseif( $post[ 'cfop' ] < 6000 ) {
 				$idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 				$tpNF = '1';
 				$bInterna = True;
-			}elseif( $post[ 'cfop' ] < 7000 ){
+			} elseif( $post[ 'cfop' ] < 7000 ) {
 				$idDest = '2'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 				$tpNF = '1';
 				$bInterna = False;
-			}elseif( $post[ 'cfop' ] < 8000 ){
+			} elseif( $post[ 'cfop' ] < 8000 ) {
 				$idDest = '3'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 				$tpNF = '1';
 				$bInterna = False;
 			}
 
+			//UF do remetente diferente do UF do cliente
+            // Com operação interna
 			if( $dest['CD_UF'] <> $UF && $idDest < 2 ){
 				$idDest = 2;
 				$bInterna = False;
 			}
 
-			$nfeGe['tpNF'] = $tpNF;
-			$cNF = date('Ymd'); //numero aleatório da NF
-			$natOp = $post->get('xNatOp'); //natureza da operação
-			$nfeGe['natOp'] = utf8_decode($natOp);
-			$serie = '1'; //serie da NFe
-			$nfeGe['serie'] = $serie;
-			$nNF = $nr_nota;
-			$nfeGe['infNFE'] = $nr_nota;// numero da NFe
-			$dhSaiEnt = str_replace(" ", "T", date("Y-m-d H:i:sP", strtotime($post['dhEmi']))); //versão 2.00, 3.00 e 3.10
-			$nfeGe['dSaiEnt'] = date(FORMATO_ESCRITA_DATA_HORA, strtotime($post['dhEmi']));
-			$cDV = '4'; //digito verificador
-			$finNFe = $post->get('finNFe'); //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
-			$nfeGe['finNFe'] = $finNFe;
-			$dhCont = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
-			$xJust = ''; //Justificativa da entrada em contingência
+			$nfeGe['tpNF']      = $tpNF;
+			$cNF                = date('Ymd'); //numero aleatório da NF
+			$natOp              = $post->get('xNatOp'); //natureza da operação
+			$nfeGe['natOp']     = utf8_decode($natOp);
+			$serie              = '1'; //serie da NFe
+			$nfeGe['serie']     = $serie;
+			$nNF                = $nr_nota;
+			$nfeGe['infNFE']    = $nr_nota;// numero da NFe
+			$dhSaiEnt           = str_replace(" ", "T", date("Y-m-d H:i:sP", strtotime($post['dhEmi']))); //versão 2.00, 3.00 e 3.10
+			$nfeGe['dSaiEnt']   = date(FORMATO_ESCRITA_DATA_HORA, strtotime($post['dhEmi']));
+			$cDV = '4';         //digito verificador
+			$finNFe             = $post->get('finNFe'); //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
+			$nfeGe['finNFe']    = $finNFe;
+			$dhCont             = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
+			$xJust              = ''; //Justificativa da entrada em contingência
 
 			//Numero e versão da NFe (infNFe)
 			//$chave = '35140258716523000119550000000280051760377394';
-			$tempData = explode("-", $dhEmi);
-			$ano = $tempData[0] - 2000;
-			$mes = $tempData[1];
-			$cnpj = $CNPJ;
-			$chave = $nfe->montaChave($cUF, $ano, $mes, $cnpj, $mod, $serie, $nNF, $tpEmis, $cNF);
-			$versao = '4.00';
-			$resp = $nfe->taginfNFe($chave, $versao);
+			$tempData   = explode("-", $dhEmi);
+			$ano        = $tempData[0] - 2000;
+			$mes        = $tempData[1];
+			$cnpj       = $CNPJ;
+			$chave      = $nfe->montaChave($cUF, $ano, $mes, $cnpj, $mod, $serie, $nNF, $tpEmis, $cNF);
+			$versao     = '4.00';
+			$resp       = $nfe->taginfNFe($chave, $versao);
 
 			$cDV = substr($chave, -1); //digito verificador
 
@@ -805,54 +826,62 @@ class NotaController extends AbstractActionController{
 				$destCNPJ = $cpfCnpj;
 			else
 				$destCPF = $cpfCnpj;
-			$idEstrangeiro = '';
-			$xNome = $dest['DS_NOME_RAZAO_SOCIAL'];
-			$indIEDest = $dest['indIE'];
-			$IE = $dest['NR_INSC_ESTADUAL'];
-			$ISUF = $dest['DS_SUFRAMA'];
+
+
+			$idEstrangeiro  = '';
+			$xNome          = $dest['DS_NOME_RAZAO_SOCIAL'];
+			$indIEDest      = $dest['indIE'];
+			$IE             = $dest['NR_INSC_ESTADUAL'];
+			$ISUF           = $dest['DS_SUFRAMA'];
+            $email          = $dest['DS_EMAIL'];
+
 			if( strlen($dest['NR_INSC_MUNICIPAL']) > 1 ){
 				$IM = $dest['NR_INSC_MUNICIPAL'];
 			}else{
 				$IM = $dest['NR_INSC_ESTADUAL']; //Verificar
 			}
-			$email = $dest['DS_EMAIL'];
 
 			$resp = $nfe->tagdest($destCNPJ, $destCPF, $idEstrangeiro, $xNome, $indIEDest, $IE, $ISUF, $IM, $email);
+
+
 			//Passar para o array DB
-			$nfeGe['CD_CLIENTE'] = $post->get('codCliente');
-			$nfeGe['Dest_CNPJCPF'] = ( $destCNPJ != '' ? $destCNPJ : $destCPF );
-			$nfeGe['Dest_xNome'] = $xNome;
-			$nfeGe['Dest_IE'] = $IE;
-			$nfeGe['Dest_indIEDest'] = $indIEDest;
+			$nfeGe['CD_CLIENTE']         = $post->get('codCliente');
+			$nfeGe['Dest_CNPJCPF']       = ( $destCNPJ != '' ? $destCNPJ : $destCPF );
+			$nfeGe['Dest_xNome']         = $xNome;
+			$nfeGe['Dest_IE']            = $IE;
+			$nfeGe['Dest_indIEDest']     = $indIEDest;
 			$nfeGe['Dest_idEstrangeiro'] = $idEstrangeiro;
 
 			//Endereço do destinatário
-			$xLgr = $dest['DS_ENDERECO'];
-			$nro = $dest['DS_NUMERO'];
+			$xLgr                       = $dest['DS_ENDERECO'];
+			$nro                        = $dest['DS_NUMERO'];
+
 			if( $dest['DS_COMPLEMENTO'] )
 				$xCpl = $dest['DS_COMPLEMENTO'];
 			else
 				$xCpl = '';
-			$xBairro = $dest['DS_BAIRRO'];
-			$cMun = $dest['CD_IBGE'];
-			$xMun = $dest['DS_MUNICIPIO'];
-			$destUF = $dest['CD_UF'];
-			$CEP = str_replace(array('.',',','/','-'),array('','','',''),$dest['NR_CEP']);
-			$cPais = '1058';
-			$xPais = 'BRASIL';
-			$fone = str_replace(array('.',',','/','-','(',')'),array('','','','','',''),$dest['DS_FONE1']);
-			$resp = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $destUF, $CEP, $cPais, $xPais, $fone);
+
+			$xBairro    = $dest['DS_BAIRRO'];
+			$cMun       = $dest['CD_IBGE'];
+			$xMun       = $dest['DS_MUNICIPIO'];
+			$destUF     = $dest['CD_UF'];
+			$CEP        = str_replace(array('.',',','/','-'),array('','','',''),$dest['NR_CEP']);
+			$cPais      = '1058';
+			$xPais      = 'BRASIL';
+			$fone       = str_replace(array('.',',','/','-','(',')'),array('','','','','',''),$dest['DS_FONE1']);
+			$resp       = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $destUF, $CEP, $cPais, $xPais, $fone);
+
 			//Passar para o array DB
-			$nfeGe['Dest_xLgr'] = utf8_decode($xLgr);
-			$nfeGe['Dest_nro'] = $nro;
-			$nfeGe['Dest_xCpl'] = $xCpl;
-			$nfeGe['Dest_xBairro'] = utf8_decode($xBairro);
-			$nfeGe['Dest_cMun'] = $cMun;
-			$nfeGe['Dest_xMun'] = utf8_decode($xMun);
-			$nfeGe['Dest_UF'] = $UF;
-			$nfeGe['Dest_CEP'] = $CEP;
-			$nfeGe['Dest_fone'] = $fone;
-			$nfeGe['Dest_CD_CIDADE'] = $dest['CD_CIDADE'];
+			$nfeGe['Dest_xLgr']         = utf8_decode($xLgr);
+			$nfeGe['Dest_nro']          = $nro;
+			$nfeGe['Dest_xCpl']         = $xCpl;
+			$nfeGe['Dest_xBairro']      = utf8_decode($xBairro);
+			$nfeGe['Dest_cMun']         = $cMun;
+			$nfeGe['Dest_xMun']         = utf8_decode($xMun);
+			$nfeGe['Dest_UF']           = $UF;
+			$nfeGe['Dest_CEP']          = $CEP;
+			$nfeGe['Dest_fone']         = $fone;
+			$nfeGe['Dest_CD_CIDADE']    = $dest['CD_CIDADE'];
 		}
 
 		//Identificação do local de retirada (se diferente do emitente)
@@ -902,16 +931,19 @@ class NotaController extends AbstractActionController{
             $results = $statement->execute(array($cdMercadoria));
             $rowResult = $results->current();
             //$precoPromocao = $rowResult["VL_PRECO_VENDA"];
+
 			if( $bInterna ){
-				$sCFOP = $rowResult['DS_CFOP_INTERNO'];
+				$sCFOP  = $rowResult['DS_CFOP_INTERNO'];
 				$picms  = $rowResult['NR_PERCENTUAL_ICMS_INTERNO'];
 			}else{
-				$sCFOP = $rowResult['DS_CFOP_EXTERNO'];
+				$sCFOP  = $rowResult['DS_CFOP_EXTERNO'];
 				$picms  = $rowResult['NR_PERCENTUAL_ICMS_EXTERNO'];
 			}
+
 			$qtdVendida   = $post->get('qtdVendida-'.$cdMercadoria);
 			$dsMercadoria = $post->get('ds_mercadoria-'.$cdMercadoria);
 			$vlPrecoVenda = $post->get('vl_preco_unitario-'.$cdMercadoria);
+
 			//Montar array da mercadoria
 			$aP[] = array(
 				'nItem'		=> $i,
@@ -922,7 +954,7 @@ class NotaController extends AbstractActionController{
 				'NVE'       => "",
 				'CEST'      => $rowResult["CEST"],
 				'EXTIPI'    => '',
-				'CFOP'      => $sCFOP,
+				'CFOP'      => ($copiarCFOP) ?  $post->get('cfop') : $sCFOP,
 				'uCom'      => $rowResult["CD_UNIDADE_VENDA"],
 				'qCom'      => number_format( $qtdVendida, 2, '.', ''),
 				'vUnCom'    => number_format( $vlPrecoVenda, 4, '.', ''),
@@ -974,7 +1006,7 @@ class NotaController extends AbstractActionController{
 					'vProd'    	 		=> number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
 					'ISSQN_cMunFG'		=> $cMunicipio
 				);
-			}else{
+			} else {
 				$nfeMercadoria[] = array(
 					'infNFE'			=> $nr_nota,
 					'CD_MERCADORIA'     => $cdMercadoria,
@@ -1766,21 +1798,27 @@ class NotaController extends AbstractActionController{
 		$chave = (string) $this->params()->fromQuery('nCh');
 		$data  = (string) $this->params()->fromQuery('data');
 
-		$nfe = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+		try {
+            $nfe = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
 
-		$xmlProt = getcwd() ."/public/clientes/".$session->cdBase."/NFe/enviadas/aprovadas/". $data ."/".$chave."-protNFe.xml";
-		// Uso da nomeclatura '-danfe.pdf' para facilitar a diferenciação entre PDFs DANFE e DANFCE salvos na mesma pasta...
-		$pdfDanfe = getcwd() ."/public/clientes/".$session->cdBase."/NFe/PDF/". $data ."/".$chave."-danfe.pdf";
-		if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $data .'\\' ))
-			@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $data .'\\');
+            $xmlProt = getcwd() ."/public/clientes/".$session->cdBase."/NFe/enviadas/aprovadas/". $data ."/".$chave."-protNFe.xml";
+            // Uso da nomeclatura '-danfe.pdf' para facilitar a diferenciação entre PDFs DANFE e DANFCE salvos na mesma pasta...
+            $pdfDanfe = getcwd() ."/public/clientes/".$session->cdBase."/NFe/PDF/". $data ."/".$chave."-danfe.pdf";
+            if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $data .'\\' ))
+                @mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $data .'\\');
 
-		$docxml = FilesFolders::readFile($xmlProt);
-		$danfe = new Danfe($docxml, 'P', 'A4', $nfe->aConfig['aDocFormat']->pathLogoFile, 'I', '');
-		$id = $danfe->montaDANFE();
-		$salva = $danfe->printDANFE($pdfDanfe, 'F'); //Salva o PDF na pasta
-		$abre = $danfe->printDANFE("{$id}-danfe.pdf", 'D'); //Abre o PDF no Navegador
+            $docxml = FilesFolders::readFile($xmlProt);
+            $danfe = new Danfe($docxml, 'P', 'A4', $nfe->aConfig['aDocFormat']->pathLogoFile, 'I', '');
+            $id = $danfe->montaDANFE();
+            $salva = $danfe->printDANFE($pdfDanfe, 'F'); //Salva o PDF na pasta
+            $abre = $danfe->printDANFE("{$id}-danfe.pdf", 'D'); //Abre o PDF no Navegador
 
-		Return true;
+        } catch(\Exception $e){
+            $msg = 'error='.$e->getMessage();
+            return $this->redirect()->toUrl("/nota/lista?".$msg);
+        }
+
+        return true;
 	}
 
 	//Função apenas para notas não enviadas
@@ -1849,22 +1887,32 @@ class NotaController extends AbstractActionController{
 
 		$nfe->setModelo($modelo);
 
-		$retorno = $nfe->sefazCancela($chave, $tpAmb, $xJust, $nProt, $aResposta);
+		try {
+            $retorno = $nfe->sefazCancela($chave, $tpAmb, $xJust, $nProt, $aResposta);
 
-		if( $aResposta['evento']['0']['nProt'] != ''){
-			$array['DT_CANCELA_DATA'] = date('Ymd');
-			$array['DS_CANCELA_PROTOCOLO'] = $aResposta['evento']['0']['nProt'];
+            if( $aResposta['evento']['0']['nProt'] != ''){
+                $array['DT_CANCELA_DATA'] = date('Ymd');
+                $array['DS_CANCELA_PROTOCOLO'] = $aResposta['evento']['0']['nProt'];
 
-			$table->atualiza_nota($chave, $array);
+                $table->atualiza_nota($chave, $array);
 
-			$msg = 'sucess=Nota cancelada com sucesso!';
-		}else{
-			$msg = 'error=Erro no cancelamento de nota! '.$aResposta['evento']['0']['xMotivo'];
-		}
+                $msg = 'sucess=Nota cancelada com sucesso!';
+            }else{
+                $msg = 'error=Erro no cancelamento de nota! '.$aResposta['evento']['0']['xMotivo'];
+            }
+        } catch(\Exception $e) {
+            $msg = 'error='.$e->getMessage();
+        }
 
 		return $this->redirect()->toUrl("/nota/lista?".$msg);
 	}
 
+    /**
+     * @param $chave
+     * @param array $email
+     * @param $dataemis
+     * @return bool
+     */
 	public function enviaMail($chave, $email = array (), $dataemis){
 
 		//get session
@@ -1891,12 +1939,15 @@ class NotaController extends AbstractActionController{
 			$nfe->enviaMail($pathXml, $aMails, $templateFile, $comPdf, $pathPdf);
 			//echo "DANFE enviada com sucesso!!!";
 			return true;
-		} catch ( Exception $e/*NFePHP\Common\Exception\RuntimeException $e*/) { //Essa exception está atrapalhando o fluxo caso email errado
+		} catch ( \Exception $e/*NFePHP\Common\Exception\RuntimeException $e*/) { //Essa exception está atrapalhando o fluxo caso email errado
 			//echo $e->getMessage();
 			return false;
 		}
 	}
 
+    /**
+     * @return \Zend\Http\Response
+     */
 	public function sendAction(){
 
 		@$post = @$this->getRequest()->getPost();
@@ -1905,9 +1956,14 @@ class NotaController extends AbstractActionController{
 		$email = $post->get('email');
 		$dataemis = $post->get('dataemis');
 
-		$this->enviaMail( $chave, array($email), $dataemis );
+		try {
+            $this->enviaMail( $chave, array($email), $dataemis );
+            $msg = "success=Email enviado!";
+        } catch ( \Exception $e) {
+            $msg = "error=". $e->getMessage();
+        }
 
-		return $this->redirect()->toUrl("/nota/lista?success=Email enviado!");
+		return $this->redirect()->toUrl("/nota/lista?".$msg);
 	}
 
 	public function abrirAction(){
@@ -1949,6 +2005,11 @@ class NotaController extends AbstractActionController{
 
 	}
 
+    /**
+     * Usado para baixar notas no arquivo XML, na tela de listagem na nota
+     *
+     * @return \Zend\Http\Response|\Zend\Http\Response\Stream
+     */
 	public function saveNotaAction(){
 
 		$msg = '';
@@ -1960,41 +2021,63 @@ class NotaController extends AbstractActionController{
 
 		$data = $ano.$mes;
 
-		$pastaXML = getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\enviadas\aprovadas\\'. $data .'\\';
-		$pastaPDF = getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $data .'\\';
+		$pastaXML = getcwd() . '/public\clientes/'.$session->cdBase.'/NFe/enviadas/aprovadas/'. $data .'/';
+		$pastaPDF = getcwd() . '/public\clientes/'.$session->cdBase.'/NFe/PDF/'. $data .'/';
 
-		if( !is_dir( $pastaXML ))
-			$msg = 'Nenhuma nota encontrada!';
-		if( !is_dir( $pastaPDF ))
-			$msg = 'Nenhuma nota encontrada!';
+		try {
+            if( !is_dir( $pastaXML )) {
+                throw  new \Exception("Nenhuma arquivo XML foi encontrado!",400);
+            }
 
-		$zip = new Ziparchive();
+            if( !is_dir( $pastaPDF )) {
+                throw  new \Exception("Nenhuma arquivo PDF foi encontrado!",400);
+            }
 
-		$file = getcwd() . '\public\clientes\541\NFe\Notas-'.$data.'.zip';
-		if ($zip->open($file, ZIPARCHIVE::OVERWRITE) !== TRUE) {
-			$msg = 'Erro ao retornar arquivo!';
-		}
+            $zip    = new Ziparchive();
+            $dirZip = getcwd() . '/public/clientes/'.$session->cdBase.'/NFe/';
+            chmod($dirZip,0777);
+	
+            $file = $dirZip.'Notas-'.$data.'.zip';
 
-		if( $msg <> '' ){
-			return $this->redirect()->toUrl("/nota/lista?error=".$msg);
-		}
+            if (!is_file($file)) {
+                if ($zip->open($file, ZipArchive::CREATE|ZipArchive::OVERWRITE) !== TRUE) {
+                    throw  new \Exception("Erro ao retornar arquivo \.ZIP, sem permissão de escrita na pasta pública!",400);
+                }
+            } else {
+				
+                if ($zip->open($file, ZipArchive::OVERWRITE) !== TRUE) {
+                    throw  new \Exception("Erro ao retornar arquivo \.ZIP, arquivo não pode ser encontrado!",400);
+                }
+            }
 
-		$iteratorXML = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pastaXML));
-		foreach ($iteratorXML as $key=>$value) {
-			$zip->addFile(realpath($key), iconv('ISO-8859-1', 'IBM850', 'XML/'.basename($key))) or $msg = "ERRO: Não é possível adicionar o arquivo: $key";
-		}
-		if( $msg <> '' ){
-			return $this->redirect()->toUrl("/nota/lista?error=".$msg);
-		}
-		$iteratorPDF = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pastaPDF));
-		foreach ($iteratorPDF as $key=>$value) {
-			$zip->addFile(realpath($key), iconv('ISO-8859-1', 'IBM850', 'PDF/'.basename($key))) or $msg = "ERRO: Não é possível adicionar o arquivo: $key";
-		}
-		if( $msg <> '' ){
-			return $this->redirect()->toUrl("/nota/lista?error=".$msg);
-		}
+			
+            $iteratorXML = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pastaXML));
+            foreach ($iteratorXML as $key=>$value) {
+				if ( basename($key)== "." || basename($key)== ".."){
+					continue;
+				}
+				
+				if (TRUE !== $zip->addFile(realpath($key), iconv('ISO-8859-1', 'IBM850', 'XML/'.basename($key)))){
+					 throw  new \Exception("Erro ao  adicionar o arquivo XML: $key",400);
+				}
+            }
 
-		$zip->close();
+            $iteratorPDF = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pastaPDF));
+            foreach ($iteratorPDF as $key=>$value) {
+				if ( basename($key)== "." || basename($key)== ".."){
+					continue;
+				}
+				
+                if (TRUE !== $zip->addFile(realpath($key), iconv('ISO-8859-1', 'IBM850', 'PDF/'.basename($key)))){
+					 throw  new \Exception("Erro ao  adicionar o arquivo PDF: $key",400);
+				}
+            }
+
+            $zip->close();
+
+        } catch(\Exception $e) {
+            return $this->redirect()->toUrl('/nota/lista?error='.$e->getMessage());
+        }
 
 		$response = new \Zend\Http\Response\Stream();
 		$response->setStream(fopen($file, 'r'));
@@ -2012,5 +2095,38 @@ class NotaController extends AbstractActionController{
 		$response->setHeaders($headers);
 		return $response;
 	}
+
+    private function zipStatusString( $status )
+    {
+        switch( (int) $status )
+        {
+            case ZipArchive::ER_OK           : return 'N No error';
+            case ZipArchive::ER_MULTIDISK    : return 'N Multi-disk zip archives not supported';
+            case ZipArchive::ER_RENAME       : return 'S Renaming temporary file failed';
+            case ZipArchive::ER_CLOSE        : return 'S Closing zip archive failed';
+            case ZipArchive::ER_SEEK         : return 'S Seek error';
+            case ZipArchive::ER_READ         : return 'S Read error';
+            case ZipArchive::ER_WRITE        : return 'S Write error';
+            case ZipArchive::ER_CRC          : return 'N CRC error';
+            case ZipArchive::ER_ZIPCLOSED    : return 'N Containing zip archive was closed';
+            case ZipArchive::ER_NOENT        : return 'N No such file';
+            case ZipArchive::ER_EXISTS       : return 'N File already exists';
+            case ZipArchive::ER_OPEN         : return 'S Can\'t open file';
+            case ZipArchive::ER_TMPOPEN      : return 'S Failure to create temporary file';
+            case ZipArchive::ER_ZLIB         : return 'Z Zlib error';
+            case ZipArchive::ER_MEMORY       : return 'N Malloc failure';
+            case ZipArchive::ER_CHANGED      : return 'N Entry has been changed';
+            case ZipArchive::ER_COMPNOTSUPP  : return 'N Compression method not supported';
+            case ZipArchive::ER_EOF          : return 'N Premature EOF';
+            case ZipArchive::ER_INVAL        : return 'N Invalid argument';
+            case ZipArchive::ER_NOZIP        : return 'N Not a zip archive';
+            case ZipArchive::ER_INTERNAL     : return 'N Internal error';
+            case ZipArchive::ER_INCONS       : return 'N Zip archive inconsistent';
+            case ZipArchive::ER_REMOVE       : return 'S Can\'t remove file';
+            case ZipArchive::ER_DELETED      : return 'N Entry has been deleted';
+
+            default: return sprintf('Unknown status %s', $status );
+        }
+    }
 
 }

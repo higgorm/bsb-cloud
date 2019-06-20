@@ -67,7 +67,7 @@ class RelatorioCaixaController extends RelatorioController
 		$post   	   = $this->getRequest()->getPost();
 		$dataDeInicio  = $post->get('dtCaixaInicial');
 		$dataDeTermino = $post->get('dtCaixaFinal');
-		$stCaixa 	   = $post->get('stCaixa');
+		//$stCaixa 	   = $post->get('stCaixa');
 		$cdOperador	   = $post->get('cdFuncionario');
 
 		// get the db adapter
@@ -102,11 +102,11 @@ class RelatorioCaixaController extends RelatorioController
 	                 WHERE A.CD_LOJA    = ".$session->cdLoja." ";
 
 
-		$sqlSummy .=" AND A.DT_ENTRADA  BETWEEN '".date('Ymd', strtotime($dataDeInicio))."' AND '".date('Ymd', strtotime($dataDeTermino))."' ";
-		$sqlList  .=" AND A.DT_ENTRADA  BETWEEN '".date('Ymd', strtotime($dataDeInicio))."' AND '".date('Ymd', strtotime($dataDeTermino))."' ";
+		$sqlSummy .=" AND A.DT_ENTRADA  BETWEEN '".date(FORMATO_ESCRITA_DATA, strtotime($dataDeInicio))."' AND '".date(FORMATO_ESCRITA_DATA, strtotime($dataDeTermino))."' ";
+		$sqlList  .=" AND A.DT_ENTRADA  BETWEEN '".date(FORMATO_ESCRITA_DATA, strtotime($dataDeInicio))."' AND '".date(FORMATO_ESCRITA_DATA, strtotime($dataDeTermino))."' ";
 
 
-		if($stCaixa=="A")
+		/*if($stCaixa=="A")
 		{
 			$sqlSummy .=" AND A.DT_SAIDA IS NULL ";
 			$sqlList  .=" AND A.DT_SAIDA IS NULL ";
@@ -115,7 +115,7 @@ class RelatorioCaixaController extends RelatorioController
 		{
 			$sqlSummy .=" AND A.DT_SAIDA IS NOT NULL ";
 			$sqlList  .=" AND A.DT_SAIDA IS NOT NULL ";
-		}
+		}*/
 
 		if((int)$cdOperador>=1)
 		{
@@ -371,7 +371,7 @@ class RelatorioCaixaController extends RelatorioController
     		$cdLoja 			= $post->get('cdLoja');
     		$cdFuncionario 		= $post->get('cdFuncionario');
     		$dsFuncionario 		= $post->get('dsFuncionario');
-    		$stCaixa			= $post->get('stCaixa');
+    		//$stCaixa			= $post->get('stCaixa');
 
     		$stList	 			 			= $dbAdapter->query($sqlList);
     		$stSummy  			 			= $dbAdapter->query($sqlSummyCabecalho);
@@ -449,7 +449,7 @@ class RelatorioCaixaController extends RelatorioController
     		$cdLoja 			= $this->params()->fromQuery('pdf_cdLoja');
     		$cdFuncionario 		= $this->params()->fromQuery('pdf_cdFuncionario');
     		$dsFuncionario 		= $this->params()->fromQuery('pdf_dsFuncionario');
-    		$stCaixa			= $this->params()->fromQuery('pdf_stCaixa');
+    		//$stCaixa			= $this->params()->fromQuery('pdf_stCaixa');
 
     		$pdf = new PdfModel();
     		$pdf->setOption('filename', 'relatorio-caixa-diario'); // Triggers PDF download, automatically appends ".pdf"
@@ -742,7 +742,7 @@ class RelatorioCaixaController extends RelatorioController
             $cdLoja 			= $post->get('cdLoja');
             $cdFuncionario 		= $post->get('cdFuncionario');
             $dsFuncionario 		= $post->get('dsFuncionario');
-            $stCaixa			= $post->get('stCaixa');
+            //$stCaixa			= $post->get('stCaixa');
 
 
             $stList	 			 			= $dbAdapter->query($sqlList);
@@ -821,7 +821,7 @@ class RelatorioCaixaController extends RelatorioController
             $cdLoja 			= $this->params()->fromQuery('pdf_cdLoja');
             $cdFuncionario 		= $this->params()->fromQuery('pdf_cdFuncionario');
             $dsFuncionario 		= $this->params()->fromQuery('pdf_dsFuncionario');
-            $stCaixa			= $this->params()->fromQuery('pdf_stCaixa');
+            //$stCaixa			= $this->params()->fromQuery('pdf_stCaixa');
 
             $pdf = new PdfModel();
             $pdf->setOption('filename', 'relatorio-caixa-diario-detalhado'); // Triggers PDF download, automatically appends ".pdf"

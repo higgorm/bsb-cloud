@@ -25,14 +25,14 @@
                         </div>
 
                         <div class="col-md-2">
-                            <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
-                            <input class="form-control" type="date" id="dtInicio" name="dtInicio">
+                            <label for="" class="control-label text-info">De</label>
+                            <input type="text" class="dataP form-control" id="dtInicio" name="dtInicio" required autocomplete="off">
                             <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                         </div>
 
                         <div class="col-md-2">
                             <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
-                            <input class="form-control" type="date" id="dtTermino" name="dtTermino">
+                            <input type="text" class="dataP form-control" id="dtTermino" name="dtTermino" required autocomplete="off">
                             <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                         </div>
 
@@ -98,6 +98,15 @@
 </section>
 <script>
     $(document).ready(function() {
+
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
 
         $('#formRelatorio').submit(function()
         {

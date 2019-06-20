@@ -107,8 +107,8 @@
                                         <td align="center"><?php echo $cliente->DS_FONE1 . " / " . $cliente->DS_FONE2 ?></td>
                                         <td align="left"><?php echo utf8_decode($cliente->DS_EMAIL) ?></td>
                                         <td  align="center">
-                                          <a href="/cliente/cadastro?id=<?php echo $cliente->CD_CLIENTE ?>" data-toggle="tooltip" data-placement="top" title="Editar Cliente" ><i class="fa fa-pencil"></i></a>   |
-                                            <a href="/cliente/remover?id=<?php echo $cliente->CD_CLIENTE ?>"data-toggle="tooltip" data-placement="top" title="Excluir Cliente" ><i class="fa fa-trash-o"></i></a>
+                                          <a href="/cliente/cadastro?id=<?php echo $cliente->CD_CLIENTE ?>" data-toggle="tooltip" data-placement="top" title="Editar Cliente" ><i class="fa fa-pencil"></i></a> |
+                                            <a href="#" onclick="Util.confirmarExclusao(this)" data-value="<?php echo $cliente->CD_CLIENTE ?>" data-url="/cliente/remover" data-toggle="tooltip" data-placement="top" title="Excluir Cliente" ><i class="fa fa-trash-o"></i></a>
                                         </td>
                                         </th>
                                     </tr>

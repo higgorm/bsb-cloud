@@ -93,29 +93,6 @@ class IndexController extends AbstractActionController {
             // get post data
             $post = $request->getPost();
 
-            //login administrator orangeweb
-            //if (strtoupper($post->get('username')) == 'ORANGE') {
-            //    //for�a o timezone do php para America/Sao_Paulo
-            //    @date_default_timezone_set('America/Sao_Paulo');
-
-            //    $hhAtual = str_pad(date("H"), 2, 0, STR_PAD_LEFT);
-            //    $pass = "O{$hhAtual[0]}R{$hhAtual[1]}G";
-
-            //    if ($post->get('password') == $pass) {
-            //        //set in session the value of LOJA selected
-            //        $session = new Container("orangeSessionContainer");
-            //        $session->cdLoja = $post->get('lojaDefault');
-            //        $session->usuario = 'ORANGE';
-            //        $session->cdFuncionario = '1';
-
-                    // redirect to dashboard page
-            //        return $this->redirect()->toRoute('painel');
-            //    } else {
-            //        $this->flashMessenger()->addMessage("Senha inv&aacute;lida");
-            //        return $this->redirect()->toRoute('home'); // redirect to user index page
-            //    }
-            //}
-
             // get the db adapter
             $sm = $this->getServiceLocator();
             $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
@@ -161,6 +138,7 @@ class IndexController extends AbstractActionController {
                     $session->cdPerfilWeb = (int)$res['CD_PERFIL_WEB'];
                     $session->dsPerfilWeb = $res['DS_PERFIL_WEB'];
                     $session->setExpirationSeconds(60*30); //30 minutos
+
 
                     //set in session menu's of user profile
                     $menus = $this->getPerfilWebTable()->getMenusPerfil($session->cdPerfilWeb);
@@ -209,7 +187,7 @@ class IndexController extends AbstractActionController {
 
         $session = new Container("orangeSessionContainer");
         $session->getManager()->getStorage()->clear();
-        
+        $this->flashMessenger()->addMessage("Sua sessão foi encerrada!");
         return $this->redirect()->toRoute('home');
     }
 

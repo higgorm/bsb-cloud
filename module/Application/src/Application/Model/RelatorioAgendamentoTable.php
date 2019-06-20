@@ -40,8 +40,8 @@ class RelatorioAgendamentoTable {
                                         AND a.NR_PEDIDO = t.NR_PEDIDO
                       WHERE  1=1
                       AND a.CD_LOJA = '".$cdLoja."'
-                      AND a.DT_HORARIO >= '".date('Ymd',strtotime($dataDeInicio))."'
-                      AND a.DT_HORARIO <= '".date('Ymd',strtotime($dataDeTermino))."'";
+                      AND a.DT_HORARIO >= '".date(FORMATO_ESCRITA_DATA,strtotime($dataDeInicio))."'
+                      AND a.DT_HORARIO <= '".date(FORMATO_ESCRITA_DATA,strtotime($dataDeTermino))."'";
         if($situacao != 'T'){
             $statement .= " AND ISNULL(t.ST_PEDIDO, 'A') = '".$situacao."'";
         }

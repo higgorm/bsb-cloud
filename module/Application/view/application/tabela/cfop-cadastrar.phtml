@@ -7,12 +7,12 @@
 				<form action="/tabela/cfop-cadastrar" method="post">  
 					<div class="col-xs-2 col-md-2">        
 						<label>CFOP: </label>    
-						<input class="form-control" type="text" name="CD_NATUREZA_OPERACAO" maxlength="255" >    
+						<input class="form-control" type="number" name="CD_NATUREZA_OPERACAO" max="9999" min="1" required>
 					</div>	
 						
 					<div class="col-xs-10 col-md-10">        
 						<label>Descrição: </label>        
-						<input class="form-control" type="text" name="DS_NATUREZA_OPERACAO" maxlength="255" >    
+						<input class="form-control" type="text" name="DS_NATUREZA_OPERACAO" maxlength="50"  required>
 					</div>
 					<div class="controls">
 						<div class="col-md-12">&nbsp;</div>
@@ -34,4 +34,3 @@
 		</div>
 	</div>
 </section>
-			

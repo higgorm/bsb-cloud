@@ -4,7 +4,7 @@
             <div class="panel-body">
                 <div class="widget-header">
                     <h3>
-                        Caixa <?php echo $nrCaixa; ?>
+                        Caixa 0<?php echo $nrCaixa; ?> - <?php echo $dtCaixa; ?>
                     </h3>
                 </div>
 
@@ -13,12 +13,12 @@
                 </form>
                 <div class="widget-content">
 
-                    <ul id="tabsCaixas" class="nav nav-tabs">
+                   <!-- <ul id="tabsCaixas" class="nav nav-tabs">
                         <li id="aba1"><a href="#entradaPedidos" data-toggle="tab" class="active cliCad">Entrada de pedidos</a></li>
-                        <li id="aba2" style="display: none;"><a href="#transporteFrete" data-toggle="tab" class="cliCad">Transporte / Frente e outras despesas assessórias</a></li>
-                    </ul>
+                       <li id="aba2"><a href="#transporteFrete" data-toggle="tab" class="cliCad">Transporte / Frente e outras despesas assessórias</a></li>
+                    </ul>-->
 
-                    <div class="tab-content">
+<!--                    <div class="tab-content">-->
                         <div class="span10" style="padding-top: 5px;padding-bottom: 7px;">
                             <label class="control-label text-info" for="name">
                                 <?php echo utf8_encode("Tipos de pedido:") ?>
@@ -30,9 +30,9 @@
                         </div>
                         <div class="tab-pane span12" id="entradaPedidos">
                             <ul id="tabsSubCaixas" class="nav nav-tabs">
-                                <li id="aba1"><a href="#pedidos" data-toggle="tab" class="active cliCad">Pedidos</a></li>
-                                <li id="aba2"><a href="#ordemServico" data-toggle="tab" class="cliCad">Ordens de serviço</a></li>
-                                <li id="aba3"><a href="#rebemimentoPedidos" class="cliRap" data-toggle="tab">Recebimento pedido posterior / Contas a receber</a></li>
+                                <li id="aba1"><a href="#pedidos" data-toggle="tab" class="active cliCad">Pedidos de Venda</a></li>
+<!--                                <li id="aba2"><a href="#ordemServico" data-toggle="tab" class="cliCad">Ordens de serviço</a></li>-->
+<!--                                <li id="aba3"><a href="#rebemimentoPedidos" class="cliRap" data-toggle="tab">Recebimento pedido posterior / Contas a receber</a></li>-->
                             </ul>
 
                             <div class="tab-content">
@@ -86,7 +86,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="ordemServico">
+                                <!--<div class="tab-pane" id="ordemServico">
                                     <div class="span10" style="overflow-x: scroll;height:340px;">
                                         <label class="control-label text-primary" for="name">Relação de ordens de serviço em aberto</label>
                                         <table class="table" style="width: 100%;">
@@ -142,8 +142,8 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
-                                <div class="tab-pane" id="rebemimentoPedidos">
+                                </div>-->
+                                <!--<div class="tab-pane" id="rebemimentoPedidos">
                                     <div class="col-md-12" style="padding-top: 5px;padding-bottom: 7px;">
                                         <input type="checkbox" >Pesquisar cliente
                                         <select>
@@ -218,7 +218,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
+                                </div-->
                             </div>
 
                             <div class="col-md-12">&nbsp;</div>
@@ -238,19 +238,19 @@
                                     <input type="button" class="btn btn-info" id="btnRecebe" value="Receber pedido">
                                 </div>
                                 <div class="col-md-6" style="padding-left: 0px;">
-                                    <div class="col-md-3" style="padding-left: 0px;">
+                                    <div class="col-md-4" style="padding-left: 0px;">
                                         <label class="control-label text-info" for="name"><?php echo utf8_encode("Total") ?></label>
                                         <input type="text" id="txtVlTotal" class="moeda form-control" value="0,00" readonly="readonly">
                                     </div>
-                                    <div class="col-md-3" style="padding-left: 0px;">
+                                    <div class="col-md-4" style="padding-left: 0px;">
                                         <label class="control-label text-info" for="name"><?php echo utf8_encode("Valor desconto") ?></label>
                                         <input type="text" id="txtVlDesconto" class="moeda form-control" value="0,00" readonly="readonly">
                                     </div>
-                                    <div class="col-md-3" style="padding-left: 0px;">
-                                        <label class="control-label text-info" for="name"><?php echo utf8_encode("Frete/Outros") ?></label>
+                                    <!--<div class="col-md-3" style="padding-left: 0px;">
+                                        <label class="control-label text-info" for="name"><?php /*echo utf8_encode("Frete/Outros") */?></label>
                                         <input type="text" id="txtFreteOutros" class="moeda form-control" value="0,00" readonly="readonly">
-                                    </div>
-                                    <div class="col-md-3" style="padding-left: 0px;">
+                                    </div>-->
+                                    <div class="col-md-4" style="padding-left: 0px;">
                                         <label class="control-label text-info" for="name"><?php echo utf8_encode("Total geral") ?></label>
                                         <input type="text" id="txtTotalGeral" class="moeda form-control" value="0,00" readonly="readonly">
                                     </div>
@@ -258,25 +258,21 @@
                             </div>
                             <div class="col-md-12">&nbsp;</div>
 
-                            <div class="col-md-12">
-                                <label class="control-label text-info" for="name">
-                                    <?php echo utf8_encode("Total geral") ?>
-                                </label>
+                           <!-- <div class="col-md-12">
+                                <label class="control-label text-info" for="name">Total geral</label>
                                 <input type="text" id="txtTotalGeral1" class="text-primary" value="0,00">
 
-                                <label class="control-label text-info" for="name">
-                                    <?php echo utf8_encode("Pago") ?>
-                                </label>
+                                <label class="control-label text-info" for="name">Pago</label>
                                 <input type="text" id="txtTotalGeral2" class="text-primary" value="0,00">
-                            </div>
+                            </div>-->
                         </div>
-                        <div class="tab-pane span12" id="transporteFrete">
+                       <!-- <div class="tab-pane span12" id="transporteFrete">
                             <fieldset>
                                 <legend>Dados do transporte / Frete</legend>
 
                                 <div class="span2" style="padding-bottom:5px;">
                                     <label class="control-label text-info" for="name">
-                                        <?php echo utf8_encode("Transporte") ?>
+                                        <?php /*echo utf8_encode("Transporte") */?>
                                     </label>
 
                                     <select>
@@ -285,21 +281,21 @@
                                 </div>
                                 <div class="span2" style="float:left;clear:right;padding-left:10px;">
                                     <label class="control-label text-info" for="name">
-                                        <?php echo utf8_encode("Valor do frete") ?>
+                                        <?php /*echo utf8_encode("Valor do frete") */?>
                                     </label>
                                     <br>
                                     <input type="text" id="txtVlTotal">
                                 </div>
                                 <div class="span2" style="float:left;clear:right;padding-left:10px;">
                                     <label class="control-label text-info" for="name">
-                                        <?php echo utf8_encode("Data da entrega") ?>
+                                        <?php /*echo utf8_encode("Data da entrega") */?>
                                     </label>
                                     <br>
                                     <input type="text" id="txtVlDesconto1">
                                 </div>
                                 <div class="span2" style="float:left;clear:right;padding-left:10px;">
                                     <label class="control-label text-info" for="name">
-                                        <?php echo utf8_encode("Frete por conta do:") ?>
+                                        <?php /*echo utf8_encode("Frete por conta do:") */?>
                                     </label>
                                     <br>
                                     <input type="radio" id="txtFreteOutros" name="rdFrete">1-Emitente
@@ -307,14 +303,14 @@
                                 </div>
                                 <div class="span2" style="float:left;clear:right;padding-left:10px;">
                                     <label class="control-label text-info" for="name">
-                                        <?php echo utf8_encode("Qtd caixas/volume") ?>
+                                        <?php /*echo utf8_encode("Qtd caixas/volume") */?>
                                     </label>
                                     <br>
                                     <input type="text" id="txtTotalGeral3">
                                 </div>
                             </fieldset>
-                        </div>
-                    </div>
+                        </div>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -419,16 +415,14 @@
                 }
             });
             
-            if(arrPedido.length > 0)
-            {
-                if(confirm('Deseja receber o(s) pedido(s) nº '+arrPedido+'?'))
-                {
-                    $('#bodyDivModalPagamento').load('/caixa/recebepedido?nrPedido=' + arrPedido + '&vlPedido=' + $('#txtTotalGeral').val() + '&nrCaixa=<?php echo $nrCaixa; ?>');            
+            if (arrPedido.length == 1) {
+                //if (confirm('Deseja receber o pedido nº '+arrPedido+'?')) {
+                    $('#bodyDivModalPagamento').load('/caixa/recebepedido?nrPedido=' + arrPedido + '&vlPedido=' + $('#txtTotalGeral').val() + '&nrCaixa=<?php echo $nrCaixa; ?>');
                     $('#divModalPagamento').modal('show');
-                }
-            }
-            else
-            {
+                //}
+            } else  if (arrPedido.length > 1) {
+                alert('Selecione apenas um pedido por vez!');
+            } else {
                 alert('Selecione um pedido!');
             }
         });

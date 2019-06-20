@@ -12,15 +12,15 @@
                         <input type="hidden" id="pdf" name="pdf" value="false" />
                         <div class="controls">
 
-                            <div class="col-md-3">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
-                                <input class="form-control" type="date" id="dt_inicio" name="dt_inicio">
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info">De</label>
+                                <input type="text" class="dataP form-control" id="dt_inicio" name="dt_inicio" value="<?php echo  date("d-m-Y") ?>" required autocomplete="off">
                                 <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
-								<input class="form-control" type="date" id="dt_fim" name="dt_fim">
+								<input type="text" class="dataP form-control" id="dt_fim" name="dt_fim" value="<?php echo  date("d-m-Y") ?>" required autocomplete="off">
                                 <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
 
@@ -33,14 +33,15 @@
                                 <label for="" class="control-label text-info">Status</label><br/>
                                 <label class="checkbox-inline"><input name="status" type="radio" value="E">Emitidas</label>
                                 <label class="checkbox-inline"><input name="status" type="radio" value="N">Não Emitidas</label>
-                                <label class="checkbox-inline"><input name="status" type="radio" value="C">Cancelados</label>
-								<label class="checkbox-inline"><input name="status" type="radio" value="C">Todas</label>
+                                <label class="checkbox-inline"><input name="status" type="radio" value="C">Canceladas</label>
+                                <label class="checkbox-inline"><input name="status" type="radio" value="I">Inutilizadas</label>
+								<label class="checkbox-inline"><input name="status" id="chkTodas" type="radio" value="" checked>Todas</label>
                             </div>
 
                             <div class="col-md-12">
                                 <hr>
                                 <button id="btnPesquisarRelatorio" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
-                                <button id="btnCancelarRelatorio" class="btn btn-default btn" type="reset"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                                <button id="btnLimparRelatorio" class="btn btn-default btn" type="button"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
                                 <button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
                             </div>
 
@@ -67,6 +68,16 @@
 </section>
 <script>
     $(document).ready(function() {
+
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
+
         $('#formRelatorio').submit(function()
         {
             if ($("#pdf").val() == "false")
@@ -96,6 +107,13 @@
         $('#btnFechar').click(function() {
             $("#pdf").val("false");
             $("#modalDadosRelatorio").modal('hide');
+        });
+
+        $("#btnLimparRelatorio").click(function(){
+           $("#dt_inicio").val("");
+           $("#dt_fim").val("");
+           $("#infNfe").val("");
+           $("#chkTodas").click();
         });
 
         $('#btnVoltarRelatorio').click(function() {

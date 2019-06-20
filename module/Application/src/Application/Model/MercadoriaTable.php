@@ -46,7 +46,7 @@ class MercadoriaTable extends AbstractTableGateway {
             ->order("M.DS_MERCADORIA DESC");
 
         //$select->quantifier('DISTINCT');
-        //echo $select->getSqlString();
+       // echo $select->getSqlString();
         //exit;
 
         $adapter = new DbSelect($select, $this->adapter);
@@ -159,7 +159,8 @@ class MercadoriaTable extends AbstractTableGateway {
         $sql = "SELECT M.CD_MERCADORIA, M.DS_MERCADORIA, PM.NR_QTDE_VENDIDA QTD, PM.VL_DESCONTO_MERC NR_DESCONTO,
                     ( PM.VL_PRECO_VENDA - (	PM.VL_PRECO_VENDA /100) * PM.VL_DESCONTO_MERC) VL_DESCONTO,
                     PM.VL_PRECO_VENDA VL_NOMINAL
-                    , (PM.VL_PRECO_VENDA * PM.NR_QTDE_VENDIDA) AS VL_TOTAL, PM.VL_TOTAL_BRUTO, ISNULL(P.DS_LOCAL_RETIRADA, '-') RETIRADA
+                    , (PM.VL_PRECO_VENDA * PM.NR_QTDE_VENDIDA) AS VL_TOTAL, PM.VL_TOTAL_BRUTO, ISNULL(P.DS_LOCAL_RETIRADA, '-') RETIRADA,
+                    M.ST_SERVICO
                 FROM TB_MERCADORIA M
                     LEFT JOIN TB_PEDIDO_MERCADORIA PM ON PM.CD_MERCADORIA = M.CD_MERCADORIA
                     INNER JOIN TB_PEDIDO P ON P.NR_PEDIDO = PM.NR_PEDIDO

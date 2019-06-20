@@ -33,18 +33,18 @@
 						</div>
 						<div class="col-xs-2 col-md-2" id="cpf">        
 							<label>CPF: </label>        
-							<input class="form-control" type="text" name="ds_cpf" id="ds_cpf" value="<?php echo @$cliente->nr_cgc_cpf ?>" maxlength="14" onKeyPress="return formatar('###.###.###-##',this,true,event)" onblur="setaDoc(this.value)">    
+							<input class="form-control" type="text" name="ds_cpf" id="ds_cpf" value="<?php echo @$cliente->nr_cgc_cpf ?>" maxlength="14" onKeyPress="return formatar('###.###.###-##',this,true,event)" onblur="validaDuplicidade(this.value)">
 						</div>
 						<div class="col-xs-2 col-md-2" id="cnpj">        
 							<label>CNPJ: </label>        
-							<input class="form-control" type="text" name="ds_cnpj" id="ds_cnpj" value="<?php echo @$cliente->nr_cgc_cpf ?>" maxlength="18" onKeyPress="return formatar('##.###.###/####-##',this,true,event)" onblur="setaDoc(this.value)">    
+							<input class="form-control" type="text" name="ds_cnpj" id="ds_cnpj" value="<?php echo @$cliente->nr_cgc_cpf ?>" maxlength="18" onKeyPress="return formatar('##.###.###/####-##',this,true,event)" onblur="validaDuplicidade(this.value)"">
 						</div>
 						<div class="col-xs-2 col-md-2" id="SUFRAMA">        
-							<label>Inscricao na Suframa: </label>        
+							<label>Inscrição na Suframa: </label>
 							<input class="form-control" type="text" name="ds_suframa" value="<?php echo @$cliente->ds_suframa ?>" maxlength="10">    
 						</div>
 						<div class="col-xs-2 col-md-2 "id="inscEstadual">
-							<label>Inscricao Estadual: </label>        	
+							<label>Inscrição Estadual: </label>
 							<input class="form-control" type="text" name="nr_insc_estadual" value="<?php echo @$cliente->nr_insc_estadual ?>" maxlength="15">    
 						</div>
 						<div class="col-xs-3 col-md-3">
@@ -77,7 +77,7 @@
                             <input class="form-control" type="text" id="ds_bairro" name="ds_bairro" value="<?php echo utf8_decode( @$cliente->ds_bairro ) ?>" maxlength="50"  required="required">
                         </div>
 						<div class="col-xs-2 col-md-2">        
-							<label>Numero: </label>        
+							<label>Número: </label>
 							<input class="form-control" type="text" id="ds_numero" name="ds_numero" value="<?php echo @$cliente->ds_numero ?>" maxlength="4"  required="required">
 						</div>
 						<div class="col-xs-3 col-md-3">
@@ -274,7 +274,7 @@
 			document.getElementById('cnpj'		).style.display = 'block';
             document.getElementById('inscEstadual' ).style.display = 'block';
 			document.getElementById('cpf'	    ).style.display = 'none';
-			
+
 			document.getElementById('ds_cnpj').value = formataCampo(document.getElementById('ds_cnpj').value,'##.###.###/####-##');
 		}
 	}
@@ -282,4 +282,32 @@
 	function setaDoc( doc ){
 		$('#nr_cgc_cpf').val(doc);
 	}
+
+	function validaDuplicidade(doc) {
+
+        setaDoc(doc);
+
+        if( doc != "") {
+            $.ajax({
+                url: "/cliente/valida-duplicidade",
+                type: "POST",
+                dataType: "json",
+                cache : "false",
+                data: {
+                    nr_cgc_cpf: doc
+                },
+                success: function(data) {
+                    if (data.retorno == "N") {
+                        alert('CPF / CNPJ  de número ' + doc + ' já existe entre os clientes cadastrados!');
+                        $('#ds_cpf').val("");
+                        $('#ds_cnpj').val("");
+                        setaDoc( "" );
+                    }
+                }
+            });
+        }
+
+
+    }
+
 </script>

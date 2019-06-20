@@ -55,7 +55,58 @@ $(document).ready(function() {
             return false;
         }
         return true;
+    },
+
+    setValidacaoCampoObrigatorio = function(){
+        var elements = document.getElementsByTagName("INPUT");
+        for (var i = 0; i < elements.length; i++) {
+
+            if (elements[i].required) {
+                elements[i].insertAdjacentHTML('beforebegin','<span class="text-danger"> *</span>');
+            }
+
+            elements[i].oninvalid = function (e) {
+                e.target.setCustomValidity("");
+                if (!e.target.validity.valid) {
+                    switch (e.srcElement.type) {
+                        case "number":
+                            e.target.setCustomValidity("Informe apenas números entre " + e.srcElement.min + ' e ' + e.srcElement.max + '.');
+                            break;
+                        case "text":
+                            e.target.setCustomValidity("Este campo é obrigatório.");
+                            break;
+                    }
+
+
+
+                }
+            };
+            elements[i].oninput = function (e) {
+                e.target.setCustomValidity("");
+            };
+        }
+        var elementsSelect = document.getElementsByTagName("SELECT");
+        for (var i = 0; i < elementsSelect.length; i++) {
+
+            if (elementsSelect[i].required) {
+                elementsSelect[i].insertAdjacentHTML('beforebegin','<span class="text-danger"> *</span>');
+            }
+
+            elementsSelect[i].oninvalid = function (e) {
+                e.target.setCustomValidity("");
+                if (!e.target.validity.valid) {
+                    e.target.setCustomValidity("Este campo é obrigatório.");
+                }
+            };
+            elementsSelect[i].oninput = function (e) {
+                e.target.setCustomValidity("");
+            };
+        }
     }
+
+
+    //fixed for all forms
+    setValidacaoCampoObrigatorio();
 });
 	function formatar(mascara, documento, numero = false, evt = null){
 		var i = documento.value.length;

@@ -77,7 +77,7 @@
                                         <td align="right"><?php  echo ( $mercadoria->VL_PRECO_VENDA ? number_format(@$mercadoria->VL_PRECO_VENDA,2, '.', '') : '0.00' ) ?></td>
                                         <td  align="center">
                                           <a href="/mercadoria/editar?id=<?php echo $mercadoria->CD_MERCADORIA ?>" ><i class="fa fa-pencil"></i></a> |
-                                            <a href="/mercadoria/remover?id=<?php echo $mercadoria->CD_MERCADORIA ?>" ><i class="fa fa-trash-o"></i></a>
+                                            <a href="#" onclick="Util.confirmarExclusao(this)" data-value="<?php echo $mercadoria->CD_MERCADORIA ?>" data-url="/mercadoria/remover" data-toggle="tooltip" data-placement="top" title="Excluir Mercadoria" ><i class="fa fa-trash-o"></i></a>
                                         </td>
                                         </th>
                                     </tr>

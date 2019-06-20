@@ -131,7 +131,8 @@ class PedidoTable extends AbstractTableGateway {
                                         'UsuarioUltimaAlteracao' => $cdUsuario,
                                         ),
                                 array('NR_PEDIDO' => $nrPedido,
-                                        'CD_LOJA' => $cdLoja));
+                                        'CD_LOJA' => $cdLoja,
+                                        'ST_PEDIDO' => 'A'));
         } catch (Exception $e) {
             return false;
         }
@@ -277,15 +278,17 @@ class PedidoTable extends AbstractTableGateway {
                 $returnArray[] = $result;
             }
             return $returnArray;
+        } else {
+            return $results->current();
         }
 
-        return $result->current();
+
     }
 
     public function recuperaMercadoriaNumeroPedido($nuPedido) {
-        $select = "SELECT *
-                   FROM TB_PEDIDO_MERCADORIA
-                   WHERE NR_PEDIDO = ?";
+        $select = "SELECT M.*
+                   FROM TB_PEDIDO_MERCADORIA M
+                   WHERE M.NR_PEDIDO = ?";
 
         $statement = $this->adapter->query($select);
         $results = $statement->execute(array('nr_pedido' => (int) $nuPedido));

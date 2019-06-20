@@ -9,7 +9,7 @@
                     <input type="hidden" name="CD_CARTAO"  value="<?php echo (int)$dado['CD_CARTAO'] ?>">
                     <div class="col-xs-12 col-md-12">
                         <label>Descri&ccedil;&atilde;o: </label>
-                        <input class="form-control" type="text" name="DS_CARTAO" maxlength="50" value="<?php echo utf8_encode($dado['DS_CARTAO']) ?>">
+                        <input class="form-control" type="text" name="DS_CARTAO" maxlength="50" value="<?php echo utf8_encode($dado['DS_CARTAO']) ?>" required>
                     </div>
                     <div class="col-xs-3 col-md-3">
                         <label>Percentual Desconto: </label>
@@ -39,4 +39,3 @@
 		</div>
 	</div>
 </section>
-			

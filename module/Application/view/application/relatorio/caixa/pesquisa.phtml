@@ -13,14 +13,14 @@
                         <div class="controls">
 
                             <div class="col-md-2">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
-                                <input class="form-control" type="date" id="dtCaixaInicial" name="dtCaixaInicial">
+                                <label for="" class="control-label text-info">De</label>
+                                <input type="text" class="dataP form-control" id="dtCaixaInicial" name="dtCaixaInicial"  required autocomplete="off">
                                 <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
 
                             <div class="col-md-2">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
-                                <input class="form-control" type="date" id="dtCaixaFinal" name="dtCaixaFinal">
+                                <input type="text" class="dataP form-control" id="dtCaixaFinal" name="dtCaixaFinal"   required autocomplete="off">
                                 <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
 
@@ -38,18 +38,18 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-2">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("Situa&ccedil;&atilde;o Caixa") ?></label>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_A" value="A" checked/>&nbsp;Aberto
-                                    </label>
-                                    <br>
-                                    <label>
-                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_F" value="F" />&nbsp;Fechado
-                                    </label>
-                                </div>
-                            </div>
+<!--                            <div class="col-md-2">-->
+<!--                                <label for="" class="control-label text-info">--><?php //echo utf8_encode("Situa&ccedil;&atilde;o Caixa") ?><!--</label>-->
+<!--                                <div class="radio">-->
+<!--                                    <label>-->
+<!--                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_A" value="A" checked/>&nbsp;Aberto-->
+<!--                                    </label>-->
+<!--                                    <br>-->
+<!--                                    <label>-->
+<!--                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_F" value="F" />&nbsp;Fechado-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
 
                         <div class="col-md-12">
                             <hr>
@@ -117,6 +117,15 @@
 </section>
 <script>
     $(document).ready(function() {
+
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
 
         /* Table initialisation */
         oTableFiltroCaixa = $('#tableFiltroCaixa').dataTable({
@@ -205,7 +214,7 @@
 
 
         $('#btnVoltarRelatorio').click(function() {
-            window.location = '/relatorio/index';
+            window.location = '/relatorio-caixa/pesquisa';
         });
 
         gerarRelatorioHtml = function(filtro) {

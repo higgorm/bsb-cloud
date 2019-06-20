@@ -41,13 +41,13 @@
 
                             <div class="col-md-3">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
-                                <input class="form-control" type="date" id="dtInicial" name="dtInicial"  required="true">
+                                <input type="text" class="dataP form-control" id="dtInicial" name="dtInicial"  required autocomplete="off">
                                 <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
 
                             <div class="col-md-3">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
-                                <input class="form-control" type="date" id="dtFinal" name="dtFinal" required="true">
+                                <input type="text" class="dataP form-control" id="dtFinal" name="dtFinal" required autocomplete="off">
                                 <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
 
@@ -89,6 +89,14 @@
 </section>
 <script>
     $(document).ready(function() {
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
 
         $('#cdLoja').change(function() {
             if ($('#cdLoja').val() == '') {

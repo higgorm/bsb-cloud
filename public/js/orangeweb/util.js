@@ -12,6 +12,12 @@ var Util = {
             $('#bodyPesquisaCliente').load('/cliente/modal-pesquisa-cliente');
             $('#pesquisaClienteModal').modal('show');
         });
+
+        $('#searchEmissor').click(function() {
+            $('#bodyPesquisaEmissor').html('');
+            $('#bodyPesquisaEmissor').load('/cliente/modal-pesquisa-emissor');
+            $('#pesquisaEmissorModal').modal('show');
+        });
 		
 		$('#cadastraCliente').click(function(){
 			$('#bodyCliente').html('');
@@ -100,4 +106,40 @@ var Util = {
             }
         });
     },
+    confirmarExclusao: function(objAhref) {
+        if (confirm('Confirma a exclusão deste registro?')) {
+            window.location.href=$(objAhref).attr('data-url')+"?id="+$(objAhref).attr('data-value');
+        } else {
+            return;
+        }
+    },
+    setValidacaoCampoObrigatorio: function(){
+        var elements = document.getElementsByTagName("INPUT");
+        for (var i = 0; i < elements.length; i++) {
+
+            if (elements[i].required) {
+                elements[i].insertAdjacentHTML('beforebegin','<span class="text-danger">*</span>');
+            }
+
+            elements[i].oninvalid = function (e) {
+                e.target.setCustomValidity("");
+                if (!e.target.validity.valid) {
+                    switch (e.srcElement.type) {
+                        case "number":
+                            e.target.setCustomValidity("Informe apenas números entre " + e.srcElement.min + ' e ' + e.srcElement.max + '.');
+                            break;
+                        case "text":
+                            e.target.setCustomValidity("Este campo é obrigatório.");
+                            break;
+                    }
+
+
+
+                }
+            };
+            elements[i].oninput = function (e) {
+                e.target.setCustomValidity("");
+            };
+        }
+    }
 }

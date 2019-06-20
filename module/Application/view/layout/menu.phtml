@@ -30,36 +30,38 @@
                     <i class="fa fa-lock"></i>
                     <span class="font-bold">Controle de Acesso</span>
                 </a>
-                <?php if (in_array_menu($session->menuPerfilWeb, 2)) : ?>
                 <ul class="nav dk">
+                <?php if (in_array_menu($session->menuPerfilWeb, 2)) : ?>
+
                     <li>
                         <a href="/menu-web/index" class="auto">
                             <i class="i i-dot"></i>
                             <span>Menus do sistema</span>
                         </a>
                     </li>
-                </ul>
+
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 3)) : ?>
-                <ul class="nav dk">
+
                     <li>
                         <a href="/perfil-web/index" class="auto">
                             <i class="i i-dot"></i>
                             <span>Perfis do sistema</span>
                         </a>
                     </li>
-                </ul>
+
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 4)) : ?>
-                <ul class="nav dk">
+
                     <li>
                         <a href="/usuario-web/index" class="auto">
                             <i class="i i-dot"></i>
                             <span>Usuários Web</span>
                         </a>
                     </li>
-                </ul>
+
                 <?php endif; ?>
+                </ul>
             </li>
         <?php endif; ?>
 
@@ -130,99 +132,7 @@
         <?php endif; ?>
 
 
-        <?php if (in_array_menu_pai($session->menuPerfilWeb, array(21,22,23,24,25,26,27,28,29,30))) : ?>
-            <li class="">
-                <a href="#" class="auto">
-            <span class="pull-right text-muted">
-                <i class="i i-circledown text"></i>
-                <i class="i i-circleup text-active"></i>
-            </span>
-                    <i class="i i-graph icon"></i>
-                    <span class="font-bold">Relatórios</span>
-                </a>
-                <ul class="nav dk">
-                    <?php if (in_array_menu($session->menuPerfilWeb, 22)) : ?>
-                        <!-- RELATORIO ATENDIMENTO -->
-                        <li>
-                            <a href="/relatorio-atendimento/pesquisa" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Atendimento - Produtos / Serviços Vendidos</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if (in_array_menu($session->menuPerfilWeb, 23)) : ?>
-                        <li class="">
-                            <a href="/relatorio-nota/pesquisa" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Notas Fiscais</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if (in_array_menu($session->menuPerfilWeb, 24)) : ?>
-                        <li>
-                            <a href="/relatorio-pedido/pesquisa" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Pedidos</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if (in_array_menu($session->menuPerfilWeb, 25)) : ?>
 
-                        <!-- RELATORIO AGENDAMENTO -->
-                        <li>
-                            <a href="/relatorio-agendamento/pesquisa" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Agendamentos</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if (in_array_menu($session->menuPerfilWeb, 26)) : ?>
-                        <!-- RELATORIO CAIXA -->
-                        <li>
-                            <a href="/relatorio-caixa/pesquisa" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Caixa</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if (in_array_menu($session->menuPerfilWeb, 27)) : ?>
-                        <li>
-                            <a href="/relatorio-resumo-caixa/pesquisa" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Resumo de Caixa</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if (in_array_menu($session->menuPerfilWeb, 28)) : ?>
-                        <!-- RELATORIO ESTOQE -->
-                        <li>
-                            <a href="/relatorio-inventario-estoque/pesquisa" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Invent&aacute;rio de Estoque</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if (in_array_menu($session->menuPerfilWeb, 29)) : ?>
-                        <!-- RELATORIO GERENCIAL -->
-                        <li>
-                            <a href="/relatorio-vendas-mensal-tipo-pagamento/pesquisa" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Vendas Mensais Por Tipo de Pagamento</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if (in_array_menu($session->menuPerfilWeb, 30)) : ?>
-
-                        <li>
-                            <a href="/relatorio-pedido/pesquisa-multi-loja" class="auto">
-                                <i class="i i-dots"></i>
-                                <span>Multi-Loja</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                </ul>
-            </li>
-        <?php endif; ?>
 
         <?php if (in_array_menu_pai($session->menuPerfilWeb, array(11))) : ?>
             <li class="">
@@ -307,6 +217,100 @@
                     <?php endif; ?>
                 </ul>
             </li>
+    <?php endif; ?>
+
+    <?php if (in_array_menu_pai($session->menuPerfilWeb, array(21,22,23,24,25,26,27,28,29,30))) : ?>
+        <li class="">
+            <a href="#" class="auto">
+            <span class="pull-right text-muted">
+                <i class="i i-circledown text"></i>
+                <i class="i i-circleup text-active"></i>
+            </span>
+                <i class="i i-graph icon"></i>
+                <span class="font-bold">Relatórios</span>
+            </a>
+            <ul class="nav dk">
+                <?php if (in_array_menu($session->menuPerfilWeb, 22)) : ?>
+                    <!-- RELATORIO ATENDIMENTO -->
+                    <li>
+                        <a href="/relatorio-atendimento/pesquisa" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Atendimento</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 23)) : ?>
+                    <li class="">
+                        <a href="/relatorio-nota/pesquisa" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Notas Fiscais</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 24)) : ?>
+                    <li>
+                        <a href="/relatorio-pedido/pesquisa" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Pedidos</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 25)) : ?>
+
+                    <!-- RELATORIO AGENDAMENTO -->
+                    <li>
+                        <a href="/relatorio-agendamento/pesquisa" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Agendamentos</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 26)) : ?>
+                    <!-- RELATORIO CAIXA -->
+                    <li>
+                        <a href="/relatorio-caixa/pesquisa" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Caixa</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 27)) : ?>
+                    <li>
+                        <a href="/relatorio-resumo-caixa/pesquisa" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Resumo de Caixa</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 28)) : ?>
+                    <!-- RELATORIO ESTOQE -->
+                    <li>
+                        <a href="/relatorio-inventario-estoque/pesquisa" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Invent&aacute;rio de Estoque</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 29)) : ?>
+                    <!-- RELATORIO GERENCIAL -->
+                    <li>
+                        <a href="/relatorio-vendas-mensal-tipo-pagamento/pesquisa" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Vendas Mensais Por Tipo de Pagamento</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 30)) : ?>
+
+                    <li>
+                        <a href="/relatorio-pedido/pesquisa-multi-loja" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Multi-Loja</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </li>
     <?php endif; ?>
 
     <?php if (in_array_menu_pai($session->menuPerfilWeb, array(19))) : ?>

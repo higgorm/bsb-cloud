@@ -1,3 +1,16 @@
+<?php if (count($this->flashMessenger()->getMessages())) : ?>
+    <?php
+    foreach ($this->flashMessenger()->getMessages() as $value):
+        $key = key($value);
+        $message = current($value);
+        ?>
+        <div class="alert alert-<?php echo $key ?>">
+            <button type="button" class="close" data-dismiss="alert" >&times;</button>
+            <?php echo $message ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+<script type="text/javascript" src="/js/orangeweb/pedido/pedido.js"></script>
 <section class="panel panel-default">
     <div class="main">
         <div class="row-fluid">
@@ -28,9 +41,11 @@
                                     <th nowrap>Nome Cliente</th>
                                     <th nowrap>Valor</th>
                                     <th nowrap>Vendedor</th>
+                                    <th nowrap>Data do pedido</th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
+                                    <th>A&ccedil;&otilde;es</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -41,9 +56,11 @@
                                     <th nowrap>Nome Cliente</th>
                                     <th nowrap>Valor</th>
                                     <th nowrap>Vendedor</th>
+                                    <th nowrap>Data do pedido</th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
+                                    <th>A&ccedil;&otilde;es</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -54,26 +71,14 @@
     </div>
 </section>
 
-<div id="modalPedidoTablet" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalPedidoTablet" aria-hidden="true">
-
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">X</button>
-                <span class="text-info-modal"><i class="icon-white icon-check"></i> Pedido</span>
-            </div>
-            <div id="modalBodyPedidoTablet" class="container-fluid"></div>
-        </div>
-    </div>
-</div>
 <script>
     $(document).ready(function() {
 
         /* Table initialisation */
         oTableLista = $('#tableGridPedidos').dataTable({
-            //"sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
+            "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
 
-            "sPaginationType": "bootstrap",
+            "sPaginationType": "full_numbers",
             "oLanguage": {"sLenghtMenu": "_MENU_ registros por pag."},
             //"sScrollY": "280px",
             "bScrollCollapse": true,
@@ -87,28 +92,20 @@
             "sAjaxSource": "/pedido/grid-lista",
             "aoColumns": [
                 {"sClass": "nowrap left", "sWidth": "5%"},
-                {"sClass": "nowrap left", "sWidth": "45%"},
+                {"sClass": "nowrap left", "sWidth": "40%"},
+                {"sClass": "nowrap text-right", "sWidth": "15%"},
                 {"sClass": "nowrap left", "sWidth": "20%"},
-                {"sClass": "nowrap left", "sWidth": "30%"},
+                {"sClass": "nowrap text-center", "sWidth": "20%"},
                 {"sClass": "nowrap left", "sWidth": "1%", "bVisible": false},
                 {"sClass": "nowrap left", "sWidth": "1%", "bVisible": false},
-                {"sClass": "nowrap left", "sWidth": "1%", "bVisible": false}
+                {"sClass": "nowrap left", "sWidth": "1%", "bVisible": false},
+                {"sClass": "nowrap center", "sWidth": "1%"},
             ]
 
         });
 
-        $('#btnNovoPedido').on("click", function(event) {
-
-            $("#modalBodyPedidoTablet").load('/pedido/novo-pedido', {
-                // nrPedido: oTableLista.fnGetData(this)[0],
-                // nmCliente: oTableLista.fnGetData(this)[1],
-                // cdVendedor: oTableLista.fnGetData(this)[4],
-                // nrLoja: oTableLista.fnGetData(this)[5],
-                // tpPedido: oTableLista.fnGetData(this)[6]
-                }
-            );
-
-            $("#modalPedidoTablet").modal('show');
+        $('#btnNovoPedido').click(function() {
+            window.location = "/pedido/novo-pedido";
         });
 
 

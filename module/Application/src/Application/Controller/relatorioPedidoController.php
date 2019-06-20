@@ -53,8 +53,12 @@ class relatorioPedidoController  extends RelatorioController
     	$dbAdapter  = $sm->get('Zend\Db\Adapter\Adapter');
     	
     	//query
-    	$sql 		= " SELECT * FROM TB_PEDIDO WHERE DT_PEDIDO BETWEEN ? AND ? ";
-    	
+    	$sql 		= " SELECT P.* ,
+                               C.DS_NOME_RAZAO_SOCIAL
+                        FROM TB_PEDIDO P 
+                        LEFT JOIN TB_CLIENTE C ON P.CD_CLIENTE = C.CD_CLIENTE
+                        WHERE P.DT_PEDIDO 
+                        BETWEEN ? AND ? ";
     	
     	if($this->params()->fromQuery('pdf') != true)
     	{
@@ -63,15 +67,15 @@ class relatorioPedidoController  extends RelatorioController
 			$dataFim			= $post->get('dt_fim');
 			$nrPedido			= $post->get('nr_pedido');
 			$status				= $post->get('status');
-			
+
 			if( $nrPedido != '' )
-				$sql = $sql.' AND NR_PEDIDO = '.$nrPedido;
-			if( $status != '' )
-				$sql = $sql." AND NR_PEDIDO = '".$status."'";
+				$sql = $sql.' AND P.NR_PEDIDO = '.$nrPedido;
+            if( $status != '' )
+				$sql = $sql." AND P.ST_PEDIDO = '".$status."'";
 
     		$statementList   = $dbAdapter->query($sql);
     		/* @var $results Zend\Db\ResultSet\ResultSet */
-    		$results 			= $statementList->execute(array(date('Ymd',strtotime($dataInicio)),date('Ymd',strtotime($dataFim))));
+    		$results 			= $statementList->execute(array(date(FORMATO_ESCRITA_DATA,strtotime($dataInicio)),date(FORMATO_ESCRITA_DATA,strtotime($dataFim))));
     		 
     		$viewModel = new ViewModel();
     		$viewModel->setTerminal(true);
@@ -79,6 +83,7 @@ class relatorioPedidoController  extends RelatorioController
             $viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
             $viewModel->setVariable('dataAtual',date("d/m/Y"));
             $viewModel->setVariable('horaAtual',date("h:i:s"));
+            $viewModel->setVariable('dsLoja',$session->dsLoja);
     		$viewModel->setTemplate("application/relatorio/pedido/relatorio.phtml");
     		return $viewModel;
     	}
@@ -88,25 +93,31 @@ class relatorioPedidoController  extends RelatorioController
 			$dataFim			= $this->params()->fromQuery('dt_fim');
 			$nrPedido			= $this->params()->fromQuery('nr_pedido');
 			$status				= $this->params()->fromQuery('status');
+
+            if( $nrPedido != '' )
+                $sql = $sql.' AND P.NR_PEDIDO = '.$nrPedido;
+            if( $status != '' )
+                $sql = $sql." AND P.ST_PEDIDO = '".$status."'";
 			
     		$statementList   = $dbAdapter->query($sql);
     		/* @var $results Zend\Db\ResultSet\ResultSet */
-    		$results 		= $statementList->execute(array(date('Ymd',strtotime($dataInicio)),date('Ymd',strtotime($dataFim))));
+    		$results 		= $statementList->execute(array(date(FORMATO_ESCRITA_DATA,strtotime($dataInicio)),date(FORMATO_ESCRITA_DATA,strtotime($dataFim))));
     	
     		$pdf = new PdfModel();
-    		$pdf->setOption('filename', 'pedido'); // Triggers PDF download, automatically appends ".pdf"
+    		$pdf->setOption('filename', 'relatorio_pedido'); // Triggers PDF download, automatically appends ".pdf"
     		$pdf->setOption('paperSize', 'a4'); // Defaults to "8x11"
     		$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
     	
     		// To set view variables
     		$pdf->setVariables(array(
-    				'lista'=>$results
+                'dataAtual' =>  date("d/m/Y"),
+                'horaAtual' =>  date("h:i:s"),
+                'logo'      =>  '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-orange-small.png" alt="logo"  />',
+                'lista'     =>  $results,
+                'dsLoja'    =>  $session->dsLoja
     		));
-    		
-    		$pdf->setTemplate("application/relatorio/pedido/relatorio.phtml");
-            $pdf->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
-            $pdf->setVariable('dataAtual',date("d/m/Y"));
-            $pdf->setVariable('horaAtual',date("h:i:s"));
+
+            $pdf->setTemplate("application/relatorio/pedido/relatorio.phtml");
     		return $pdf;
     	}
     	

@@ -415,19 +415,18 @@ class ClienteController extends AbstractActionController
             $dbAdapter->getDriver()->getConnection()->beginTransaction();
             $id = (int) $this->params()->fromQuery('id');
 
-            if ($this->getTable()->remove($id)) {
-                $message = array("success" => "Removido com sucesso");
-            } else {
-                $message = array("error" => "Não foi possível, este registro está em uso!");
-            }
-
+            $this->getTable()->remove($id);
+            $message = array("success" => "Removido com sucesso");
+            $this->flashMessenger()->addMessage($message);
             $dbAdapter->getDriver()->getConnection()->commit();
 
+        } catch (\Exception $e) {
+            $message = array("danger" => "Não foi possível, este registro está em uso!");
             $this->flashMessenger()->addMessage($message);
-            return $this->redirect()->toUrl("index?pg=1");
-        } catch (Exception $e) {
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
+
+        return $this->redirect()->toUrl("index?pg=1");
     }
 
     public function buscarclienteAction()
@@ -503,8 +502,18 @@ class ClienteController extends AbstractActionController
         $viewModel->setTerminal(true);
         return $viewModel;
     }
-	
-	/**
+
+    /**
+     *
+     */
+    public function modalPesquisaEmissorAction(){
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
+        return $viewModel;
+    }
+
+
+    /**
      *
      */
     public function recuperaClientePorCodigoAction(){
@@ -520,7 +529,7 @@ class ClienteController extends AbstractActionController
             array_walk_recursive($arrCliente, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
             echo json_encode(array('result' => 'success', 'data' => $arrCliente));
         } else {
-            echo json_encode(array('result' => 'erro', 'message' => $data['cd_cliente']));
+            echo json_encode(array('result' => 'erro', 'message' => 'Cliente não encontrado.'));
         }
 
         exit;
@@ -540,6 +549,28 @@ class ClienteController extends AbstractActionController
 
         } else {
             echo json_encode(array('result' => 'erro', 'message' => 'Cliente não encontrado.'));
+        }
+
+        exit;
+    }
+
+    /**
+     *
+     */
+    public function validaDuplicidadeAction(){
+
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(false);
+        $request    = $this->getRequest();
+        $data       = $request->getPost();
+        $search     = str_ireplace(".","",  str_ireplace("/","",str_ireplace("-","",$data['nr_cgc_cpf'])));
+
+        $nrCgcCpf = $this->getTable()->getClientePorNrCgcCpf($search);
+
+        if (count($nrCgcCpf)) {
+            echo json_encode(array('retorno' =>  'N'));
+        } else {
+            echo json_encode(array('retorno' =>  'S'));
         }
 
         exit;

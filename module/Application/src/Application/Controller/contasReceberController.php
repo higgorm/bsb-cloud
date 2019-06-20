@@ -96,9 +96,9 @@ class ContasReceberController extends AbstractActionController
     }
 
     public function cadastrarAction(){
-                $sm = $this->getServiceLocator();
-                $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                $session = new Container("orangeSessionContainer");
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $session = new Container("orangeSessionContainer");
         $loja = array('cd_loja' => $session->cdLoja,
             'ds_loja' => utf8_encode($session->dsLoja));
         $form = "cadastrar";
@@ -108,7 +108,7 @@ class ContasReceberController extends AbstractActionController
         if ($request->isPost()) {
 
             if(!$_POST['DS_EMISSOR']){
-                $dsEmissor = ($_POST['ds_nome_razao_social']);
+                $dsEmissor = ($_POST['destNome']);
             }else{
                 $dsEmissor = ($_POST['DS_EMISSOR']);
             }
@@ -123,7 +123,7 @@ class ContasReceberController extends AbstractActionController
                 'NR_CGC_CPF_EMISSOR'        =>  $_POST['NR_CGC_CPF_EMISSOR'],
                 'DS_EMISSOR'                =>  $dsEmissor,
                 'NR_FONE_EMISSOR'           =>  $_POST['NR_FONE_EMISSOR'],
-                'CD_CLIENTE'                =>  !empty($_POST['cd_cliente']) ? (int)$_POST['cd_cliente']  : NULL,
+                'CD_CLIENTE'                =>  !empty($_POST['codCliente']) ? (int)$_POST['codCliente']  : NULL,
                 'CD_CARTAO'                 =>  !empty($_POST['CD_CARTAO']) ? (int)$_POST['CD_CARTAO']  : NULL,
                 'CD_BANCO'                  =>  $_POST['CD_BANCO'],
                 'CD_AGENCIA'                =>  $_POST['CD_AGENCIA'],
@@ -206,7 +206,7 @@ class ContasReceberController extends AbstractActionController
             if ($request->isPost()) {
 
                 if(!$_POST['DS_EMISSOR']){
-                    $dsEmissor = $_POST['ds_nome_razao_social'];
+                    $dsEmissor = $_POST['destNome'];
                 }else{
                     $dsEmissor = $_POST['DS_EMISSOR'];
                 }
@@ -220,7 +220,7 @@ class ContasReceberController extends AbstractActionController
                     'NR_CGC_CPF_EMISSOR'        =>  $_POST['NR_CGC_CPF_EMISSOR'],
                     'DS_EMISSOR'                =>  $dsEmissor,
                     'NR_FONE_EMISSOR'           =>  $_POST['NR_FONE_EMISSOR'],
-                    'CD_CLIENTE'                =>  !empty($_POST['cd_cliente']) ? (int)$_POST['cd_cliente']  : NULL,
+                    'CD_CLIENTE'                =>  !empty($_POST['codCliente']) ? (int)$_POST['codCliente']  : NULL,
                     'CD_CARTAO'                 =>  !empty($_POST['CD_CARTAO']) ? (int)$_POST['CD_CARTAO']  : NULL,
                     'CD_BANCO'                  =>  $_POST['CD_BANCO'],
                     'CD_AGENCIA'                =>  $_POST['CD_AGENCIA'],
@@ -248,6 +248,7 @@ class ContasReceberController extends AbstractActionController
                 }else{
                     $dbAdapter->getDriver()->getConnection()->rollback();
                 }
+
                 $this->redirect()->toUrl("/contas-receber/index");
             }
             $ds_cliente = $this->getTable("cliente_table")->getId($post['CD_CLIENTE']);
