@@ -137,7 +137,7 @@ class IndexController extends AbstractActionController {
                     $session->email     = $res['DS_EMAIL'];
                     $session->cdPerfilWeb = (int)$res['CD_PERFIL_WEB'];
                     $session->dsPerfilWeb = $res['DS_PERFIL_WEB'];
-                    $session->setExpirationSeconds(60*30*4); //30 minutos
+                    $session->setExpirationSeconds(60*30); //30 minutos
 
 
                     //set in session menu's of user profile

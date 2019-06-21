@@ -63,6 +63,7 @@
                                 <!-- th nowrap>#</th -->
                                 <th nowrap>Nº Nota</th>
                                 <th nowrap>Cliente</th>
+                                <th nowrap>Nº Pedido</th>
                                 <th nowrap>Data Emissão</th>
                                 <th nowrap>Valor</th>
                                 <th nowrap>Situação</th>
@@ -77,8 +78,9 @@
                                     ?>
                                     <tr>
                                         <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
-                                        <td align="left"><?php echo $nfe->infNFE ?></td>
+                                        <td align="center"><?php echo $nfe->infNFE ?></td>
                                         <td align="left"><?php echo utf8_encode($nfe->Dest_xNome) ?></td>
+                                        <td align="center"><?php echo ( (int)$nfe->NR_PEDIDO > 0) ? $nfe->NR_PEDIDO : '-' ?></td>
                                         <td align="center">
                                         <?php
                                             if ($nfe->DT_PROTOCOLO_DATA == ''){
@@ -139,6 +141,7 @@
                                 <!-- th nowrap>#</th -->
                                 <th nowrap>Nº Nota</th>
                                 <th nowrap>Cliente</th>
+                                <th nowrap>Nº Pedido</th>
                                 <th nowrap>Data Emissão</th>
                                 <th nowrap>Valor</th>
                                 <th nowrap>Situação</th>

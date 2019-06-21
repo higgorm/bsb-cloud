@@ -4,13 +4,13 @@
 		<div class="row-fluid">
 			<div class="panel-body">
 				<div class="widget-header">
-					<h3>Emissão / Envio de NFe a partir do pedido</h3>
+					<h3>Envio de NFe a partir do recebimento no caixa</h3>
 				</div>
 				<?php if( @$erro ): ?>
 					<div class="col-sm-12">
-						<h3 class="text-danger text-center">Nota não pode ser emitida / enviada!</h3>
-						<h4  class="text-center">
-                            Motivo: <?php echo $erro; ?>
+						<h3 class="text-danger text-center">Nota não  enviada!</h3>
+						<h4>
+                            <?php echo $erro; ?>
                         </h4>
 
 						<a href="javascript:window.history.go(-1)">
@@ -34,7 +34,7 @@
 						<div class="col-sm-12">
                             <h3 class="text-danger text-center">Nota não enviada!</h3>
 							<h4 class="text-center">
-                                Motivo: <?php echo $retorno['prot']['0']['xMotivo']; ?>
+                                <?php echo $retorno['prot']['0']['xMotivo']; ?>
                             </h4>
 							<a href="javascript:window.history.go(-1)">
 								<button type="button" class="btn btn-primary"> 
@@ -51,6 +51,16 @@
 						<div class="col-sm-12">
 							<h3 class="text-success text-center">Envio com sucesso!</h3>
 
+                            <h4 class="text-center">
+                                <?php echo $retorno['prot']['0']['xMotivo']; ?>
+                            </h4>
+
+                            <?php if($retornoMail) :?>
+                                <h4 class="text-center">
+                                  Nota enviada para:  <?php echo $retorno['emailsEnviados']; ?>
+                                </h4>
+                            <?php endif; ?>
+
                             <a href="javascript:window.history.go(-1)">
                                 <button type="button" class="btn btn-primary">
                                     Voltar
@@ -63,11 +73,7 @@
 								</button>
 							</a>
 
-							<a href="/nota/avulsa">
-								<button type="button" class="btn btn-primary">
-									Enviar danfe por email
-								</button>
-							</a>
+
 						</div>
 					<?php endif; ?>
 				<?php endif; ?>
