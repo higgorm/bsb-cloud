@@ -80,6 +80,15 @@ class TabelaTable extends AbstractTableGateway
 		return $results;
 	}
 
+	public function getNaturezaOperacao($cfop){
+        $statement = $this->adapter->query("SELECT DS_NATUREZA_OPERACAO =  CONCAT(CD_NATUREZA_OPERACAO ,' - ' , DS_NATUREZA_OPERACAO )
+                                            FROM TB_NATUREZA_OPERACAO 
+                                            WHERE CD_NATUREZA_OPERACAO = ".$cfop);
+
+        $results = $statement->execute();
+        return $results->current();
+    }
+
 	public function selectAll_cfop(){
         $statement = $this->adapter->query('SELECT * FROM TB_NATUREZA_OPERACAO ORDER BY CD_NATUREZA_OPERACAO ASC');
 

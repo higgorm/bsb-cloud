@@ -305,9 +305,33 @@ class PedidoTable extends AbstractTableGateway {
      * @return mixed
      */
     public function recuperaMercadoriasNumeroPedido($nuPedido) {
-        $select = "SELECT M.*
-                   FROM TB_PEDIDO_MERCADORIA M
-                   WHERE M.NR_PEDIDO = ?";
+        $select = "SELECT PM.NR_PEDIDO, PM.NR_QTDE_VENDIDA, PM.VL_TOTAL_LIQUIDO,
+                          M.*
+                   FROM TB_PEDIDO_MERCADORIA PM
+                   INNER JOIN TB_MERCADORIA M ON M.CD_MERCADORIA = PM.CD_MERCADORIA
+                   WHERE PM.NR_PEDIDO = ?";
+
+        $statement      = $this->adapter->query($select);
+        $results        = $statement->execute(array('nr_pedido' => (int) $nuPedido));
+        $returnArray    = array();
+
+        foreach ($results as $result) {
+            $returnArray[] = $result;
+        }
+
+        return $returnArray;
+    }
+
+
+    /**
+     * @param $nuPedido
+     * @return mixed
+     */
+    public function recuperaClienteNumeroPedido($nuPedido) {
+        $select = "SELECT C.*
+                   FROM TB_CLIENTE C
+                   INNER JOIN TB_PEDIDO P ON P.CD_CLIENTE = C.CD_CLIENTE
+                   WHERE P.NR_PEDIDO = ?";
 
         $statement      = $this->adapter->query($select);
         $results        = $statement->execute(array('nr_pedido' => (int) $nuPedido));

@@ -57,7 +57,7 @@
 
                             <?php if($retornoMail) :?>
                                 <h4 class="text-center">
-                                  Nota enviada para:  <?php echo $retorno['emailsEnviados']; ?>
+                                  Nota enviada para:  <?php echo $emailsEnviados; ?>
                                 </h4>
                             <?php endif; ?>
 
@@ -67,11 +67,11 @@
                                 </button>
                             </a>
 
-							<a href="/nota/imprime-danfe?nCh=<?php echo $retorno['prot']['0']['chNFe'].'&data='.$data?>">
-								<button type="button" class="btn btn-primary">
-									Imprimir danfe
-								</button>
-							</a>
+                            <a href="/nota/imprime-danfe?nCh=<?php echo $retorno['prot']['0']['chNFe'].'&data='.$data?>">
+                                <button type="button" class="btn btn-primary">
+                                    Imprimir NF-e
+                                </button>
+                            </a>
 
 
 						</div>

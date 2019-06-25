@@ -39,18 +39,18 @@
                 <?php foreach ($lista as $pedido): ?>
                     <tr>
                         <td><?php echo $pedido['NR_PEDIDO'] ?></td>
-                        <td><?php echo datE('d/m/y', strtotime($pedido['DT_PEDIDO'])); ?></td>
+                        <td align="center"><?php echo datE('d/m/y', strtotime($pedido['DT_PEDIDO'])); ?></td>
                         <td><?php echo $pedido['CD_CLIENTE']."-".$pedido['DS_NOME_RAZAO_SOCIAL'] ?></td>
-                        <td><?php echo $pedido['ST_PEDIDO'] ?></td>
-                        <td><?php echo number_format($pedido['VL_TOTAL_BRUTO'],2,",",".") ?></td>
-                        <td><?php echo number_format($pedido['VL_TOTAL_LIQUIDO'],2,",",".") ?></td>
+                        <td align="right"><?php echo $pedido['ST_PEDIDO'] ?></td>
+                        <td align="right"><?php echo number_format($pedido['VL_TOTAL_BRUTO'],2,",",".") ?></td>
+                        <td align="right"><?php echo number_format($pedido['VL_TOTAL_LIQUIDO'],2,",",".") ?></td>
                         <?php $totalPedRec = $totalPedRec + $pedido['VL_TOTAL_LIQUIDO'] ;?>
                     </tr>
                 <?php endforeach; ?>
             <tr><td></td></tr>
             <tr class="success">
-                <td>Total</td>
-                <td><?php echo number_format($totalPedRec,2,",",".") ?></td>
+                <td colspan="5" align="right">Total</td>
+                <td align="right"><?php echo number_format($totalPedRec,2,",",".") ?></td>
             </tr>
         </table>
     </body>

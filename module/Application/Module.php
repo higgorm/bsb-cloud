@@ -191,6 +191,11 @@ class Module {
                     $table = new Model\MercadoriaTable($adapter);
                     return $table;
                 },
+                "funcionario_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\FuncionarioTable($adapter);
+                    return $table;
+                },
                 "pedido_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new Model\PedidoTable($adapter);

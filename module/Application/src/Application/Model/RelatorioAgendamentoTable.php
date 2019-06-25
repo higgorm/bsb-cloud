@@ -24,15 +24,15 @@ class RelatorioAgendamentoTable {
 
         $statement = "SELECT DISTINCT   a.CD_CLIENTE,
 	                                    a.DT_HORARIO,
-                                        DS_CLIENTE	= CASE	WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 )
+                                        DS_CLIENTE	= CASE	WHEN ( C.CD_CLIENTE IS NULL or CR.cd_cliente = 1 )
                                                             THEN CR.DS_NOME ELSE C.DS_FANTASIA END,
-                                        CD_FONE1	= CASE	WHEN (C.CD_CLIENTE IS NULL or a.cd_cliente = 1 )
+                                        CD_FONE1	= CASE	WHEN (C.CD_CLIENTE IS NULL or CR.cd_cliente = 1 )
                                                             THEN CR.DS_FONE1 ELSE C.DS_FONE1 END,
-                                        CD_FONE2	= CASE	WHEN (C.CD_CLIENTE IS NULL or a.cd_cliente = 1 )
+                                        CD_FONE2	= CASE	WHEN (C.CD_CLIENTE IS NULL or CR.cd_cliente = 1 )
                                                             THEN CR.DS_FONE2 ELSE C.DS_FONE2 END,
                                         C.DS_EMAIL,
                                         CR.DS_FONE1,
-                                        t.ST_PEDIDO
+                                        ST_PEDIDO   = ISNULL(t.ST_PEDIDO, 'A')
                       FROM TB_AGENDAMENTO_FRANQUIA a
                       LEFT JOIN TB_CLIENTE C ON a.CD_CLIENTE = C.CD_CLIENTE
                       LEFT JOIN TB_FRANQUIA_CLIENTE_RAPIDO CR ON A.CD_CLIENTE_RAPIDO = CR.CD_CLIENTE
@@ -42,12 +42,17 @@ class RelatorioAgendamentoTable {
                       AND a.CD_LOJA = '".$cdLoja."'
                       AND a.DT_HORARIO >= '".date(FORMATO_ESCRITA_DATA,strtotime($dataDeInicio))."'
                       AND a.DT_HORARIO <= '".date(FORMATO_ESCRITA_DATA,strtotime($dataDeTermino))."'";
-        if($situacao != 'T'){
+
+        if ($situacao == 'A'){
             $statement .= " AND ISNULL(t.ST_PEDIDO, 'A') = '".$situacao."'";
+        } else if ($situacao == 'F'){
+            $statement .= " AND t.ST_PEDIDO = '".$situacao."'";
         }
+
         if($cdCliente != null){
             $statement .= " AND a.CD_CLIENTE = ".$cdCliente;
         }
+
         if($cdMercadoria != null){
             $statement .= "AND EXISTS (SELECT TOP 1 1 FROM TB_AGENDAMENTO_FRANQUIA_SERVICOS AFS
                                        WHERE AFS.CD_LOJA = A.CD_LOJA

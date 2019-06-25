@@ -31,13 +31,14 @@ class relatorioResumoCaixaController extends RelatorioController
         return $this->table;
     }
 
+
     public function pesquisaAction()
     {
         self::validaAcessoGerente();
 
         $view = new ViewModel(array(
             "listaLoja" => $this->getTable('loja_table')->fetchAll(),
-            "listaOperador" => $this->getTable('loja_table')->fetchAll(),
+            "listaOperador" => $this->getTable('funcionario_table')->fetchAll(),
         ));
         $view->setTemplate("application/relatorio/resumoCaixa/pesquisa.phtml");
 

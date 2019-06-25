@@ -16,7 +16,7 @@
     <td width="70%" align="left">
     	  <b><?php echo utf8_encode($this->dsLoja); ?></b><br>
     	  Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL; ?><br>
-	      <b><?php echo utf8_encode("Relatório de agendamentos"); ?></b>
+	      <b>Relatório de agendamentos</b>
     </td>
     <td width="15%" align="right">
     <h6><?php echo $this->horaAtual; ?><br><?php echo $this->dataAtual; ?></h6>
@@ -38,31 +38,29 @@
     <th width="35%" class="text-left" align="left">Nome do Cliente</th>
     <th width="10%" class="text-right" align="right">Fone 1</th>
     <th width="10%" class="text-right" align="right">Fone 2</th>
-    <th width="15%" class="text-right" align="right">Atendimento</th>
-    <th width="10%" class="text-right" align="right">Situação</th>
-    <th width="30%" class="text-center" align="center">Email</th>
+    <th width="15%" class="text-center" align="right">Atendimento</th>
+    <th width="10%" class="text-center" align="right">Situação</th>
+    <th width="30%" class="text-left" align="left">Email</th>
   </tr>
     <?php $count = 0; ?>
   <?php foreach($this->lista as $linha) : ?>
 		     <tr>
 			    <td class="text-left" ali   gn="left"><?php echo $linha['CD_CLIENTE'] ?></td>
 			    <td class="text-left" align="left"><?php echo utf8_encode($linha["DS_CLIENTE"]) ?></td>
-			    <td class="text-right" align="right"><?php echo $linha["CD_FONE1"] ?></td>
-			    <td class="text-right" align="right"><?php echo $linha["CD_FONE2"] ?></td>
-			    <td class="text-right" align="right"><?php $date = new DateTime($linha["DT_HORARIO"]); echo $date->format('d/m/y H:m'); ?></td>
+			    <td class="text-right" align="right" nowrap><?php echo $linha["CD_FONE1"] ?></td>
+			    <td class="text-right" align="right" nowrap><?php echo $linha["CD_FONE2"] ?></td>
+			    <td class="text-right" align="center" nowrap><?php $date = new DateTime($linha["DT_HORARIO"]); echo $date->format('d/m/y H:m'); ?></td>
 			    <td class="text-center" align="center"><?php echo $linha["ST_PEDIDO"] ?></td>
-			    <td class="text-center" align="center"><?php echo $linha["DS_EMAIL"] ?></td>
+			    <td class="text-center" align="left" nowrap><?php echo $linha["DS_EMAIL"] ?></td>
 			  </tr>
       <?php $count++; ?>
 	<?php endforeach; ?>
  <tr>
   	<td colspan="7"><hr></td>
   </tr>
-  <tr>
-    <td class=""></td>
-    <td class="text-right" align="right"><b>TOTAL</b></td>
-    <td class="text-right" align="right"><b><?php echo $count ?></b></td>
-    <td class="" ></td>
+    <tr class="success">
+    <td class="text-right" align="right" colspan="6"><b>TOTAL</b></td>
+    <td class="text-right" align="right" ><b><?php echo $count ?></b></td>
   </tr>
 </table>
 </body>

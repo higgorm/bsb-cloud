@@ -33,7 +33,8 @@
 									<div class="col-md-2">
 										<label class="control-label text-info">Número de Nota:</label>
 										<input type="text" value="<?php echo ( @$replicar == '1' ? '' : @$nota['infNFE'] )?>" name="infNFE" id="infNFE" class="form-control" readonly />
-									</div>
+                                        <input type="hidden" value="<?php echo ( @$replicar == '1' ? '' : @$nota['NR_PEDIDO'] )?>" name="NR_PEDIDO" id="NR_PEDIDO"  />
+                                    </div>
                                     <div class="col-md-5">
                                         <label class="control-label text-info">Protocolo / Autorização:</label>
                                         <input type="text" value="<?php echo ( @$replicar == '1' ? '' : @$nota['DS_PROTOCOLO'] )?>" name="DS_PROTOCOLO" id="DS_PROTOCOLO" class="form-control" readonly />

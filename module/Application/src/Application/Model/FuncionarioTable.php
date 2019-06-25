@@ -2,6 +2,10 @@
 
 namespace Application\Model;
 
+use Zend\Db\Sql\Where;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
@@ -23,6 +27,26 @@ class FuncionarioTable extends AbstractTableGateway {
 			$statement->execute();
 		}
 		
+    }
+
+    public function fetchAll(Array $param = array(), $currentPage = "1", $countPerPage = "10") {
+        $select = new Select();
+        $where = new Where();
+
+        foreach ($param as $field => $search) {
+            $where->like($field, '%' . $search . '%');
+        }
+
+        $select->from($this->table)
+            ->where($where)
+            ->order("DS_FUNCIONARIO ");
+
+        $adapter = new DbSelect($select, $this->adapter);
+        $paginator = new Paginator($adapter);
+        $paginator->setCurrentPageNumber($currentPage);
+        $paginator->setItemCountPerPage($countPerPage);
+
+        return $paginator;
     }
 
     public function getDadosFuncionario($dsLogin) {

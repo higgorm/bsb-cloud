@@ -535,7 +535,7 @@ class NotaController extends AbstractActionController{
         $nfeGe = array();
 
         //get Post
-        if(empty($post)){
+        if( empty($post) ) {
             $post = $this->getRequest()->getPost();
         }
 
@@ -565,7 +565,7 @@ class NotaController extends AbstractActionController{
         $totalNota    		= 0;
         $totalServ      	= 0;
         $nfeGe['CD_LOJA']   = $session->cdLoja;
-        $nfeGe['NR_PEDIDO'] = !empty($nrPedido) ? $nrPedido : '0';
+        $nfeGe['NR_PEDIDO'] = !empty($nrPedido) ? $nrPedido : $post->get('NR_PEDIDO');
 
         //Copiar CFOP para serviços/Mercadorias
         $copiarCFOP               =  ($post->get('copiarCFOP')=='S') ;
@@ -580,12 +580,9 @@ class NotaController extends AbstractActionController{
 
 
         //Dados da NFe (ide)
-        $statement = $dbAdapter->query("SELECT  *
-										FROM TB_NFE_CONFIG
-										WHERE CD_LOJA  = ? ");
-
         //Recupera parametros de configuração da NFE persitidos no Banco
-        $remetente = $statement->execute(array($session->cdLoja));
+        //$remetente = $statement->execute(array($session->cdLoja));
+        $remetente = $table->getConfig($session->cdLoja);
 
         foreach ($remetente as $rem){
             $cUF            = substr( $rem['CD_IBGE_CIDADE'], 0, 2 ); //codigo numerico do estado
@@ -971,6 +968,7 @@ class NotaController extends AbstractActionController{
             $aP[] = array(
                 'nItem'		=> $i,
                 'cProd'     => $cdMercadoria,
+                //GTIN (Global Trade Item Number) do produto, antigo código EAN ou código de barras
                 'cEAN'      => (empty($rowResult["CD_BARRAS"]) ? 'SEM GTIN' : $rowResult["CD_BARRAS"]),
                 'xProd'     => $dsMercadoria,
                 'NCM'       => $rowResult["DS_NCM"],
@@ -982,7 +980,8 @@ class NotaController extends AbstractActionController{
                 'qCom'      => number_format( $qtdVendida, 2, '.', ''),
                 'vUnCom'    => number_format( $vlPrecoVenda, 4, '.', ''),
                 'vProd'     => number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
-                'cEANTrib'  => 'SEM GTIN',
+                // GTIN (Global Trade Item Number) da unidade tributável, antigo código EAN ou código de barras
+                'cEANTrib'  => (empty($rowResult["CD_BARRAS"]) ? 'SEM GTIN' : $rowResult["CD_BARRAS"]),
                 'uTrib'     => $rowResult["CD_UNIDADE_VENDA"],
                 'qTrib'     => number_format( $qtdVendida, 2, '.', ''),
                 'vUnTrib'   => number_format( $vlPrecoVenda,4, '.', ''),
@@ -995,6 +994,7 @@ class NotaController extends AbstractActionController{
                 'nItemPed'  => $i,
                 'nFCI'      => ''
             );
+
             //Serviço
             if ( $rowResult['ST_SERVICO'] == 'S' ) {
                 $issqn[] = array(
@@ -1722,7 +1722,6 @@ class NotaController extends AbstractActionController{
     }
 
 
-
     /*
     * Criar uma nota NFE a partir de um pedido recebido no caixa
      *
@@ -1736,6 +1735,9 @@ class NotaController extends AbstractActionController{
         //variaveis iniciais
         $erro           = "";
         $motivo         = "";
+        $chave          = "";
+        $cfop           = "";
+        $xNatOp         = "";
         $arrayProdutos  = array();
         $retorno        = array();
 
@@ -1764,15 +1766,18 @@ class NotaController extends AbstractActionController{
                 //verifica se ja existe nfe gerada para este pedido
                 $notaTable     = new NotaTable($dbAdapter);
                 $notaExistente = $notaTable->recuperaNotaPorNumeroPedido($nrPedido,false);
-                if($notaExistente) {
-                    throw  new \Exception("A nota nº{$notaExistente['infNFE']} já está associada a este pedido nº{$nrPedido}!",400);
-                }
+                //if($notaExistente) {
+                    //throw  new \Exception("A nota nº{$notaExistente['infNFE']} já está associada a este pedido nº{$nrPedido}!",400);
+                //}
 
                 //Dados da NFe (configuração padrão)
-                $dadosConfiguracaoNF = $notaTable->getConfig($session->cdLoja);
+                $dadosConfiguracaoNF =  $notaTable->getConfig($session->cdLoja);
 
                 //Recuperar dados dos produtos incluidos dentro pedido
                 $produtoExistente    =   $pedidoTable->recuperaMercadoriasNumeroPedido($nrPedido);
+
+                //Recuperar dados do cliente do pedido
+                $clienteExistente    =   $pedidoTable->recuperaClienteNumeroPedido($nrPedido);
 
                 //Impostos
                 $baseCalculoImpostos = $pedidoExistente['VL_TOTAL_BRUTO'];
@@ -1788,7 +1793,7 @@ class NotaController extends AbstractActionController{
                 $totalPrev          = ((float)($baseCalculoImpostos * $aliquotaPrev)    / 100);
 
                 //Prepara um objeto Zend\Stdlib\Parameters
-                $post->set('infNFE','');
+                $post->set('infNFE',($notaExistente ? $notaExistente['infNFE'] : ''));
                 $post->set('nrPedido',$nrPedido);
                 $post->set('DS_PROTOCOLO','');
                 $post->set('copiarCFOP','N');
@@ -1797,11 +1802,9 @@ class NotaController extends AbstractActionController{
                 $post->set('nascimento_paciente',null);
                 $post->set('codCliente',$pedidoExistente['CD_CLIENTE']);
 
-                $post->set('destNome','SUCESSO DISTRIBUIDORA');
-                $post->set('destCNPJ','04122615000141');
-                $post->set('cfop',"5933");//$dadosConfiguracaoNF['CD_NATUREZA_OPERACAO']
-                $post->set('natOp',"5933");//$dadosConfiguracaoNF['CD_NATUREZA_OPERACAO']
-                $post->set('xNatOp','5933 - Prestação de serviço tributado pelo ISSQN'); //5102 - Venda dentro do DF
+                $post->set('destNome',$clienteExistente[0]['DS_NOME_RAZAO_SOCIAL']);
+                $post->set('destCNPJ',$clienteExistente[0]['NR_CGC_CPF']);
+
                 $post->set('mod',"55");  //55 nfe or 65 nfce
                 $post->set('dhEmi',date("d-m-Y"));
                 $post->set('indPag','0');
@@ -1809,23 +1812,43 @@ class NotaController extends AbstractActionController{
                 $post->set('refNFe','');
                 $post->set('infadc','Nota fiscal associada ao pedido de número '.$nrPedido);
 
-                foreach ($produtoExistente as $key => $prod) {
+                foreach ($produtoExistente as $prod) {
 
                     $codMercadoria      = $prod['CD_MERCADORIA'];
-                    $dscMercadoria      = '0350 - BARBER TRIM MAQUINA  PARA ACABAMENTO';
-                    $qtdVendida         =  $prod['NR_QTDE_VENDIDA'];
-                    $vlPrecoUnitario    =  $prod['VL_TOTAL_LIQUIDO'];
-                    $vlTotal            =  $vlPrecoUnitario * (int) $qtdVendida ;
+                    $dscMercadoria      = utf8_encode($prod['DS_MERCADORIA']);
+                    $qtdVendida         = $prod['NR_QTDE_VENDIDA'];
+                    $vlPrecoUnitario    = $prod['VL_TOTAL_LIQUIDO'];
+                    $vlTotal            = $vlPrecoUnitario * (int) $qtdVendida ;
+                    $cfop               = (empty($cfop) && !empty($prod['DS_CFOP_INTERNO'])) ? $prod['DS_CFOP_INTERNO'] : "";
 
-                    $post->set('ds_mercadoria-'.$codMercadoria,$dscMercadoria);
-                    $post->set('qtdVendida-'.$codMercadoria,$qtdVendida);
-                    $post->set('vl_preco_unitario-'.$codMercadoria,$vlPrecoUnitario);
+                    if (empty($xNatOp)){
+                        $xNatOp   = "";
+                    }
+
+
+                    $post->set('ds_mercadoria-'.$codMercadoria, $dscMercadoria);
+                    $post->set('qtdVendida-'.$codMercadoria, $qtdVendida);
+                    $post->set('vl_preco_unitario-'.$codMercadoria, $vlPrecoUnitario);
                     $post->set('vl_tot-'.$codMercadoria,$vlTotal);
 
                     array_push($arrayProdutos,$codMercadoria);
                 }
 
                 $post->set('cdMercadoria',$arrayProdutos);
+
+                $cfopTable           =  new TabelaTable($dbAdapter);
+                if (empty($cfop)) {
+                    $cfop                =  $dadosConfiguracaoNF[0]['CD_NATUREZA_OPERACAO'];
+                    $cfopResult          =  $cfopTable->getNaturezaOperacao($dadosConfiguracaoNF[0]['CD_NATUREZA_OPERACAO']);
+                    $xNatOp              =  utf8_encode($cfopResult['DS_NATUREZA_OPERACAO']);
+                } else {
+                    $cfopResult          =  $cfopTable->getNaturezaOperacao($cfop);
+                    $xNatOp              =  utf8_encode($cfopResult['DS_NATUREZA_OPERACAO']);
+                }
+
+                $post->set('cfop',$cfop);
+                $post->set('natOp',$cfop);
+                $post->set('xNatOp',$xNatOp);
 
                 $post->set('retPis_bc',$baseCalculoImpostos);
                 $post->set('retPis_aliq',$aliquotaPis);
@@ -1883,12 +1906,9 @@ class NotaController extends AbstractActionController{
             }
 
             if (isset($retornoViewModel['emailsEnviados'])) {
-                $emailsEnviados = explode(",",$retornoViewModel['emailsEnviados']);
+                $emailsEnviados = implode(",",$retornoViewModel['emailsEnviados']);
             }
-
-
         }
-
 
         $viewModel = new ViewModel();
         $viewModel->setTerminal(false);
@@ -1908,20 +1928,67 @@ class NotaController extends AbstractActionController{
 	*/
 	public function geraNfeAction(){
 
-        //array insercao no BD
-        $nfeGe = array();
-
-        //get Post
-        @$post = $this->getRequest()->getPost();
-
-		// get the db adapter
+        // get the db adapter
         $sm         = $this->getServiceLocator();
         $dbAdapter  = $sm->get('Zend\Db\Adapter\Adapter');
 
         //get session
         $session    = new Container("orangeSessionContainer");
-		$table      = new notaTable($dbAdapter);
-		$nfe        = new MakeNFe();
+
+        //variaveis iniciais
+        $erro           = "";
+        $motivo         = "";
+        $chave          = "";
+        $nfeGe          = array();
+
+        //get Post
+        @$post = $this->getRequest()->getPost();
+
+        try {
+            //realiza a tentativa de geração e emissão da NFE
+            // Recebe um array com os devidos retornos da operação de envio
+            $retornoViewModel = $this->_gerarEnviarNfe("",$post);
+
+        } catch (\Exception $e) {
+            $erro = $e->getMessage();
+        }
+
+        if (is_array($retornoViewModel)) {
+            if(isset($retornoViewModel['erro'])){
+                $erro = $retornoViewModel['erro'];
+            }
+
+            if (isset($retornoViewModel['retorno'])) {
+                $retorno = $retornoViewModel['retorno'];
+            }
+
+            if (isset($retornoViewModel['chave'])) {
+                $chave = $retornoViewModel['chave'];
+            }
+
+            if (isset($retornoViewModel['data'])) {
+                $data = $retornoViewModel['data'];
+            }
+
+            if (isset($retornoViewModel['redirect'])){
+                return $this->redirect()->toUrl($retornoViewModel['redirect']);
+            }
+        }
+
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(false);
+        $viewModel->setVariable('erro', $erro);
+        $viewModel->setVariable('retorno', $retorno);
+        $viewModel->setVariable('chave', $chave);
+        $viewModel->setVariable('data', $data);
+
+        return $viewModel;
+
+
+        //Codigo de envio anterior ate a versão 2.9
+        /*
+        $table      = new notaTable($dbAdapter);
+        $nfe        = new MakeNFe();
 		$nfeTools   = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
 
 
@@ -1941,7 +2008,7 @@ class NotaController extends AbstractActionController{
 		$totalNota    		= 0;
 		$totalServ      	= 0;
 		$nfeGe['CD_LOJA']   = $session->cdLoja;
-		$nfeGe['NR_PEDIDO'] = '0';
+		$nfeGe['NR_PEDIDO'] = $post->get('NR_PEDIDO');
 
 		//Copiar CFOP para serviços/Mercadorias
         $copiarCFOP               =  ($post->get('copiarCFOP')=='S') ;
@@ -3062,7 +3129,7 @@ class NotaController extends AbstractActionController{
 		    foreach ($nfe->erros as $err) {
 		        echo 'tag: &lt;'.$err['tag'].'&gt; ---- '.$err['desc'].'<br>';
 		    }
-		}
+		}*/
 	}
 
 	//Testar Status do serviço

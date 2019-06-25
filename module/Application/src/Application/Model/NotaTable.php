@@ -55,6 +55,7 @@ class NotaTable extends AbstractTableGateway
 		return $returnArray;
 	}
 
+
     /**
      * @param array $param
      * @param string $currentPage

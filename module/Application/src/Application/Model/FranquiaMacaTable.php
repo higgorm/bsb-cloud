@@ -169,8 +169,10 @@ class FranquiaMacaTable extends AbstractTableGateway {
         $dtInicio =  $dtInicio . ' 00:00:00';
         $dtFim = $dtFim . ' 23:59:59';
 
-        $sql = "SELECT DISTINCT a.CD_CLIENTE, a.DT_HORARIO, a.NR_MACA,
-                    DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN SUBSTRING(CR.DS_NOME,0,10) ELSE SUBSTRING(C.DS_NOME_RAZAO_SOCIAL,0,10) END,
+        $sql = "SELECT DISTINCT a.CD_CLIENTE, 
+                    a.DT_HORARIO, 
+                    a.NR_MACA,
+                    DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or CR.cd_cliente = 1 ) THEN SUBSTRING(CR.DS_NOME,0,10) ELSE SUBSTRING(C.DS_NOME_RAZAO_SOCIAL,0,10) END,
                     --DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN left(CR.DS_NOME,CHARINDEX(' ',CR.DS_NOME)) ELSE left(C.DS_NOME_RAZAO_SOCIAL,CHARINDEX(' ',C.DS_NOME_RAZAO_SOCIAL)) END,
                     DS_FONE1 = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN CR.DS_FONE1 ELSE C.DS_FONE1 END,
                     ST_PEDIDO = ISNULL( p.ST_PEDIDO, 'A' ), p.NR_PEDIDO,

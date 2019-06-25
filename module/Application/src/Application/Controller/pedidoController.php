@@ -920,8 +920,6 @@ class PedidoController extends AbstractActionController
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
 
-
-
         return $this->redirect()->toUrl($redirect);
     }
 
@@ -1176,8 +1174,6 @@ class PedidoController extends AbstractActionController
      *
      */
     public function cancelarAction(){
-
-
 
         // get the db adapter
         $sm             = $this->getServiceLocator();
