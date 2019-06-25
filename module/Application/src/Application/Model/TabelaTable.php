@@ -81,7 +81,7 @@ class TabelaTable extends AbstractTableGateway
 	}
 
 	public function getNaturezaOperacao($cfop){
-        $statement = $this->adapter->query("SELECT DS_NATUREZA_OPERACAO =  CONCAT(CD_NATUREZA_OPERACAO ,' - ' , DS_NATUREZA_OPERACAO )
+        $statement = $this->adapter->query("SELECT DS_NATUREZA_OPERACAO =  CAST(CD_NATUREZA_OPERACAO AS VARCHAR) + ' - ' + DS_NATUREZA_OPERACAO 
                                             FROM TB_NATUREZA_OPERACAO 
                                             WHERE CD_NATUREZA_OPERACAO = ".$cfop);
 
