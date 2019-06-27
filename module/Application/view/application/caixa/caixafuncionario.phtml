@@ -38,7 +38,7 @@
                     <br />
                     <div class="controls">
                         <div class="col-md-12">
-                            <input type="submit" class="btn btn-primary btn-large" id="btnAbreCaixa" value="Abrir caixa">                            
+                            <input type="submit" class="btn btn-primary btn-large" id="btnAbreCaixa" value="Abrir caixa">
                         </div>
                     </div>
                 </td>
@@ -60,7 +60,7 @@
                 var msgR = '';                
                 if(dado[0].DT_ENTRADA.trim() == $("input[name='dt_entrada']").val())
                 { 
-                    msg = 'Deseja reabir esse caixa?';
+                    msg = 'Deseja reabrir esse caixa?';
                     url = '/caixa/reaberturacaixa';
                     msgR = 'Caixa reaberto!';
                     $('form').attr('action','/caixa/index');

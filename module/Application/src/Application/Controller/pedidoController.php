@@ -911,7 +911,7 @@ class PedidoController extends AbstractActionController
             $this->flashMessenger()->addMessage($message);
 
             if($post->get('flRedirecionarAoCaixa') == 'S') {
-                $redirect = '/caixa/caixa';
+                $redirect = '/caixa/index';
             }
 
         } catch (Exception $e) {

@@ -77,9 +77,19 @@ class CaixaController extends AbstractActionController {
         $data       = $request->getPost();
         $arrPedidos = $this->getTable('pedido_table')->listaPedidosAtendidos($session->cdLoja, date('d/m/Y'));
 
+        if (isset($data['rdCaixa'])) {
+            $nrCaixa = (int)$data['rdCaixa'];
+        } else {
+            $message = array("info" =>"Favor abrir/selecionar um caixa para prosseguir !");
+            $this->flashMessenger()->addMessage($message);
+
+            //Se funcionou tudo, cria uma NFe apartir do pedido, salva e envia
+            $this->redirect()->toUrl("/caixa/index");
+        }
+
         $view = new ViewModel(array(
             'listaPedidos' => $arrPedidos,
-            'nrCaixa' => 1,
+            'nrCaixa' => $nrCaixa,
             'dtCaixa' => date('d/m/Y')
         ));
 
@@ -113,7 +123,7 @@ class CaixaController extends AbstractActionController {
 
                 $data = $request->getPost();
                 if(!$this->getTable('caixa_funcionario_table')->fechamentoCaixa($session->cdLoja, $data['nr_caixa'], $data['dtCaixa']))
-                    throw new Exception;
+                    throw new \Exception;
 
                 $dbAdapter->getDriver()->getConnection()->commit();
                 $this->redirect()->toUrl("/caixa/index");
@@ -129,7 +139,7 @@ class CaixaController extends AbstractActionController {
             } else {
                 return $view;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $dbAdapter->getDriver()->getConnection()->rollback();
             return false;
         }
@@ -149,7 +159,7 @@ class CaixaController extends AbstractActionController {
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
                 $data = $request->getPost();
                 if(!$this->getTable('caixa_funcionario_table')->reaberturaCaixa($session->cdLoja, $data['nr_caixa'], $data['dtCaixa']))
-                    throw new Exception;
+                    throw new \Exception;
 
                 $dbAdapter->getDriver()->getConnection()->commit();
                 $this->redirect()->toUrl("/caixa/index");
@@ -165,7 +175,7 @@ class CaixaController extends AbstractActionController {
             } else {
                 return $view;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $dbAdapter->getDriver()->getConnection()->rollback();
             return false;
         }
@@ -484,20 +494,20 @@ class CaixaController extends AbstractActionController {
 
                 //inserir TB_CAIXA
                 $dadosC = array();
-                $dadosC["CD_LOJA"] = $session->cdLoja;
-                $dadosC["NR_LANCAMENTO_CAIXA"] = $nrLancamentoCaixa;
-                $dadosC["NR_CAIXA"] = $data['nrCaixa'];
-                $dadosC["DT_MOVIMENTO"] = date('d/m/Y H:i:s', strtotime(str_replace('/', '-', $data['dtCaixa']) . ' 00:00:00'));
-                $dadosC["CD_TIPO_MOVIMENTO_CAIXA"] = $data['cdTipoMovimentacaoCaixa'];
-                $dadosC["DS_COMPL_MOVIMENTO"] = $data['txtComplemento'];
-                $dadosC["NR_DOCUMENTO"] = (!empty($data['nrDocumento'])) ? $data['nrDocumento'] : NULL;
-                $dadosC["VL_TOTAL_BRUTO"] = strtr($data['vlMovimento'], array('.' => '', ',' => '.'));
-                $dadosC["VL_TOTAL_LIQUIDO"] = strtr($data['vlMovimento'], array('.' => '', ',' => '.'));
-                $dadosC["ST_CANCELADO"] = 'N';
-                $dadosC["ST_CARREG_INTERNO"] = '';
-                $dadosC["DS_USUARIO"] = $session->usuario;
-                $dadosC["CD_CLASSE_FINANCEIRA"] = $data['cdClasseFinanceira'];
-                $dadosC["SerialHD"] = '';
+                $dadosC["CD_LOJA"]                  = $session->cdLoja;
+                $dadosC["NR_LANCAMENTO_CAIXA"]      = $nrLancamentoCaixa;
+                $dadosC["NR_CAIXA"]                 = $data['nrCaixa'];
+                $dadosC["DT_MOVIMENTO"]             = date('d/m/Y H:i:s', strtotime(str_replace('/', '-', $data['dtCaixa']) . ' 00:00:00'));
+                $dadosC["CD_TIPO_MOVIMENTO_CAIXA"]  = $data['cdTipoMovimentacaoCaixa'];
+                $dadosC["DS_COMPL_MOVIMENTO"]       = $data['txtComplemento'];
+                $dadosC["NR_DOCUMENTO"]             = (!empty($data['nrDocumento'])) ? $data['nrDocumento'] : NULL;
+                $dadosC["VL_TOTAL_BRUTO"]           = strtr($data['vlMovimento'], array('.' => '', ',' => '.'));
+                $dadosC["VL_TOTAL_LIQUIDO"]         = strtr($data['vlMovimento'], array('.' => '', ',' => '.'));
+                $dadosC["ST_CANCELADO"]             = 'N';
+                $dadosC["ST_CARREG_INTERNO"]        = '';
+                $dadosC["DS_USUARIO"]               = $session->usuario;
+                $dadosC["CD_CLASSE_FINANCEIRA"]     = $data['cdClasseFinanceira'];
+                $dadosC["SerialHD"]                 = '';
                 if(!$this->getTable("caixa_table")->insereCaixa($dadosC))
                 {
                     $dbAdapter->getDriver()->getConnection()->rollback();
@@ -508,7 +518,7 @@ class CaixaController extends AbstractActionController {
                 print json_encode(array('success'=>true,'nrLancamentoCaixa'=>$nrLancamentoCaixa));
                 exit;
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $dbAdapter->getDriver()->getConnection()->rollback();
             print json_encode(array('success'=>false));
             exit;
@@ -520,21 +530,35 @@ class CaixaController extends AbstractActionController {
      */
     public function pesquisamovimentacaocaixaAction()
     {
-        $session = new Container("orangeSessionContainer");
-        $request = $this->getRequest();
-        $data = array();
+        $session        = new Container("orangeSessionContainer");
+        $request        = $this->getRequest();
         $listaresultado = array();
-        
-        if ($request->isPost()) {            
-            $data = $request->getPost();            
-            $listaresultado = $this->getTable("caixa_table")->pesquisaMovimentacaoCaixa($session->cdLoja, $data['nrCaixa'], $data['dtCaixa'], 
-                                                                                        $data['cdPesquisaPor'], $data['txtProcurar']);
+
+        try {
+            if ($request->isPost()) {
+                $data = $request->getPost();
+                $listaresultado = $this->getTable("caixa_table")
+                    ->pesquisaMovimentacaoCaixa($session->cdLoja,
+                        $data['nrCaixa'],
+                        $data['dtCaixa'],
+                        $data['cdPesquisaPor'],
+                        $data['txtProcurar']);
+            }
+
+            $c = (count($listaresultado) > 0) ? true : false;
+
+            //corrige o encode salva errado na base de dados, para ser enviado como UTF-8
+            array_walk_recursive($listaresultado, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
+
+            echo json_encode(array('success'=>$c,
+                                   'result' => $listaresultado));
+
+        } catch(\Exception $e) {
+            echo json_encode(array( 'success'=>false,
+                                    'result' => array(),
+                                    'error'=>$e->getMessage()));
         }
-        
-        $c = (count($listaresultado) > 0) ? true : false;
-        
-        print json_encode(array('success'=>$c, 'result' => $listaresultado));
+
         exit;
     }
-    
 }

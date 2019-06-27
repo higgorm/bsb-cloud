@@ -125,7 +125,7 @@ INSERT INTO [LOGIN].[dbo].TB_MENU_WEB
 	VALUES (12,'Pedido',NULL,'/pedido/lista-tablet','fa fa-pencil','S');
 
 INSERT INTO [LOGIN].[dbo].TB_MENU_WEB
-	VALUES (13,'Caixa',NULL,'/caixa/caixa','fa fa-shopping-cart','S');
+	VALUES (13,'Caixa',NULL,'/caixa/index','fa fa-shopping-cart','S');
 
 INSERT INTO [LOGIN].[dbo].TB_MENU_WEB
 	VALUES (14,'Nota Fiscal Eletrônica',NULL,NULL,'fa fa-qrcode','S');
@@ -684,6 +684,12 @@ INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
 (DS_MENU_RESOURCE,CD_MENU) VALUES('caixa/gravamovimentacaocaixa',13);
 INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
 (DS_MENU_RESOURCE,CD_MENU) VALUES('caixa/pesquisamovimentacaocaixa',13);
+INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
+(DS_MENU_RESOURCE,CD_MENU) VALUES('ajax/get-historico-movimentacao',13);
+INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
+(DS_MENU_RESOURCE,CD_MENU) VALUES('ajax/get-classificacao-financeira',13);
+INSERT INTO [LOGIN].[dbo].TB_MENU_WEB_RESOURCE
+(DS_MENU_RESOURCE,CD_MENU) VALUES('ajax/get-operador-loja',13);
 
 
 --RESOURCES DO MENUS CRM - ANALISE

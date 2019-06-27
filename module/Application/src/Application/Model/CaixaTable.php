@@ -174,7 +174,7 @@ class CaixaTable extends AbstractTableGateway {
                     tmc.DS_TIPO_MOVIMENTO_CAIXA,
                     c.DS_COMPL_MOVIMENTO,
                     tcf.DS_CLASSE_FINANCEIRA,
-                    CASE WHEN ( c.ST_CANCELADO = 'N' ) THEN 'Não' ELSE 'Sim' END AS ST_CANCELADO
+                    CASE WHEN ( c.ST_CANCELADO = 'N' ) THEN 'N&atilde;o' ELSE 'Sim' END AS ST_CANCELADO
                 FROM TB_CAIXA c
                 JOIN TB_TIPO_MOVIMENTO_CAIXA tmc on c.CD_TIPO_MOVIMENTO_CAIXA = tmc.CD_TIPO_MOVIMENTO_CAIXA
                 JOIN TB_CLASSIFICACAO_FINANCEIRA tcf on c.CD_CLASSE_FINANCEIRA = tcf.CD_CLASSE_FINANCEIRA

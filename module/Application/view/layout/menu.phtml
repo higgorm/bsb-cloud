@@ -6,19 +6,28 @@
         </a>
     </li>
     <?php
+
         function in_array_menu_pai($menuPerfilWeb,$arrayIdMenu = array()){
             $return = false;
+            $keys = array_keys($menuPerfilWeb);
             foreach($arrayIdMenu as $idMenu) {
-                if( in_array($idMenu, $menuPerfilWeb)) {
+                if( in_array($idMenu, $keys)) {
                     $return = true;
                 }
             }
 
             return $return;
         }
+
         function in_array_menu($menuPerfilWeb,$idMenu){
-            return in_array($idMenu, $menuPerfilWeb);
+            return in_array($idMenu, array_keys($menuPerfilWeb));
         }
+
+        function get_url_menu($menuPerfilWeb,$idMenu){
+            return $menuPerfilWeb[$idMenu];
+        }
+
+
     ?>
         <?php if (in_array_menu_pai($session->menuPerfilWeb, array(2, 3, 4))) : ?>
             <li class="">
@@ -34,7 +43,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 2)) : ?>
 
                     <li>
-                        <a href="/menu-web/index" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 2) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Menus do sistema</span>
                         </a>
@@ -44,7 +53,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 3)) : ?>
 
                     <li>
-                        <a href="/perfil-web/index" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 3) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Perfis do sistema</span>
                         </a>
@@ -54,7 +63,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 4)) : ?>
 
                     <li>
-                        <a href="/usuario-web/index" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 4) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Usuários Web</span>
                         </a>
@@ -79,7 +88,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 6)) : ?>
 
                     <li>
-                        <a href="/cliente" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 6) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Clientes</span>
                         </a>
@@ -89,7 +98,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 7)) : ?>
 
                     <li>
-                        <a href="/mercadoria" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 7) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Serviço/Mercadoria</span>
                         </a>
@@ -99,7 +108,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 8)) : ?>
 
                     <li>
-                        <a href="/tabela/cfop" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 8) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>CFOP</span>
                         </a>
@@ -109,7 +118,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 9)) : ?>
 
                     <li>
-                        <a href="/tabela/cartao" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 9) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Cartões</span>
                         </a>
@@ -117,9 +126,8 @@
 
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 10)) : ?>
-
                     <li>
-                        <a href="/tabela/forma-pagamento" class="auto">
+                         <a href="<?php echo get_url_menu($session->menuPerfilWeb, 10) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Forma de Pagamento</span>
                         </a>
@@ -132,11 +140,9 @@
         <?php endif; ?>
 
 
-
-
         <?php if (in_array_menu_pai($session->menuPerfilWeb, array(11))) : ?>
             <li class="">
-                <a href="/agenda/index" class="auto">
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 11) ?>" class="auto">
                     <i class="fa fa-calendar"></i>
                     <span class="font-bold">Agenda</span>
                 </a>
@@ -145,8 +151,7 @@
 
     <?php if (in_array_menu_pai($session->menuPerfilWeb, array(12))) : ?>
             <li class="">
-                <a href="/pedido/lista-tablet" class="auto">
-
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 12) ?>" class="auto">
                     <i class="fa fa-pencil"></i>
                     <span class="font-bold">Pedido</span>
                 </a>
@@ -155,8 +160,7 @@
 
     <?php if (in_array_menu_pai($session->menuPerfilWeb, array(13))) : ?>
             <li class="">
-                <a href="/caixa/caixa" class="auto">
-
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 13) ?>" class="auto">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="font-bold">Caixa</span>
                 </a>
@@ -177,7 +181,7 @@
                 <ul class="nav dk">
                     <?php if (in_array_menu($session->menuPerfilWeb, 15)) : ?>
                     <li>
-                        <a href="/nota/avulsa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 15) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Emitir NF-e</span>
                         </a>
@@ -185,7 +189,7 @@
                     <?php endif; ?>
                     <?php if (in_array_menu($session->menuPerfilWeb, 16)) : ?>
                     <li>
-                        <a href="/nota/lista" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 16) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Listar NF-e</span>
                         </a>
@@ -193,7 +197,7 @@
                     <?php endif; ?>
                     <?php if (in_array_menu($session->menuPerfilWeb, 34)) : ?>
                         <li>
-                            <a href="/nota/inutilizar" class="auto">
+                            <a href="<?php echo get_url_menu($session->menuPerfilWeb, 34) ?>" class="auto">
                                 <i class="i i-dot"></i>
                                 <span>Inutilizar NF-e</span>
                             </a>
@@ -201,7 +205,7 @@
                     <?php endif; ?>
                     <?php if (in_array_menu($session->menuPerfilWeb, 17)) : ?>
                     <li>
-                        <a href="/nota/consulta-receita" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 17) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Consulta(Receita)</span>
                         </a>
@@ -209,7 +213,7 @@
                     <?php endif; ?>
                     <?php if (in_array_menu($session->menuPerfilWeb, 18)) : ?>
                     <li>
-                        <a href="/nota/configurar" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 18) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Configurar</span>
                         </a>
@@ -233,7 +237,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 22)) : ?>
                     <!-- RELATORIO ATENDIMENTO -->
                     <li>
-                        <a href="/relatorio-atendimento/pesquisa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 22) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Atendimento</span>
                         </a>
@@ -241,7 +245,7 @@
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 23)) : ?>
                     <li class="">
-                        <a href="/relatorio-nota/pesquisa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 23) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Notas Fiscais</span>
                         </a>
@@ -249,7 +253,7 @@
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 24)) : ?>
                     <li>
-                        <a href="/relatorio-pedido/pesquisa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 24) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Pedidos</span>
                         </a>
@@ -259,7 +263,7 @@
 
                     <!-- RELATORIO AGENDAMENTO -->
                     <li>
-                        <a href="/relatorio-agendamento/pesquisa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 25) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Agendamentos</span>
                         </a>
@@ -268,7 +272,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 26)) : ?>
                     <!-- RELATORIO CAIXA -->
                     <li>
-                        <a href="/relatorio-caixa/pesquisa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 26) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Caixa</span>
                         </a>
@@ -276,7 +280,7 @@
                 <?php endif; ?>
                 <?php if (in_array_menu($session->menuPerfilWeb, 27)) : ?>
                     <li>
-                        <a href="/relatorio-resumo-caixa/pesquisa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 27) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Resumo de Caixa</span>
                         </a>
@@ -285,7 +289,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 28)) : ?>
                     <!-- RELATORIO ESTOQE -->
                     <li>
-                        <a href="/relatorio-inventario-estoque/pesquisa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 28) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Invent&aacute;rio de Estoque</span>
                         </a>
@@ -294,7 +298,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 29)) : ?>
                     <!-- RELATORIO GERENCIAL -->
                     <li>
-                        <a href="/relatorio-vendas-mensal-tipo-pagamento/pesquisa" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 29) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Vendas Mensais Por Tipo de Pagamento</span>
                         </a>
@@ -303,7 +307,7 @@
                 <?php if (in_array_menu($session->menuPerfilWeb, 30)) : ?>
 
                     <li>
-                        <a href="/relatorio-pedido/pesquisa-multi-loja" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 30) ?>" class="auto">
                             <i class="i i-dots"></i>
                             <span>Multi-Loja</span>
                         </a>
@@ -315,8 +319,7 @@
 
     <?php if (in_array_menu_pai($session->menuPerfilWeb, array(19))) : ?>
             <li class="">
-                <a href="/contas-pagar" class="auto">
-
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 19) ?>" class="auto">
                     <i class="fa fa-paperclip"></i>
                     <span class="font-bold">Contas à Pagar</span>
                 </a>
@@ -325,8 +328,7 @@
 
     <?php if (in_array_menu_pai($session->menuPerfilWeb, array(20))) : ?>
             <li class="">
-                <a href="/contas-receber" class="auto">
-
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 20) ?>" class="auto">
                     <i class="fa fa-money"></i>
                     <span class="font-bold">Contas à Receber</span>
                 </a>
@@ -345,13 +347,13 @@
                 </a>
                 <ul class="nav dk">
                     <li>
-                        <a href="/mail/analise" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 31) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>Análise</span>
                         </a>
                     </li>
                     <li>
-                        <a href="/mail/crm" class="auto">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 32) ?>" class="auto">
                             <i class="i i-dot"></i>
                             <span>E-mail</span>
                         </a>
