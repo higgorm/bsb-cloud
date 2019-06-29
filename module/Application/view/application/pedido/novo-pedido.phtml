@@ -12,14 +12,42 @@
             <div class="row-fluid">
                 <div class="panel-body">
                     <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#destinatario" aria-controls="destinatario" role="tab" data-toggle="tab">Pedido</a></li>
-                        <li role="presentation"><a href="#dadosPedido" aria-controls="dadosPedido" role="tab" data-toggle="tab">Dados do Pedido</a></li>
-                    </ul>
+<!--                    <ul class="nav nav-tabs" role="tablist">-->
+<!--                        <li role="presentation" class="active"><a href="#destinatario" aria-controls="destinatario" role="tab" data-toggle="tab">Pedido</a></li>-->
+<!--                        <li role="presentation"><a href="#dadosPedido" aria-controls="dadosPedido" role="tab" data-toggle="tab">Dados do Pedido</a></li>-->
+<!--                    </ul>-->
                     <!-- Tab panes -->
                     <div class="tab-content">
+<!--                        <div role="tabpanel" class="tab-pane active" id="destinatario">-->
+                            <fieldset>
+                                <legend>Dados do Pedido</legend>
+                                <div class="col-md-2">
+                                    <label class="control-label text-info">Número do Pedido:</label>
+                                    <input type="text" value="<?php echo $pedido['NR_PEDIDO'] ?>" name="nrPedido" id="nrPedido" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label text-info">Data do Pedido:</label>
+                                    <input type="text" class="dataP form-control" name="dtPedido" id="dtPedido" value="<?php echo ( @$pedido['DT_PEDIDO'] ? date(FORMATO_ESCRITA_DATA, strtotime($pedido['DT_PEDIDO'])) : date('d-m-Y'))?>" required />
+                                </div>
 
-                        <div role="tabpanel" class="tab-pane active" id="destinatario">
+                                <div class="controls col-md-4">
+                                    <label for="validateSelectProfissional" class="control-label text-info" >&nbsp;Vendedor:</label>
+                                    <select name="cdVendedor" id="cdVendedor" class="form-control" onchange="desabilitaAlerta()" required>
+                                        <option value="">Selecione...</option>
+                                        <?php
+                                        foreach ($vendedores as $vendedor) {
+                                            $selected = "  ";
+                                            if ((int) $vendedor["CD_FUNCIONARIO"] == (int) $pedido['CD_FUNCIONARIO']) {
+                                                $selected = " selected ";
+                                            }
+                                            echo "<option value='{$vendedor["CD_FUNCIONARIO"]}'  " . $selected . ">{$vendedor["CD_FUNCIONARIO"]} - " . utf8_encode($vendedor["DS_FUNCIONARIO"]) . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12">&nbsp;</div>
+                            </fieldset>
+                            <!--------------------------------------------------------------------------------------------------------------------->
                             <fieldset>
                                 <legend>Cliente</legend>
                                 <div class="controls" >
@@ -97,7 +125,6 @@
                                         <button id="btnIncluirMercadoria" class="btn btn-primary" type="button"><i class="icon-white icon-plus"></i>&nbsp;Adicionar ao pedido</button>
                                     </div>
                                     <div class="col-md-12">&nbsp;</div>
-                                    <div class="col-md-12">&nbsp;</div>
                                     <div class="col-md-12">
                                         <table class="table table-striped table-bordered" id="tabelaMercadorias" name="tabelaMercadorias">
                                             <thead>
@@ -146,47 +173,18 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="fluid">
+                                <div class="col-md-12">
                                     <button id="btnExcluirMercadoria" class="btn  btn-info span3 pull-left" type="button"><i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados</button>
                                     <input type="text" class="btn  btn-info span3 pull-right" readonly value="<?php echo ( @$totalPedido ? number_format($totalPedido, 2, ',', '.') : 0.00 )?>" id="totalPedido">
                                 </div>
-                                <div class="col-md-12">&nbsp;</div>
 
                             </fieldset>
                             <!-------------------------------------------------------------------------------------->
-                        </div>
+<!--                        </div>-->
 
-                        <div role="tabpanel" class="tab-pane" id="dadosPedido">
-                            <fieldset>
-                                <legend>Dados do Pedido</legend>
-                                <div class="col-md-2">
-                                    <label class="control-label text-info">Número do Pedido:</label>
-                                    <input type="text" value="<?php echo $pedido['NR_PEDIDO'] ?>" name="nrPedido" id="nrPedido" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="control-label text-info">Data do Pedido:</label>
-                                    <input type="text" class="dataP form-control" name="dtPedido" id="dtPedido" value="<?php echo ( @$pedido['DT_PEDIDO'] ? date(FORMATO_ESCRITA_DATA, strtotime($pedido['DT_PEDIDO'])) : date('d-m-Y'))?>" required />
-                                </div>
-
-                                <div class="controls col-md-6">
-                                    <label for="validateSelectProfissional" class="control-label text-info" >&nbsp;Vendedor:</label>
-                                    <select name="cdVendedor" id="cdVendedor" class="form-control" onchange="desabilitaAlerta()" required>
-                                        <option value="">Selecione...</option>
-                                        <?php
-                                            foreach ($vendedores as $vendedor) {
-                                                $selected = "  ";
-                                                if ((int) $vendedor["CD_FUNCIONARIO"] == (int) $pedido['CD_FUNCIONARIO']) {
-                                                    $selected = " selected ";
-                                                }
-                                                echo "<option value='{$vendedor["CD_FUNCIONARIO"]}'  " . $selected . ">{$vendedor["CD_FUNCIONARIO"]} - " . utf8_encode($vendedor["DS_FUNCIONARIO"]) . "</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-
-                            </fieldset>
-                            <!--------------------------------------------------------------------------------------------------------------------->
-                        </div>
+<!--                        <div role="tabpanel" class="tab-pane" id="dadosPedido">-->
+<!---->
+<!--                        </div>-->
 
                     </div>
                     <div class="col-lg-12">
@@ -229,8 +227,7 @@
         </div>
     </div>
 </div>
-<!-- Modal Cadastra Cliente -->
-<div id="cadastraClienteCompletoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cadastraClienteCompletoModal" aria-hidden="true">
+<!-- Modal Cadastra Cliente --><div id="cadastraClienteCompletoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cadastraClienteCompletoModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -242,6 +239,7 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     $(document).ready(function() {
         Pedido.init();

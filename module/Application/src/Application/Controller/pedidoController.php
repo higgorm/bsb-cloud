@@ -107,24 +107,25 @@ class PedidoController extends AbstractActionController
         $request = $this->getRequest();
         $session = new Container("orangeSessionContainer");
         $arrLoja = array('cd_loja' => $session->cdLoja,
-            'ds_loja' => utf8_encode($session->dsLoja));
+                         'ds_loja' => utf8_encode($session->dsLoja));
 
         $nrPedido = $request->getPost()->get('nrPedido');
 
         $arrView = array(
-            'arrLoja' => $arrLoja,
-            'arrPrazo' => $this->getServiceLocator()->get('pedido_table')->listPrazo(),
+            'arrLoja'       => $arrLoja,
+            'arrPrazo'      => $this->getServiceLocator()->get('pedido_table')->listPrazo(),
             'arrMercadoria' => $this->getServiceLocator()->get('mercadoria_table')->getTiposMercadoriaSecao(),
             'arrTipoPedido' => $this->getServiceLocator()->get('tipo_pedido_table')->listTipoPedido(),
-            'arrUf' => $this->getServiceLocator()->get('uf_table')->listUf(),
-            'arrOperador' => $this->getServiceLocator()->get('functionario')->getListaFuncionarioLoja($session->cdLoja),
-            'nr_pedido' => $nrPedido,
+            'arrUf'         => $this->getServiceLocator()->get('uf_table')->listUf(),
+            'arrOperador'   => $this->getServiceLocator()->get('functionario')->getListaFuncionarioLoja($session->cdLoja),
+            'arrCliente'    => $this->getServiceLocator()->get('pedido_table')->recuperaClienteNumeroPedido($nrPedido),
+            'nr_pedido'     => $nrPedido
         );
 
-        $data = $request->getPost();
-        $viewModel = new ViewModel($arrView);
+        $data       = $request->getPost();
+        $viewModel  = new ViewModel($arrView);
+        $terminal   = $data['modal'] == 'show' ? true : false;
 
-        $terminal = $data['modal'] == 'show' ? true : false;
         $viewModel->setTerminal($terminal);
 
         return $viewModel;

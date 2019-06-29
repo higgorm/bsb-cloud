@@ -3,56 +3,72 @@
     <div class="main">
         <div class="row-fluid">
             <div class="panel-body">
-                <div class="widget-header">
+               <!-- <div class="widget-header">
                     <h3>Pedido de Venda</h3>
-                </div>
+                </div>-->
 
                 <form id="formPedido" method="post" role="form">
-                    <div class="controls">
-                        <div class="col-md-5">
+                    <input type="hidden" name="cd_loja" id="cd_loja" value="<?php echo $arrLoja['cd_loja'] ?>" />
+                    <input type="hidden" name="cd_prazo" id="cd_prazo" value="1"> <!-- A VISTA -->
+                    <input type="hidden" name="cd_tipo_mercadoria" id="cd_tipo_mercadoria" value="" />
+
+                   <!-- <div class="controls">
+                        <div class="col-md-4">
                             <label class="text-info">Loja</label>
-                            <input type="text" class="form-control" name="ds_loja" id="ds_loja" value="<?php echo $arrLoja['ds_loja'] ?>" readonly="readonly"/>
-                            <input type="hidden" class="form-control" name="cd_loja" id="cd_loja" value="<?php echo $arrLoja['cd_loja'] ?>" />
+                            <input type="text" class="form-control" name="ds_loja" id="ds_loja" value="<?php /*echo $arrLoja['ds_loja'] */?>" readonly="readonly"/>
+                            <input type="hidden" class="form-control" name="cd_loja" id="cd_loja" value="<?php /*echo $arrLoja['cd_loja'] */?>" />
                         </div>
-                    </div>
+                    </div>-->
 
                     <div class="controls">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label class="text-info">N.o Pedido</label>
-                            <input type="text" name="nu_pedido" id="nu_pedido" class="form-control" placeholder="" value="<?php echo ($nr_pedido) ? $nr_pedido : NULL ?>"/>
+                            <input type="text" name="nu_pedido" id="nu_pedido" class="form-control" placeholder="" value="<?php echo ($nr_pedido) ? $nr_pedido : NULL ?>" readonly/>
                         </div>
                     </div>
 
                     <div class="controls">
                         <div class="col-md-3">
                             <label class="text-info">Data</label>
-                            <input type="text" name="dt_pedido" id="dt_pedido" class="form-control datepicker-input" data-date-format="dd/mm/yyyy"/>
+                            <input type="text" name="dt_pedido" id="dt_pedido" class="form-control datepicker-input" data-date-format="dd/mm/yyyy"  readonly/>
 
                         </div>
                     </div>
 
                     <div class="controls">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label class="text-info">Livro</label>
                             <input type="text" name="nu_livro" id="nr_livro" class="form-control" value="1" readonly/>
                         </div>
                     </div>
+
                     <div class="controls">
-                        <div class="col-md-4">
-                            <label class="text-info">Tipo Mercadoria/Seção</label>
-                            <select class="form-control" name="cd_tipo_mercadoria" id="cd_tipo_mercadoria">
-                                <option value="">Selecione</option>
-                                <?php foreach ($arrMercadoria as $mercadoria): ?>
-                                <option value="<?php echo $mercadoria['CD_TIPO_MERCADORIA'] ?>"><?php echo utf8_encode(trim($mercadoria['DS_TIPO_MERCADORIA'])) ?></option>
+                        <div class="col-md-3">
+                            <label class="text-info">Tipo de Pedido</label>
+                            <select class="form-control" name="cd_tipo_pedido" id="cd_tipo_pedido" readonly>
+                                <?php foreach ($arrTipoPedido as $k => $v): ?>
+                                    <option value="<?php echo $k ?>"  <?php echo $k == '1' ? 'selected' : '' ?>><?php echo $v ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
 
-                    <div class="control">
+                    <!--<div class="controls">
+                        <div class="col-md-3">
+                            <label class="text-info">Tipo Mercadoria/Seção</label>
+                            <select class="form-control" name="cd_tipo_mercadoria" id="cd_tipo_mercadoria">
+                                <option value="">Selecione</option>
+                                <?php /*foreach ($arrMercadoria as $mercadoria): */?>
+                                <option value="<?php /*echo $mercadoria['CD_TIPO_MERCADORIA'] */?>"><?php /*echo utf8_encode(trim($mercadoria['DS_TIPO_MERCADORIA'])) */?></option>
+                                <?php /*endforeach; */?>
+                            </select>
+                        </div>
+                    </div>-->
+
+                    <div class="controls">
                         <div class="col-md-4">
                             <label class="text-info" >Representante / Vendedor</label>
-                            <select class="form-control" name="cd_funcionario" id="cd_funcionario">
+                            <select class="form-control" name="cd_funcionario" id="cd_funcionario" readonly>
                                 <option value="">Selecione</option>
                                 <?php foreach ($arrOperador as $funcionario): ?>
                                     <option value="<?php echo $funcionario['CD_FUNCIONARIO'] ?>"><?php echo $funcionario['DS_FUNCIONARIO'] ?></option>
@@ -62,25 +78,24 @@
                     </div>
 
 
-
-                    <div class="controls">
+                   <!-- <div class="controls">
                         <div class="col-md-4">
                             <label class="text-info">Prazo Tabela de Preços</label>
                             <select class="form-control" name="cd_prazo" id="cd_prazo">
                                 <option value="">Selecione</option>
-                                <?php foreach ($arrPrazo as $prazo): ?>
-                                    <option value="<?php echo trim($prazo['CD_PRAZO']) ?>"><?php echo trim($prazo['DS_PRAZO']) ?></option>
-                                <?php endforeach; ?>
+                                <?php /*foreach ($arrPrazo as $prazo): */?>
+                                    <option value="<?php /*echo trim($prazo['CD_PRAZO']) */?>"><?php /*echo trim($prazo['DS_PRAZO']) */?></option>
+                                <?php /*endforeach; */?>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
 
                     <div class="controls">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <label class="text-info" >Cliente</label>
-                            <div class="input-group">
-                                <input type="text" name="ds_razao_social" id="ds_razao_social" class="form-control" value="CONSUMIDOR" required="required" />
-                                <input type="hidden" name="cd_cliente" id="cd_cliente" value="1" />
+                            <input type="text" name="ds_razao_social" id="ds_razao_social" class="form-control" value="<?php echo $arrCliente[0]["DS_NOME_RAZAO_SOCIAL"] ?>"  readonly/>
+                            <input type="hidden" name="cd_cliente" id="cd_cliente" value="<?php echo $arrCliente[0]["CD_CLIENTE"] ?>" />
+                                <!--
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Cliente<span class="caret"></span></button>
                                     <ul class="dropdown-menu pull-right">
@@ -89,47 +104,39 @@
                                         <li><a href="#">Detalhes do Cliente</a></li>
                                     </ul>
                                 </div>
-                            </div>
+                                -->
                         </div>
                     </div>
 
-                    <div class="controls">
-                        <div class="col-md-4">
-                            <label class="text-info">Tipo de Pedido</label>
-                            <select class="form-control" name="cd_tipo_pedido" id="cd_tipo_pedido">
-                                <?php foreach ($arrTipoPedido as $k => $v): ?>
-                                    <option value="<?php echo $k ?>"><?php echo $v ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="controls">
-                        <div class="col-md-2">
-                            <label class="text-info">&nbsp;</label>
-                            <div>
-                                <button type="button" class="btn btn-info" id="btnLista">
-                                    <i class="i i-list2"></i>
-                                    Lista
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <!--
+                   <div class="controls">
+                       <div class="col-md-2">
+                           <label class="text-info">&nbsp;</label>
+                           <div>
+                               <button type="button" class="btn btn-info" id="btnLista">
+                                   <i class="i i-list2"></i>
+                                   Lista
+                               </button>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="controls">
+                       <div class="span12">
+                       <hr>
+                       <button type="button" class="btn btn-primary submit">
+                       <i class="i i-search"></i>
+                       Pesquisar
+                       </button>
 
-                    <div class="controls">
-                        <div class="col-sm-12">
-                            <hr>
-                            <button type="button" class="btn btn-primary submit">
-                                <i class="i i-search"></i>
-                                Pesquisar
-                            </button>
+                       <button type="button" class="btn btn-success hide">
+                       <i class="i i-docs"></i>
+                       Salvar Pedido
+                       </button>
 
-                            <button type="button" class="btn btn-success hide">
-                                <i class="i i-docs"></i>
-                                Salvar Pedido
-                            </button>
-                        </div>
-                    </div>
+                       </div>
+                   </div>
+                  -->
                 </form>
                 <div class="col-md-12">&nbsp;</div>
 
@@ -141,9 +148,9 @@
                         <!-- <li>
                             <a href="#endereco" data-toggle="tab">Endereço Entrega</a>
                         </li>-->
-                        <!--                        <li>
-                                                    <a href="#adicionais" data-toggle="tab">Dados Adicionais</a>
-                                                </li>-->
+                        <!--   <li>
+                            <a href="#adicionais" data-toggle="tab">Dados Adicionais</a>
+                        </li>-->
                         <li>
                             <a href="#historico" data-toggle="tab">Histórico Cliente</a>
                         </li>
@@ -161,7 +168,7 @@
                         <div id="mercadoria" class="tab-pane active">
                             <div class="col-md-12">&nbsp;</div>
                             <!-- INICIO FORMULARIO MERCADORIA-->
-                            <div class="controls">
+                            <!--<div class="controls">
                                 <div class="col-md-2">
                                     <label>Código</label>
                                     <div class="input-group">
@@ -206,6 +213,8 @@
                                 </div>
                             </div>
                             <div class="col-md-12">&nbsp;</div>
+                            -->
+
                             <div class="table-responsive">
                                 <br />
                                 <table class="table table-hover">
@@ -351,7 +360,8 @@
                         <div id="historico" class="tab-pane">
                             <div class="col-md-12">&nbsp;</div>
                             <!-- INICIO FORMULARIO HISTORICO DE CLIENTE-->
-                            <div class="controls">
+                           <!--
+                           <div class="controls">
                                 <div class="col-md-3">
                                     <label>Data Inicial</label>
                                     <input type="input" class="form-control datepicker-input" id="dt_inicial" name="dt_inicial"  data-date-format="dd/mm/yyyy"/>
@@ -364,7 +374,7 @@
                                     <input type="input" class="form-control datepicker-input" id="dt_final" name="dt_final"  data-date-format="dd/mm/yyyy"/>
                                 </div>
                             </div>
-                            <div class="controls">
+                           <div class="controls">
                                 <div class="col-md-2">
                                     <label>&nbsp;</label>
                                     <div>
@@ -387,6 +397,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">&nbsp;</div>
+                            -->
                             <div class="table-responsive">
                                 <br />
                                 <table class="table table-hover">
@@ -426,8 +437,10 @@
                             <!-- FINAL  FORMULARIO EXTRATO-->
                         </div>
                         <div id="pedidoanterior" class="tab-pane">
-                            <div class="col-md-12">&nbsp;</div>
                             <!-- INICIO FORMULARIO PEDIDOS ANTERIORES-->
+                            <!--
+                            <div class="col-md-12">&nbsp;</div>
+
                             <div class="controls">
                                 <div class="col-md-3">
                                     <label>Data Inicial</label>
@@ -452,6 +465,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12">&nbsp;</div>
+                            -->
                             <div class="table-responsive">
                                 <br />
                                 <table class="table table-hover">

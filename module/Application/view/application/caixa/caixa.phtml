@@ -251,7 +251,7 @@
                                     <input type="button" class="btn btn-info" id="btnAtualizaCaixa" value="Atualizar caixa">
 
                                     <label class="control-label text-info" for="name">&nbsp;</label>
-                                    <input type="button" class="btn btn-info" id="btnVer" value="Ver pedido/OS">
+                                    <input type="button" class="btn btn-info" id="btnVer" value="Ver pedido">
 
                                     <label class="control-label text-info" for="name">&nbsp;</label>
                                     <input type="button" class="btn btn-info" id="btnRecebe" value="Receber pedido">
@@ -398,17 +398,15 @@
                 }
             });
             
-            if(cont == 1)
-            {
-                $('#bodyDivModalPedido').load('/pedido/orcamento',{nrPedido:nrPedido, modal:'show'});
+            if (cont == 1) {
+                $('#bodyDivModalPedido').load('/pedido/orcamento',{
+                    nrPedido: nrPedido,
+                    modal   : 'show'
+                });
                 $('#divModalPedido').modal('show');
-            }
-            else if(cont == 0)
-            {
+            } else if(cont == 0) {
                 alert('Selecione um pedido!');
-            }
-            else if (cont > 1)
-            {
+            } else if (cont > 1) {
                 alert('Selecione apenas um pedido!');
             }
         });
@@ -453,7 +451,7 @@
                     $('#divModalPagamento').modal('show');
                 //}
             } else  if (arrPedido.length > 1) {
-                alert('Selecione apenas um pedido por vez!');
+                alert('Selecione apenas um pedido!');
             } else {
                 alert('Selecione um pedido!');
             }
