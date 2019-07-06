@@ -164,7 +164,8 @@ class NotaTable extends AbstractTableGateway
      * @return array
      */
 	public function getMercadoria($nota){
-		$statement = $this->adapter->query('SELECT P.* , M.ST_SERVICO
+		$statement = $this->adapter->query('SELECT P.* , 
+                                                   M.ST_SERVICO
                                             FROM TB_NFE_PRODUTOS  P 
                                             LEFT JOIN TB_MERCADORIA M ON P.CD_MERCADORIA = M.CD_MERCADORIA
                                             WHERE P.infNfe = '.$nota);

@@ -217,6 +217,9 @@
 														<th>
 															<span>Valor Unitario</span>
 														</th>
+                                                        <th>
+                                                            <span>Valor líquido</span>
+                                                        </th>
 														<th>
 															<span>Total</span>
 														</th>
@@ -239,6 +242,9 @@
 													<td>
 														<?php echo $merc['vUnCom'] ?> <input type="hidden" name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
 													</td>
+                                                    <td>
+                                                        <?php echo $merc['vUnCom'] ?> <input type="hidden" name="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
+                                                    </td>
 													<td>
 														<?php echo $merc['vProd'] ?> <input type="hidden" name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" />
 													</td>

@@ -479,6 +479,13 @@ class PedidoController extends AbstractActionController
         /* @var $vendedores Zend\Db\ResultSet\ResultSet */
         $vendedores = $statement->execute(array($session->cdLoja));
 
+        $totalPedido            = $pedido['VL_TOTAL_LIQUIDO'];
+        $totalSubPedido         =  $pedido['VL_TOTAL_BRUTO'];
+        $nrDescontoPedido       = 0.0;
+        foreach( $mercadoriasDoPedido as $merc ){
+            $nrDescontoPedido       = (float)$merc['NR_DESCONTO'];
+            break;
+        }
 
         $viewModel = new ViewModel();
         $viewModel->setTemplate('application/pedido/novo-pedido');
@@ -486,6 +493,10 @@ class PedidoController extends AbstractActionController
         $viewModel->setVariable('cliente', (array)$cliente);
         $viewModel->setVariable('pedidoMerc', $mercadoriasDoPedido);
         $viewModel->setVariable('vendedores', $vendedores);
+        $viewModel->setVariable('nrDesconto', $nrDescontoPedido);
+        $viewModel->setVariable('valorDesconto', ($totalSubPedido - $totalPedido));
+        $viewModel->setVariable('totalPedido', $totalPedido);
+        $viewModel->setVariable('totalSubPedido', $totalSubPedido);
 
         return $viewModel;
     }
@@ -764,15 +775,18 @@ class PedidoController extends AbstractActionController
             // get post data
             $request            = $this->getRequest();
             $post               = $request->getPost();
-           // echo "<pre>";
-           // print_r($post);
-           // exit;
-            $cdCliente          = $post->get('codCliente');
-            $cdVendedor         = $post->get('cdVendedor');
-            $cdsMercadoria      = $post->get('cdMercadoria');
-            $dtPedido           = $post->get('dtPedido');
-            $precoTotalPedido   = $post->get('vl_tot');
-            $valorTotalPedido   = 0;
+//            echo "<pre>";
+//            print_r($post);
+//            exit;
+            $cdCliente                      = $post->get('codCliente');
+            $cdVendedor                     = $post->get('cdVendedor');
+            $cdsMercadoria                  = $post->get('cdMercadoria');
+            $dtPedido                       = $post->get('dtPedido');
+            $precoTotalBruto                = str_ireplace(",",".",$post->get('vl_sub_tot'));
+            $precoTotalPedido               = str_ireplace(",",".",$post->get('vl_pedido_tot'));
+            $vlDescontoPedido               = str_ireplace(",",".",$post->get('vl_desconto'));
+            $nrPercentualDescontoPedido     = str_ireplace(",",".",$post->get('nr_desconto'));
+            $valorTotalPedido               = 0;
 
             if ($post->get('nrPedido')) {
                 $nrPedido = $post->get('nrPedido');
@@ -791,7 +805,7 @@ class PedidoController extends AbstractActionController
                 $pedido["ST_CONSIGNADO"]            = "N";
                 $pedido["ST_APROVEITA_CREDITO"]     = "S";
                 $pedido["CD_FUNCIONARIO"]           = $cdVendedor;
-                $pedido["VL_TOTAL_BRUTO"]           = $precoTotalPedido;
+                $pedido["VL_TOTAL_BRUTO"]           = $precoTotalBruto;
                 $pedido["VL_TOTAL_LIQUIDO"]         = $precoTotalPedido;
                 $pedido["UsuarioUltimaAlteracao"]   = substr($session->usuario, 0, 30); //login do usuário que fez a alteração
                 $pedido["CD_CLIENTE"]               = $cdCliente;
@@ -805,39 +819,38 @@ class PedidoController extends AbstractActionController
             //Obtenhos os valores das mercadorias, para inserir no corpo do pedido
             foreach ($cdsMercadoria as $i => $cdMercadoria) {
 
-                $cdMercadoria = (int) $cdMercadoria;
+                $cdMercadoria           = (int) $cdMercadoria;
 
                 //Recuperando o valor do preço de venda normal
-                $precoNormal = $sm->get('mercadoria_table')->getValorPrecoVenda($cdMercadoria);
+                $precoNormal            = $sm->get('mercadoria_table')->getValorPrecoVenda($cdMercadoria);
 
                 //Recuperando o valor do preço de venda em promoção
-                $precoPromocao = $sm->get('mercadoria_table')->getValorPromocao($cdMercadoria);
+                $precoPromocao          = $sm->get('mercadoria_table')->getValorPromocao($cdMercadoria);
 
                 $qtdeMercadoria         = (int)$post->get('qtdVendida-'.$cdMercadoria);
                 $precoUnitario          = $post->get('vl_preco_unitario-'.$cdMercadoria);
+                $precoDesconto          = $post->get('vl_preco_desconto-'.$cdMercadoria);
                 $precototal             = $post->get('vl_tot-'.$cdMercadoria);
                 $total_venda_desconto   = 0;
 
                 //array set
                 $mercadoria = array();
-                $mercadoria["CD_LOJA"]          = $session->cdLoja;
-                $mercadoria["NR_PEDIDO"]        = $nrPedido;
-                $mercadoria["CD_MERCADORIA"]    = $cdMercadoria;
-                $mercadoria["CD_LIVRO"]         = 1;
-                $mercadoria["CD_PRAZO"]         = 1;
-                //$mercadoria["VL_PRECO_VENDA"]   = $precoNormal;
-                $mercadoria["VL_PRECO_VENDA"]     = $precoUnitario;
-                $mercadoria["VL_PRECO_CUSTO"]   = $precoPromocao;
-                $mercadoria["NR_QTDE_PEDIDA"]   = $qtdeMercadoria;
-                $mercadoria["NR_QTDE_VENDIDA"]  = $qtdeMercadoria;
-                $mercadoria["VL_TOTAL_BRUTO"]   = $precoUnitario;
-                $mercadoria["VL_TOTAL_LIQUIDO"] = $precoUnitario;
-                $mercadoria["VL_PRECO_VENDA_TAB"]   = $precoPromocao;
+                $mercadoria["CD_LOJA"]              = $session->cdLoja;
+                $mercadoria["NR_PEDIDO"]            = $nrPedido;
+                $mercadoria["CD_MERCADORIA"]        = $cdMercadoria;
+                $mercadoria["CD_LIVRO"]             = 1;
+                $mercadoria["CD_PRAZO"]             = 1;
+                $mercadoria["VL_PRECO_VENDA"]       = $precoUnitario;
+                $mercadoria["VL_PRECO_CUSTO"]       = $precoPromocao;
+                $mercadoria["NR_QTDE_PEDIDA"]       = $qtdeMercadoria;
+                $mercadoria["NR_QTDE_VENDIDA"]      = $qtdeMercadoria;
+                $mercadoria["VL_TOTAL_BRUTO"]       = $precoUnitario;
+                $mercadoria["VL_TOTAL_LIQUIDO"]     = $precoDesconto;
+                $mercadoria["VL_PRECO_VENDA_TAB"]   = $precoDesconto;
                 $mercadoria["ST_PROMOCAO"]          = ($precoNormal > $precoPromocao) ? "S" : "N";
-                $mercadoria["VL_DESCONTO_MERC"]     = 0;
+                $mercadoria["VL_DESCONTO_MERC"]     = empty($nrPercentualDescontoPedido) ? 0 : $nrPercentualDescontoPedido;
                 $mercadoria["DS_LOCAL_RETIRADA"]    = "";
                 $mercadoria["DS_OBSERVACAO"]        = "";
-
 
                 //Faz um ou mais "insert" na tabela de pedido mercadorias
                 $statementInsert = $dbAdapter->query("INSERT INTO TB_PEDIDO_MERCADORIA
@@ -876,7 +889,7 @@ class PedidoController extends AbstractActionController
             $pedido["ST_CONSIGNADO"]            = "N";
             $pedido["ST_APROVEITA_CREDITO"]     = "S";
             $pedido["CD_FUNCIONARIO"]           = $cdVendedor;
-            $pedido["VL_TOTAL_BRUTO"]           = $valorTotalPedido;
+            $pedido["VL_TOTAL_BRUTO"]           = $precoTotalBruto;
             $pedido["VL_TOTAL_LIQUIDO"]         = $valorTotalPedido;
             $pedido["UsuarioUltimaAlteracao"]   = substr($session->usuario, 0, 30); //login do usuário que fez a alteração
             $pedido["DT_PEDIDO"]                = $dtPedido;

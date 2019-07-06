@@ -305,7 +305,12 @@ class PedidoTable extends AbstractTableGateway {
      * @return mixed
      */
     public function recuperaMercadoriasNumeroPedido($nuPedido) {
-        $select = "SELECT PM.NR_PEDIDO, PM.NR_QTDE_VENDIDA, PM.VL_TOTAL_LIQUIDO,
+        $select = "SELECT PM.NR_PEDIDO, PM.NR_QTDE_VENDIDA, 
+                          PM.VL_TOTAL_LIQUIDO,
+                          CONVERT(VARCHAR, CONVERT(MONEY, ( PM.VL_PRECO_VENDA - (	PM.VL_PRECO_VENDA /100) * PM.VL_DESCONTO_MERC)) ) AS  VL_DESCONTO,
+                          CONVERT(VARCHAR, CONVERT(MONEY,  PM.VL_PRECO_VENDA) )  AS  VL_PRECO_VENDA, 
+                          CONVERT(VARCHAR, CONVERT(MONEY, ( PM.VL_PRECO_VENDA - (	PM.VL_PRECO_VENDA /100) * PM.VL_DESCONTO_MERC)* PM.NR_QTDE_VENDIDA) ) AS VL_TOTAL, 
+                          CONVERT(VARCHAR, CONVERT(MONEY, PM.VL_TOTAL_BRUTO) )  AS VL_TOTAL_BRUTO , 
                           M.*
                    FROM TB_PEDIDO_MERCADORIA PM
                    INNER JOIN TB_MERCADORIA M ON M.CD_MERCADORIA = PM.CD_MERCADORIA

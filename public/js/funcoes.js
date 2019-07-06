@@ -20,14 +20,17 @@ $(document).ready(function() {
 //                }
 //            });
 
+     roundDecimal = function(num) {
+        return +(Math.round(num + "e+2")  + "e-2");
+    }
+
     formatReal = function(number) 
     {        
         var decimals = 2;
         var dec_point = '.';
         var thousands_sep = '';
 
-        var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2
-        : decimals;
+        var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
         var d = dec_point == undefined ? "," : dec_point;
         var t = thousands_sep == undefined ? "." : thousands_sep, s = n < 0 ? "-" : "";
         var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;

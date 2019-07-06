@@ -18,6 +18,7 @@ var Nota = {
                 {"sClass": "nowrap left", "sType": "string"},
                 {"sClass": "nowrap left", "sType": "string"},
                 {"sClass": "nowrap left", "sType": "string"},
+                {"sClass": "nowrap left", "sType": "string"},
                 {"sClass": "nowrap left", "sType": "string"}
             ]
         });
@@ -49,6 +50,7 @@ var Nota = {
 			var qtdVendida              = $("#qtd_mercadoria").val();
 			var dscMercadoria           = $("#ds_mercadoria").val();
 			var vlUnt		            = $("#vl_preco_unitario").val();
+            var vlDesc                  = $("#vl_preco_unitario").val(); //Na inclusao , o valor de desconto é o mesmo do preço unitario
 			var vlTot		            = $("#vl_tot").val();
 			var totalNota               = parseFloat( $("#totalNota").val() );
 			var isServico               = $("#isServico").val();
@@ -81,6 +83,7 @@ var Nota = {
 														dscMercadoria + ' <input type="hidden" name="ds_mercadoria-' + cdMercadoria + '" value="' + dscMercadoria + '" /> ',
 														qtdVendida + ' <input type="hidden" name="qtdVendida-' + cdMercadoria + '" value="' + qtdVendida + '" /> ',
 														vlUnt + ' <input type="hidden" name="vl_preco_unitario-' + cdMercadoria + '" value="' + vlUnt + '" /> ',
+                                                        vlDesc + ' <input type="hidden" name="vl_preco_desconto-' + cdMercadoria + '" value="' + vlDesc + '" /> ',
 														vlTot + ' <input type="hidden" name="vl_tot-' + cdMercadoria + '" id="vl_tot-' + cdMercadoria + '" value="' + vlTot + '" /> '
 													]);
 			totalNota = formatReal( totalNota  + ( qtdVendida * vlUnt )); 

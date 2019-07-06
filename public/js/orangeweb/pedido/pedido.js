@@ -17,6 +17,7 @@ var Pedido = {
                 {"sClass": "nowrap left", "sType": "string"},
                 {"sClass": "nowrap left", "sType": "string"},
                 {"sClass": "nowrap left", "sType": "string"},
+                {"sClass": "nowrap left", "sType": "string"},
                 {"sClass": "nowrap left", "sType": "string"}
             ]
         });
@@ -30,18 +31,7 @@ var Pedido = {
                 todayBtn: "linked"
             }
         );
-		
-		$("#Pedido").submit( function(){
-			if( $("#codCliente").val() == '' ) {
-				alert("Pesquise um destinatário");
-				return false;
-			}
-			if( $("#totalPedido").val() < 0.01 ){
-				alert("Pedido com valor abaixo do permitido");
-				return false;
-			}
-			return true;  
-		});
+
 
         $("#btnVoltarListagemPedido").click(function () {
             window.location = '/pedido/lista-tablet';
@@ -55,6 +45,28 @@ var Pedido = {
         });
 
         $("#btnSalvarPedido").click(function(){
+
+            var subTotalPedido       = parseFloat($("#subTotalPedido").val().replace(",","."));
+            var totalPedido          = parseFloat($("#totalPedido").val().replace(",","."));
+
+            if (isNaN(totalPedido)) {
+                totalPedido = 0;
+            }
+
+            if (isNaN(subTotalPedido)) {
+                subTotalPedido = 0;
+            }
+
+
+            if ((totalPedido <= 0) || (subTotalPedido <= 0)) {
+                alert("Pedido com valor abaixo do permitido");
+                return false;
+            }
+
+            if( $("#codCliente").val() == '' ) {
+                alert("Pesquise um destinatário");
+                return false;
+            }
 
             var $myForm = $('#pedido');
             var $msgRedirect = 'Deseja ser redirecionado para o recebimento no caixa, após salvar este pedido? Escolha uma das opções abaixo:\n\n'+
@@ -80,8 +92,9 @@ var Pedido = {
 			var qtdVendida              = $("#qtd_mercadoria").val();
 			var dscMercadoria           = $("#ds_mercadoria").val();
 			var vlUnt		            = $("#vl_preco_unitario").val();
+			var vlDesc                  = $("#vl_preco_unitario").val(); //Na inclusao , o valor de desconto é o mesmo do preço unitario
 			var vlTot		            = $("#vl_tot").val();
-			var totalPedido             = parseFloat( $("#totalPedido").val() );
+			var subTotalPedido          = parseFloat( $("#subTotalPedido").val() );
             var isServico               = $("#isServico").val();
             var isServicoProxProduto    = $("#isServicoProxProduto").val();
 
@@ -98,36 +111,39 @@ var Pedido = {
                     $("#qtd_mercadoria").val("1");
                     $("#ds_mercadoria").val("");
                     $("#vl_preco_unitario").val("");
-                    $("#isServicoProxProduto").val("")
+                    $("#isServicoProxProduto").val("");
+                    $("#vl_tot").val("");
                     return false;
                 }
             }
 
-
             oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria" value="' + cdMercadoria + '" class="btn btn-info" onclick="verificaStatus($(this))"><i class="icon-white"></i></button>'
 														+ ' <input type="hidden" name="cdMercadoria[]" value="' + cdMercadoria + '" /> ',
-														//+ ' <input type="hidden" name="stServico-' + value.CD_MERCADORIA + '" value="' + value.ST_SERVICO + '" /> ',
-														dscMercadoria + ' <input type="hidden" name="ds_mercadoria-' + cdMercadoria + '" value="' + dscMercadoria + '" /> ',
-														qtdVendida + ' <input type="hidden" name="qtdVendida-' + cdMercadoria + '" value="' + qtdVendida + '" /> ',
-														vlUnt + ' <input type="hidden" name="vl_preco_unitario-' + cdMercadoria + '" value="' + vlUnt + '" /> ',
-														vlTot + ' <input type="hidden" name="vl_tot-' + cdMercadoria + '" id="vl_tot-' + cdMercadoria + '" value="' + vlTot + '" /> '
+
+														dscMercadoria   + ' <input type="hidden" id="ds_mercadoria-' + cdMercadoria + '"     name="ds_mercadoria-' + cdMercadoria + '" value="' + dscMercadoria + '" /> ',
+														qtdVendida      + ' <input type="hidden" id="qtdVendida-' + cdMercadoria + '"        name="qtdVendida-' + cdMercadoria + '" value="' + qtdVendida + '" /> ',
+														vlUnt           + ' <input type="hidden" id="vl_preco_unitario-' + cdMercadoria + '" name="vl_preco_unitario-' + cdMercadoria + '" value="' + vlUnt + '" /> ',
+                                                        '<span id="span_vl_preco_desconto-' + cdMercadoria + '">'+ formatReal(vlDesc) +'</span>' +
+                                                        ' <input type="hidden" id="vl_preco_desconto-' + cdMercadoria + '" name="vl_preco_desconto-' + cdMercadoria + '" value="' + vlDesc + '" /> ',
+														'<span id="span_vl_tot-' + cdMercadoria + '">'+ vlTot +'</span>' +
+                                                        ' <input type="hidden" id="vl_tot-' + cdMercadoria + '"  name="vl_tot-' + cdMercadoria + '"  value="' + vlTot + '" /> '
 													]);
-			totalPedido = formatReal( totalPedido  + ( qtdVendida * vlUnt )); 
-											
-			$("#totalPedido").val( totalPedido );
-			$("#totalPedido").change();
-			//calculaTotalPedido();
+            subTotalPedido = formatReal( subTotalPedido  + ( qtdVendida * vlUnt ));
+
+            $("#subTotalPedido").val( subTotalPedido );
+            $("#nrPercentualDesconto").change();
 
             $("#CD_MERCADORIA").val("");
             $("#qtd_mercadoria").val("1");
             $("#ds_mercadoria").val("");
             $("#vl_preco_unitario").val("");
+            $("#vl_tot").val("");
 		});
 		
 		$("#btnExcluirMercadoria").click( function(){
 			
-			var totalPedido     = parseFloat( $("#totalPedido").val() );
-			var totalExcluido =  parseFloat(0);
+			var subTotalPedido     = parseFloat( $("#subTotalPedido").val() );
+			var totalExcluido      =  parseFloat(0);
 
 
 			var numCheckboxMarcados = 0;
@@ -141,8 +157,8 @@ var Pedido = {
                 }
             });
             $("#chkTodos").removeAttr("checked");//Desmarca a opção todos
-			$("#totalPedido").val( formatReal(parseFloat(totalPedido) - parseFloat(totalExcluido)));
-			$("#totalPedido").change();
+            $("#subTotalPedido").val( formatReal(parseFloat(subTotalPedido) - parseFloat(totalExcluido)));
+            $("#nrPercentualDesconto").change();
 
             if(oTablePedido.fnGetData().length == 0){
                 $("#isServico").val("");
@@ -232,13 +248,75 @@ var Pedido = {
 
 		$("#qtd_mercadoria").blur(function(){
 			var precoUnd = parseFloat( $("#vl_preco_unitario").val() );
-			$("#vl_tot").val( formatReal(precoUnd * $("#qtd_mercadoria").val()));
+			$("#vl_tot").val( formatReal(parseFloat(precoUnd * $("#qtd_mercadoria").val())));
 		});		
 		
 		$("#btnCopiaDestDMED").click(function () {
 			$("#nome_paciente").val( $("#ds_nome_razao_social_input").val());
 			$("#cpf_paciente").val( $("#destCNPJ").val());
 		});
+
+		$("#valorDesconto").change(function(){
+
+            var valorDesconto           = parseFloat($(this).val().replace(",","."));
+            var subTotalPedido          = parseFloat($("#subTotalPedido").val().replace(",","."));
+            var desconto                = 0;
+
+            if (isNaN(valorDesconto)) {
+                valorDesconto = 0;
+            }
+
+            if ((valorDesconto >= 0) && (subTotalPedido > 0)) {
+                desconto          = ((valorDesconto * 100) / subTotalPedido);
+                $("#nrPercentualDesconto").val(formatReal(desconto)).change();
+
+            } else {
+                $("#nrPercentualDesconto").val("0.00").change();
+            }
+
+        });
+
+        $("#nrPercentualDesconto").change(function(){
+
+            var nrPercentualDesconto    = parseFloat($(this).val());
+            var desconto                = 0;
+
+            if (isNaN(nrPercentualDesconto)) {
+                nrPercentualDesconto = 0;
+            }
+
+            if (nrPercentualDesconto >= 0) {
+
+                var subTotalPedido          = parseFloat( $("#subTotalPedido").val().replace(",","."));
+                var totalPedido             = parseFloat( $("#totalPedido").val().replace(",",".") );
+
+                totalPedido = subTotalPedido * parseFloat( 1 - (nrPercentualDesconto/100));
+                desconto = parseFloat(subTotalPedido - totalPedido);
+
+                $("#valorDesconto").val(formatReal(desconto));
+                $("#totalPedido").val(formatReal(totalPedido)).change();
+                aplicaDescontoMercadoriaPorItem(nrPercentualDesconto);
+            }
+
+        });
+
+        aplicaDescontoMercadoriaPorItem = function(nrPercentualDesconto){
+            $("button[type='button'][name^='chkMercadoria']").each(function() {
+                var codigoMercadoria            =  $(this).val();
+                var qtdeVendida                 =  $('#qtdVendida-'+codigoMercadoria).val();
+                var valorUnitario               =  parseFloat($('#vl_preco_unitario-'+codigoMercadoria).val());
+                var vlPrecoDescontoMercadoria   =  (valorUnitario - parseFloat((valorUnitario * nrPercentualDesconto)/100)).toFixed(2);
+                var vlPrecoTotalMercadoria      =  parseFloat(qtdeVendida * vlPrecoDescontoMercadoria).toFixed(2);
+
+                //preço com desconto
+                $('#vl_preco_desconto-'+codigoMercadoria).val(vlPrecoDescontoMercadoria);
+                $('#span_vl_preco_desconto-'+codigoMercadoria).text(vlPrecoDescontoMercadoria);
+
+                //preço com desconto X a quantidade
+                $('#vl_tot-'+codigoMercadoria).val(vlPrecoTotalMercadoria);
+                $('#span_vl_tot-'+codigoMercadoria).text(vlPrecoTotalMercadoria);
+            });
+        },
 		
 		verificaStatus = function(button) {
             if (button.html() == '<i class="icon-white"></i>') {

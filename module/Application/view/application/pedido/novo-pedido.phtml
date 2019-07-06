@@ -139,7 +139,10 @@
                                                     <span>Quantidade</span>
                                                 </th>
                                                 <th>
-                                                    <span>Valor Unitario</span>
+                                                    <span>Valor Unitário</span>
+                                                </th>
+                                                <th>
+                                                    <span>Valor líquido</span>
                                                 </th>
                                                 <th>
                                                     <span>Total</span>
@@ -158,13 +161,32 @@
                                                             <?php echo $merc['DS_MERCADORIA'] ?> <input type="hidden" name="ds_mercadoria-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['DS_MERCADORIA'] ?>" />
                                                         </td>
                                                         <td>
-                                                            <?php echo $merc['QTD'] ?> <input type="hidden" name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['QTD'] ?>" />
+                                                            <?php echo (int)$merc['QTD'] ?>
+                                                            <input type="hidden"
+                                                                   id="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                      value="<?php echo (int)$merc['QTD'] ?>" />
                                                         </td>
                                                         <td>
-                                                            <?php echo $merc['VL_TOTAL_BRUTO'] ?> <input type="hidden" name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['VL_TOTAL_BRUTO'],2, '.', '') ?>" />
+                                                            <?php echo $merc['VL_TOTAL_BRUTO'] ?>
+                                                            <input type="hidden"
+                                                                   id="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                        value="<?php echo number_format($merc['VL_TOTAL_BRUTO'],2, '.', '') ?>" />
                                                         </td>
                                                         <td>
-                                                            <?php echo $merc['VL_TOTAL'] ?> <input type="hidden" name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['VL_TOTAL'],2, '.', '') ?>" />
+                                                            <span id="span_vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo $merc['VL_DESCONTO'] ?></span>
+                                                            <input type="hidden"
+                                                                   id="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    name="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                        value="<?php echo number_format($merc['VL_DESCONTO'],2, '.', '') ?>" />
+                                                        </td>
+                                                        <td>
+                                                            <span id="span_vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo $merc['VL_TOTAL'] ?></span>
+                                                            <input type="hidden"
+                                                                   id="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                        value="<?php echo number_format($merc['VL_TOTAL'],2, '.', '') ?>" />
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; ?>
@@ -174,9 +196,51 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <button id="btnExcluirMercadoria" class="btn  btn-info span3 pull-left" type="button"><i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados</button>
-                                    <input type="text" class="btn  btn-info span3 pull-right" readonly value="<?php echo ( @$totalPedido ? number_format($totalPedido, 2, ',', '.') : 0.00 )?>" id="totalPedido">
+
+                                    <div class="col-md-2">
+                                        <button id="btnExcluirMercadoria" class="btn btn-info" type="button"><i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados</button>
+                                    </div>
+
+                                    <div class="col-md-8 text-right">
+                                        <label class="text-right"><b>Sub Total:&nbsp;R$</b></label>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control text-right" readonly
+                                               value="<?php echo ( @$totalSubPedido ? number_format($totalSubPedido, 2, ',', '.') : "0,00" )?>"
+                                               id="subTotalPedido"  name="vl_sub_tot" placeholder="R$ 0,00" title="Sub-total do pedido, sem descontos." />
+                                    </div>
                                 </div>
+
+                                <div class="col-md-12">
+                                    <div class="col-md-10 text-right" >
+                                        <label class="text-right"><b>Desconto:&nbsp;</b></label>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" class="form-control text-right" style="width:120%!important;"
+                                               value="<?php echo ( @$nrDesconto ? number_format($nrDesconto, 2, ',', '.') : "" )?>"
+                                               id="nrPercentualDesconto" name="nr_desconto" placeholder="0,00 %"   onKeyUp="moeda(this)" title="%">
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <input type="text" class="form-control text-right" style="margin-left:-20%!important; width:120%!important;"
+                                               value="<?php echo ( @$valorDesconto ? number_format($valorDesconto, 2, ',', '.') : "" ) ?>"
+                                                id="valorDesconto"  name="vl_desconto" placeholder="R$ 0,00"    onKeyUp="moeda(this)" maxlength="5" title="R$" >
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="col-md-10 text-right" >
+                                        <label class="text-right"><b>Total do Pedido:&nbsp;R$</b></label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control text-right" readonly
+                                               value="<?php echo ( @$totalPedido ? number_format($totalPedido, 2, ',', '.') : "0,00" )?>"
+                                               id="totalPedido" name="vl_pedido_tot" placeholder="R$ 0,00" title="Valor total do pedido" />
+                                    </div>
+                                </div>
+
 
                             </fieldset>
                             <!-------------------------------------------------------------------------------------->

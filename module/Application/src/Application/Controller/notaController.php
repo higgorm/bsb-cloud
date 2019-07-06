@@ -963,6 +963,7 @@ class NotaController extends AbstractActionController{
             $qtdVendida   = $post->get('qtdVendida-'.$cdMercadoria);
             $dsMercadoria = $post->get('ds_mercadoria-'.$cdMercadoria);
             $vlPrecoVenda = $post->get('vl_preco_unitario-'.$cdMercadoria);
+            $vlDesconto   = $post->get('vl_preco_desconto-'.$cdMercadoria);
 
             //Montar array da mercadoria
             $aP[] = array(
@@ -1818,6 +1819,7 @@ class NotaController extends AbstractActionController{
                     $dscMercadoria      = utf8_encode($prod['DS_MERCADORIA']);
                     $qtdVendida         = $prod['NR_QTDE_VENDIDA'];
                     $vlPrecoUnitario    = $prod['VL_TOTAL_LIQUIDO'];
+                    $vlPrecoDesconto    = null;
                     $vlTotal            = $vlPrecoUnitario * (int) $qtdVendida ;
                     $cfop               = (empty($cfop) && !empty($prod['DS_CFOP_INTERNO'])) ? $prod['DS_CFOP_INTERNO'] : "";
 
@@ -1825,10 +1827,10 @@ class NotaController extends AbstractActionController{
                         $xNatOp   = "";
                     }
 
-
                     $post->set('ds_mercadoria-'.$codMercadoria, $dscMercadoria);
                     $post->set('qtdVendida-'.$codMercadoria, $qtdVendida);
                     $post->set('vl_preco_unitario-'.$codMercadoria, $vlPrecoUnitario);
+                    $post->set('vl_preco_desconto-'.$codMercadoria, $vlPrecoDesconto);
                     $post->set('vl_tot-'.$codMercadoria,$vlTotal);
 
                     array_push($arrayProdutos,$codMercadoria);
