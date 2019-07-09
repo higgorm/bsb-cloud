@@ -10,7 +10,31 @@
                 <div class="widget-content">
                     <form id="formRelatorio" target="self" class="form-vertical validation-form"  action="/relatorio-pedido/relatorio">
                         <input type="hidden" id="pdf" name="pdf" value="false" />
+
                         <div class="controls">
+
+                            <div class="span6">
+                                <label for="" class="control-label text-info">Filtrar por:</label><br/>
+                                <label  class="checkbox-inline">
+                                    <input type="radio"  name="filtrarPor"  class="seletorFiltro" value="2" checked>Período
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="radio"  name="filtrarPor" class="seletorFiltro" value="1" >Número do pedido
+                                </label>
+                            </div>
+                            <div class="span6">
+                                &nbsp;
+                            </div>
+                        </div>
+
+                        <div class="controls" id="filtrarPorPedido" style="display:none">
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info">Nº Pedido</label>
+                                <input type="number" name="nr_pedido" id="nr_pedido" class="form-control" required placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="controls"  id="filtrarPorPeriodo" style="display:block">
 
                             <div class="col-md-2">
                                 <label for="" class="control-label text-info">De</label>
@@ -22,11 +46,6 @@
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
 								<input type="text" class="dataP form-control" id="dt_fim" name="dt_fim" value="<?php echo  date("d-m-Y") ?>" required autocomplete="off">
                                 <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label for="" class="control-label text-info">Nº Pedido</label>
-                                <input type="number" name="nr_pedido" id="nr_pedido" class="form-control"  placeholder="">
                             </div>
 
                             <div class="col-md-6">
@@ -45,13 +64,13 @@
                                 </label>
                             </div>
 
-                            <div class="col-md-12">
-                                <hr>
-                                <button id="btnPesquisarRelatorio" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
-                                <button id="btnLimparRelatorio" class="btn btn-default btn" type="button"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
-                                <button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
-                            </div>
+                        </div>
 
+                        <div class="col-md-12">
+                            <hr>
+                            <button id="btnPesquisarRelatorio" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
+                            <button id="btnLimparRelatorio" class="btn btn-default btn" type="button"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                            <button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
                         </div>
 
                     </form>
@@ -124,6 +143,23 @@
 
         $('#btnVoltarRelatorio').click(function() {
             window.location = '/relatorio/index';
+        });
+
+        $(".seletorFiltro").click(function(){
+           if($(this).val()==1) {
+              $("#filtrarPorPedido").show();
+              $("#filtrarPorPeriodo").hide();
+               $("#dt_inicio").removeAttr("required");
+               $("#dt_fim").removeAttr("required");
+               $("#nr_pedido").attr("required","true");
+           } else {
+               $("#filtrarPorPedido").hide();
+               $("#filtrarPorPeriodo").show();
+               $("#dt_inicio").attr("required","true");
+               $("#dt_fim").attr("required","true");
+               $("#nr_pedido").removeAttr("required");
+           }
+            $("#btnLimparRelatorio").trigger('click');
         });
     });
 </script>

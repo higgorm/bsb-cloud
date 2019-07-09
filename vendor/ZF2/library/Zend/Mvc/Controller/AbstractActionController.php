@@ -32,18 +32,6 @@ use Zend\Session\Container;
 abstract class AbstractActionController extends AbstractController
 {
 
-    public function __construct()
-    {
-        $session = isset($_SESSION['orangeSessionContainer']->cdLoja);
-        $server = $_SERVER['REQUEST_URI'];
-        $arrUri = array('/', '/index/index', '/index/login', '/index/logout');
-
-        if (!$session && !in_array($server, $arrUri)) {
-            header('Location: /index/index');
-            exit();
-        }
-    }
-
     /**
      * @var string
      */

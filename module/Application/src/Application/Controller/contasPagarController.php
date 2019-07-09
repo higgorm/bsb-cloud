@@ -10,7 +10,6 @@
 namespace Application\Controller;
 
 use Zend\I18n\View\Helper\DateFormat;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Model\Contaspagar;
@@ -21,7 +20,7 @@ use Application\Model\Contaspagar;
  * @author e.Guilherme
  *
  */
-class ContasPagarController extends AbstractActionController
+class ContasPagarController extends OrangeWebAbstractActionController
 {
 
     public function getTable($strService) {

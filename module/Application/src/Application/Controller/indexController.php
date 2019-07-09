@@ -22,7 +22,7 @@ use Zend\Session;
  * @author HIGOR
  *
  */
-class IndexController extends AbstractActionController {
+class IndexController extends OrangeWebAbstractActionController {
 
     protected $lojaTable;
     protected $perfilWebTable;

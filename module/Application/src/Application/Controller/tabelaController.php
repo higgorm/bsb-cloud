@@ -24,7 +24,7 @@ use Application\Model\TabelaTable;
  * @author e.Guilherme
  *
  */
-class TabelaController extends AbstractActionController{
+class TabelaController extends OrangeWebAbstractActionController{
 
     public function formaPagamentoAction(){
 		$sm = $this->getServiceLocator();

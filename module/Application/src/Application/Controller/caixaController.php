@@ -22,7 +22,7 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
  * @author higor.martins v2.6
  *
  */
-class CaixaController extends AbstractActionController {
+class CaixaController extends OrangeWebAbstractActionController {
 
     protected $table;
     protected $adapter;

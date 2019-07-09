@@ -65,7 +65,7 @@ var Util = {
                         });
                     }
                 });
-                $('#tListaMercadoria').append(options);
+                $('#tListaMercadoria').empty().append(options);
                 //$('#st_tipo_pesquisa').val('1');
             }
         });
@@ -101,7 +101,7 @@ var Util = {
 
                     }
                 });
-                $('#tListaCliente').append(options);
+                $('#tListaCliente').empty().append(options);
                 //$('#st_tipo_pesquisa').val('1');
             }
         });

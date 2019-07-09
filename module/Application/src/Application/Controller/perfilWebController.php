@@ -22,7 +22,7 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
  * @author higgor.m@gmail.com
  *
  */
-class PerfilWebController extends AbstractActionController
+class PerfilWebController extends OrangeWebAbstractActionController
 {
 
     protected $perfilWebTable;

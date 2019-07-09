@@ -21,7 +21,7 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
  * @author higgor.m@gmail.com
  *
  */
-class MenuWebController extends AbstractActionController
+class MenuWebController extends OrangeWebAbstractActionController
 {
 
     protected $menuWebTable;

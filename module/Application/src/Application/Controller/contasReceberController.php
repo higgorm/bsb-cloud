@@ -10,7 +10,6 @@
 namespace Application\Controller;
 
 use Zend\I18n\View\Helper\DateFormat;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Model\ContasReceber;
@@ -20,7 +19,7 @@ use Application\Model\ContasReceber;
  *
  * @author e.Guilherme
  */
-class ContasReceberController extends AbstractActionController
+class ContasReceberController extends OrangeWebAbstractActionController
 {
 
     public function getTable($strService) {

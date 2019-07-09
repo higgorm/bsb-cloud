@@ -14,6 +14,7 @@ var Pedido = {
             "bServerSide": false,
             "aoColumns": [
                 {"sClass": "nowrap left", "sType": "html"},
+                {"sClass": "nowrap right", "sType": "numeric"},
                 {"sClass": "nowrap left", "sType": "string"},
                 {"sClass": "nowrap left", "sType": "string"},
                 {"sClass": "nowrap left", "sType": "string"},
@@ -97,29 +98,54 @@ var Pedido = {
 			var subTotalPedido          = parseFloat( $("#subTotalPedido").val() );
             var isServico               = $("#isServico").val();
             var isServicoProxProduto    = $("#isServicoProxProduto").val();
+            var flProdutoJaadicionado   = false;
+
+            var limparCampos = function(){
+                $("#CD_MERCADORIA").val("");
+                $("#qtd_mercadoria").val("1");
+                $("#ds_mercadoria").val("");
+                $("#vl_preco_unitario").val("");
+                $("#vl_tot").val("");
+            }
 
             if ((cdMercadoria.trim() == "") || (dscMercadoria.trim() == "") || (vlUnt.trim() == "")) {
                 return false;
             }
 
+            $("button[type='button'][name^='chkMercadoria']").each(function() {
+                if ($(this).val() == cdMercadoria) {
+                    flProdutoJaadicionado = true;
+                }
+            });
+
+            if (flProdutoJaadicionado) {
+                //Limpar os campos
+                limparCampos();
+
+                //msgAlerta
+                alert('Aviso:\n Produto / Serviço já foi adicionado ao pedido!');
+                return false;
+            }
+
+
+
             if(oTablePedido.fnGetData().length >= 1){
                 if( (isServicoProxProduto != isServico) && (isServico != "")) {
-                    alert('Aviso: \n Não está habilitado  serviços e mercadorias no mesmo pedido. \n\n Favor emitir pedidos distintos!');
-
                     //Limpar os campos
-                    $("#CD_MERCADORIA").val("");
-                    $("#qtd_mercadoria").val("1");
-                    $("#ds_mercadoria").val("");
-                    $("#vl_preco_unitario").val("");
+                    limparCampos();
                     $("#isServicoProxProduto").val("");
-                    $("#vl_tot").val("");
+
+                    //msg alerta
+                    alert('Aviso:\n Não está habilitado  serviços e mercadorias no mesmo pedido. \n\n Favor emitir pedidos distintos!');
                     return false;
                 }
             }
 
+            $("#isServico").val($("#isServicoProxProduto").val());
+
             oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria" value="' + cdMercadoria + '" class="btn btn-info" onclick="verificaStatus($(this))"><i class="icon-white"></i></button>'
 														+ ' <input type="hidden" name="cdMercadoria[]" value="' + cdMercadoria + '" /> ',
-
+                                                        cdMercadoria,
 														dscMercadoria   + ' <input type="hidden" id="ds_mercadoria-' + cdMercadoria + '"     name="ds_mercadoria-' + cdMercadoria + '" value="' + dscMercadoria + '" /> ',
 														qtdVendida      + ' <input type="hidden" id="qtdVendida-' + cdMercadoria + '"        name="qtdVendida-' + cdMercadoria + '" value="' + qtdVendida + '" /> ',
 														vlUnt           + ' <input type="hidden" id="vl_preco_unitario-' + cdMercadoria + '" name="vl_preco_unitario-' + cdMercadoria + '" value="' + vlUnt + '" /> ',
@@ -141,8 +167,8 @@ var Pedido = {
 		});
 		
 		$("#btnExcluirMercadoria").click( function(){
-			
-			var subTotalPedido     = parseFloat( $("#subTotalPedido").val() );
+
+            var subTotalPedido     = parseFloat( $("#subTotalPedido").val() );
 			var totalExcluido      =  parseFloat(0);
 
 
@@ -151,7 +177,7 @@ var Pedido = {
 				if ($(this).html() == '<i class="icon-white icon-ok"></i>')
                 {
                     //remove a mercadoria
-					totalExcluido = totalExcluido +  parseFloat($("#vl_tot-"+$(this).val()).val());
+					totalExcluido = totalExcluido +  (parseFloat($("#vl_preco_unitario-"+$(this).val()).val()) * $("#qtdVendida-"+$(this).val()).val());
                     oTablePedido.fnDeleteRow(oTablePedido.fnGetPosition($(this).closest('tr').get(0)));
                     numCheckboxMarcados++;
                 }
@@ -162,7 +188,9 @@ var Pedido = {
 
             if(oTablePedido.fnGetData().length == 0){
                 $("#isServico").val("");
-                $("#isServicoProxProduto").val("")
+                $("#isServicoProxProduto").val("");
+                $("#subTotalPedido").val("0.00");
+                $("#nrPercentualDesconto").val("0.00").change();
             }
 		});
 		
@@ -267,8 +295,8 @@ var Pedido = {
             }
 
             if ((valorDesconto >= 0) && (subTotalPedido > 0)) {
-                desconto          = ((valorDesconto * 100) / subTotalPedido);
-                $("#nrPercentualDesconto").val(formatReal(desconto)).change();
+                desconto          = parseFloat((valorDesconto * 100) / subTotalPedido).toFixed(4);
+                $("#nrPercentualDesconto").val(desconto).change();
 
             } else {
                 $("#nrPercentualDesconto").val("0.00").change();

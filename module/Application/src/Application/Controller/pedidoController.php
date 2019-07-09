@@ -10,7 +10,6 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
@@ -23,7 +22,7 @@ use Application\Model\ClienteTable;
  * @author HIGOR
  *
  */
-class PedidoController extends AbstractActionController
+class PedidoController extends OrangeWebAbstractActionController
 {
 
     /**

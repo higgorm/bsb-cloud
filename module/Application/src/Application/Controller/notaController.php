@@ -37,7 +37,7 @@ use RecursiveDirectoryIterator;
  * @author e.Guilherme
  *
  */
-class NotaController extends AbstractActionController{
+class NotaController extends OrangeWebAbstractActionController{
 	/**
     * @return \Zend\Http\Response
     */

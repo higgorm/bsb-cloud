@@ -13,17 +13,17 @@ namespace Application\Controller;
 use Zend\I18n\View\Helper\DateFormat;
 use Application\Form\ClienteForm;
 use Application\Form\ClienteSearchForm;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Model\Cliente;
 use Zend\Db\Adapter\Driver\ConnectionInterface;
+
 /**
  *
  * @author HIGOR
  *
  */
-class ClienteController extends AbstractActionController
+class ClienteController extends OrangeWebAbstractActionController
 {
 
     protected $clienteTable;

@@ -45,7 +45,7 @@
                     <div class="controls">
                         <div class="col-md-3">
                             <label class="text-info">Tipo de Pedido</label>
-                            <select class="form-control" name="cd_tipo_pedido" id="cd_tipo_pedido" readonly>
+                            <select class="form-control" name="cd_tipo_pedido" id="cd_tipo_pedido" readonly disabled>
                                 <?php foreach ($arrTipoPedido as $k => $v): ?>
                                     <option value="<?php echo $k ?>"  <?php echo $k == '1' ? 'selected' : '' ?>><?php echo $v ?></option>
                                 <?php endforeach; ?>
@@ -68,7 +68,7 @@
                     <div class="controls">
                         <div class="col-md-4">
                             <label class="text-info" >Representante / Vendedor</label>
-                            <select class="form-control" name="cd_funcionario" id="cd_funcionario" readonly>
+                            <select class="form-control" name="cd_funcionario" id="cd_funcionario" readonly disabled>
                                 <option value="">Selecione</option>
                                 <?php foreach ($arrOperador as $funcionario): ?>
                                     <option value="<?php echo $funcionario['CD_FUNCIONARIO'] ?>"><?php echo $funcionario['DS_FUNCIONARIO'] ?></option>

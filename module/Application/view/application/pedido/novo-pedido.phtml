@@ -133,7 +133,10 @@
                                                     <button type="button" id="chkTodos" class="btn btn-info" ><i class="icon-white"></i></button>
                                                 </th>
                                                 <th>
-                                                    <span><?php echo "PRODUTO / SERVIÇO" ?></span>
+                                                    <span>Cód.</span>
+                                                </th>
+                                                <th>
+                                                    <span>Produto / Serviço</span>
                                                 </th>
                                                 <th>
                                                     <span>Quantidade</span>
@@ -156,6 +159,9 @@
                                                         <td>
                                                             <button type="button" name="chkMercadoria[]" id="chkMercadoria<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['CD_MERCADORIA'] ?>" class="btn btn-info" onclick="verificaStatus($(this))"><i class=\"icon-white\"></i></button>
                                                             <input type="hidden" name="cdMercadoria[]" value="<?php echo $merc['CD_MERCADORIA'] ?>" />
+                                                        </td>
+                                                        <td>
+                                                            <?php echo $merc['CD_MERCADORIA'] ?>
                                                         </td>
                                                         <td>
                                                             <?php echo $merc['DS_MERCADORIA'] ?> <input type="hidden" name="ds_mercadoria-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['DS_MERCADORIA'] ?>" />
@@ -219,13 +225,13 @@
                                     <div class="col-md-1">
                                         <input type="text" class="form-control text-right" style="width:120%!important;"
                                                value="<?php echo ( @$nrDesconto ? number_format($nrDesconto, 2, ',', '.') : "" )?>"
-                                               id="nrPercentualDesconto" name="nr_desconto" placeholder="0,00 %"   onKeyUp="moeda(this)" title="%">
+                                               id="nrPercentualDesconto" name="nr_desconto" placeholder="0,00 %"   onKeyUp="moeda(this)" title="%" maxlength="7">
                                     </div>
 
                                     <div class="col-md-1">
                                         <input type="text" class="form-control text-right" style="margin-left:-20%!important; width:120%!important;"
                                                value="<?php echo ( @$valorDesconto ? number_format($valorDesconto, 2, ',', '.') : "" ) ?>"
-                                                id="valorDesconto"  name="vl_desconto" placeholder="R$ 0,00"    onKeyUp="moeda(this)" maxlength="5" title="R$" >
+                                                id="valorDesconto"  name="vl_desconto" placeholder="R$ 0,00"    onKeyUp="moeda(this)"  title="R$" >
                                     </div>
 
                                 </div>

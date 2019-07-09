@@ -21,7 +21,7 @@ use Zend\Session\Container;
  * @author HIGOR
  *
  */
-class RelatorioController extends AbstractActionController
+class RelatorioController extends OrangeWebAbstractActionController
 {
 	/**
 	 * 

@@ -23,7 +23,7 @@ use Zend\Session\Container;
  * @author HIGOR
  *
  */
-class MacaController extends AbstractActionController {
+class MacaController extends OrangeWebAbstractActionController {
 
     protected $franquiaMacaTable;
 

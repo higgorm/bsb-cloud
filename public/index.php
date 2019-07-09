@@ -1,6 +1,6 @@
 <?php
     if(defined('VERSAO_GESTAO_EMPRESARIAL')==false) {
-        define('VERSAO_GESTAO_EMPRESARIAL',"2.13");
+        define('VERSAO_GESTAO_EMPRESARIAL',"2.14");
     }
 
     if(defined('FORMATO_ESCRITA_DATA_HORA')==false) {

@@ -24,7 +24,7 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
  * @author HIGOR
  *
  */
-class UsuarioWebController extends AbstractActionController
+class UsuarioWebController extends OrangeWebAbstractActionController
 {
 
     protected $usuarioWebTable;

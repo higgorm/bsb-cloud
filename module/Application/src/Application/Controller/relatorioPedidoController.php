@@ -57,8 +57,8 @@ class relatorioPedidoController  extends RelatorioController
                                C.DS_NOME_RAZAO_SOCIAL
                         FROM TB_PEDIDO P 
                         LEFT JOIN TB_CLIENTE C ON P.CD_CLIENTE = C.CD_CLIENTE
-                        WHERE P.DT_PEDIDO 
-                        BETWEEN ? AND ? ";
+                        WHERE 1=1 
+                      ";
     	
     	if($this->params()->fromQuery('pdf') != true)
     	{
@@ -68,14 +68,23 @@ class relatorioPedidoController  extends RelatorioController
 			$nrPedido			= $post->get('nr_pedido');
 			$status				= $post->get('status');
 
-			if( $nrPedido != '' )
-				$sql = $sql.' AND P.NR_PEDIDO = '.$nrPedido;
-            if( $status != '' )
-				$sql = $sql." AND P.ST_PEDIDO = '".$status."'";
+			if( $nrPedido != '' ) {
+                $sql = $sql.' AND P.NR_PEDIDO = '.$nrPedido;
+            }
+
+            if( $status != '' ) {
+                $sql = $sql." AND P.ST_PEDIDO = '".$status."'";
+            }
+
+            if (( $dataInicio != '' ) && ($dataFim != '')) {
+                $sql = $sql." AND P.DT_PEDIDO 
+                                    BETWEEN '". date(FORMATO_ESCRITA_DATA,strtotime($dataInicio)) ."' 
+                                        AND '". date(FORMATO_ESCRITA_DATA,strtotime($dataFim)) ."'";
+            }
 
     		$statementList   = $dbAdapter->query($sql);
     		/* @var $results Zend\Db\ResultSet\ResultSet */
-    		$results 			= $statementList->execute(array(date(FORMATO_ESCRITA_DATA,strtotime($dataInicio)),date(FORMATO_ESCRITA_DATA,strtotime($dataFim))));
+    		$results 			= $statementList->execute();
     		 
     		$viewModel = new ViewModel();
     		$viewModel->setTerminal(true);

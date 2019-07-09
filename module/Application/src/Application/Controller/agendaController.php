@@ -10,7 +10,6 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Form\CadastroClienteAgenda;
@@ -25,7 +24,7 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
  * @author HIGOR
  *
  */
-class AgendaController extends AbstractActionController {
+class AgendaController extends OrangeWebAbstractActionController {
 
     protected $macaTable;
     protected $agendamentoFranquiaTable;

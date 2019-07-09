@@ -22,7 +22,7 @@ use PHPExcel;
  * @author André Luiz Geraldi <andregeraldi@gmail.com>
  *
  */
-class MailController extends AbstractActionController
+class MailController extends OrangeWebAbstractActionController
 {
 
     protected $clienteTable;

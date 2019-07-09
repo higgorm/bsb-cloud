@@ -10,7 +10,6 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
@@ -23,7 +22,7 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
  * @author e.Guilherme
  *
  */
-class MercadoriaController extends AbstractActionController{
+class MercadoriaController extends OrangeWebAbstractActionController{
 	
 	protected $mercadoriaTable;
 
