@@ -52,25 +52,48 @@ var Nota = {
 			var vlUnt		            = $("#vl_preco_unitario").val();
             var vlDesc                  = $("#vl_preco_unitario").val(); //Na inclusao , o valor de desconto é o mesmo do preço unitario
 			var vlTot		            = $("#vl_tot").val();
-			var totalNota               = parseFloat( $("#totalNota").val() );
+			var totalNota               = parseFloat( $("#totalNota").val().replace(",","."));
 			var isServico               = $("#isServico").val();
             var isServicoProxProduto    = $("#isServicoProxProduto").val();
+            var flProdutoJaadicionado   = false;
+
+            var limparCampos = function(){
+                $("#CD_MERCADORIA").val("");
+                $("#qtd_mercadoria").val("1");
+                $("#ds_mercadoria").val("");
+                $("#vl_preco_unitario").val("");
+                $("#isServicoProxProduto").val("");
+                $("#vl_tot").val("");
+            }
+
 
 
 			if ((cdMercadoria.trim() == "") || (dscMercadoria.trim() == "") || (vlUnt.trim() == "")) {
 				return false;
 			}
 
+            $("button[type='button'][name^='chkMercadoria']").each(function() {
+                if ($(this).val() == cdMercadoria) {
+                    flProdutoJaadicionado = true;
+                }
+            });
+
+            if (flProdutoJaadicionado) {
+                //Limpar os campos
+                limparCampos();
+
+                //msgAlerta
+                alert('Aviso:\n Produto / Serviço já foi adicionado a nota fiscal!');
+                return false;
+            }
+
+
             if(oTablePedido.fnGetData().length >= 1){
                 if( (isServicoProxProduto != isServico) && (isServico != "")) {
                     alert('Aviso: \n Este emissor não está habilitado para emissão de serviços e mercadorias na mesma nota. \n\n Favor emitir notas distintas!');
 
                    //Limpar os campos
-                    $("#CD_MERCADORIA").val("");
-                    $("#qtd_mercadoria").val("1");
-                    $("#ds_mercadoria").val("");
-                    $("#vl_preco_unitario").val("");
-                    $("#isServicoProxProduto").val("")
+                    limparCampos();
                     return false;
                 }
             }
@@ -90,19 +113,13 @@ var Nota = {
 											
 			$("#totalNota").val( totalNota );
 			$("#totalNota").change();
-			calculaTotalNota();
-
-            $("#CD_MERCADORIA").val("");
-            $("#qtd_mercadoria").val("1");
-            $("#ds_mercadoria").val("");
-            $("#isServicoProxProduto").val("");
-            $("#vl_preco_unitario").val("");
-            $("#vl_tot").val("");
+			//calculaTotalNota();
+            limparCampos();
 		});
 		
 		$("#btnExcluirMercadoria").click( function(){
 			
-			var totalNota     = parseFloat( $("#totalNota").val() );
+			var totalNota     = parseFloat( $("#totalNota").val().replace(",","."));
 			var totalExcluido =  parseFloat(0);
 			
 			var numCheckboxMarcados = 0;
@@ -255,6 +272,10 @@ var Nota = {
 			$("#retIrrf_bc").change();
 			$("#retPrev_bc").val( $("#totalNota").val());
 			$("#retPrev_bc").change();
+
+
+			//temporario sub-total
+            $("#subTotalNota").val( $("#totalNota").val());
 		});
 		//Fazer calculos de Total de retenção
 		$("#retPis_bc").change(function(){

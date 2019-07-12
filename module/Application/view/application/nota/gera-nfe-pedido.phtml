@@ -13,18 +13,13 @@
                             <?php echo $erro; ?>
                         </h4>
 
-						<a href="javascript:window.history.go(-1)">
+                        <a href="/caixa/index">
 							<button type="button" class="btn btn-primary">
 								Voltar
 							</button>
 						</a>
-                        <a href="/caixa/caixa">
-                            <button type="button" class="btn btn-default">
-                                Ir para o caixa
-                            </button>
-                        </a>
                         <a href="/nota/lista">
-                            <button type="button" class="btn btn-default">
+                            <button type="button" class="btn btn-primary">
                                 Ir para a lista de notas
                             </button>
                         </a>
@@ -36,13 +31,13 @@
 							<h4 class="text-center">
                                 <?php echo $retorno['prot']['0']['xMotivo']; ?>
                             </h4>
-							<a href="javascript:window.history.go(-1)">
+                            <a href="/caixa/index">
 								<button type="button" class="btn btn-primary"> 
 									Voltar 
 								</button>
 							</a>
 							<a href="/nota/lista">
-								<button type="button" class="btn btn-default">
+								<button type="button" class="btn btn-primary">
                                     Ir para a lista de notas
 								</button>
 							</a>
@@ -61,7 +56,7 @@
                                 </h4>
                             <?php endif; ?>
 
-                            <a href="javascript:window.history.go(-1)">
+                            <a href="/caixa/index">
                                 <button type="button" class="btn btn-primary">
                                     Voltar
                                 </button>
@@ -72,7 +67,6 @@
                                     Imprimir NF-e
                                 </button>
                             </a>
-
 
 						</div>
 					<?php endif; ?>

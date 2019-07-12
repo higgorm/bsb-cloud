@@ -240,13 +240,22 @@
 														<?php echo $merc['qCom'] ?> <input type="hidden" name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['qCom'] ?>" />
 													</td>
 													<td>
-														<?php echo $merc['vUnCom'] ?> <input type="hidden" name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
+														<?php echo $merc['vUnCom'] ?>
+                                                        <input type="hidden"
+                                                               name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>"
+                                                                    id="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
 													</td>
                                                     <td>
-                                                        <?php echo $merc['vUnCom'] ?> <input type="hidden" name="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
+                                                        <?php echo $merc['vUnCom'] ?>
+                                                        <input type="hidden"
+                                                               name="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>"
+                                                                    id="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
                                                     </td>
 													<td>
-														<?php echo $merc['vProd'] ?> <input type="hidden" name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" />
+														<?php echo $merc['vProd'] ?>
+                                                        <input type="hidden"
+                                                               name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" ]
+                                                                id="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" />
 													</td>
 												</tr>
 												<?php endforeach; ?>
@@ -255,11 +264,51 @@
 											</table>
 										</div>
 									</div>
-									<div class="fluid">
-										<button id="btnExcluirMercadoria" class="btn  btn-info span3 pull-left" type="button"><i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados</button>
-										<input type="text" class="btn  btn-info span3 pull-right" readonly value="<?php echo ( @$totalNota ? number_format($totalNota, 2, ',', '.') : 0.00 )?>" id="totalNota">
-									</div>
-									<div class="col-md-12">&nbsp;</div>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <button id="btnExcluirMercadoria" class="btn  btn-info span3 pull-left" type="button">
+                                                <i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados
+                                            </button>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <label class="text-right"><b>Sub Total:&nbsp;R$</b></label>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input type="text" class="form-control text-right" readonly
+                                                   value="<?php echo ( @$totalNota ? number_format($totalNota, 2, ',', '.') : 0.00 )?>" disabled
+                                                   id="subTotalNota"  name="vl_sub_tot" placeholder="R$ 0,00" title="Sub-total da nota, sem descontos." />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="col-md-10 text-right" >
+                                            <label class="text-right"><b>Desconto:&nbsp;</b></label>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="text" class="form-control text-right" style="width:120%!important;"
+                                                   value=""  disabled
+                                                   id="nrPercentualDesconto" name="nr_desconto" placeholder="0,00 %"   onKeyUp="moeda(this)" title="%" maxlength="7">
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <input type="text" class="form-control text-right" style="margin-left:-20%!important; width:120%!important;"
+                                                   value="" disabled
+                                                   id="valorDesconto"  name="vl_desconto" placeholder="R$ 0,00"    onKeyUp="moeda(this)"  title="R$" >
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="col-md-10 text-right" >
+                                            <label class="text-right"><b>Total da Nota:&nbsp;R$</b></label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" class="form-control text-right" readonly
+                                                   value="<?php echo ( @$totalNota ? number_format($totalNota, 2, ',', '.') : 0.00 )?>"
+                                                   id="totalNota" name="vl_nota_tot" placeholder="R$ 0,00" title="Valor total da nota fiscal" />
+                                        </div>
+                                    </div>
 
 								</fieldset>
 								<!-------------------------------------------------------------------------------------->

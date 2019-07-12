@@ -159,11 +159,8 @@ var Pedido = {
             $("#subTotalPedido").val( subTotalPedido );
             $("#nrPercentualDesconto").change();
 
-            $("#CD_MERCADORIA").val("");
-            $("#qtd_mercadoria").val("1");
-            $("#ds_mercadoria").val("");
-            $("#vl_preco_unitario").val("");
-            $("#vl_tot").val("");
+            limparCampos();
+
 		});
 		
 		$("#btnExcluirMercadoria").click( function(){
