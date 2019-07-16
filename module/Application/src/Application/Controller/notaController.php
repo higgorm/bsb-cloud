@@ -3475,16 +3475,21 @@ class NotaController extends OrangeWebAbstractActionController{
 
 		$data = $ano.$mes;
 
-		$pastaXML = getcwd() . '/public\clientes/'.$session->cdBase.'/NFe/enviadas/aprovadas/'. $data .'/';
-		$pastaPDF = getcwd() . '/public\clientes/'.$session->cdBase.'/NFe/PDF/'. $data .'/';
+		$pastaXML           = getcwd() . '/public\clientes/'.$session->cdBase.'/NFe/enviadas/aprovadas/'. $data .'/';
+        $pastaCanceladaXML  = getcwd() . '/public\clientes/'.$session->cdBase.'/NFe/canceladas/'. $data .'/';
+		$pastaPDF           = getcwd() . '/public\clientes/'.$session->cdBase.'/NFe/PDF/'. $data .'/';
 
 		try {
             if( !is_dir( $pastaXML )) {
-                throw  new \Exception("Nenhuma arquivo XML foi encontrado!",400);
+                throw  new \Exception("Nenhuma pasta XML foi encontrada para enviadas!",400);
+            }
+
+            if( !is_dir( $pastaCanceladaXML )) {
+                throw  new \Exception("Nenhuma pasta XML foi encontrada para canceladas!",400);
             }
 
             if( !is_dir( $pastaPDF )) {
-                throw  new \Exception("Nenhuma arquivo PDF foi encontrado!",400);
+                throw  new \Exception("Nenhuma pasta PDF foi encontrada!",400);
             }
 
             $zip    = new Ziparchive();
@@ -3511,9 +3516,20 @@ class NotaController extends OrangeWebAbstractActionController{
 					continue;
 				}
 				
-				if (TRUE !== $zip->addFile(realpath($key), iconv('ISO-8859-1', 'IBM850', 'XML/'.basename($key)))){
+				if (TRUE !== $zip->addFile(realpath($key), iconv('ISO-8859-1', 'IBM850', 'XML/aprovadas/'.basename($key)))){
 					 throw  new \Exception("Erro ao  adicionar o arquivo XML: $key",400);
 				}
+            }
+
+            $iteratorXML = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pastaCanceladaXML));
+            foreach ($iteratorXML as $key=>$value) {
+                if ( basename($key)== "." || basename($key)== ".."){
+                    continue;
+                }
+
+                if (TRUE !== $zip->addFile(realpath($key), iconv('ISO-8859-1', 'IBM850', 'XML/canceladas/'.basename($key)))){
+                    throw  new \Exception("Erro ao  adicionar o arquivo XML: $key",400);
+                }
             }
 
             $iteratorPDF = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pastaPDF));
