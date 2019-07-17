@@ -3481,15 +3481,18 @@ class NotaController extends OrangeWebAbstractActionController{
 
 		try {
             if( !is_dir( $pastaXML )) {
-                throw  new \Exception("Nenhuma pasta XML foi encontrada para enviadas!",400);
+                mkdir($pastaXML,0777);
+                //throw  new \Exception("Nenhuma pasta XML foi encontrada para enviadas!",400);
             }
 
             if( !is_dir( $pastaCanceladaXML )) {
-                throw  new \Exception("Nenhuma pasta XML foi encontrada para canceladas!",400);
+                mkdir($pastaCanceladaXML,0777);
+               // throw  new \Exception("Nenhuma pasta XML foi encontrada para canceladas!",400);
             }
 
             if( !is_dir( $pastaPDF )) {
-                throw  new \Exception("Nenhuma pasta PDF foi encontrada!",400);
+                mkdir($pastaPDF,0777);
+                //throw  new \Exception("Nenhuma pasta PDF foi encontrada!",400);
             }
 
             $zip    = new Ziparchive();
