@@ -26,7 +26,6 @@ class PedidoController extends OrangeWebAbstractActionController
 {
 
     /**
-     
      * @return \Zend\Http\Response
      */
     public function listaTabletAction(){

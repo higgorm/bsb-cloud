@@ -89,7 +89,6 @@ class NotaController extends OrangeWebAbstractActionController{
         return $viewModel;
 	}
 
-
     /**
      * @return ViewModel
      */
@@ -118,15 +117,12 @@ class NotaController extends OrangeWebAbstractActionController{
         $viewModel->setTerminal(true);
         $viewModel->setVariable('listaNfe', $listaNfe);
 
-        //if( $this->params()->fromQuery('error') )
-       //     $viewModel->setVariable('error', $this->params()->fromQuery('error'));
-        //if( $this->params()->fromQuery('success') )
-        //    $viewModel->setVariable('success', $this->params()->fromQuery('success'));
-
-       // $viewModel->setTemplate("application/nota/lista-inutilizadas.phtml");
         return $viewModel;
     }
 
+    /**
+     * @return ViewModel
+     */
 	public function avulsaAction(){
 
 		// get the db adapter
@@ -163,6 +159,9 @@ class NotaController extends OrangeWebAbstractActionController{
         return $viewModel;
 	}
 
+    /**
+     * @return \Zend\Http\Response
+     */
 	public function cartaCorrecaoAction(){
 		@$session = new Container("orangeSessionContainer");
 		// get the db adapter
@@ -205,6 +204,10 @@ class NotaController extends OrangeWebAbstractActionController{
 		return $this->redirect()->toUrl("/nota/lista?".$msg);
 	}
 
+    /**
+     * @return ViewModel
+     * @throws \ErrorException
+     */
     public function inutilizarAction(){
         $sm                     = $this->getServiceLocator();
         $dbAdapter              = $sm->get('Zend\Db\Adapter\Adapter');
@@ -215,7 +218,6 @@ class NotaController extends OrangeWebAbstractActionController{
         $request                = $this->getRequest();
         $post                   = $request->getPost();
         $msg                    = "";
-
 
         //Verifica se existe  o diretorio "inutilizadas", senão cria
         if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\inutilizadas\\' ))
@@ -264,6 +266,9 @@ class NotaController extends OrangeWebAbstractActionController{
         return $viewModel;
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
 	public function configurarAction(){
 
 		$sm = $this->getServiceLocator();
@@ -322,7 +327,6 @@ class NotaController extends OrangeWebAbstractActionController{
 			$defaultconfigfolder = getcwd() . '\vendor\config';
 			$defaultpathConfig = $defaultconfigfolder .'\config_'.$session->cdBase.'.json';
 
-
 			$tpAmb = $post->get('tp_amb'); // 1 - produção // 2 - Homologação
 
 			$pathXmlUrlFileNFe  = 'wsnfe_4.00_mod55.xml';
@@ -371,9 +375,7 @@ class NotaController extends OrangeWebAbstractActionController{
 			}
 
 			$pathCertsFiles = getcwd() . '\vendor\Certs\\';
-
-			$siteUrl = 'bsbgestao.com.br/bsbcloud'; //Verificar
-
+			$siteUrl        = 'bsbgestao.com.br/bsbcloud'; //Verificar
 			$schemesNFe     = "\PL_009_V4\\";
 			$schemesNFSe    = "";
             $schemesCTe     = "";
@@ -515,15 +517,13 @@ class NotaController extends OrangeWebAbstractActionController{
 
 			return $this->redirect()->toUrl("/nota/lista?pg=1");
 
-		}else{
+		} else {
 
 			$config = $table->getConfig('1');
 			$cfop = $cfopTable->selectAll_cfop();
 
 			$viewModel->setVariable('config', $config);
 			$viewModel->setVariable('cfop', $cfop);
-
-
             $viewModel->setVariable('logotipoExistente', file_exists(getcwd() . '\public\clientes\\'.$session->cdBase.'\logo.jpg'));
             $viewModel->setVariable('logotipoCliente', '\\clientes\\'.$session->cdBase.'\logo.jpg');
 
@@ -591,7 +591,6 @@ class NotaController extends OrangeWebAbstractActionController{
         if($post->get('nascimento_paciente') != "") {
             $nfeGe['DMED_NASCIMENTO'] = date('Ymd',$post->get('nascimento_paciente'));
         }
-
 
         //Dados da NFe (ide)
         //Recupera parametros de configuração da NFE persitidos no Banco
@@ -735,7 +734,6 @@ class NotaController extends OrangeWebAbstractActionController{
 										LEFT JOIN TB_CIDADE_IBGE CI ON CI.CD_CIDADE = C.CD_CIDADE
 										WHERE C.CD_CLIENTE  = ? ");
 
-
         //Parametros do Banco
         $destinatario = $statement->execute(array($post->get('codCliente')));
         $destCNPJ = '';
@@ -808,7 +806,6 @@ class NotaController extends OrangeWebAbstractActionController{
             //Passar para o array DB
             $nfeGe['DS_NFE_CHAVE'] = $chave;
 
-
             //refNFe NFe referenciada
             $refNFe = $post->get('refNFe');
 
@@ -858,7 +855,6 @@ class NotaController extends OrangeWebAbstractActionController{
             else
                 $destCPF = $cpfCnpj;
 
-
             $idEstrangeiro  = '';
             $xNome          = $dest['DS_NOME_RAZAO_SOCIAL'];
             $indIEDest      = $dest['indIE'];
@@ -873,7 +869,6 @@ class NotaController extends OrangeWebAbstractActionController{
             }
 
             $resp = $nfe->tagdest($destCNPJ, $destCPF, $idEstrangeiro, $xNome, $indIEDest, $IE, $ISUF, $IM, $email);
-
 
             //Passar para o array DB
             $nfeGe['CD_CLIENTE']         = $post->get('codCliente');
@@ -949,8 +944,6 @@ class NotaController extends OrangeWebAbstractActionController{
             //        $resp = $nfe->tagautXML('', $aut);
             //    }
             //}
-
-
 
         //Recupera lista de mercadoria da tabela
         $cdsMercadoria = $post->get('cdMercadoria');
@@ -1293,8 +1286,6 @@ class NotaController extends OrangeWebAbstractActionController{
             $vTotTrib   = ''; //Verificar
             $resp       = $nfe->tagimposto($nItem, $vTotTrib);
         }
-
-
 
         //ICMS
         if( @$icms ){
@@ -3527,7 +3518,6 @@ class NotaController extends OrangeWebAbstractActionController{
 
 		$mes = $_POST['mes'];
 		$ano = $_POST['ano'];
-
 		$data = $ano.$mes;
 
 		$pastaXML           = getcwd() . '/public\clientes/'.$session->cdBase.'/NFe/enviadas/aprovadas/'. $data .'/';
@@ -3567,7 +3557,6 @@ class NotaController extends OrangeWebAbstractActionController{
                 }
             }
 
-			
             $iteratorXML = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pastaXML));
             foreach ($iteratorXML as $key=>$value) {
 				if ( basename($key)== "." || basename($key)== ".."){

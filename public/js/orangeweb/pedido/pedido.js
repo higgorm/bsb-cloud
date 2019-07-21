@@ -33,7 +33,6 @@ var Pedido = {
             }
         );
 
-
         $("#btnVoltarListagemPedido").click(function () {
             window.location = '/pedido/lista-tablet';
         });
@@ -58,13 +57,12 @@ var Pedido = {
                 subTotalPedido = 0;
             }
 
-
             if ((totalPedido <= 0) || (subTotalPedido <= 0)) {
                 alert("Pedido com valor abaixo do permitido");
                 return false;
             }
 
-            if( $("#codCliente").val() == '' ) {
+            if ( $("#codCliente").val() == '' ) {
                 alert("Pesquise um destinatário");
                 return false;
             }
@@ -86,7 +84,6 @@ var Pedido = {
                 $myForm[0].reportValidity()
             }
         });
-
 
 		$("#btnIncluirMercadoria").click(function () {
 			var cdMercadoria            = $("#CD_MERCADORIA").val();
@@ -127,8 +124,6 @@ var Pedido = {
                 return false;
             }
 
-
-
             if(oTablePedido.fnGetData().length >= 1){
                 if( (isServicoProxProduto != isServico) && (isServico != "")) {
                     //Limpar os campos
@@ -155,12 +150,9 @@ var Pedido = {
                                                         ' <input type="hidden" id="vl_tot-' + cdMercadoria + '"  name="vl_tot-' + cdMercadoria + '"  value="' + vlTot + '" /> '
 													]);
             subTotalPedido = formatReal( subTotalPedido  + ( qtdVendida * vlUnt ));
-
             $("#subTotalPedido").val( subTotalPedido );
             $("#nrPercentualDesconto").change();
-
             limparCampos();
-
 		});
 		
 		$("#btnExcluirMercadoria").click( function(){
@@ -182,7 +174,7 @@ var Pedido = {
             $("#subTotalPedido").val( formatReal(parseFloat(subTotalPedido) - parseFloat(totalExcluido)));
             $("#nrPercentualDesconto").change();
 
-            if(oTablePedido.fnGetData().length == 0){
+            if (oTablePedido.fnGetData().length == 0) {
                 $("#isServico").val("");
                 $("#isServicoProxProduto").val("");
                 $("#subTotalPedido").val("0.00");
@@ -209,7 +201,7 @@ var Pedido = {
                             $("#qtd_mercadoria").val("1");
                             $("#ds_mercadoria").val("");
                             $("#vl_preco_unitario").val("");
-                            $("#isServicoProxProduto").val("")
+                            $("#isServicoProxProduto").val("");
 							return false;
 						}
                	
@@ -293,11 +285,9 @@ var Pedido = {
             if ((valorDesconto >= 0) && (subTotalPedido > 0)) {
                 desconto          = parseFloat((valorDesconto * 100) / subTotalPedido).toFixed(4);
                 $("#nrPercentualDesconto").val(desconto).change();
-
             } else {
                 $("#nrPercentualDesconto").val("0.00").change();
             }
-
         });
 
         $("#nrPercentualDesconto").change(function(){
@@ -310,7 +300,6 @@ var Pedido = {
             }
 
             if (nrPercentualDesconto >= 0) {
-
                 var subTotalPedido          = parseFloat( $("#subTotalPedido").val().replace(",","."));
                 var totalPedido             = parseFloat( $("#totalPedido").val().replace(",",".") );
 
@@ -321,7 +310,6 @@ var Pedido = {
                 $("#totalPedido").val(formatReal(totalPedido)).change();
                 aplicaDescontoMercadoriaPorItem(nrPercentualDesconto);
             }
-
         });
 
         aplicaDescontoMercadoriaPorItem = function(nrPercentualDesconto){

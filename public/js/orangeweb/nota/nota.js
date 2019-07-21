@@ -147,7 +147,6 @@ var Nota = {
             }
 		});
 
-
         $("#btnLimparNota").click( function(){
             if (confirm('Confirmar limpar os dados da nota?')) {
                 window.location  =   "/nota/avulsa" ;
@@ -308,9 +307,6 @@ var Nota = {
 		$("#retPrev_aliq").change(function(){
 			$("#retPrev_total").val( formatReal(( parseFloat( $("#retPrev_bc").val() ) * parseFloat( $("#retPrev_aliq").val() ) ) / 100 ) );
 		});
-		//var table = document.querySelector("table");
-		//var data  = parseTable(table);
-		//console.log(data);
 		
 		verificaStatus = function(button) {
             if (button.html() == '<i class="icon-white"></i>') {
