@@ -237,7 +237,11 @@
 														<?php echo $merc['xProd'] ?> <input type="hidden" name="ds_mercadoria-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['xProd'] ?>" />
 													</td>
 													<td>
-														<?php echo (int)$merc['qCom'] ?> <input type="hidden" name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo (int)$merc['qCom'] ?>" />
+														<?php echo (int)$merc['qCom'] ?>
+                                                        <input type="hidden"
+                                                                name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    id="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                        value="<?php echo (int)$merc['qCom'] ?>" />
 													</td>
 													<td>
 														<?php echo number_format($merc['vUnCom'],2, '.', ''); ?>
@@ -254,7 +258,7 @@
 													<td>
                                                         <span id="span_vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo number_format($merc['vProd'],2, '.', '') ?></span>
                                                         <input type="hidden"
-                                                               name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" ]
+                                                               name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>"
                                                                 id="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" />
 													</td>
 												</tr>
@@ -276,7 +280,7 @@
 
                                         <div class="col-md-2">
                                             <input type="text" class="form-control text-right" readonly
-                                                   value="<?php echo ( @$totalSubNota ? number_format($totalSubNota, 2, ',', '.') : 0.00 )?>" disabled
+                                                   value="<?php echo ( @$totalSubNota ? number_format($totalSubNota, 2, ',', '.') : 0.00 )?>"
                                                    id="subTotalNota"  name="vl_sub_tot" placeholder="R$ 0,00" title="Sub-total da nota, sem descontos." />
                                         </div>
                                     </div>
@@ -287,13 +291,13 @@
                                         </div>
                                         <div class="col-md-1">
                                             <input type="text" class="form-control text-right" style="width:120%!important;"
-                                                   value="<?php echo ( @$nrDesconto ? number_format($nrDesconto, 2, ',', '.') : "" )?>"  disabled
+                                                   value="<?php echo ( @$nrDesconto ? number_format($nrDesconto, 2, ',', '.') : "" )?>"
                                                    id="nrPercentualDesconto" name="nr_desconto" placeholder="0,00 %"   onKeyUp="moeda(this)" title="%" maxlength="7">
                                         </div>
 
                                         <div class="col-md-1">
                                             <input type="text" class="form-control text-right" style="margin-left:-20%!important; width:120%!important;"
-                                                   value="<?php echo ( @$valorDesconto ? number_format($valorDesconto, 2, ',', '.') : "" ) ?>" disabled
+                                                   value="<?php echo ( @$valorDesconto ? number_format($valorDesconto, 2, ',', '.') : "" ) ?>"
                                                    id="valorDesconto"  name="vl_desconto" placeholder="R$ 0,00"    onKeyUp="moeda(this)"  title="R$" >
                                         </div>
 

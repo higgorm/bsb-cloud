@@ -3464,47 +3464,54 @@ class NotaController extends OrangeWebAbstractActionController{
 		return $this->redirect()->toUrl("/nota/lista?".$msg);
 	}
 
-	public function abrirAction(){
+    /**
+     * @return ViewModel
+     */
+	public function abrirAction() {
 		// get the db adapter
-        $sm 		= $this->getServiceLocator();
-        $dbAdapter 	= $sm->get('Zend\Db\Adapter\Adapter');
-		$cfopTable  = new TabelaTable($dbAdapter);
-		$table      = new NotaTable($dbAdapter);
+        $sm 		        = $this->getServiceLocator();
+        $dbAdapter 	        = $sm->get('Zend\Db\Adapter\Adapter');
+		$cfopTable          = new TabelaTable($dbAdapter);
+		$table              = new NotaTable($dbAdapter);
+		$session            = new Container("orangeSessionContainer");
 
-		$session = new Container("orangeSessionContainer");
-		$infNFe   = (string) $this->params()->fromQuery('infNFe');
-		$replicar = (string) $this->params()->fromQuery('replicar');
+		$infNFe             = (string) $this->params()->fromQuery('infNFe');
+		$replicar           = (string) $this->params()->fromQuery('replicar');
+		$subTotal           = 0.0;
+        $total              = 0.0;
+        $nrDescontoNota     = 0.0;
+		$mercadoriasNota    = $table->getMercadoria($infNFe);
 
-		$subTotal = 0;
-        $total = 0;
-		$mercadoriasNota = $table->getMercadoria($infNFe);
 		foreach( $mercadoriasNota as $merc ){
-
-            $subTotal   = $subTotal + ($merc['vUnCom'] * $merc['qCom']);
-			$total      = $total    + $merc['vProd'];
+            $subTotal       = (float)$subTotal + ($merc['vUnCom'] * $merc['qCom']);
+			$total          = (float)$total    + $merc['vProd'];
 		}
+
+		//desconto geral aplicado na nota
+        if ($subTotal != $total) {
+            $nrDescontoNota = (float)((($subTotal - $total) * 100) / $subTotal);
+        }
 
 		$nfe 		        = $table->getNota($infNFe);
         $nfeReferenciada    = $table->getNotaReferenciada($infNFe);
         $cfop               = $cfopTable->selectAll_cfop();
 		$config             = $table->getConfig('1');
-
-		$viewModel = new ViewModel();
+		$viewModel          = new ViewModel();
 
 		$viewModel->setTemplate('application/nota/avulsa');
 		$viewModel->setTerminal(false);
-
 		$viewModel->setVariable('replicar', $replicar);
 		$viewModel->setVariable('nfe', $nfe);
 		$viewModel->setVariable('nfeMerc', $mercadoriasNota);
         $viewModel->setVariable('nfeReferenciada', $nfeReferenciada);
         $viewModel->setVariable('totalSubNota', $subTotal);
 		$viewModel->setVariable('totalNota', $total);
+        $viewModel->setVariable('nrDesconto', $nrDescontoNota);
+        $viewModel->setVariable('valorDesconto', ($subTotal - $total));
 		$viewModel->setVariable('cfop', $cfop);
 		$viewModel->setVariable('config', $config);
 
         return $viewModel;
-
 	}
 
     /**

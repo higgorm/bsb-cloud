@@ -51,8 +51,9 @@ var Nota = {
 			var dscMercadoria           = $("#ds_mercadoria").val();
 			var vlUnt		            = $("#vl_preco_unitario").val();
             var vlDesc                  = $("#vl_preco_unitario").val(); //Na inclusao , o valor de desconto é o mesmo do preço unitario
-			var vlTot		            = $("#vl_tot").val();
+			var vlTot		            = parseFloat( $("#vl_tot").val().replace(",","."));
 			var totalNota               = parseFloat( $("#totalNota").val().replace(",","."));
+            var subTotalNota            = parseFloat( $("#subTotalNota").val().replace(",","."));
 			var isServico               = $("#isServico").val();
             var isServicoProxProduto    = $("#isServicoProxProduto").val();
             var flProdutoJaadicionado   = false;
@@ -65,8 +66,6 @@ var Nota = {
                 $("#isServicoProxProduto").val("");
                 $("#vl_tot").val("");
             }
-
-
 
 			if ((cdMercadoria.trim() == "") || (dscMercadoria.trim() == "") || (vlUnt.trim() == "")) {
 				return false;
@@ -87,7 +86,6 @@ var Nota = {
                 return false;
             }
 
-
             if(oTablePedido.fnGetData().length >= 1){
                 if( (isServicoProxProduto != isServico) && (isServico != "")) {
                     alert('Aviso: \n Este emissor não está habilitado para emissão de serviços e mercadorias na mesma nota. \n\n Favor emitir notas distintas!');
@@ -98,28 +96,31 @@ var Nota = {
                 }
             }
 
-
             $("#isServico").val($("#isServicoProxProduto").val());
 
 			oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria" value="' + cdMercadoria + '" class="btn btn-info" onclick="verificaStatus($(this))"><i class="icon-white"></i></button>'
 														+ ' <input type="hidden" name="cdMercadoria[]" value="' + cdMercadoria + '" /> ',
 														dscMercadoria + ' <input type="hidden" name="ds_mercadoria-' + cdMercadoria + '" value="' + dscMercadoria + '" /> ',
-														qtdVendida + ' <input type="hidden" name="qtdVendida-' + cdMercadoria + '" value="' + qtdVendida + '" /> ',
-														vlUnt + ' <input type="hidden" name="vl_preco_unitario-' + cdMercadoria + '" value="' + vlUnt + '" /> ',
-                                                        vlDesc + ' <input type="hidden" name="vl_preco_desconto-' + cdMercadoria + '" value="' + vlDesc + '" /> ',
-														vlTot + ' <input type="hidden" name="vl_tot-' + cdMercadoria + '" id="vl_tot-' + cdMercadoria + '" value="' + vlTot + '" /> '
+														qtdVendida + ' <input type="hidden" id="qtdVendida-' + cdMercadoria + '"  name="qtdVendida-' + cdMercadoria + '" value="' + qtdVendida + '" /> ',
+														vlUnt + ' <input type="hidden" id="vl_preco_unitario-' + cdMercadoria + '" name="vl_preco_unitario-' + cdMercadoria + '" value="' + vlUnt + '" /> ',
+
+                                                        '<span id="span_vl_preco_desconto-' + cdMercadoria + '">'+ formatReal(vlDesc) +'</span>' +
+                                                        ' <input type="hidden" id="vl_preco_desconto-' + cdMercadoria + '" name="vl_preco_desconto-' + cdMercadoria + '" value="' + vlDesc + '" /> ',
+
+                                                        '<span id="span_vl_tot-' + cdMercadoria + '">'+ formatReal(vlTot) +'</span>' +
+                                                        ' <input type="hidden" id="vl_tot-' + cdMercadoria + '"  name="vl_tot-' + cdMercadoria + '"  value="' + vlTot + '" /> '
 													]);
-			totalNota = formatReal( totalNota  + ( qtdVendida * vlUnt )); 
-											
-			$("#totalNota").val( totalNota );
-			$("#totalNota").change();
-			//calculaTotalNota();
+
+            subTotalNota = formatReal( subTotalNota  + ( qtdVendida * vlUnt ));
+            $("#subTotalNota").val( subTotalNota );
+            $("#nrPercentualDesconto").change();
             limparCampos();
+
 		});
 		
 		$("#btnExcluirMercadoria").click( function(){
 			
-			var totalNota     = parseFloat( $("#totalNota").val().replace(",","."));
+			var subTotalNota  = parseFloat( $("#subTotalNota").val().replace(",","."));
 			var totalExcluido =  parseFloat(0);
 			
 			var numCheckboxMarcados = 0;
@@ -127,20 +128,22 @@ var Nota = {
 				if ($(this).html() == '<i class="icon-white icon-ok"></i>')
                 {
                     //remove a mercadoria
-					totalExcluido = totalExcluido +  parseFloat($("#vl_tot-"+$(this).val()).val());
+					//totalExcluido = totalExcluido +  parseFloat($("#vl_tot-"+$(this).val()).val());
+                    totalExcluido = totalExcluido +  (parseFloat($("#vl_preco_unitario-"+$(this).val()).val()) * $("#qtdVendida-"+$(this).val()).val());
                     oTablePedido.fnDeleteRow(oTablePedido.fnGetPosition($(this).closest('tr').get(0)));
                     numCheckboxMarcados++;
                 }
             });
-            $("#chkTodos").removeAttr("checked");//Desmarca a opção todos
 
-			$("#totalNota").val( formatReal(parseFloat(totalNota) - parseFloat(totalExcluido)));
-			$("#totalNota").change();
-            //calculaTotalNota();
+            $("#chkTodos").removeAttr("checked");//Desmarca a opção todos
+            $("#subTotalNota").val( formatReal(parseFloat(subTotalNota) - parseFloat(totalExcluido)));
+            $("#nrPercentualDesconto").change();
 
             if(oTablePedido.fnGetData().length == 0){
                 $("#isServico").val("");
-                $("#isServicoProxProduto").val("")
+                $("#isServicoProxProduto").val("");
+                $("#subTotalNota").val("0.00");
+                $("#nrPercentualDesconto").val("0.00").change();
             }
 		});
 
@@ -272,10 +275,6 @@ var Nota = {
 			$("#retIrrf_bc").change();
 			$("#retPrev_bc").val( $("#totalNota").val());
 			$("#retPrev_bc").change();
-
-
-			//temporario sub-total
-            $("#subTotalNota").val( $("#totalNota").val());
 		});
 		//Fazer calculos de Total de retenção
 		$("#retPis_bc").change(function(){
@@ -319,20 +318,76 @@ var Nota = {
             }else{
                 button.html('<i class="icon-white"></i>');
             }
-        }
+        },
 		
 		$("#retPis_bc").change();
 		$("#retCofins_bc").change();
 		$("#retCsll_bc").change();
 		$("#retIrrf_bc").change();
 		$("#retPrev_bc").change();
-		
-		calculaTotalNota = function(){
-			
-			$.each(oTablePedido, function(key, value) {
-				//console.log(value);
-			});
-		}
+
+        $("#valorDesconto").change(function(){
+
+            var valorDesconto           = parseFloat($(this).val().replace(",","."));
+            var subTotalNota            = parseFloat($("#subTotalNota").val().replace(",","."));
+            var desconto                = 0;
+
+            if (isNaN(valorDesconto)) {
+                valorDesconto = 0;
+            }
+
+            if ((valorDesconto >= 0) && (subTotalNota > 0)) {
+                desconto          = parseFloat((valorDesconto * 100) / subTotalNota).toFixed(4);
+                $("#nrPercentualDesconto").val(desconto).change();
+
+            } else {
+                $("#nrPercentualDesconto").val("0.00").change();
+            }
+
+        });
+
+        $("#nrPercentualDesconto").change(function(){
+
+            var nrPercentualDesconto    = parseFloat($(this).val());
+            var desconto                = 0;
+
+            if (isNaN(nrPercentualDesconto)) {
+                nrPercentualDesconto = 0;
+            }
+
+            if (nrPercentualDesconto >= 0) {
+
+                var subTotalNota          = parseFloat( $("#subTotalNota").val().replace(",","."));
+                var totalNota             = parseFloat( $("#totalNota").val().replace(",",".") );
+
+                totalNota       = subTotalNota * parseFloat( 1 - (nrPercentualDesconto/100));
+                desconto        = parseFloat(subTotalNota - totalNota);
+
+                $("#valorDesconto").val(formatReal(desconto));
+                $("#totalNota").val(formatReal(totalNota)).change();
+                aplicaDescontoMercadoriaPorItem(nrPercentualDesconto);
+            }
+
+        });
+
+        aplicaDescontoMercadoriaPorItem = function(nrPercentualDesconto){
+            $("button[type='button'][name^='chkMercadoria']").each(function() {
+                var codigoMercadoria            =  $(this).val();
+                var qtdeVendida                 =  $('#qtdVendida-'+codigoMercadoria).val();
+                var valorUnitario               =  parseFloat($('#vl_preco_unitario-'+codigoMercadoria).val());
+                var vlPrecoDescontoMercadoria   =  (valorUnitario - parseFloat((valorUnitario * nrPercentualDesconto)/100)).toFixed(2);
+                var vlPrecoTotalMercadoria      =  parseFloat(qtdeVendida * vlPrecoDescontoMercadoria).toFixed(2);
+
+                //preço com desconto
+                $('#vl_preco_desconto-'+codigoMercadoria).val(vlPrecoDescontoMercadoria);
+                $('#span_vl_preco_desconto-'+codigoMercadoria).text(vlPrecoDescontoMercadoria);
+
+                //preço com desconto X a quantidade
+                $('#vl_tot-'+codigoMercadoria).val(vlPrecoTotalMercadoria);
+                $('#span_vl_tot-'+codigoMercadoria).text(vlPrecoTotalMercadoria);
+            });
+        },
+
 
         exibirDivRefNfe = function (finalidade) {
             if (finalidade == 4) {

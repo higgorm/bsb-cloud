@@ -168,7 +168,6 @@ var Pedido = {
             var subTotalPedido     = parseFloat( $("#subTotalPedido").val() );
 			var totalExcluido      =  parseFloat(0);
 
-
 			var numCheckboxMarcados = 0;
             $("button[type='button'][name^='chkMercadoria']").each(function() {
 				if ($(this).html() == '<i class="icon-white icon-ok"></i>')
