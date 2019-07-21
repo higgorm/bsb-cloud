@@ -393,9 +393,11 @@ var Nota = {
             if (finalidade == 4) {
                 $("#divRefNfe").css('visibility','visible');
                 $("#refNFe").attr('required',true);
+                $("#indPag2").trigger('click');
             } else {
                 $("#divRefNfe").css('visibility','hidden');
                 $("#refNFe").removeAttr('required');
+                $("#indPag0").trigger('click');
             }
         }
 
