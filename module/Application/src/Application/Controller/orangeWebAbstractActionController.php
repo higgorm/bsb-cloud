@@ -45,6 +45,7 @@ abstract class OrangeWebAbstractActionController extends AbstractActionControlle
                       </div>';
             } else {
                 header('Location: /index/index');
+                $this->flashMessenger()->addMessage("Sua sess&atilde;o foi encerrada!");
             }
             exit();
         }

@@ -139,12 +139,23 @@ class NotaController extends OrangeWebAbstractActionController{
 		$table      = new NotaTable($dbAdapter);
         $cfop       = $cfopTable->selectAll_cfop();
 		$config     = $table->getConfig('1');
-		$nfe		= array( '' );
+		$nfe		= array(
+		                    'RET_Base_PIS' => '0.00',
+                            'RET_Aliq_PIS' => $config[0]['RETENCAO_pPIS'],   //aliquota na nota avulsa, apartir da configuração padrão
+                            'RET_Base_COFINS' => '0.00',
+                            'RET_Aliq_COFINS' => $config[0]['RETENCAO_pCOFINS'],   //aliquota na nota avulsa, apartir da configuração padrão
+                            'RET_Base_CSLL' => '0.00',
+                            'RET_Aliq_CSLL' => $config[0]['RETENCAO_pCSLL'],   //aliquota na nota avulsa, apartir da configuração padrão
+                            'RET_Base_IRRF' => '0.00',
+                            'RET_Aliq_IRRF' => $config[0]['RETENCAO_pIRRF'],   //aliquota na nota avulsa, apartir da configuração padrão
+                            'RET_Base_PREV' => '0.00',
+                            'RET_Aliq_PREV' => $config[0]['RETENCAO_pPrevidencia'],   //aliquota na nota avulsa, apartir da configuração padrão
+                    );
 		$util     	= new \Util;
 
 		$viewModel = new ViewModel();
         $viewModel->setTerminal(false);
-		$viewModel->setVariable('nfe', $nfe);
+		$viewModel->setVariable('nfe', array($nfe));
 		$viewModel->setVariable('cfop', $cfop);
 		$viewModel->setVariable('config', $config);
 		$viewModel->setVariable('util', $util);
@@ -563,7 +574,10 @@ class NotaController extends OrangeWebAbstractActionController{
         $totalCOFINSISSQN	= 0;
         $totalCOFINSICMS	= 0;
         $totalNota    		= 0;
+        $totalNotaSemDesc   = 0;
+        $totalDesconto      = 0;
         $totalServ      	= 0;
+        $totalProd          = 0;
         $nfeGe['CD_LOJA']   = $session->cdLoja;
         $nfeGe['NR_PEDIDO'] = !empty($nrPedido) ? $nrPedido : $post->get('NR_PEDIDO');
 
@@ -937,6 +951,7 @@ class NotaController extends OrangeWebAbstractActionController{
             //}
 
 
+
         //Recupera lista de mercadoria da tabela
         $cdsMercadoria = $post->get('cdMercadoria');
         $i = 1;
@@ -965,6 +980,10 @@ class NotaController extends OrangeWebAbstractActionController{
             $vlPrecoVenda = $post->get('vl_preco_unitario-'.$cdMercadoria);
             $vlDesconto   = $post->get('vl_preco_desconto-'.$cdMercadoria);
 
+            if (empty($vlDesconto)) { //fix, se o preço com desconto estiver vazio, assume o valor de venda
+                $vlDesconto = $vlPrecoVenda;
+            }
+
             //Montar array da mercadoria
             $aP[] = array(
                 'nItem'		=> $i,
@@ -980,15 +999,15 @@ class NotaController extends OrangeWebAbstractActionController{
                 'uCom'      => $rowResult["CD_UNIDADE_VENDA"],
                 'qCom'      => number_format( $qtdVendida, 2, '.', ''),
                 'vUnCom'    => number_format( $vlPrecoVenda, 4, '.', ''),
-                'vProd'     => number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
+                'vProd'     => number_format( $vlDesconto * $qtdVendida, 2, '.', '' ),
                 // GTIN (Global Trade Item Number) da unidade tributável, antigo código EAN ou código de barras
                 'cEANTrib'  => (empty($rowResult["CD_BARRAS"]) ? 'SEM GTIN' : $rowResult["CD_BARRAS"]),
                 'uTrib'     => $rowResult["CD_UNIDADE_VENDA"],
                 'qTrib'     => number_format( $qtdVendida, 2, '.', ''),
-                'vUnTrib'   => number_format( $vlPrecoVenda,4, '.', ''),
+                'vUnTrib'   => number_format( $vlDesconto,4, '.', ''),
                 'vFrete'    => '',
                 'vSeg'      => '',
-                'vDesc'     => '',
+                'vDesc'     => number_format( ($vlPrecoVenda - $vlDesconto),2, '.', ''),
                 'vOutro'    => '',
                 'indTot'    => '1',
                 'xPed'      => '1',
@@ -1000,16 +1019,16 @@ class NotaController extends OrangeWebAbstractActionController{
             if ( $rowResult['ST_SERVICO'] == 'S' ) {
                 $issqn[] = array(
                     'nItem' 		=> $i,
-                    'vBC' 			=> ( $zeraBC != 'S' ? number_format(  $vlPrecoVenda * $qtdVendida, 2, '.', ''): '0.00' ),
+                    'vBC' 			=> ( $zeraBC != 'S' ? number_format(  $vlDesconto * $qtdVendida, 2, '.', ''): '0.00' ),
                     'vAliq' 		=> ( $zeraBC != 'S' ? number_format( $rowResult['VL_ISS'], 2, '.', '' ) : '0.00' ),
-                    'vISSQN' 		=> ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $rowResult['VL_ISS'] )/100, 2, '.', '') : '0.00' ),
+                    'vISSQN' 		=> ( $zeraBC != 'S' ? number_format( ( ( $vlDesconto * $qtdVendida ) * $rowResult['VL_ISS'] )/100, 2, '.', '') : '0.00' ),
                     'cMunFG' 		=> $cMunicipio,
                     'CLISTSERV' 	=> substr($rowResult['CLISTSERV'], 0, 2) . '.' . substr($rowResult['CLISTSERV'], 2 ),
                     'vDeducao' 		=> '', //Verificar
                     'vOutro' 		=> '', //Verificar
                     'vDescIncond' 	=> '',
                     'vDescCond' 	=> '',
-                    'vISSRet' 		=> ( $rowResult['VL_RET_ISS'] > 0 ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $rowResult['VL_RET_ISS'] )/100, 2, '.', '') : '' ),
+                    'vISSRet' 		=> ( $rowResult['VL_RET_ISS'] > 0 ? number_format( ( ( $vlDesconto * $qtdVendida ) * $rowResult['VL_RET_ISS'] )/100, 2, '.', '') : '' ),
                     'indISS' 		=> $rowResult['ISSQN_indISS'],
                     'cServico' 		=> '',//Verificar
                     'cMun' 			=> '',//Verificar
@@ -1017,44 +1036,50 @@ class NotaController extends OrangeWebAbstractActionController{
                     'nProcesso' 	=> '',//Verificar
                     'indIncentivo' 	=> $rowResult['ISSQN_indIncentivo']
                 );
-                $totalServ  = $totalServ + ( $vlPrecoVenda * $qtdVendida );
+                $totalServ  = $totalServ + ( $vlDesconto * $qtdVendida );
 
                 $nfeMercadoria[] = array(
                     'infNFE'			=> $nr_nota,
+                    'NR_PEDIDO'         => $nfeGe['NR_PEDIDO'],
                     'CD_MERCADORIA'     => $cdMercadoria,
                     'nItem'				=> $i,
                     'CD_LOJA'			=> '1',
                     'xProd'				=> $dsMercadoria,
                     'qCom'      		=> number_format( $qtdVendida, 2, '.', ''),
                     'vUnCom'    		=> number_format( $vlPrecoVenda, 4, '.', ''),
-                    'vProd'    	 		=> number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
+                    'vProd'    	 		=> number_format( $vlDesconto * $qtdVendida, 2, '.', '' ),
+                    'vDesc'             => number_format( $vlDesconto, 2, '.', '' ), //valor liquido
                     'ISSQN_cMunFG'		=> $cMunicipio
                 );
             } else {
                // Mercadoria
                 $nfeMercadoria[] = array(
                     'infNFE'			=> $nr_nota,
+                    'NR_PEDIDO'         => $nfeGe['NR_PEDIDO'],
                     'CD_MERCADORIA'     => $cdMercadoria,
                     'nItem'				=> $i,
                     'CD_LOJA'			=> '1',
                     'xProd'				=> $dsMercadoria,
                     'qCom'      		=> number_format( $qtdVendida, 2, '.', ''),
                     'vUnCom'    		=> number_format( $vlPrecoVenda, 4, '.', ''),
-                    'vProd'    	 		=> number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' )
+                    'vProd'    	 		=> number_format( $vlDesconto * $qtdVendida, 2, '.', '' ),
+                    'vDesc'             => number_format( $vlDesconto, 2, '.', '' )////valor liquido
                 );
+                $totalProd  = $totalProd + ( $vlPrecoVenda * $qtdVendida );  //total sem descontos
 
                 //montar array do ICMS de acordo com Situação Tributaria
                 $cst = $rowResult['ICMS_CST'];
-                $BaseCalculo = ( $zeraBC != 'S' ? number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '') : '0.00' );
-                $ValorICMS   = ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $picms)/100, 2, '.', '') : '0.00' );
-                if( $regime == '1' ){
+                $BaseCalculo = ( $zeraBC != 'S' ? number_format( $vlDesconto * $qtdVendida, 2, '.', '') : '0.00' );
+                $ValorICMS   = ( $zeraBC != 'S' ? number_format( ( ( $vlDesconto * $qtdVendida ) * $picms)/100, 2, '.', '') : '0.00' );
+
+                if ( $regime == '1' ) {
                     $icms[] = array(
                         'nItem' 	=> $i,
                         'orig'		=> $rowResult['ICMS_Orig'],
                         'CSOSN'		=> $rowResult['DS_CSOSN']
                     );
-                }else {
-                    if($cst == '00'){
+                } else {
+                    if ($cst == '00') {
                         $icms[] = array(
                             'nItem' 	=> $i,
                             'orig'		=> $rowResult['ICMS_Orig'],
@@ -1064,7 +1089,7 @@ class NotaController extends OrangeWebAbstractActionController{
                             'pICMS'		=> number_format( $picms, 2, '.', ''),
                             'vICMS'		=> $ValorICMS
                         );
-                    }else if($cst == '10'){
+                    } else if($cst == '10') {
                         $icms[] = array(
                             'nItem' 	=> $i,
                             'orig'		=> $rowResult['ICMS_Orig'],
@@ -1130,19 +1155,23 @@ class NotaController extends OrangeWebAbstractActionController{
 
                     }else if($cst == '70'){
 
-                    }else if($cst == '90'){
+                    }else if($cst == '90'){ //Tributacao ICMS : outros
                         $icms[] = array(
                             'nItem' 	=> $i,
                             'orig'		=> $rowResult['ICMS_Orig'],
-                            'cst'		=> '51',
+                            'cst'		=> '90',
                             'modBC'		=> $rowResult['ICMS_modBC'],
+
+                            //'vBC'		=> $BaseCalculo,
+                            //'pICMS'		=> number_format( $picms, 2, '.', ''),
+                            //'vICMS'		=> $ValorICMS
                         );
                     }
                 }
                 //Preencher array IPI
                 $nr_ipi = number_format( $rowResult['NR_IPI'], 2, '.', '');
                 if( $nr_ipi > 0 ){
-                    $ipi = array(
+                    $ipi[] = array(
                         'nItem' 	=> $i,
                         'cst' 		=> $rowResult['IPI_CST'],
                         'clEnq'	 	=> '',
@@ -1150,11 +1179,11 @@ class NotaController extends OrangeWebAbstractActionController{
                         'cSelo'		=> '',
                         'qSelo'		=> '',
                         'cEnq'		=> '',
-                        'vBC'		=> number_format( $vlPrecoVenda * $qtdVendida, 2, '.', ''),
+                        'vBC'		=> number_format( $vlDesconto * $qtdVendida, 2, '.', ''),
                         'pIPI'		=> $nr_ipi,
                         'qUnid'		=> '',
                         'vUnid'		=> '',
-                        'vIPI'		=> number_format( ( $vlPrecoVenda * $qtdVendida ) * $nr_ipi, 2, '.', '')
+                        'vIPI'		=> number_format( ((( $vlDesconto * $qtdVendida ) * $nr_ipi) / 100), 2, '.', '')
                     );
                 }
                 //Preencher array II
@@ -1162,11 +1191,10 @@ class NotaController extends OrangeWebAbstractActionController{
             }
             //Preencher array PIS
             $pisCST = $rowResult['PIS_CST'];
-            $BaseCalculoPIS = ( $zeraBC != 'S' ? number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '') : '0.00' );
-            $ValorPIS       = ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $pPIS ) / 100, 2, '.', '') : '0.00');
+            $BaseCalculoPIS = ( $zeraBC != 'S' ? number_format( $vlDesconto * $qtdVendida, 2, '.', '') : '0.00' );
+            $ValorPIS       = ( $zeraBC != 'S' ? number_format( ( ( $vlDesconto * $qtdVendida ) * $pPIS ) / 100, 2, '.', '') : '0.00');
 
-            if( $pisCST == "01" ||
-                $pisCST == "02" ){
+            if( $pisCST == "01" || $pisCST == "02" ) {
                 $pis[] = array(
                     'nItem'		=> $i,
                     'cst'		=> $pisCST,
@@ -1176,8 +1204,12 @@ class NotaController extends OrangeWebAbstractActionController{
                     'qBCProd'	=> '',
                     'vAliqProd'	=> ''
                 );
-                ( $rowResult['ST_SERVICO'] == 'S' ? $totalPISISSQN = $totalPISISSQN + $ValorPIS : $totalPISICMS = $totalPISICMS + $ValorPIS );
-            }else if( 	$pisCST == "04" ||
+               if ( $rowResult['ST_SERVICO'] == 'S') {
+                   $totalPISISSQN = $totalPISISSQN + $ValorPIS ;
+               } else {
+                   $totalPISICMS  = $totalPISICMS + $ValorPIS;
+               }
+            } else if( 	$pisCST == "04" ||
                 $pisCST == "05" ||
                 $pisCST == "06" ||
                 $pisCST == "07" ||
@@ -1190,8 +1222,8 @@ class NotaController extends OrangeWebAbstractActionController{
             }
             //Preencher array COFINS
             $cofinsCST = $rowResult['COFINS_CST'];
-            $BaseCalculoCofins = ( $zeraBC != 'S' ? number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '') : '0.00' );
-            $ValorCofins       = ( $zeraBC != 'S' ? number_format( ( ( $vlPrecoVenda * $qtdVendida ) * $pCOFINS ) / 100, 2, '.', '' ) : '0.00' );
+            $BaseCalculoCofins = ( $zeraBC != 'S' ? number_format( $vlDesconto * $qtdVendida, 2, '.', '') : '0.00' );
+            $ValorCofins       = ( $zeraBC != 'S' ? number_format( ( ( $vlDesconto * $qtdVendida ) * $pCOFINS ) / 100, 2, '.', '' ) : '0.00' );
             if( $cofinsCST == "01" ||
                 $cofinsCST == "01" ){
                 $cofins[] = array(
@@ -1232,7 +1264,7 @@ class NotaController extends OrangeWebAbstractActionController{
             $EXTIPI   	= $prod['EXTIPI'];
             $CFOP     	= $prod['CFOP'];
             $uCom     	= $prod['uCom'];
-            $qCom     	= $prod['qCom'];
+            $qCom     	= (int)$prod['qCom'];
             $vUnCom   	= $prod['vUnCom'];
             $vProd    	= $prod['vProd'];
             $cEANTrib 	= $prod['cEANTrib'];
@@ -1247,14 +1279,22 @@ class NotaController extends OrangeWebAbstractActionController{
             $xPed 		= $prod['xPed'];
             $nItemPed	= $prod['nItemPed'];
             $nFCI 		= $prod['nFCI'];
-            $resp = $nfe->tagprod( $nItem, $cProd, $cEAN, $xProd, $NCM, $NVE, $CEST, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI );
-            $totalNota = $totalNota + $prod['vProd'];
+
+            $resp                 = $nfe->tagprod( $nItem, $cProd, $cEAN, $xProd, $NCM, $NVE, $CEST, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI );
+
+            //calculos totais da nota
+            //( $rowResult['ST_SERVICO'] == 'S' )
+            $totalNota        = $totalNota + $vProd;                    // V. TOTAL DA NOTA
+            $totalNotaSemDesc = $totalNotaSemDesc + ($vUnCom * $qCom);  // V. TOTAL PRODUTOS
+            $totalDesconto    = $totalDesconto + ($vDesc * $qCom);      // DESCONTO
 
             //imposto
-            $nItem = $prod['nItem'];
-            $vTotTrib = ''; //Verificar
-            $resp = $nfe->tagimposto($nItem, $vTotTrib);
+            $nItem      = $prod['nItem'];
+            $vTotTrib   = ''; //Verificar
+            $resp       = $nfe->tagimposto($nItem, $vTotTrib);
         }
+
+
 
         //ICMS
         if( @$icms ){
@@ -1281,9 +1321,12 @@ class NotaController extends OrangeWebAbstractActionController{
                     $vICMSOp 	= $ic['vICMSOp'];
                     $vBCSTRet 	= $ic['vBCSTRet'];
                     $vICMSSTRet = $ic['vICMSSTRet'];
+
                     $resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);
-                    $totalBCICMS = $totalBCICMS + $vBC;
-                    $totalICMS = $totalICMS + $vICMS;
+
+                    //total ICMS
+                    $totalBCICMS    = $totalBCICMS  + $vBC;
+                    $totalICMS      = $totalICMS    + $vICMS;
                 }
             }else{
                 foreach( $icms as $ic) {
@@ -1371,41 +1414,41 @@ class NotaController extends OrangeWebAbstractActionController{
         }
 
         //total icms
-        $vBC = number_format($totalBCICMS,2, '.', '');
-        $vICMS = number_format($totalICMS,2, '.', '');
+        $vBC        = number_format($totalBCICMS,2, '.', '');
+        $vICMS      = number_format($totalICMS,2, '.', '');
         $vICMSDeson = '0.00';
-        $vBCST = '0.00';
-        $vST = '0.00';
-        $vProd = number_format($totalNota - $totalServ,2, '.', '');
-        $vFrete = '0.00';
-        $vSeg = '0.00';
-        $vDesc = '0.00';
-        $vII = '0.00';
-        $vIPI = ( $totalIPI > 0 ? number_format( $totalIPI, 2, '.', '') : '0.00');
-        $vPIS = ( $totalPISICMS > 0 ? number_format($totalPISICMS,2, '.', '') : '0.00' );
-        $vCOFINS = ( $totalCOFINSICMS > 0 ? number_format($totalCOFINSICMS,2, '.', ''): '0.00');
-        $vOutro = '0.00';
-        $vNF = number_format($totalNota,2, '.', '');
-        $vTotTrib = '';
+        $vBCST      = '0.00';
+        $vST        = '0.00';
+        $vProd      = number_format($totalProd,2, '.', '');
+        $vFrete     = '0.00';
+        $vSeg       = '0.00';
+        $vDesc      = !empty($totalDesconto) ? number_format( $totalDesconto, 2, '.', '') : '0.00';
+        $vII        = '0.00';
+        $vIPI       = ( $totalIPI > 0 ? number_format( $totalIPI, 2, '.', '') : '0.00');
+        $vPIS       = ( $totalPISICMS > 0 ? number_format($totalPISICMS,2, '.', '') : '0.00' );
+        $vCOFINS    = ( $totalCOFINSICMS > 0 ? number_format($totalCOFINSICMS,2, '.', ''): '0.00');
+        $vOutro     = '0.00';
+        $vNF        = number_format($totalNota,2, '.', '');
+        $vTotTrib   = '';
         $resp = $nfe->tagICMSTot($vBC, $vICMS, $vICMSDeson, $vBCST, $vST, $vProd, $vFrete, $vSeg, $vDesc, $vII, $vIPI, $vPIS, $vCOFINS, $vOutro, $vNF, $vTotTrib);
 
         $resp = $nfe->tagpag('01', $vNF);
 
         //Passar para o array DB
-        $nfeGe['ICMSTot_vBC'] = $vBC;
-        $nfeGe['ICMSTot_vICMS'] = $vICMS;
-        $nfeGe['ICMSTot_vBCST'] = $vBCST;
-        $nfeGe['ICMSTot_vST'] = $vST;
-        $nfeGe['ICMSTot_vProd'] = $vProd;
-        $nfeGe['ICMSTot_vFrete'] = $vFrete;
-        $nfeGe['ICMSTot_vSeg'] = $vSeg;
-        $nfeGe['ICMSTot_vDesc'] = $vDesc;
-        $nfeGe['ICMSTot_vII'] = $vII;
-        $nfeGe['ICMSTot_vIPI'] = $vIPI;
-        $nfeGe['ICMSTot_vPIS'] = $vPIS;
-        $nfeGe['ICMSTot_vCOFINS'] = $vCOFINS;
-        $nfeGe['ICMSTot_vOutro'] = $vOutro;
-        $nfeGe['ICMSTot_vNF'] = $vNF;
+        $nfeGe['ICMSTot_vBC']       = $vBC;
+        $nfeGe['ICMSTot_vICMS']     = $vICMS;
+        $nfeGe['ICMSTot_vBCST']     = $vBCST;
+        $nfeGe['ICMSTot_vST']       = $vST;
+        $nfeGe['ICMSTot_vProd']     = $vProd;
+        $nfeGe['ICMSTot_vFrete']    = $vFrete;
+        $nfeGe['ICMSTot_vSeg']      = $vSeg;
+        $nfeGe['ICMSTot_vDesc']     = $vDesc;
+        $nfeGe['ICMSTot_vII']       = $vII;
+        $nfeGe['ICMSTot_vIPI']      = $vIPI;
+        $nfeGe['ICMSTot_vPIS']      = $vPIS;
+        $nfeGe['ICMSTot_vCOFINS']   = $vCOFINS;
+        $nfeGe['ICMSTot_vOutro']    = $vOutro;
+        $nfeGe['ICMSTot_vNF']       = $vNF;
 
 
         //total ISSQNTot
@@ -1496,8 +1539,8 @@ class NotaController extends OrangeWebAbstractActionController{
                 $xCampo = $obs[0];
                 $xTexto = $obs[1];
                 $resp = $nfe->tagobsCont($xCampo, $xTexto);
-                $nfeGe['RET_Base_PIS'] = $post->get('retPis_bc');
-                $nfeGe['RET_Aliq_PIS'] = $post->get('retPis_aliq');
+                $nfeGe['RET_Base_PIS'] = str_ireplace(",",".",$post->get('retPis_bc'));
+                $nfeGe['RET_Aliq_PIS'] = str_ireplace(",",".",$post->get('retPis_aliq'));
             }
         }
 
@@ -1508,8 +1551,8 @@ class NotaController extends OrangeWebAbstractActionController{
                 $xCampo = $obs[0];
                 $xTexto = $obs[1];
                 $resp = $nfe->tagobsCont($xCampo, $xTexto);
-                $nfeGe['RET_Base_COFINS'] = $post->get('retCofins_bc');
-                $nfeGe['RET_Aliq_COFINS'] = $post->get('retCofins_aliq');
+                $nfeGe['RET_Base_COFINS'] = str_ireplace(",",".",$post->get('retCofins_bc'));
+                $nfeGe['RET_Aliq_COFINS'] = str_ireplace(",",".",$post->get('retCofins_aliq'));
             }
         }
 
@@ -1520,8 +1563,8 @@ class NotaController extends OrangeWebAbstractActionController{
                 $xCampo = $obs[0];
                 $xTexto = $obs[1];
                 $resp = $nfe->tagobsCont($xCampo, $xTexto);
-                $nfeGe['RET_Base_CSLL'] = $post->get('retCsll_bc');
-                $nfeGe['RET_Aliq_CSLL'] = $post->get('retCsll_aliq');
+                $nfeGe['RET_Base_CSLL'] = str_ireplace(",",".",$post->get('retCsll_bc'));
+                $nfeGe['RET_Aliq_CSLL'] = str_ireplace(",",".",$post->get('retCsll_aliq'));
             }
         }
 
@@ -1532,8 +1575,8 @@ class NotaController extends OrangeWebAbstractActionController{
                 $xCampo = $obs[0];
                 $xTexto = $obs[1];
                 $resp = $nfe->tagobsCont($xCampo, $xTexto);
-                $nfeGe['RET_Base_IRRF'] = $post->get('retIrrf_bc');
-                $nfeGe['RET_Aliq_IRRF'] = $post->get('retIrrf_aliq');
+                $nfeGe['RET_Base_IRRF'] = str_ireplace(",",".",$post->get('retIrrf_bc'));
+                $nfeGe['RET_Aliq_IRRF'] = str_ireplace(",",".",$post->get('retIrrf_aliq'));
             }
         }
 
@@ -1544,8 +1587,8 @@ class NotaController extends OrangeWebAbstractActionController{
                 $xCampo = $obs[0];
                 $xTexto = $obs[1];
                 $resp = $nfe->tagobsCont($xCampo, $xTexto);
-                $nfeGe['RET_Base_PREV'] = $post->get('retPrev_bc');
-                $nfeGe['RET_Aliq_PREV'] = $post->get('retPrev_aliq');
+                $nfeGe['RET_Base_PREV'] = str_ireplace(",",".",$post->get('retPrev_bc'));
+                $nfeGe['RET_Aliq_PREV'] = str_ireplace(",",".",$post->get('retPrev_aliq'));
             }
         }
 
@@ -1781,7 +1824,8 @@ class NotaController extends OrangeWebAbstractActionController{
                 $clienteExistente    =   $pedidoTable->recuperaClienteNumeroPedido($nrPedido);
 
                 //Impostos
-                $baseCalculoImpostos = $pedidoExistente['VL_TOTAL_BRUTO'];
+                // valor base igual (bruto - descontos = liquido)
+                $baseCalculoImpostos = !empty($pedidoExistente['VL_TOTAL_LIQUIDO']) ? $pedidoExistente['VL_TOTAL_LIQUIDO'] : $pedidoExistente['VL_TOTAL_BRUTO'];
                 $aliquotaPis        = (float)$dadosConfiguracaoNF['RETENCAO_pPIS'];
                 $aliquotaCofins     = (float)$dadosConfiguracaoNF['RETENCAO_pCOFINS'];
                 $aliquotaCsll       = (float)$dadosConfiguracaoNF['RETENCAO_pCSLL'];
@@ -1818,9 +1862,9 @@ class NotaController extends OrangeWebAbstractActionController{
                     $codMercadoria      = $prod['CD_MERCADORIA'];
                     $dscMercadoria      = utf8_encode($prod['DS_MERCADORIA']);
                     $qtdVendida         = $prod['NR_QTDE_VENDIDA'];
-                    $vlPrecoUnitario    = $prod['VL_TOTAL_LIQUIDO'];
-                    $vlPrecoDesconto    = null;
-                    $vlTotal            = $vlPrecoUnitario * (int) $qtdVendida ;
+                    $vlPrecoUnitario    = $prod['VL_TOTAL_BRUTO'];
+                    $vlPrecoDesconto    = $prod['VL_TOTAL_LIQUIDO'];
+                    $vlTotal            = $vlPrecoDesconto * (int) $qtdVendida ; // valor liquido * a quantidade
                     $cfop               = (empty($cfop) && !empty($prod['DS_CFOP_INTERNO'])) ? $prod['DS_CFOP_INTERNO'] : "";
 
                     if (empty($xNatOp)){
@@ -1868,7 +1912,7 @@ class NotaController extends OrangeWebAbstractActionController{
                 $post->set('retIrrf_aliq',$aliquotaIrrf);
                 $post->set('retIrrf_total',$totalIrrf);
 
-                $post->set('retPrev_bc',$pedidoExistente['VL_TOTAL_BRUTO']);
+                $post->set('retPrev_bc', $baseCalculoImpostos);
                 $post->set('retPrev_aliq',$aliquotaPrev);
                 $post->set('retPrev_total',$totalPrev);
 
@@ -3431,10 +3475,13 @@ class NotaController extends OrangeWebAbstractActionController{
 		$infNFe   = (string) $this->params()->fromQuery('infNFe');
 		$replicar = (string) $this->params()->fromQuery('replicar');
 
-		$total = 0;
+		$subTotal = 0;
+        $total = 0;
 		$mercadoriasNota = $table->getMercadoria($infNFe);
 		foreach( $mercadoriasNota as $merc ){
-			$total = $total + $merc['vProd'];
+
+            $subTotal   = $subTotal + ($merc['vUnCom'] * $merc['qCom']);
+			$total      = $total    + $merc['vProd'];
 		}
 
 		$nfe 		        = $table->getNota($infNFe);
@@ -3451,6 +3498,7 @@ class NotaController extends OrangeWebAbstractActionController{
 		$viewModel->setVariable('nfe', $nfe);
 		$viewModel->setVariable('nfeMerc', $mercadoriasNota);
         $viewModel->setVariable('nfeReferenciada', $nfeReferenciada);
+        $viewModel->setVariable('totalSubNota', $subTotal);
 		$viewModel->setVariable('totalNota', $total);
 		$viewModel->setVariable('cfop', $cfop);
 		$viewModel->setVariable('config', $config);

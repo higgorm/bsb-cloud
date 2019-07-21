@@ -237,22 +237,22 @@
 														<?php echo $merc['xProd'] ?> <input type="hidden" name="ds_mercadoria-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['xProd'] ?>" />
 													</td>
 													<td>
-														<?php echo $merc['qCom'] ?> <input type="hidden" name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['qCom'] ?>" />
+														<?php echo (int)$merc['qCom'] ?> <input type="hidden" name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo (int)$merc['qCom'] ?>" />
 													</td>
 													<td>
-														<?php echo $merc['vUnCom'] ?>
+														<?php echo number_format($merc['vUnCom'],2, '.', ''); ?>
                                                         <input type="hidden"
                                                                name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>"
                                                                     id="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
 													</td>
                                                     <td>
-                                                        <?php echo $merc['vUnCom'] ?>
+                                                        <span id="span_vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo number_format($merc['vDesc'],2, '.', '') ?></span>
                                                         <input type="hidden"
-                                                               name="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>"
-                                                                    id="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
+                                                               name="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vDesc'],2, '.', '') ?>"
+                                                                    id="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vDesc'],2, '.', '') ?>" />
                                                     </td>
 													<td>
-														<?php echo $merc['vProd'] ?>
+                                                        <span id="span_vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo number_format($merc['vProd'],2, '.', '') ?></span>
                                                         <input type="hidden"
                                                                name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" ]
                                                                 id="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" />
@@ -276,7 +276,7 @@
 
                                         <div class="col-md-2">
                                             <input type="text" class="form-control text-right" readonly
-                                                   value="<?php echo ( @$totalNota ? number_format($totalNota, 2, ',', '.') : 0.00 )?>" disabled
+                                                   value="<?php echo ( @$totalSubNota ? number_format($totalSubNota, 2, ',', '.') : 0.00 )?>" disabled
                                                    id="subTotalNota"  name="vl_sub_tot" placeholder="R$ 0,00" title="Sub-total da nota, sem descontos." />
                                         </div>
                                     </div>
@@ -287,13 +287,13 @@
                                         </div>
                                         <div class="col-md-1">
                                             <input type="text" class="form-control text-right" style="width:120%!important;"
-                                                   value=""  disabled
+                                                   value="<?php echo ( @$nrDesconto ? number_format($nrDesconto, 2, ',', '.') : "" )?>"  disabled
                                                    id="nrPercentualDesconto" name="nr_desconto" placeholder="0,00 %"   onKeyUp="moeda(this)" title="%" maxlength="7">
                                         </div>
 
                                         <div class="col-md-1">
                                             <input type="text" class="form-control text-right" style="margin-left:-20%!important; width:120%!important;"
-                                                   value="" disabled
+                                                   value="<?php echo ( @$valorDesconto ? number_format($valorDesconto, 2, ',', '.') : "" ) ?>" disabled
                                                    id="valorDesconto"  name="vl_desconto" placeholder="R$ 0,00"    onKeyUp="moeda(this)"  title="R$" >
                                         </div>
 
@@ -318,11 +318,12 @@
 									<div class="col-sm-12 col-md-12">
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">BC PIS:</label><br>
-											<input name="retPis_bc" id="retPis_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo (@$nota['RET_Base_PIS'] ? number_format( @$nota['RET_Base_PIS'], 2, ',', '.') : 0) ?>"/>
+											<input name="retPis_bc" id="retPis_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo (@$nota['RET_Base_PIS'] ? number_format( @str_ireplace(",",".",$nota['RET_Base_PIS']), 2, ',', '.') : 0) ?>"/>
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq PIS(%):</label><br>
-											<input name="retPis_aliq" id="retPis_aliq" class="form-control"  value="<?php echo ( @$nota['RET_Aliq_PIS'] ? number_format( @$nota['RET_Base_PIS'], 2) : number_format($dado['RETENCAO_pPIS'],2) )?>" onKeyUp="moeda(this)"/>
+
+											<input name="retPis_aliq" id="retPis_aliq" class="form-control"  value="<?php echo ( @$nota['RET_Aliq_PIS'] ? number_format( @$nota['RET_Aliq_PIS'], 2) : 0 )?>" onKeyUp="moeda(this)"/>
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total PIS:</label><br>
@@ -335,11 +336,11 @@
 										<div class="col-sm-12 col-md-12">&nbsp;</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">BC COFINS:</label><br>
-											<input name="retCofins_bc" id="retCofins_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_COFINS'] ? number_format( @$nota['RET_Base_COFINS'], 2, ',', '.') : 0 ) ?>"/>
+											<input name="retCofins_bc" id="retCofins_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_COFINS'] ? number_format( @str_ireplace(",",".",$nota['RET_Base_COFINS']), 2, ',', '.') : 0 ) ?>"/>
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq COFINS(%):</label><br>
-											<input name="retCofins_aliq" id="retCofins_aliq" class="form-control"  value="<?php echo number_format($dado['RETENCAO_pCOFINS'],2)?>" onKeyUp="moeda(this)"/>
+											<input name="retCofins_aliq" id="retCofins_aliq" class="form-control"  value="<?php echo number_format(@$nota['RET_Aliq_COFINS'],2)?>" onKeyUp="moeda(this)"/>
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total COFINS:</label><br>
@@ -352,11 +353,11 @@
 										<div class="col-sm-12 col-md-12">&nbsp;</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">BC CSLL:</label><br>
-											<input name="retCsll_bc" id="retCsll_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_CSLL'] ? number_format( @$nota['RET_Base_CSLL'], 2, ',', '.') : 0 ) ?>"/>
+											<input name="retCsll_bc" id="retCsll_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_CSLL'] ? number_format( @str_ireplace(",",".",$nota['RET_Base_CSLL']), 2, ',', '.') : 0 ) ?>"/>
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq CSLL(%):</label><br>
-											<input name="retCsll_aliq" id="retCsll_aliq" class="form-control" value="<?php echo number_format($dado['RETENCAO_pCSLL'],2)?>" onKeyUp="moeda(this)"/>
+											<input name="retCsll_aliq" id="retCsll_aliq" class="form-control" value="<?php echo number_format(@$nota['RET_Aliq_CSLL'],2)?>" onKeyUp="moeda(this)"/>
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total CSLL:</label><br>
@@ -373,7 +374,7 @@
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq IRRF(%):</label><br>
-											<input name="retIrrf_aliq" id="retIrrf_aliq" class="form-control" value="<?php echo number_format($dado['RETENCAO_pIRRF'],2)?>" onKeyUp="moeda(this)"/>
+											<input name="retIrrf_aliq" id="retIrrf_aliq" class="form-control" value="<?php echo number_format(@$nota['RET_Aliq_IRRF'],2)?>" onKeyUp="moeda(this)"/>
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total IRRF:</label><br>
@@ -390,7 +391,7 @@
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq Previdência(%):</label><br>
-											<input name="retPrev_aliq" id="retPrev_aliq" class="form-control" value="<?php echo number_format($dado['RETENCAO_pPrevidencia'],2)?>" onKeyUp="moeda(this)"/>
+											<input name="retPrev_aliq" id="retPrev_aliq" class="form-control" value="<?php echo number_format(@$nota['RET_Aliq_PREV'],2)?>" onKeyUp="moeda(this)"/>
 										</div>
 										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total Previdência:</label><br>

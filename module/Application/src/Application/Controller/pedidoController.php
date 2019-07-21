@@ -479,7 +479,7 @@ class PedidoController extends OrangeWebAbstractActionController
         $vendedores = $statement->execute(array($session->cdLoja));
 
         $totalPedido            = $pedido['VL_TOTAL_LIQUIDO'];
-        $totalSubPedido         =  $pedido['VL_TOTAL_BRUTO'];
+        $totalSubPedido         = $pedido['VL_TOTAL_BRUTO'];
         $nrDescontoPedido       = 0.0;
         foreach( $mercadoriasDoPedido as $merc ){
             $nrDescontoPedido       = (float)$merc['NR_DESCONTO'];
