@@ -203,35 +203,35 @@ class MercadoriaTable extends AbstractTableGateway {
         }
 
         if($arrParam['st_tipo_pesquisa'] == 2){
-            $select .= " AND M.DS_MERCADORIA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND UPPER(M.DS_MERCADORIA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 3){
-            $select .= " AND M.DS_REFERENCIA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND UPPER(M.DS_REFERENCIA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 4){
-            $select .= " AND M.DS_MARCA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(M.DS_MARCA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 5){
-            $select .= " AND M.DS_MODELO_COR like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(M.DS_MODELO_COR) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 6){
-            $select .= " AND M.DS_MERCADORIA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(M.DS_MERCADORIA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 7){
-            $select .= " AND M.DS_CODIGO_FORNECEDOR = '".$arrParam['codigoMercadoria']."' ";
+            $select .= " AND  UPPER(M.DS_CODIGO_FORNECEDOR) = '".strtoupper($arrParam['codigoMercadoria'])."' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 8){
-            $select .= " AND F.DS_FANTASIA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(F.DS_FANTASIA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 9){
-            $select .= " AND M.OBSERVACAO like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(M.OBSERVACAO) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 		
         //$param = array($arrParam['codigoMercadoria']);

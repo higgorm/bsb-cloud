@@ -323,7 +323,7 @@ class MercadoriaController extends OrangeWebAbstractActionController{
         @$post = $this->getRequest()->getPost();
         $arrParams = array();
         foreach (@$post as $k => $v) {
-            $arrParams[$k] = $v;
+            $arrParams[$k] = utf8_decode($v);
         }
         $arrPedido = $this->getServiceLocator()->get('mercadoria_table')->pesquisaMercadoriaPorParamentro($arrParams);
         array_walk_recursive($arrPedido, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
