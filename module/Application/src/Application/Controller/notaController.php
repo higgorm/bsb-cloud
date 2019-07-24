@@ -991,13 +991,13 @@ class NotaController extends OrangeWebAbstractActionController{
                 'CFOP'      => ($copiarCFOP) ?  $post->get('cfop') : $sCFOP,
                 'uCom'      => $rowResult["CD_UNIDADE_VENDA"],
                 'qCom'      => number_format( $qtdVendida, 2, '.', ''),
-                'vUnCom'    => number_format( $vlPrecoVenda, 4, '.', ''),
+                'vUnCom'    => number_format( $vlPrecoVenda, 2, '.', ''),
                 'vProd'     => number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
                 // GTIN (Global Trade Item Number) da unidade tributável, antigo código EAN ou código de barras
                 'cEANTrib'  => (empty($rowResult["CD_BARRAS"]) ? 'SEM GTIN' : $rowResult["CD_BARRAS"]),
                 'uTrib'     => $rowResult["CD_UNIDADE_VENDA"],
                 'qTrib'     => (int) $qtdVendida,
-                'vUnTrib'   => number_format( $vlPrecoVenda,4, '.', ''),
+                'vUnTrib'   => number_format( $vlPrecoVenda,2, '.', ''),
                 'vFrete'    => '',
                 'vSeg'      => '',
                 'vDesc'     => number_format( (($vlPrecoVenda - $vlDesconto) * (int)$qtdVendida),2, '.', ''),
@@ -1029,7 +1029,7 @@ class NotaController extends OrangeWebAbstractActionController{
                     'nProcesso' 	=> '',//Verificar
                     'indIncentivo' 	=> $rowResult['ISSQN_indIncentivo']
                 );
-                $totalServ  = $totalServ + ( $vlDesconto * $qtdVendida );
+                $totalServ  = $totalServ + ( $vlPrecoVenda * $qtdVendida );
 
                 $nfeMercadoria[] = array(
                     'infNFE'			=> $nr_nota,
@@ -1040,7 +1040,7 @@ class NotaController extends OrangeWebAbstractActionController{
                     'xProd'				=> $dsMercadoria,
                     'qCom'      		=> number_format( $qtdVendida, 2, '.', ''),
                     'vUnCom'    		=> number_format( $vlPrecoVenda, 4, '.', ''),
-                    'vProd'    	 		=> number_format( $vlPrecoVenda * $qtdVendida, 2, '.', '' ),
+                    'vProd'    	 		=> number_format( $vlDesconto * $qtdVendida, 2, '.', '' ),
                     'vDesc'             => number_format( $vlDesconto, 2, '.', '' ), //valor liquido
                     'ISSQN_cMunFG'		=> $cMunicipio
                 );
