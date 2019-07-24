@@ -389,6 +389,10 @@ var Nota = {
             if (finalidade == 4) {
                 $("#divRefNfe").css('visibility','visible');
                 $("#refNFe").attr('required',true);
+                $("#indPag3").trigger('click');
+            } else if (finalidade == 3) {
+                $("#divRefNfe").css('visibility','hidden');
+                $("#refNFe").removeAttr('required');
                 $("#indPag2").trigger('click');
             } else {
                 $("#divRefNfe").css('visibility','hidden');

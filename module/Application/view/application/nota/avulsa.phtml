@@ -42,19 +42,6 @@
 
                                     <div class="col-md-12"></div>
 
-                                    <div class="col-md-2">
-                                        <label class="control-label text-info">Forma de Pagamento:</label><span class="text-danger"> *</span><br>
-                                        <input type="radio" value="0"  id="indPag0" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '0') echo "checked" ?>>À Vista
-                                    </div>
-                                    <div class="col-md-1">
-                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
-                                        <input type="radio" value="1"  id="indPag1" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '1') echo "checked" ?>>Prazo
-                                    </div>
-                                    <div class="col-md-1">
-                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
-                                        <input type="radio" value="2" id="indPag2" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '2') echo "checked" ?>>Outros
-                                    </div>
-
                                     <div class="col-md-4">
                                         <label class="control-label text-info">Natureza da operação:</label>
                                         <select class="form-control" name="natOp" id="natOp" required>
@@ -65,8 +52,8 @@
                                             $cfopSelecionado = !empty($cfopDaNota) ? $cfopDaNota : $cfopPadrao;
                                             ?>
                                             <?php foreach( $cfop as $res ):
-                                                    $selected =($res['CD_NATUREZA_OPERACAO'] == $cfopSelecionado) ? " selected " : "" ;
-                                            ?>
+                                                $selected =($res['CD_NATUREZA_OPERACAO'] == $cfopSelecionado) ? " selected " : "" ;
+                                                ?>
                                                 <option value="<?php echo $res['CD_NATUREZA_OPERACAO']?>"  <?php echo $selected?>><?php echo utf8_encode($res['CD_NATUREZA_OPERACAO']." - ".$res['DS_NATUREZA_OPERACAO']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
@@ -81,23 +68,43 @@
                                         <input type="checkbox" name="copiarCFOP" value="S">Copiar CFOP para <br>serviços/mercadorias
                                     </div>
 
+                                    <div class="col-md-12"></div>
+
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">Forma de Pagamento:</label><span class="text-danger"> *</span><br>
+                                        <input type="radio" value="0"  id="indPag0" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '0') echo "checked" ?>>À Vista
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="1"  id="indPag1" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '1') echo "checked" ?>>Prazo
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="2" id="indPag2" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '2') echo "checked" ?>>Outros
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="3" id="indPag3" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '3') echo "checked" ?>>Sem pagamento
+                                    </div>
+
+
                                     <div class="col-md-12">&nbsp;</div>
 
 									<div class="col-md-2">
 										<label class="control-label text-info">Finalidade da Nota:</label><span class="text-danger"> *</span><br>
 										<input type="radio" value="1" class="finalidadeNota"  name="finNFe" <?php if(@$nota['finNFe'] == '1' || @$nota['finNFe'] == null) echo "checked" ?> />Normal
 									</div>
-                                    <div class="col-md-1">
+                                    <div class="col-md-2">
                                         <label class="control-label text-info">&nbsp;&nbsp;</label><br>
                                         <input type="radio" value="3" class="finalidadeNota"  name="finNFe" <?php if(@$nota['finNFe'] == '3') echo "checked" ?> />Ajuste
                                     </div>
 
-                                    <div class="col-md-1">
+                                    <div class="col-md-2">
                                         <label class="control-label text-info">&nbsp;&nbsp;</label><br>
                                         <input type="radio" value="4" class="finalidadeNota" name="finNFe" <?php if(@$nota['finNFe'] == '4') echo "checked" ?>  />Devoluçao
                                     </div>
 
-									<div class="col-md-1">
+									<div class="col-md-2">
 										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
 										<input type="radio" value="2" class="finalidadeNota"  name="finNFe" <?php if(@$nota['finNFe'] == '2') echo "checked" ?> />Complementar
 									</div>
