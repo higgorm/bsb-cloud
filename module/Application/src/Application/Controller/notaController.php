@@ -809,20 +809,6 @@ class NotaController extends OrangeWebAbstractActionController{
             //refNFe NFe referenciada
             $refNFe = $post->get('refNFe');
 
-            if($finNFe == 4) { //Devolução/Retorno
-                if (!empty($refNFe)) {
-                    $resp = $nfe->tagrefNFe($refNFe);
-                }
-
-                $tPag = '90'; //Sem Pagamento
-                $vPag = '';
-                $resp = $nfe->tagpag($tPag, $vPag);
-            } else if($finNFe == 3) { //Ajuste
-                
-                $tPag = '99'; //Outros
-                $vPag = '';
-                $resp = $nfe->tagpag($tPag, $vPag);
-            }
             //refNFe NFe referenciada
             //$refNFe = '12345678901234567890123456789012345678901234';
             //$resp = $nfe->tagrefNFe($refNFe);
@@ -1443,7 +1429,26 @@ class NotaController extends OrangeWebAbstractActionController{
 
         $resp = $nfe->tagICMSTot($vBC, $vICMS, $vICMSDeson, $vBCST, $vST, $vProd, $vFrete, $vSeg, $vDesTotalIcms, $vII, $vIPI, $vPIS, $vCOFINS, $vOutro, $vNF, $vTotTrib);
 
-        $resp = $nfe->tagpag('01', $vNF);
+        if($finNFe == 4) { //Devolução/Retorno
+
+            if (!empty($refNFe)) {
+                $resp = $nfe->tagrefNFe($refNFe);
+            }
+
+            $tPag = '90'; //Sem Pagamento
+            $vPag = '0.00';
+            $resp = $nfe->tagpag($tPag,$vPag);
+
+        } else if($finNFe == 3) { //Ajuste
+
+            $tPag = '99'; //Outros
+            $vPag = '0.00';
+            $resp = $nfe->tagpag($tPag,$vPag);
+
+        } else {
+            $resp = $nfe->tagpag('01', $vNF);
+        }
+
 
         //Passar para o array DB
         $nfeGe['ICMSTot_vBC']       = $vBC;
