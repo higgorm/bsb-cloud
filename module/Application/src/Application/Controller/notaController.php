@@ -1051,7 +1051,7 @@ class NotaController extends OrangeWebAbstractActionController{
                     'qCom'      		=> number_format( $qtdVendida, 2, '.', ''),
                     'vUnCom'    		=> number_format( $vlPrecoVenda, 4, '.', ''),
                     'vProd'    	 		=> number_format( $vlDesconto * $qtdVendida, 2, '.', '' ),
-                    'vDesc'             => number_format( $vlDesconto, 2, '.', '' )////valor liquido
+                    'vDesc'             => number_format( $vlDesconto, 2, '.', '' )                     //valor liquido
                 );
                 $totalProd  = $totalProd + ( $vlPrecoVenda * $qtdVendida );  //total sem descontos
 
@@ -1248,7 +1248,7 @@ class NotaController extends OrangeWebAbstractActionController{
             //Incrementa nItem
             $i = $i + 1;
         }
-//var_dump($aP);exit;
+
         //TAG Prod
         foreach ( @$aP as $prod) {
             $nItem    	= $prod['nItem'];
@@ -1270,7 +1270,7 @@ class NotaController extends OrangeWebAbstractActionController{
             $vUnTrib 	= $prod['vUnTrib'];
             $vFrete 	= $prod['vFrete'];
             $vSeg 		= $prod['vSeg'];
-            $vDesc 		= $prod['vDesc'];
+            $vDesc 		= ((float)$prod['vDesc'] > 0.0) ? $prod['vDesc'] : '';
             $vOutro 	= $prod['vOutro'];
             $indTot		= $prod['indTot'];
             $xPed 		= $prod['xPed'];
@@ -1412,18 +1412,18 @@ class NotaController extends OrangeWebAbstractActionController{
         //total icms
         $vBC            = number_format($totalBCICMS,2, '.', '');
         $vICMS          = number_format($totalICMS,2, '.', '');
-        $vICMSDeson     = '0.00';
-        $vBCST          = '0.00';
-        $vST            = '0.00';
+        $vICMSDeson     = '0';
+        $vBCST          = '0';
+        $vST            = '0';
         $vProd          = number_format($totalProd,2, '.', '');
-        $vFrete         = '0.00';
-        $vSeg           = '0.00';
-        $vDesTotalIcms  = !empty($totalDesconto) ? number_format( $totalDesconto, 2, '.', '') : '0.00';
-        $vII            = '0.00';
+        $vFrete         = '0';
+        $vSeg           = '0';
+        $vDesTotalIcms  = !empty($totalDesconto) ? number_format( $totalDesconto, 2, '.', '') : '0';
+        $vII            = '0';
         $vIPI           = ( $totalIPI > 0 ? number_format( $totalIPI, 2, '.', '') : '0.00');
         $vPIS           = ( $totalPISICMS > 0 ? number_format($totalPISICMS,2, '.', '') : '0.00' );
         $vCOFINS        = ( $totalCOFINSICMS > 0 ? number_format($totalCOFINSICMS,2, '.', ''): '0.00');
-        $vOutro         = '0.00';
+        $vOutro         = '0';
         $vNF            = number_format($totalNota,2, '.', '');
         $vTotTrib       = '';
 
