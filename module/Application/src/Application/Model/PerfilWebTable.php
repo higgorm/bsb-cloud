@@ -199,7 +199,6 @@ class PerfilWebTable extends AbstractTableGateway {
         $statement = $this->adapter->query($sql);
         $resultset = $statement->execute($params);
         $results   = iterator_to_array($resultset,false);
-       // $results = array_column($results,'CD_MENU');
 
         $resultsIndexed = array();
 

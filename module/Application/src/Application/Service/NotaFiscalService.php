@@ -28,6 +28,40 @@ class NotaFiscalService
      */
     private $sm;
 
+    /**
+     * Solução alternativa para a function nativa <array_column>, previsto apenas para php5.5 ou superior
+     *
+     * @param array $input
+     * @param $columnKey
+     * @param null $indexKey
+     * @return array|bool
+     */
+    protected function array_column_bdge(array $input, $columnKey, $indexKey = null) {
+        $array = array();
+        foreach ($input as $value) {
+            if ( !array_key_exists($columnKey, $value)) {
+                trigger_error("Key \"$columnKey\" does not exist in array");
+                return false;
+            }
+            if (is_null($indexKey)) {
+                $array[] = $value[$columnKey];
+            }
+            else {
+                if ( !array_key_exists($indexKey, $value)) {
+                    trigger_error("Key \"$indexKey\" does not exist in array");
+                    return false;
+                }
+                if ( ! is_scalar($value[$indexKey])) {
+                    trigger_error("Key \"$indexKey\" does not contain scalar value");
+                    return false;
+                }
+                $array[$value[$indexKey]] = $value[$columnKey];
+            }
+        }
+        return $array;
+    }
+
+
 
     /**
      * NotaFiscalService constructor.
@@ -80,11 +114,10 @@ class NotaFiscalService
         $listaNfeNumeroInutilizada = $table->listNumeroNfeInutilizada();
 
         if(is_array($listaNfeNumeroInutilizada)) {
-            return array_column($listaNfeNumeroInutilizada,'NR_FAIXA');
+            return $this->array_column_bdge($listaNfeNumeroInutilizada,'NR_FAIXA');
         } else {
             return array();
         }
-
     }
 
 

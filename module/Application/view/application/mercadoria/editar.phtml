@@ -100,11 +100,11 @@
 							</div>
 							<div class="col-xs-3 col-md-3" id="icms_interno">
 								<label>ICMS Interno</label>
-								<input class="form-control" type="text" name="ICMS_INTERNO" maxlength="255" value="<?php echo @$dado['NR_PERCENTUAL_ICMS_INTERNO']; ?>">
+								<input class="form-control" type="text" onkeyup="moeda(this)" name="ICMS_INTERNO" maxlength="255" value="<?php echo ( @$dado['NR_PERCENTUAL_ICMS_INTERNO'] ? number_format(@$dado['NR_PERCENTUAL_ICMS_INTERNO'],2, '.', '') : '0.00' ); ?>">
 							</div>
 							<div class="col-xs-3 col-md-3" id="icms_externo">
 								<label>ICMS Externo</label>
-								<input class="form-control" type="text" name="ICMS_EXTERNO" maxlength="255" value="<?php echo @$dado['NR_PERCENTUAL_ICMS_EXTERNO']; ?>">
+								<input class="form-control" type="text" onkeyup="moeda(this)" name="ICMS_EXTERNO" maxlength="255" value="<?php echo ( @$dado['NR_PERCENTUAL_ICMS_EXTERNO'] ? number_format(@$dado['NR_PERCENTUAL_ICMS_EXTERNO'],2, '.', '') : '0.00' ); ?>">
 							</div>
 							<!------------------------------->
 							<div class="col-xs-4 col-md-4" id="icms_modBC">
@@ -128,7 +128,7 @@
 							</div>
 							<div class="col-xs-3 col-md-3">
 								<label>Substituição Tributaria MVA %</label>
-								<input class="form-control" type="number" name="stMva" maxlength="255" value="<?php echo ( @$dado['NR_MVA'] ? number_format(@$dado['NR_MVA'],2, '.', '') : '0.00' ); ?>">
+								<input class="form-control" type="text" onkeyup="moeda(this)" name="stMva"   value="<?php echo ( @$dado['NR_MVA'] ? number_format(@$dado['NR_MVA'],2, '.', '') : '0.00' ); ?>">
 							</div>
 							<!------------------------------->
 							<div class="col-xs-12 col-md-12" id="icmsst">
@@ -170,12 +170,12 @@
 
 							<div class="col-xs-3 col-md-3" id="iss">
 								<label>ISS (%)</label>
-								<input class="form-control" type="text" name="vl_iss" maxlength="255" value="<?php echo ( @$dado['VL_ISS'] ? number_format(@$dado['VL_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+								<input class="form-control" type="text"  name="vl_iss" maxlength="255" value="<?php echo ( @$dado['VL_ISS'] ? number_format(@$dado['VL_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
 							</div>
 
 							<div class="col-xs-3 col-md-3" id="retiss">
 								<label>Retenção ISS (%)</label>
-								<input class="form-control" type="number" name="VL_RET_ISS" maxlength="255" value="<?php echo ( @$dado['VL_RET_ISS'] ? number_format(@$dado['VL_RET_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+								<input class="form-control" type="text"  name="VL_RET_ISS" maxlength="255" value="<?php echo ( @$dado['VL_RET_ISS'] ? number_format(@$dado['VL_RET_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
 							</div>
 
 							<div class="col-xs-4 col-md-4" id="ipicst">
@@ -190,7 +190,7 @@
 							</div>
 							<div class="col-xs-3 col-md-3" id="ipi">
 								<label>IPI</label>
-								<input class="form-control" type="number" name="nr_ipi" maxlength="255" value="<?php echo ( @$dado['NR_IPI'] ? number_format(@$dado['NR_IPI'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+								<input class="form-control" type="text" name="nr_ipi" maxlength="255" value="<?php echo ( @$dado['NR_IPI'] ? number_format(@$dado['NR_IPI'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
 							</div>
 							<div class="col-xs-5 col-md-5" id="icms_org">
 								<label>Origem</label>
