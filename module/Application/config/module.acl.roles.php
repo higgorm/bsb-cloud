@@ -1,9 +1,10 @@
 <?php
 
 return array(
-    'admin' => array(
-	
-        // LAYOUT
+
+    '1' => array(
+
+        // LAYOUT and PAINEL CONTROLLER
         'index/',
         'index/logout',
         'index/login',
@@ -14,13 +15,53 @@ return array(
         'home',
         'home/default',
         'js/fullcalendar',
-
-        // PAINEL CONTROLLER
         'painel/index',
         'Application\Controller\Painel/index',
-		
-		// PERFIL
-		'perfil/index',
+        'perfil-web/meusDados',
+
+        //ACL controller's -  Admin for Users
+        'menu-web/index',
+        'nota/inutilizar',
+        'menu-web/cadastro',
+        'menu-web/edicao',
+        'menu-web/resources',
+
+        'perfil-web/index',
+        'perfil-web/cadastro',
+        'perfil-web/edicao',
+        'perfil-web/inativar',
+        'perfil-web/ativar',
+
+
+        'usuario-web/index',
+        'usuario-web/cadastro',
+        'usuario-web/edicao',
+        'usuario-web/inativar',
+        'usuario-web/ativar',
+
+    ),
+    '3' => array(
+
+        // LAYOUT and PAINEL CONTROLLER
+        'index/',
+        'index/logout',
+        'index/login',
+        'index/index',
+        'index/validasenha',
+        'Application\Controller\Index/index',
+        'layout/login',
+        'home',
+        'home/default',
+        'js/fullcalendar',
+        'painel/index',
+        'Application\Controller\Painel/index',
+        'perfil-web/meusDados',
+
+        // AJAX
+        'ajax/get-cidade-por-uf',
+        'ajax/get-historico-movimentacao',
+        'ajax/get-classificacao-financeira',
+        'ajax/get-operador-loja',
 
         // CLIENTE CONTROLLER
         'cliente/index',
@@ -35,7 +76,7 @@ return array(
 		'cliente/modal-pesquisa-lista-cliente',
 		'cliente/pesquisa-cliente-por-paramentro',
 		'cliente/recupera-cliente-por-codigo',
-		
+
 		// MERCADORIAS
 		'mercadoria/index',
 		'mercadoria/editar',
@@ -46,7 +87,7 @@ return array(
 		'mercadoria/modal-pesquisa-lista-mercadoria',
 		'mercadoria/pesquisa-mercadoria-por-paramentro',
 		'mercadoria/recupera-mercadoria-por-codigo',
-		
+
 		// TABELA
 		'tabela/forma-pagamento',
 		'tabela/forma-pagamento-editar',
@@ -57,7 +98,7 @@ return array(
 		'tabela/cartao',
 		'tabela/cartao-cadastrar',
 		'tabela/cartao-editar',
-		
+
         // AGENDA CONTROLLER
         'agenda/agendamento-cliente',
         'agenda/index',
@@ -69,8 +110,6 @@ return array(
         'agenda/verificaagenda',
         'agenda/atendecliente',
         'agenda/limpaagendamento',
-
-        // MACA CONTROLLER
         'maca/index',
         'maca/cadastrar',
 
@@ -97,7 +136,7 @@ return array(
         'pedido/pesquisa-mercadoria-por-paramentro',
         'pedido/cpf-nota',
         'pedido/recupera-historico-por-data',
-		
+
 		// NOTA CONTROLLER
 		'nota/lista',
 		'nota/avulsa',
@@ -114,6 +153,7 @@ return array(
 		'nota/abrir',
 		'nota/visualiza-danfe',
 		'nota/save-nota',
+        'nota/inutilizar',
 
         // RELATORIO CONTROLLER
         'relatorio/index',
@@ -142,6 +182,8 @@ return array(
         'relatorio-pedido/detalhe-multi-loja',
 		'relatorio-nota/pesquisa',
         'relatorio-nota/relatorio',
+        'relatorio-vendas-secao/pesquisa',
+        'relatorio-vendas-secao/relatorio',
 
         //CAIXA
         'caixa/index',
@@ -164,13 +206,14 @@ return array(
         'mail/analise',
         'mail/ver-clientes',
 
-        //CONTAS
+        //CONTAS a receber
         'contas-receber/index',
         'contas-receber/pesquisa',
         'contas-receber/cadastrar',
         'contas-receber/editar',
         'contas-receber/buscarcliente',
 
+        //CONTAS a pagar
         'contas-pagar/index',
         'contas-pagar/pesquisa',
         'contas-pagar/cadastrar',
@@ -185,211 +228,5 @@ return array(
         'estoque/editar',
         'estoque/remover',
 
-        // AJAX
-        'ajax/get-cidade-por-uf',
-        'ajax/get-historico-movimentacao',
-        'ajax/get-classificacao-financeira',
-        'ajax/get-operador-loja',
-    ),
-    'atendente' => array(
-        // LAYOUT
-        'index/',
-        'index/logout',
-        'index/login',
-        'index/index',
-        'Application\Controller\Index/index',
-        'layout/login',
-        'home',
-        'home/default',
-        'js/fullcalendar',
-
-        // PAINEL CONTROLLER
-        'painel/index',
-        'Application\Controller\Painel/index',
-
-        // CLIENTE CONTROLLER
-        'cliente/index',
-        'cliente/cadastrar',
-        'cliente/cadastrarclienterapidoagendamento',
-        'cliente/editar',
-        'cliente/remover',
-        'cliente/buscarcliente',
-        'cliente/agendacadastrar',
-
-        // MACA CONTROLLER
-        'maca/index',
-        'maca/cadastrar',
-
-        // AGENDA CONTROLLER
-        'agenda/index',
-        'agenda/agenda',
-        'agenda/horariosAgenda',
-        'agenda/cadastrar-cliente-agenda',
-        'agenda/agendamento-cliente',
-        'agenda/recupera-servico-por-codigo',
-        'agenda/verificaagenda',
-        'agenda/atendecliente',
-        'agenda/limpaagendamento',
-
-        // PEDIDO CONTROLLER
-        'pedido/lista-tablet',
-        'pedido/grid-lista',
-        'pedido/pedido-tablet',
-        'pedido/salvar-pedido',
-        'pedido/verifica-estoque',
-        'pedido/orcamento',
-        'pedido/grid-mercadoria',
-        'pedido/orcamento',
-        'pedido/grid-mercadoria',
-        'pedido/modal-lista-mercadoria',
-        'pedido/modal-pesquisa-lista-mercadoria',
-        'pedido/modal-pesquisa-mercadoria',
-        'pedido/verifica-numero-pedido',
-        'pedido/recupera-dados-pedido',
-        'pedido/recupera-dados-mercadoria',
-        'pedido/recupera-mercadoria-por-codigo',
-        'pedido/inserir-pedido-orcamento',
-        'pedido/salva-mercadoria-pedido',
-        'pedido/pesquisa-mercadoria-por-paramentro',
-        'pedido/cpf-nota',
-        'pedido/recupera-historico-por-data',
-
-        //CAIXA
-        'caixa/index',
-        'caixa/caixa',
-        'caixa/caixafuncionario',
-        'caixa/fechamentocaixa',
-        'caixa/validaaberturacaixa',
-        'caixa/recebepedido',
-        'caixa/reaberturacaixa',
-        'caixa/movimentacaocaixa',
-        'caixa/gravamovimentacaocaixa',
-        'caixa/pesquisamovimentacaocaixa',
-
-        // AJAX
-        'ajax/get-cidade-por-uf',
-        'ajax/get-historico-movimentacao',
-        'ajax/get-classificacao-financeira',
-        'ajax/get-operador-loja',
-
-
-        // RELATORIO CONTROLLER
-        'relatorio/index',
-        'relatorio-atendimento/pesquisa',
-        'relatorio-atendimento/relatorio',
-        'relatorio-agendamento/pesquisa',
-        'relatorio-agendamento/filtro',
-        'relatorio-agendamento/relatorio',
-    ),
-    'gerente' => array(
-        // INDEX
-        'index/',
-        'index/logout',
-        'index/login',
-        'index/index',
-        'index/validasenha',
-        'Application\Controller\Index/index',
-
-        // LAYOUT
-        'layout/login',
-        'home',
-        'home/default',
-        'js/fullcalendar',
-
-        // PAINEL CONTROLLER
-        'painel/index',
-        'Application\Controller\Painel/index',
-
-        //CLIENTE CONTROLLER
-        'cliente/index',
-        'cliente/cadastrar',
-        'cliente/cadastrarclienterapidoagendamento',
-        'cliente/editar',
-        'cliente/remover',
-        'cliente/buscarcliente',
-        'cliente/agendacadastrar',
-
-        //MACA CONTROLLER
-        'maca/index',
-        'maca/cadastrar',
-
-        // AGENDA CONTROLLER
-        'agenda/index',
-        'agenda/agenda',
-        'agenda/horariosAgenda',
-        'agenda/cadastrar-cliente-agenda',
-        'agenda/recupera-servico-por-codigo',
-        'agenda/agendamento-cliente',
-        'agenda/situacaoagendamento',
-        'agenda/verificaagenda',
-        'agenda/atendecliente',
-        'agenda/limpaagendamento',
-
-        // PEDIDO CONTROLLER
-        'pedido/lista-tablet',
-        'pedido/grid-lista',
-        'pedido/pedido-tablet',
-        'pedido/salvar-pedido',
-        'pedido/verifica-estoque',
-        'pedido/orcamento',
-        'pedido/grid-mercadoria',
-        'pedido/modal-lista-mercadoria',
-        'pedido/modal-pesquisa-lista-mercadoria',
-        'pedido/modal-pesquisa-mercadoria',
-        'pedido/verifica-numero-pedido',
-        'pedido/recupera-dados-pedido',
-        'pedido/recupera-dados-mercadoria',
-        'pedido/recupera-mercadoria-por-codigo',
-        'pedido/inserir-pedido-orcamento',
-        'pedido/salva-mercadoria-pedido',
-        'pedido/pesquisa-mercadoria-por-paramentro',
-        'pedido/cpf-nota',
-        'pedido/recupera-historico-por-data',
-
-        // RELATORIO CONTROLLER
-        'relatorio/index',
-        'relatorio-atendimento/pesquisa',
-        'relatorio-atendimento/relatorio',
-        'relatorio-agendamento/pesquisa',
-        'relatorio-agendamento/filtro',
-        'relatorio-agendamento/relatorio',
-        'relatorio-vendas-mensal-tipo-pagamento/pesquisa',
-        'relatorio-vendas-mensal-tipo-pagamento/relatorio',
-        'relatorio-inventario-estoque/pesquisa',
-        'relatorio-inventario-estoque/relatorio',
-        'relatorio/relatorio-inventario-estoque',
-        'relatorio-caixa-resumido/pesquisa',
-        'relatorio-caixa-resumido/filtro',
-        'relatorio-caixa-resumido/relatorio',
-        'relatorio-caixa/pesquisa',
-        'relatorio-caixa/filtro',
-        'relatorio-caixa/relatorio',
-        'relatorio/relatorio-bi',
-        'relatorio-geral/index',
-
-        //CAIXA
-        'caixa/index',
-        'caixa/caixa',
-        'caixa/caixafuncionario',
-        'caixa/fechamentocaixa',
-        'caixa/validaaberturacaixa',
-        'caixa/recebepedido',
-        'caixa/reaberturacaixa',
-        'caixa/movimentacaocaixa',
-        'caixa/gravamovimentacaocaixa',
-        'caixa/pesquisamovimentacaocaixa',
-
-        // MAIL
-        'mail/crm',
-        'mail/pesquisa',
-        'mail/send-mail',
-        'mail/gerar-planilha',
-        'mail/relatorio',
-
-        // AJAX
-        'ajax/get-cidade-por-uf',
-        'ajax/get-historico-movimentacao',
-        'ajax/get-classificacao-financeira',
-        'ajax/get-operador-loja',
-    ),
+    )
 );

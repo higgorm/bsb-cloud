@@ -10,13 +10,8 @@
 
 namespace Application;
 
-use Application\Model\LojaTable;
-use Application\Model\CargoTable;
-use Application\Model\Servicos;
+use Application\Model;
 use Zend\Session\Container;
-use Application\Model\FranquiaMacaTable;
-use Application\Model\ClienteTable;
-use Application\Model\TabelaTable;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
@@ -26,7 +21,6 @@ class Module {
 
         $this->initAcl($e);
         $e->getApplication()->getEventManager()->attach('route', array($this, 'checkAcl'));
-
         $e->getApplication()->getServiceManager()->get('translator');
         $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
@@ -36,54 +30,71 @@ class Module {
     public function initAcl(MvcEvent $e) {
 
         $acl = new \Zend\Permissions\Acl\Acl();
-        $roles = include __DIR__ . '/config/module.acl.roles.php';
+
+        //$roles = $this->getFileRoles($e);
+        $roles = $this->getDbRoles($e);
+
         $allResources = array();
         foreach ($roles as $role => $resources) {
 
             $role = new \Zend\Permissions\Acl\Role\GenericRole($role);
             $acl->addRole($role);
 
-            $allResources = array_merge($resources, $allResources);
-
             //adding resources
             foreach ($resources as $resource) {
                 // Edit 4
                 if (!$acl->hasResource($resource))
                     $acl->addResource(new \Zend\Permissions\Acl\Resource\GenericResource($resource));
-            }
-            //adding restrictions
-            foreach ($allResources as $resource) {
+
                 $acl->allow($role, $resource);
             }
         }
-        //testing
-        //var_dump($acl->isAllowed('admin','home'));
-        //true
         //setting to view
         $e->getViewModel()->acl = $acl;
     }
 
     public function checkAcl(MvcEvent $e) {
-        //$route = $e -> getRouteMatch() -> getMatchedRouteName();
-        $params = $e->getRouteMatch()->getParams();
-        $route = $params['controller'] . "/" . $params['action'];
+        $nameRoute = $e -> getRouteMatch() -> getMatchedRouteName();
+        $params    = $e->getRouteMatch()->getParams();
+        $route     = $params['controller'] . "/" . $params['action'];
 
         //you set your role
         $session = new Container("orangeSessionContainer");
-        if ($session->usuario == "ORANGE") {
-            $session->userRole = 'admin';
-        } else if ($session->stGerente == true) {
-            $session->userRole = 'gerente';
-        } else {
-            $session->userRole = 'atendente';
-        }
+        $session->userRole = $session->cdPerfilWeb;
 
-        if (!$e->getViewModel()->acl->isAllowed($session->userRole, $route)) {
+
+        if (isset($session->userRole) && !$e -> getViewModel() -> acl ->hasResource($route)) {
             $response = $e->getResponse();
-            //location to page or what ever
+            $response->getHeaders()->addHeaderLine('Location', $e->getRequest()->getBaseUrl() . '/404');
+            $response->setStatusCode(404);
+        } else if(isset($session->userRole) && !$e -> getViewModel() -> acl -> isAllowed($session->userRole, $route)) {
+            $response = $e->getResponse();
             $response->getHeaders()->addHeaderLine('Location', $e->getRequest()->getBaseUrl() . '/404');
             $response->setStatusCode(404);
         }
+    }
+
+    public function getFileRoles(MvcEvent $e){
+        $roles = include __DIR__ . '/config/module.acl.roles.php';
+        return $roles;
+    }
+
+    public function getDbRoles(MvcEvent $e){
+        // I take it that your adapter is already configured
+        $dbAdapter  = $e->getApplication()->getServiceManager()->get('Zend\Db\Adapter\Adapter');;
+        $resultset  = $dbAdapter->query('SELECT PWM.CD_PERFIL_WEB , MWR.DS_MENU_RESOURCE 
+                                            FROM LOGIN.DBO.TB_MENU_WEB_RESOURCE MWR
+                                                INNER JOIN LOGIN.DBO.TB_PERFIL_WEB_MENUS PWM ON PWM.CD_MENU = MWR.CD_MENU
+                                                    ORDER BY 1');
+        $results    = $resultset->execute();
+        // making the roles array
+        $roles = array();
+
+        foreach($results as $result){
+            $roles[$result['CD_PERFIL_WEB']][] = $result['DS_MENU_RESOURCE'];
+        }
+
+        return $roles;
     }
 
     public function setPhpSettings(MvcEvent $e) {
@@ -114,14 +125,20 @@ class Module {
     public function getServiceConfig() {
         return array(
             "factories" => array(
+                //Services negociais
+                'Application\Service\NotaFiscalService' => function ($sm) {
+                    return new \Application\Service\NotaFiscalService($sm);
+                },
+
+                //Services de banco de ddos
                 "loja_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new LojaTable($adapter);
+                    $table = new Model\LojaTable($adapter);
                     return $table;
                 },
                 "cliente_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new ClienteTable($adapter);
+                    $table = new Model\ClienteTable($adapter);
                     return $table;
                 },
                /* "tabela_table" => function($sm) {
@@ -131,12 +148,12 @@ class Module {
                 },*/
 				"cargo_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new CargoTable($adapter);
+                    $table = new Model\CargoTable($adapter);
                     return $table;
                 },
                 "franquia_maca_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new FranquiaMacaTable($adapter);
+                    $table = new Model\FranquiaMacaTable($adapter);
                     return $table;
                 },
                 "servicos_table" => function($sm) {
@@ -172,6 +189,11 @@ class Module {
                 "mercadoria_table" => function($sm) {
                     $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new Model\MercadoriaTable($adapter);
+                    return $table;
+                },
+                "funcionario_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\FuncionarioTable($adapter);
                     return $table;
                 },
                 "pedido_table" => function($sm) {
@@ -273,6 +295,31 @@ class Module {
                         $adapter = $sm->get('Zend\Db\Adapter\Adapter');
                         $table = new Model\FornecedorTable($adapter);
                         return $table;
+                },
+                "usuario_web_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\UsuarioWebTable($adapter);
+                    return $table;
+                },
+                "perfil_web_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\PerfilWebTable($adapter);
+                    return $table;
+                },
+                 "perfil_web_menu_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\PerfilWebMenuTable($adapter);
+                    return $table;
+                },
+                "menu_web_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\MenuWebTable($adapter);
+                    return $table;
+                },
+                "menu_web_resource_table" => function($sm) {
+                    $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Model\MenuWebResourceTable($adapter);
+                    return $table;
                 },
             ),
         );

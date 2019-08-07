@@ -21,6 +21,7 @@ return array(
             'Application\Controller\RelatorioAgendamento' => 'Application\Controller\relatorioAgendamentoController',
             'Application\Controller\RelatorioAtendimento' => 'Application\Controller\relatorioAtendimentoController',
             'Application\Controller\RelatorioVendasMensalTipoPagamento' => 'Application\Controller\relatorioVendasMensalTipoPagamentoController',
+            'Application\Controller\RelatorioVendasSecao' => 'Application\Controller\relatorioVendasSecaoController',
             'Application\Controller\RelatorioInventarioEstoque' => 'Application\Controller\relatorioInventarioEstoqueController',
             'Application\Controller\RelatorioCaixaResumido' => 'Application\Controller\relatorioCaixaResumidoController',
             'Application\Controller\RelatorioResumoCaixa' => 'Application\Controller\relatorioResumoCaixaController',
@@ -38,8 +39,14 @@ return array(
             'Application\Controller\ContasPagar' => 'Application\Controller\contasPagarController',
             'Application\Controller\Estoque' => 'Application\Controller\estoqueController',
             'Application\Controller\Ajax' => 'Application\Controller\AjaxController',
+
+            //acl admin-user
+            'Application\Controller\MenuWeb' => 'Application\Controller\MenuWebController',
+            'Application\Controller\PerfilWeb' => 'Application\Controller\PerfilWebController',
+            'Application\Controller\UsuarioWeb' => 'Application\Controller\UsuarioWebController',
         ),
     ),
+
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -115,4 +122,5 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
+
 );

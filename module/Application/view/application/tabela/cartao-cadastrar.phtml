@@ -4,18 +4,18 @@
             <div class="panel-body">
 				<h3 class="tit">Operadora de Cartão</h3>        
 				<hr />   
-				<form action="/tabela/cfop-cadastrar">  						
+				<form action="/tabela/cartao-cadastrar" method="post">
 					<div class="col-xs-12 col-md-12">        
 						<label>Descrição: </label>        
-						<input class="form-control" type="text" name="DS_NATUREZA_OPERACAO" maxlength="255" >    
+						<input class="form-control" type="text" name="DS_CARTAO" maxlength="50" required >
 					</div>  						
 					<div class="col-xs-3 col-md-3">        
 						<label>Percentual Desconto: </label>        
-						<input class="form-control" type="text" name="DS_NATUREZA_OPERACAO" maxlength="255" >    
+						<input class="form-control" type="number" name="NR_PERCENTUAL_DESCONTO" maxlength="12"  >
 					</div>  						
 					<div class="col-xs-3 col-md-3">        
 						<label>Dias para Reembolso: </label>        
-						<input class="form-control" type="text" name="DS_NATUREZA_OPERACAO" maxlength="255" >    
+						<input class="form-control" type="number" name="NR_DIAS_REEMBOLSO" maxlength="2" >
 					</div>
 					<div class="controls">
 						<div class="col-md-12">&nbsp;</div>
@@ -26,6 +26,7 @@
 									Salvar
 								</button>
 								<a href="/tabela/cartao"><button type="button" class="btn btn-default">
+                                    <i class="i i-back"></i>
 									Cancelar
 								</button></a>
 							</div>
@@ -36,4 +37,3 @@
 		</div>
 	</div>
 </section>
-			

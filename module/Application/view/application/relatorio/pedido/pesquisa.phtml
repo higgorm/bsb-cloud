@@ -5,44 +5,72 @@
             <div class="panel-body">
                 <div class="widget-header">
                     <i class="icon-check"></i>
-                    <h3><?php echo utf8_encode("Relat&oacute;rio de pedido ") ?></h3>
+                    <h3><?php echo "Relat&oacute;rio de pedidos " ?></h3>
                 </div> <!-- /widget-header -->
                 <div class="widget-content">
                     <form id="formRelatorio" target="self" class="form-vertical validation-form"  action="/relatorio-pedido/relatorio">
                         <input type="hidden" id="pdf" name="pdf" value="false" />
+
                         <div class="controls">
 
-                            <div class="col-md-3">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
-                                <input class="form-control" type="date" id="dt_inicio" name="dt_inicio" required>
-                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                            <div class="span6">
+                                <label for="" class="control-label text-info">Filtrar por:</label><br/>
+                                <label  class="checkbox-inline">
+                                    <input type="radio"  name="filtrarPor"  class="seletorFiltro" value="2" checked>Período
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="radio"  name="filtrarPor" class="seletorFiltro" value="1" >Número do pedido
+                                </label>
                             </div>
-
-                            <div class="col-md-3">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
-								<input class="form-control" type="date" id="dt_fim" name="dt_fim" required>
-                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                            <div class="span6">
+                                &nbsp;
                             </div>
+                        </div>
 
+                        <div class="controls" id="filtrarPorPedido" style="display:none">
                             <div class="col-md-2">
                                 <label for="" class="control-label text-info">Nº Pedido</label>
                                 <input type="number" name="nr_pedido" id="nr_pedido" class="form-control"  placeholder="">
                             </div>
+                        </div>
 
-                            <div class="col-md-4">
+                        <div class="controls"  id="filtrarPorPeriodo" style="display:block">
+
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info">De</label>
+                                <input  type="text" class="dataP form-control" id="dt_inicio" name="dt_inicio" value="<?php echo  date("d-m-Y") ?>" required autocomplete="off">
+                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
+								<input type="text" class="dataP form-control" id="dt_fim" name="dt_fim" value="<?php echo  date("d-m-Y") ?>" required autocomplete="off">
+                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
+                            </div>
+
+                            <div class="col-md-6">
                                 <label for="" class="control-label text-info">Status</label><br/>
-                                <label name="status" id="status" class="checkbox-inline"><input type="checkbox" value="">Abertos</label>
-                                <label name="status" id="status" class="checkbox-inline"><input type="checkbox" value="">Fechados</label>
-                                <label name="status" id="status" class="checkbox-inline"><input type="checkbox" value="">Cancelados</label>
+                                <label class="checkbox-inline">
+                                     <input type="radio" value="A"  name="status" id="statusAberto" >Abertos
+                                </label>
+                                <label  class="checkbox-inline">
+                                    <input type="radio" value="F"   name="status"  id="statusFechado">Fechados
+                                </label>
+                                <label  class="checkbox-inline">
+                                    <input type="radio" value="C"  name="status"  id="statusCancelado">Cancelados
+                                </label>
+                                <label  class="checkbox-inline">
+                                    <input type="radio" value=""  name="status"  id="statusTodos" checked>Todos
+                                </label>
                             </div>
 
-                            <div class="col-md-12">
-                                <hr>
-                                <button id="btnPesquisarRelatorio" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
-                                <button id="btnCancelarRelatorio" class="btn btn-default btn" type="reset"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
-                                <button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
-                            </div>
+                        </div>
 
+                        <div class="col-md-12">
+                            <hr>
+                            <button id="btnPesquisarRelatorio" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Pesquisar</button>
+                            <button id="btnLimparRelatorio" class="btn btn-default btn" type="button"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                            <button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
                         </div>
 
                     </form>
@@ -57,7 +85,7 @@
                 <div class="modal-header">
                     <button type="button" class="pull-right btn btn-danger"  id="btnFechar">Fechar</button>
                     <button type="button" class="pull-right btn-primary btn"  id="btnGerarPDF">PDF</button>
-                    <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio de pedido") ?></span>
+                    <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo "Relat&oacute;rio de pedidos" ?></span>
                 </div>
                 <div id="modalBodyDadosRelatorio" class="container-fluid" style="overflow-y:scroll"></div>
             </div>
@@ -66,6 +94,15 @@
 </section>
 <script>
     $(document).ready(function() {
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
+
         $('#formRelatorio').submit(function()
         {
             if ($("#pdf").val() == "false")
@@ -73,7 +110,8 @@
                 $("#modalBodyDadosRelatorio").load('/relatorio-pedido/relatorio', {
                     dt_inicio: $("#dt_inicio").val(),
                     dt_fim: $("#dt_fim").val(),
-                    nr_pedido: $("#nr_pedido").val()
+                    nr_pedido: $("#nr_pedido").val(),
+                    status: $("input[name=status]:checked").val()
                 });
                 $("#modalDadosRelatorio").modal('show');
                 return false;
@@ -96,8 +134,32 @@
             $("#modalDadosRelatorio").modal('hide');
         });
 
+        $("#btnLimparRelatorio").click(function(){
+            $("#dt_inicio").val("");
+            $("#dt_fim").val("");
+            $("#nr_pedido").val("");
+            $("#statusTodos").click();
+        });
+
         $('#btnVoltarRelatorio').click(function() {
             window.location = '/relatorio/index';
+        });
+
+        $(".seletorFiltro").click(function(){
+           if($(this).val()==1) {
+              $("#filtrarPorPedido").show();
+              $("#filtrarPorPeriodo").hide();
+               $("#dt_inicio").removeAttr("required");
+               $("#dt_fim").removeAttr("required");
+               $("#nr_pedido").attr("required","true");
+           } else {
+               $("#filtrarPorPedido").hide();
+               $("#filtrarPorPeriodo").show();
+               $("#dt_inicio").attr("required","true");
+               $("#dt_fim").attr("required","true");
+               $("#nr_pedido").removeAttr("required");
+           }
+            $("#btnLimparRelatorio").trigger('click');
         });
     });
 </script>

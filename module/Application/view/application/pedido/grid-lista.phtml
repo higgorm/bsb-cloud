@@ -16,9 +16,12 @@
 		$row[]=($pedido["NR_CGC_CPF"]==1 && !empty($pedido["DS_IDENTIFICA_CLIENTE"])) ? utf8_encode($pedido["DS_IDENTIFICA_CLIENTE"]) : utf8_encode($pedido["NOME_DO_CLIENTE"]) ;
 		$row[]=number_format($pedido["VL_TOTAL_LIQUIDO"],"2",",",".");
 		$row[]=utf8_encode($pedido["DS_FUNCIONARIO"]);
+        $row[]=$pedido["DT_PEDIDO"];
 		$row[]=$pedido["CD_Funcionario"];
 		$row[]=$pedido["CD_LOJA"];
 		$row[]=$pedido["CD_TIPO_PEDIDO"];
+        $row[]='<a href="/pedido/abrir?id='.$pedido["NR_PEDIDO"].'" title="Editar pedido"><i class="fa fa-pencil"></i></a>'.
+               ' | <a alt="Cancelar pedido" href="#" data-placement="top" title="Cancelar pedido" data-value="'.$pedido["NR_PEDIDO"].'" onclick="Pedido.confirmarCancelamento(this)"><i class="fa fa-times-circle"></i></a>';
 		$row["DT_RowId"]	="nr_pedido_".$pedido["NR_PEDIDO"];
 
    		$output['aaData'][] = $row;

@@ -13,19 +13,17 @@
                         <div class="controls">
 
                             <div class="col-md-2">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
-                                <div class="input-append date" id="dp1" data-date="" data-date-format="dd/mm/yyyy" >
-                                    <input class="form-control" size="16" type="text" value="" id="dtCaixaInicial" name="dtCaixaInicial" required>
-                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
-                                </div>
+                                <label for="" class="control-label text-info">De</label>
+                                <input type="text" class="dataP form-control" id="dtCaixaInicial" name="dtCaixaInicial"  required autocomplete="off">
+                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
+
                             <div class="col-md-2">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
-                                <div class="input-append date" id="dp2" data-date="" data-date-format="dd/mm/yyyy" >
-                                    <input class="form-control" size="16" type="text" value="" id="dtCaixaFinal" name="dtCaixaFinal" required>
-                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
-                                </div>
+                                <input type="text" class="dataP form-control" id="dtCaixaFinal" name="dtCaixaFinal"   required autocomplete="off">
+                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
+
                             <div class="col-md-3">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("Operador") ?></label>
                                 <br>
@@ -40,32 +38,19 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-2">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("Situa&ccedil;&atilde;o Caixa") ?></label>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_A" value="A" checked/>&nbsp;Aberto
-                                    </label>
-                                    <br>
-                                    <label>
-                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_F" value="F" />&nbsp;Fechado
-                                    </label>
-                                </div>
-                            </div>
-<!--
-                            <div class="col-md-3">
-                                <label for="" class="control-label text-info">Ordenação por Lanç. no Caixa</label>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="stOrdenacao" value="S" />&nbsp;Sim
-                                    </label>
-                                    <br>
-                                    <label>
-                                        <input type="radio" name="stOrdenacao" value="N" />&nbsp;Não
-                                    </label>
-                                </div>
-                            </div>
-                        </div>-->
+<!--                            <div class="col-md-2">-->
+<!--                                <label for="" class="control-label text-info">--><?php //echo utf8_encode("Situa&ccedil;&atilde;o Caixa") ?><!--</label>-->
+<!--                                <div class="radio">-->
+<!--                                    <label>-->
+<!--                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_A" value="A" checked/>&nbsp;Aberto-->
+<!--                                    </label>-->
+<!--                                    <br>-->
+<!--                                    <label>-->
+<!--                                        <input type="radio" name="rdbSituacaoCaixa" id="rdbSituacaoCaixa_F" value="F" />&nbsp;Fechado-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
                         <div class="col-md-12">
                             <hr>
                             <button id="btnPesquisarCaixa" class="btn btn-primary btn" type="submit"><i class="icon-search icon-white"></i>&nbsp;Buscar Caixa</button>
@@ -132,7 +117,15 @@
 </section>
 <script>
     $(document).ready(function() {
-        $('#dp1,#dp2').datepicker();
+
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
 
         /* Table initialisation */
         oTableFiltroCaixa = $('#tableFiltroCaixa').dataTable({
@@ -168,7 +161,7 @@
                     }
             );
 
-            //Envia os dados ao servidor para atualiza��o do pedido
+            //Envia os dados ao servidor
             $.ajax({
                 "type": "post",
                 "data": {nrCaixa: $("#nrCaixa").val(),
@@ -221,7 +214,7 @@
 
 
         $('#btnVoltarRelatorio').click(function() {
-            window.location = '/relatorio/index';
+            window.location = '/relatorio-caixa/pesquisa';
         });
 
         gerarRelatorioHtml = function(filtro) {
@@ -243,7 +236,7 @@
 
             $("#modalDadosRelatorio").modal('show');
 
-            //preparar o form pdf, mesmo que n�o seja usado neste momento
+            //preparar o form pdf, mesmo que não seja usado neste momento
             $("#pdf_cdLoja").val($(filtro).attr("data-loja-id"));
             $("#pdf_cdCaixa").val($(filtro).attr("data-caixa-id"));
             $("#pdf_cdFuncionario").val($(filtro).attr("data-funcionario-id"));
@@ -271,7 +264,7 @@
 
             $("#modalDadosRelatorio").modal('show');
 
-            //preparar o form pdf, mesmo que n�o seja usado neste momento
+            //preparar o form pdf, mesmo que não seja usado neste momento
             $("#pdf_cdLoja").val($(filtro).attr("data-loja-id"));
             $("#pdf_cdCaixa").val($(filtro).attr("data-caixa-id"));
             $("#pdf_cdFuncionario").val($(filtro).attr("data-funcionario-id"));

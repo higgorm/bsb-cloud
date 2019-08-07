@@ -25,7 +25,7 @@ class Uf implements InputFilterAwareInterface
     }
 
 	public function setInputFilter(InputFilterInterface $inputFilter){
-		throw new \Exception( "U Exception filter");
+		throw new \Exception( "UF Exception filter");
 	}
 
 	public function exchangeArray($data) {

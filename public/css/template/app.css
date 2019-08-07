@@ -2004,6 +2004,7 @@ fieldset[disabled] .btn-dark.active {
 .datepicker td.active:hover.active,
 .datepicker td.active.active {
     background: #177bbb;
+    color: #FFFFFF;
 }
 #flotTip {
     padding: 3px 5px;

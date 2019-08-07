@@ -1,0 +1,105 @@
+﻿<?php if (count($messages)) : ?>
+    <?php
+    foreach ($messages as $value):
+        $key = key($value);
+        $message = current($value);
+        ?>
+        <div class="alert alert-<?php echo $key ?>">
+            <button type="button" class="close" data-dismiss="alert" >&times;</button>
+            <?php echo $message ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+<section class="panel panel-default">
+    <div class="main">
+		<div class="row-fluid">
+            <div class="panel-body">
+				<h3 class="tit">Editar Usuário Web</h3>
+				<hr />   
+				<form action="/usuario-web/edicao" method="post">
+                    <input type="hidden" name="cd_usuario_web" value="<?php echo @$usuario->cd_usuario_web ?>" />
+
+                    <div class="col-xs-12 col-md-12">
+                        <br/>
+                        <fieldset>
+                            <legend>Dados do usuário</legend>
+                                <div class="col-xs-5 col-md-5">
+                                    <label>Nome do usuário: </label>
+                                    <input class="form-control" type="text" name="ds_nome" value="<?php echo utf8_encode(@$usuario->ds_nome) ?>" maxlength="55" required="required" placeholder="Informe o Nome do usuário">
+                                </div>
+
+                                <div class="col-xs-5 col-md-5">
+                                    <label>Login: </label>
+                                    <input class="form-control" type="text" name="ds_usuario"  autocomplete="off" value="<?php echo utf8_encode(@$usuario->ds_usuario) ?>" maxlength="55" required="required" placeholder="Informe o Login do usuário">
+                                </div>
+
+                                <div class="col-xs-5 col-md-5" id="div_csosn">
+                                    <label>Loja: </label>
+                                    <select name="cd_loja" class="form-control" required="required">
+                                        <option VALUE="">Selecione...</option>
+                                        <?php foreach( $lojaUsuario as $loja){
+                                            echo '<option value="'.$loja['CD_LOJA'].'"' .($usuario->cd_loja == $loja['CD_LOJA'] ? ' selected ':  '') .">".$loja['CD_LOJA'] . ' - ' .  utf8_encode($loja['DS_RAZAOSOCIAL']) .'</option>';
+                                        }?>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-5 col-md-5" id="div_csosn">
+                                    <label>Perfil do usuário: </label>
+                                    <select class="form-control" name="cd_perfil_web" required="required" >
+                                        <option VALUE="">Selecione...</option>
+                                        <?php foreach( $perfilUsuario as $perfil){
+                                            echo '<option value="'.$perfil['CD_PERFIL_WEB'].'"' .($usuario->cd_perfil_web == $perfil['CD_PERFIL_WEB'] ? ' selected ':  '') .">".$perfil['CD_PERFIL_WEB'] . ' - ' .  utf8_encode($perfil['DS_NOME']) .'</option>';
+                                        }?>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-7 col-md-5">
+                                    <label>Email: </label>
+                                    <input class="form-control" type="text" name="ds_email" value="<?php echo @$usuario->ds_email ?>" maxlength="100" required="required" placeholder="Informe o Email do usuário" >
+                                </div>
+
+
+                                <div class="col-xs-5 col-md-5">
+                                    <label>Telefone: </label>
+                                    <input class="form-control" type="text" name="nr_telefone" maxlength="14" value="<?php echo @$usuario->nr_telefone ?>" placeholder="Informe o telefone no formato (99)99999-9999" required="required">
+                                </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="col-xs-12 col-md-12">
+                        <br/>
+                        <fieldset>
+                            <legend>Senha do usuário</legend>
+                            <div class="col-xs-4 col-md-4">
+                                <label>Senha: </label>
+                                <input class="form-control" type="password" name="ds_senha" autocomplete="off"  value="" maxlength="8" placeholder="" >
+                            </div>
+
+                            <div class="col-xs-4 col-md-4">
+                                <label>Confirmação da Senha: </label>
+                                <input class="form-control" type="password" name="ds_confirmacao_senha" autocomplete="off"  value="" maxlength="8" placeholder="" >
+                            </div>
+                        </fieldset>
+                    </div>
+
+                        <div class="controls">
+						<div class="col-md-12">&nbsp;</div>
+						<div class="btn-group btn-group-justified col-md-12">
+							<div class="col-md-9">&nbsp;</div>
+							<div class="col-md-3">
+								<button type="submit" class="btn btn-primary">
+									Salvar
+								</button>
+								<a href="/usuario-web/index"><button type="button" class="btn btn-default">
+                                    <i class="i i-back"></i>
+									Cancelar
+								</button></a>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</section>
+			

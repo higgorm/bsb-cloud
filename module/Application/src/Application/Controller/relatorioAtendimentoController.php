@@ -61,8 +61,8 @@ class RelatorioAtendimentoController extends RelatorioController
 	    		$dataDeTermino = $post->get('dtTermino');
 
 	    		/* @var $results Zend\Db\ResultSet\ResultSet */
-	    		$results 		= $relatorio->getLista($session->cdLoja,$dataDeInicio,$dataDeTermino);
-	    		$resultSummy	= $relatorio->getTotal($session->cdLoja,$dataDeInicio,$dataDeTermino);
+	    		$results 		= $relatorio->getLista($session->cdLoja,date(FORMATO_ESCRITA_DATA,strtotime($dataDeInicio)),date(FORMATO_ESCRITA_DATA,strtotime($dataDeTermino)));
+	    		$resultSummy	= $relatorio->getTotal($session->cdLoja,date(FORMATO_ESCRITA_DATA,strtotime($dataDeInicio)),date(FORMATO_ESCRITA_DATA,strtotime($dataDeTermino)));
 
 	    		$viewModel = new ViewModel();
 		    	$viewModel->setTerminal(true);
@@ -71,7 +71,7 @@ class RelatorioAtendimentoController extends RelatorioController
 		    	$viewModel->setVariable('lista',$results);
 		    	$viewModel->setVariable('total',$resultSummy->current());
 		    	$viewModel->setVariable('dsLoja',$session->dsLoja);
-		    	$viewModel->setVariable('logo','<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+		    	$viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
 		    	$viewModel->setVariable('dataAtual',date("d/m/Y"));
 		    	$viewModel->setVariable('horaAtual',date("h:i:s"));
 		    	$viewModel->setTemplate("application/relatorio/atendimento/relatorio.phtml");
@@ -89,15 +89,15 @@ class RelatorioAtendimentoController extends RelatorioController
 		    	$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
 
 		    	/* @var $results Zend\Db\ResultSet\ResultSet */
-	    		$results 		= $relatorio->getLista($session->cdLoja,$dataDeInicio,$dataDeTermino);
-	    		$resultSummy	= $relatorio->getTotal($session->cdLoja,$dataDeInicio,$dataDeTermino);
+	    		$results 		= $relatorio->getLista($session->cdLoja,date(FORMATO_ESCRITA_DATA,strtotime($dataDeInicio)),date(FORMATO_ESCRITA_DATA,strtotime($dataDeTermino)));
+	    		$resultSummy	= $relatorio->getTotal($session->cdLoja,date(FORMATO_ESCRITA_DATA,strtotime($dataDeInicio)),date(FORMATO_ESCRITA_DATA,strtotime($dataDeTermino)));
 
 		    	// To set view variables
 		    	$pdf->setVariables(array(
 		    			'dsLoja'=>$session->dsLoja,
 		    			'dataAtual' => date("d/m/Y"),
 		    			'horaAtual' => date("h:i:s"),
-		    			'logo' => '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-relatorio.png" alt="logo"  />',
+		    			'logo' => '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-orange-small.png" alt="logo"  />',
 		    			'dataInicial'=>$dataDeInicio,
 		    			'dataFinal'=>$dataDeTermino,
 		    			'lista'=>$results,

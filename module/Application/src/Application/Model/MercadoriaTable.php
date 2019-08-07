@@ -35,14 +35,19 @@ class MercadoriaTable extends AbstractTableGateway {
         $select = new Select();
         //$where = new Where();
 		
-		$where = 'DT_EXCLUSAO IS NULL';
+		$where = 'M.DT_EXCLUSAO IS NULL  AND R.CD_PRAZO = 1';
         foreach ($param as $field => $search) {
             $where = $where . ' AND ' . $field . " like '%" . $search . "%'";  
         }
 
-        $select->from($this->table)
+        $select->from(array('M' => $this->table))
+            ->join(array('R' => 'RL_PRAZO_LIVRO_PRECOS'), ' M.CD_MERCADORIA = R.CD_MERCADORIA','VL_PRECO_VENDA','LEFT')
             ->where($where)
-            ->order("DS_MERCADORIA");
+            ->order("M.DS_MERCADORIA DESC");
+
+        //$select->quantifier('DISTINCT');
+       // echo $select->getSqlString();
+        //exit;
 
         $adapter = new DbSelect($select, $this->adapter);
         $paginator = new Paginator($adapter);
@@ -150,11 +155,18 @@ class MercadoriaTable extends AbstractTableGateway {
     }
 
     public function recuperaMercadoriaPedido($nuPedido)
+        //CONVERT(VARCHAR, CONVERT(MONEY, 12345678.90) )
     {
-        $sql = "SELECT M.CD_MERCADORIA, M.DS_MERCADORIA, PM.NR_QTDE_VENDIDA QTD, PM.VL_DESCONTO_MERC NR_DESCONTO,
-                    ( PM.VL_PRECO_VENDA - (	PM.VL_PRECO_VENDA /100) * PM.VL_DESCONTO_MERC) VL_DESCONTO,
-                    PM.VL_PRECO_VENDA VL_NOMINAL
-                    , (PM.VL_PRECO_VENDA * PM.NR_QTDE_VENDIDA) AS VL_TOTAL, PM.VL_TOTAL_BRUTO, ISNULL(P.DS_LOCAL_RETIRADA, '-') RETIRADA
+        $sql = "SELECT M.CD_MERCADORIA, 
+                      M.DS_MERCADORIA, 
+                      PM.NR_QTDE_VENDIDA  AS QTD, 
+                      PM.VL_DESCONTO_MERC  AS NR_DESCONTO,
+                      CONVERT(VARCHAR, CONVERT(MONEY, ( PM.VL_PRECO_VENDA - (	PM.VL_PRECO_VENDA /100) * PM.VL_DESCONTO_MERC)) ) AS  VL_DESCONTO,
+                      CONVERT(VARCHAR, CONVERT(MONEY,  PM.VL_PRECO_VENDA) )  AS  VL_NOMINAL, 
+                      CONVERT(VARCHAR, CONVERT(MONEY, ( PM.VL_PRECO_VENDA - (	PM.VL_PRECO_VENDA /100) * PM.VL_DESCONTO_MERC)* PM.NR_QTDE_VENDIDA) ) AS VL_TOTAL, 
+                      CONVERT(VARCHAR, CONVERT(MONEY, PM.VL_TOTAL_BRUTO) )  AS VL_TOTAL_BRUTO , 
+                      ISNULL(P.DS_LOCAL_RETIRADA, '-')  AS RETIRADA,
+                    M.ST_SERVICO
                 FROM TB_MERCADORIA M
                     LEFT JOIN TB_PEDIDO_MERCADORIA PM ON PM.CD_MERCADORIA = M.CD_MERCADORIA
                     INNER JOIN TB_PEDIDO P ON P.NR_PEDIDO = PM.NR_PEDIDO
@@ -184,49 +196,49 @@ class MercadoriaTable extends AbstractTableGateway {
                         LEFT JOIN TB_ESTOQUE E ON E.CD_MERCADORIA = M.CD_MERCADORIA
                         INNER JOIN RL_PRAZO_LIVRO_PRECOS PLP ON PLP.CD_MERCADORIA = M.CD_MERCADORIA
                         LEFT JOIN TB_FABRICANTE F ON F.CD_FABRICANTE = M.CD_FABRICANTE
-                    WHERE 1=1 ";
+                    WHERE M.DT_EXCLUSAO IS NULL AND PLP.CD_PRAZO=1 ";
 
         if($arrParam['st_tipo_pesquisa'] == 1){
             $select .= " AND M.CD_MERCADORIA = ".$arrParam['codigoMercadoria'];
         }
 
         if($arrParam['st_tipo_pesquisa'] == 2){
-            $select .= " AND M.DS_MERCADORIA like '".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND UPPER(M.DS_MERCADORIA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 3){
-            $select .= " AND M.DS_REFERENCIA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND UPPER(M.DS_REFERENCIA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 4){
-            $select .= " AND M.DS_MARCA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(M.DS_MARCA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 5){
-            $select .= " AND M.DS_MODELO_COR like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(M.DS_MODELO_COR) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 6){
-            $select .= " AND M.DS_MERCADORIA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(M.DS_MERCADORIA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 7){
-            $select .= " AND M.DS_CODIGO_FORNECEDOR = '".$arrParam['codigoMercadoria']."' ";
+            $select .= " AND  UPPER(M.DS_CODIGO_FORNECEDOR) = '".strtoupper($arrParam['codigoMercadoria'])."' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 8){
-            $select .= " AND F.DS_FANTASIA like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(F.DS_FANTASIA) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 
         if($arrParam['st_tipo_pesquisa'] == 9){
-            $select .= " AND M.OBSERVACAO like '%".$arrParam['codigoMercadoria']."%' ";
+            $select .= " AND  UPPER(M.OBSERVACAO) like '%".strtoupper($arrParam['codigoMercadoria'])."%' ";
         }
 		
         //$param = array($arrParam['codigoMercadoria']);
         $statement = $this->adapter->query($select);
-        $result = $statement->execute();
+        $results = $statement->execute();
 
-        return $result->current();
+        return iterator_to_array($results,false);
     }
     public function getTiposMercadoriaSecao(){
 
@@ -319,7 +331,7 @@ class MercadoriaTable extends AbstractTableGateway {
 	
 	public function getNextId(){
 		
-		$statement = $this->adapter->query('SELECT MAX(CD_MERCADORIA) AS nextID FROM '.$this->table );
+		$statement = $this->adapter->query('SELECT COALESCE(MAX(CD_MERCADORIA),0) + 1 AS nextID FROM '.$this->table );
 		
 		$results = $statement->execute();
 		$returnArray = array();
@@ -330,8 +342,21 @@ class MercadoriaTable extends AbstractTableGateway {
 		return $return;
 	}
 	
-	public function getMercadoriasNota(){
-		$statement = $dbAdapter->query("SELECT  M.CD_MERCADORIA,
+//	public function getMercadoriasNota(){
+//		$statement = $dbAdapter->query("SELECT  M.CD_MERCADORIA,
+//												M.DS_MERCADORIA
+//										FROM	TB_MERCADORIA M
+//										INNER JOIN	  TB_ESTOQUE E ON M.CD_MERCADORIA = E.CD_MERCADORIA
+//											WHERE E.CD_LOJA 		  = ?
+//												AND M.DT_EXCLUSAO is null
+//    										ORDER BY
+//    							  				M.CD_MERCADORIA");
+//
+//		return $statement->execute(array($session->cdLoja));
+//	}
+
+    public function getComboMercadorias($cdLoja) {
+        $statement = $this->adapter->query("SELECT  M.CD_MERCADORIA,
 												M.DS_MERCADORIA
 										FROM	TB_MERCADORIA M
 										INNER JOIN	  TB_ESTOQUE E ON M.CD_MERCADORIA = E.CD_MERCADORIA
@@ -339,9 +364,25 @@ class MercadoriaTable extends AbstractTableGateway {
 												AND M.DT_EXCLUSAO is null
     										ORDER BY
     							  				M.CD_MERCADORIA");
-												
-		return $statement->execute(array($session->cdLoja));
-	}
+
+        $results =  $statement->execute(array($cdLoja));
+        return $results;
+    }
+
+    public function recuperaValorDeVenda($cdLoja, $cdMercadoria) {
+            $statement = $this->adapter->query("SELECT
+                                                        B.ST_LIBERA_SEM_ESTOQUE,
+                                                        dbo.MostraEstoque( b.cd_loja, a.CD_Mercadoria ) as NR_QTDE_ESTOQUE,
+                                                        dbo.MostraReserva( b.cd_loja, a.CD_Mercadoria ) as NR_QTDE_RESERVA,
+                                                        dbo.MostraEstoqueDisponivel( b.CD_LOJA, a.CD_MERCADORIA ) as NR_QTDE_DISPONIVEL
+                                                FROM	TB_MERCADORIA A
+                                                INNER JOIN TB_ESTOQUE B ON A.CD_MERCADORIA = B.CD_MERCADORIA
+                                                WHERE B.CD_LOJA = ? AND
+                                                    A.CD_Mercadoria = ? AND
+                                                    A.DT_EXCLUSAO is null ");
+            $results = $statement->execute(array($cdLoja, $cdMercadoria));
+            return  $results->current();
+    }
 	
 	public function remove($id)
     {
@@ -351,7 +392,7 @@ class MercadoriaTable extends AbstractTableGateway {
         if ($this->getId($id)) {
             //$this->delete(array("cd_cliente" => $id));
 			$data = array(
-				'DT_EXCLUSAO'	=> date('Y-m-d H:m:s')
+				'DT_EXCLUSAO'	=> date(FORMATO_ESCRITA_DATA_HORA)
 			);
 			$this->update($data, array("CD_MERCADORIA" => $id));
 			

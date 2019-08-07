@@ -64,14 +64,14 @@ class FranquiaMacaTable extends AbstractTableGateway {
         if ($this->getId($cdLoja, $nrMaca)) {
             $this->update($data, array("cd_loja" => $cdLoja, "nr_maca" => $nrMaca));
         } else {
-            $nextVal = "SELECT MAX(nr_maca)+1 AS nr_maca FROM TB_FRANQUIA_MACA where CD_LOJA = ? ";
+
+            $nextVal = "SELECT ISNULL(MAX(nr_maca),0)+1 AS nr_maca FROM dbo.TB_FRANQUIA_MACA where CD_LOJA = ? ";
             $statement = $this->adapter->createStatement($nextVal);
             $result = $statement->execute(array("cd_loja"=>$cdLoja));
 
             foreach ($result as $res) {
                 $data['nr_maca'] = $res['nr_maca'];
             }
-
             $this->insert($data);
         }
     }
@@ -144,11 +144,12 @@ class FranquiaMacaTable extends AbstractTableGateway {
                                                         tfm.NR_MACA,
                                                         tfm.DS_IDENTIFICACAO,
                                                         taf.DT_HORARIO,
-                                                        tc.DS_NOME_RAZAO_SOCIAL,
+                                                        DS_NOME_RAZAO_SOCIAL = CASE WHEN ( tc.CD_CLIENTE IS NULL or taf.CD_CLIENTE = 1 ) THEN FCR.DS_NOME ELSE tc.DS_NOME_RAZAO_SOCIAL END,
                                                         tc.CD_CLIENTE
                                                     from TB_FRANQUIA_MACA tfm
                                                     left join TB_AGENDAMENTO_FRANQUIA taf on tfm.CD_LOJA = taf.CD_LOJA and tfm.NR_MACA = taf.NR_MACA
                                                     left join TB_CLIENTE tc on taf.CD_CLIENTE = tc.CD_CLIENTE
+                                                    left join TB_FRANQUIA_CLIENTE_RAPIDO fcr on taf.CD_CLIENTE = fcr.CD_CLIENTE
                                                     where tfm.CD_LOJA = ?
                                                             and tfm.NR_MACA = ?
                                                             and CONVERT(VARCHAR(10),taf.DT_HORARIO,103) between CONVERT(VARCHAR(10),?,103) and CONVERT(VARCHAR(10),?,103)
@@ -168,8 +169,10 @@ class FranquiaMacaTable extends AbstractTableGateway {
         $dtInicio =  $dtInicio . ' 00:00:00';
         $dtFim = $dtFim . ' 23:59:59';
 
-        $sql = "SELECT DISTINCT a.CD_CLIENTE, a.DT_HORARIO, a.NR_MACA,
-                    DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN SUBSTRING(CR.DS_NOME,0,10) ELSE SUBSTRING(C.DS_FANTASIA,0,10) END,
+        $sql = "SELECT DISTINCT a.CD_CLIENTE, 
+                    a.DT_HORARIO, 
+                    a.NR_MACA,
+                    DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or CR.cd_cliente = 1 ) THEN SUBSTRING(CR.DS_NOME,0,10) ELSE SUBSTRING(C.DS_NOME_RAZAO_SOCIAL,0,10) END,
                     --DS_CLIENTE = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN left(CR.DS_NOME,CHARINDEX(' ',CR.DS_NOME)) ELSE left(C.DS_NOME_RAZAO_SOCIAL,CHARINDEX(' ',C.DS_NOME_RAZAO_SOCIAL)) END,
                     DS_FONE1 = CASE WHEN ( C.CD_CLIENTE IS NULL or a.cd_cliente = 1 ) THEN CR.DS_FONE1 ELSE C.DS_FONE1 END,
                     ST_PEDIDO = ISNULL( p.ST_PEDIDO, 'A' ), p.NR_PEDIDO,

@@ -23,7 +23,7 @@ use Zend\Session\Container;
  * @author HIGOR
  *
  */
-class MacaController extends AbstractActionController {
+class MacaController extends OrangeWebAbstractActionController {
 
     protected $franquiaMacaTable;
 
@@ -45,7 +45,17 @@ class MacaController extends AbstractActionController {
     }
 
     public function cadastrarAction() {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+        $session = new Container("orangeSessionContainer");
+        if( @$session->cdBase ){
+            $statement = $dbAdapter->query("USE BDGE_".$session->cdBase);
+            $statement->execute();
+        }
+
+
         try {
             $form = new FranquiaMacaForm($dbAdapter);
             $request = $this->getRequest();

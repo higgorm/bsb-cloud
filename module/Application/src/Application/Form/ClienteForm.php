@@ -11,6 +11,8 @@ use Zend\Form\Element\Text;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Form;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Session\Container;
+use Zend\Db\Sql\Sql;
 
 class ClienteForm extends Form
 {
@@ -23,6 +25,13 @@ class ClienteForm extends Form
         $this->setDbAdapter($dbAdapter);
 
         parent::__construct("cliente_table");
+
+        $session = new Container("orangeSessionContainer");
+        if( @$session->cdBase ){
+            $statement = $this->dbAdapter->query("USE BDGE_".$session->cdBase);
+            $statement->execute();
+        }
+
 
         $this->setAttribute('method', 'post');
 
@@ -60,14 +69,14 @@ class ClienteForm extends Form
             "id" => "cd_cliente",
         ));
 
-        $dsRazaoSocial = new Text("DS_NOME_RAZAO_SOCIAL");
+        $dsRazaoSocial = new Text("ds_nome_razao_social");
         $dsRazaoSocial->setLabel("Razão Social")
                 ->setAttributes(array(
                     "required" => "required", 
                     "class" => "form-control",
                     "placeholder" => "Informe o nome",
-                    "id" => "DS_NOME_RAZAO_SOCIAL",
-                    "name" => "DS_NOME_RAZAO_SOCIAL",
+                    "id" => "ds_nome_razao_social",
+                    "name" => "ds_nome_razao_social",
         ));
 
         $dsFone1 = new Text("ds_fone1");
@@ -136,15 +145,17 @@ class ClienteForm extends Form
                     "class" => "form-control",
                     "id" => "ds_endereco",
                     "required" => false,
+                    'type' => 'text',
         ));
 		
-		$dsEndereco = new Text("ds_numero");
-        $dsEndereco->setLabel("Numero")
+		$dsNumero = new Text("ds_numero");
+        $dsNumero->setLabel("Numero")
                 ->setAttributes(array(
                     "style" => "",
                     "class" => "form-control",
-                    "id" => "ds_endereco",
+                    "id" => "ds_numero",
                     "required" => false,
+                    'type' => 'text',
         ));
 
         $dsBairro = new Text("ds_bairro");
@@ -291,7 +302,7 @@ class ClienteForm extends Form
             'attributes' => array(
                 'class' => 'form-control',
                 'id' => 'cd_origem',
-                'required' => 'required',
+
                 'value' => '1',
             ),
             'options' => array(
@@ -326,7 +337,7 @@ class ClienteForm extends Form
             ),
             'options' => array(
                 'label' => 'Município',
-                'value_options' => $this->getCodMunicipiosSelect(),
+                'value_options' => $this->getCidadeOptionsForSelect(),
             ),
         ));
         
@@ -419,6 +430,7 @@ class ClienteForm extends Form
         $this->add($dtAniversario);
         $this->add($dtExclusao);
         $this->add($dsEndereco);
+        $this->add($dsNumero);
         $this->add($dsBairro);
         $this->add($nrCep);
         $this->add($dsContato);
@@ -449,7 +461,7 @@ class ClienteForm extends Form
     }
 	
 	public function getCodMunicipiosSelect(){
-		$sql = 'SELECT distinct * FROM TB_CIDADE_IBGE WHERE CD_UF = "DF" OR CD_UF = "GO" ORDER BY CD_UF ASC';
+		$sql = "SELECT  CD_IBGE, DS_MUNICIPIO FROM TB_CIDADE_IBGE WHERE CD_UF = 'DF' OR CD_UF = 'GO' ORDER BY CD_UF ASC";
         $statement = $this->dbAdapter->query($sql);
         $result = $statement->execute();
 

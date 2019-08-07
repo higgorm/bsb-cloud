@@ -11,7 +11,6 @@
 namespace Application\Controller;
 
 use Zend\Permissions\Acl\Acl;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
@@ -23,7 +22,7 @@ use Application\Model\loja;
  * @author HIGOR
  *
  */
-class PainelController extends AbstractActionController {
+class PainelController extends OrangeWebAbstractActionController {
 
     protected $lojaTable;
 

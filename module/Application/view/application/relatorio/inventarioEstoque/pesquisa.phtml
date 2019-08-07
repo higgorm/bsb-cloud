@@ -23,33 +23,20 @@
                                 ?>
                             </select>
                         </div>
-                        <!--
-                       <div class="span12">
-                               <label for="" class="control-label text-info"><?php //echo utf8_encode("Fornecedor")    ?></label>
-                           <select class="span6" id="cdFornecedor" name="cdFornecedor">
-                            <option value="">Selecione...</option>
-                        <?php
-                        //foreach ($listaFornecedor as $fornecedor) {
-                        //echo "<option value='{$fornecedor["CD_FORNECEDOR"]}'>{$fornecedor["CD_FORNECEDOR"]} - {$fornecedor["SG_FORNECEDOR"]}".utf8_encode($fornecedor["DS_FANTASIA"])."</option>";
-                        //}
-                        ?>
-                           </select>
-                       </div>
-                        -->
+
                         <div class="col-md-2">
-                            <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
-                            <div class="input-append date" id="dp1" data-date="" data-date-format="dd/mm/yyyy" >
-                                <input class="form-control" size="16" type="text" value="" id="dtInicio" name="dtInicio" required>
-                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
-                            </div>
+                            <label for="" class="control-label text-info">De</label>
+                            <input type="text" class="dataP form-control" id="dtInicio" name="dtInicio" required autocomplete="off">
+                            <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                         </div>
+
                         <div class="col-md-2">
                             <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
-                            <div class="input-append date" id="dp2" data-date="" data-date-format="dd/mm/yyyy" >
-                                <input class="form-control" size="16" type="text" value="" id="dtTermino" name="dtTermino" required>
-                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
-                            </div>
+                            <input type="text" class="dataP form-control" id="dtTermino" name="dtTermino" required autocomplete="off">
+                            <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                         </div>
+
+
                         <div class="col-md-2">
                             <label for="" class="control-label text-info"><?php echo utf8_encode("Livro de pre&ccedil;os") ?></label>
                             <select name="nrLivroPreco" id="nrLivroPreco" class="form-control" required>
@@ -111,7 +98,15 @@
 </section>
 <script>
     $(document).ready(function() {
-        $('#dp1,#dp2').datepicker();
+
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
 
         $('#formRelatorio').submit(function()
         {
@@ -125,9 +120,10 @@
                         }
                         );
 
-                $("#modalBodyDadosRelatorio").load('/relatorio/relatorio-inventario-estoque', {
+                $("#modalBodyDadosRelatorio").load('/relatorio-inventario-estoque/relatorio', {
                     cdFornecedor: $("#cdFornecedor").val(),
-                    cdTipoMercadoria: $("#cdTipoMercadoria").val(),                     estoquePositivo: vEstoquePositivo,
+                    cdTipoMercadoria: $("#cdTipoMercadoria").val(),
+                    estoquePositivo: vEstoquePositivo,
                     dtInicio: $("#dtInicio").val(),
                     dtTermino: $("#dtTermino").val(),
                     nrLivroPreco: $("#nrLivroPreco").val(),

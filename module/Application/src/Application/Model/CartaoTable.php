@@ -15,12 +15,21 @@ class CartaoTable extends AbstractTableGateway {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
         $this->initialize();
-		
+
 		$session = new Container("orangeSessionContainer");
 		if( @$session->cdBase ){
 			$statement = $this->adapter->query("USE BDGE_".$session->cdBase);
 			$statement->execute();
 		}
+    }
+
+    public function nextId()
+    {
+        $statement = $this->adapter->query('SELECT MAX(CD_CARTAO)+1 as NEXT FROM '.$this->table);
+        $results = $statement->execute();
+
+        $current = $results->current();
+        return $current['NEXT'];
     }
 
     public function selectAll(){

@@ -100,19 +100,20 @@
 
                             <div class="col-md-3">
                                 <label class="control-label text-info" for="name">Valor cobrado:</label>
-                                <input type="text" id="vlCobrado" name="vlCobrado" value="<?php echo $vlPedido ?>" readonly="readonly" class="form-control">
+                                <input type="text" class="moeda form-control" id="vlCobrado" name="vlCobrado" value="<?php echo number_format($vlPedido,2,",",".") ?>" readonly="readonly">
                             </div>
                             <div class="col-md-3">
                                 <label class="control-label text-info" for="name">Valor recebido:</label>
-                                <input type="text" class="moeda form-control" id="vlRecebido" name="vlRecebido" value="">
+                                <input type="text" class="moeda form-control" id="vlRecebido" name="vlRecebido" value="<?php echo number_format($vlPedido,2,",",".") ?>">
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                <input type="button" id="btnIncluirPagamento" class="btn btn-default" value="Incluir">
                             </div>
                             <div class="col-md-3">
                                 <label class="control-label text-info" id="lblTroco" for="name">Troco:</label>
                                 <input type="text" class="moeda form-control" id="vlTroco" name="vlTroco" value="0,00" readonly="readonly">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="control-label text-info" for="name">&nbsp;</label><br>
-                                <input type="button" id="btnConfirmar" class="btn btn-default" value="Incluir">
                             </div>
                             <div class="col-md-12">&nbsp;</div>
 
@@ -202,7 +203,8 @@
 
             pago = $('#vlCobrado').val();
             vpago = pago.replace(/\./g, "").replace(",", ".");
-            troco = (parseFloat(recebido) - parseFloat(vpago + vpago));
+
+            troco = (parseFloat(recebido) - parseFloat(vpago));
 
             if (troco >= 0)
             {
@@ -215,6 +217,7 @@
             }
 
             $('#vlTroco').val(formatReal(troco));
+            $('#vlTroco').focus();
             $('#vlRecebido').val('').focus();
         }
 
@@ -238,7 +241,7 @@
         });
 
         $('#btnReceber').click(function() {
-            var cobrado = $('#vlCobrado').val().replace(/\./g, "").replace(",", ".");
+            var cobrado = $('#vlCobrado').val().replace(",", ".");
             var vpago = 0;
 
             $('#tbPagamento tbody').find('tr').each(function(indice) {
@@ -246,17 +249,17 @@
             });
 
             troco = (parseFloat(cobrado) + parseFloat(vpago));
-            if (vpago >= cobrado)
-            {
-                modalCpfNota();
-            }
-            else
-            {
+
+            if ( parseFloat(vpago) >=  parseFloat(cobrado)) {
+                // Mod 55 nf-e é obrigatorio cpf/cnpj
+                //modalCpfNota();
+                prosseguir();
+            } else {
                 alert('Valor recebido menor que o valor do pedido!');
             }
         });
 
-        $('#btnConfirmar').click(function() {
+        $('#btnIncluirPagamento').click(function() {
             if ($('#vlRecebido').val() != '') {
 
                 var dsFrPag = $('#frPagamento option:selected').text();
@@ -305,9 +308,14 @@
         });
     });
 
-    function modalCpfNota() {
-
-        $('#bodyDivModalPedido').load('/pedido/cpf-nota');
-        $('#divModalPedido').modal('show');
+    // Mod 55 nf-e é obrigatorio cpf/cnpj
+    //function modalCpfNota() {
+        //$('#bodyDivModalPedido').load('/pedido/cpf-nota');
+        //$('#divModalPedido').modal('show');
+    //}
+    function prosseguir(){
+        $('#divModalPagamento').modal('hide');
+        $('#divModalAguarde').modal('show');
+        $('#frmCaixaFuncionario').submit();
     }
 </script>

@@ -10,7 +10,6 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Form\CadastroClienteAgenda;
@@ -25,9 +24,10 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
  * @author HIGOR
  *
  */
-class AgendaController extends AbstractActionController {
+class AgendaController extends OrangeWebAbstractActionController {
 
     protected $macaTable;
+    protected $agendamentoFranquiaTable;
     protected $_intervalo = 30;
     protected $_horaInicio = '08';
     protected $_minutoInicio = '00';
@@ -87,15 +87,19 @@ class AgendaController extends AbstractActionController {
      * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
      */
     public function indexAction() {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+        $session = new Container("orangeSessionContainer");
+        if( @$session->cdBase ){
+            $statement = $dbAdapter->query("USE BDGE_".$session->cdBase);
+            $statement->execute();
+        }
+
         $form = new CadastroClienteAgenda($dbAdapter);
         $terminal = $this->params()->fromQuery('modal') == 'show' ? true : false;
-		
-		$session = new Container("orangeSessionContainer");
-		if( @$session->cdBase ){
-			$statement = $this->adapter->query("USE BDGE_".$session->cdBase);
-			$statement->execute();
-		}
+
 		
         $dataAtual = $this->params()->fromQuery('dataAtual');
         $dataInicio = $datafim = (!empty($dataAtual)) ? $dataAtual : date('d/m/Y');
@@ -219,7 +223,15 @@ class AgendaController extends AbstractActionController {
     }
 
     public function cadastrarClienteAgendaAction() {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+        $session = new Container("orangeSessionContainer");
+        if( @$session->cdBase ){
+            $statement = $dbAdapter->query("USE BDGE_".$session->cdBase);
+            $statement->execute();
+        }
+
         $form = new CadastroClienteAgenda($dbAdapter);
 
         $session = new Container("orangeSessionContainer");
@@ -267,14 +279,20 @@ class AgendaController extends AbstractActionController {
     }
 
     public function agendamentoClienteAction() {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+        $session = new Container("orangeSessionContainer");
+        if( @$session->cdBase ){
+            $statement = $dbAdapter->query("USE BDGE_".$session->cdBase);
+            $statement->execute();
+        }
 
         try {
             $form = new CadastroClienteAgenda($dbAdapter);
 
             if ($this->getRequest()->isPost()) {
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
-                $sm = $this->getServiceLocator($dbAdapter);
 
                 $param = array();
                 $param['total_venda'] = 0;
@@ -287,7 +305,6 @@ class AgendaController extends AbstractActionController {
                 $param['st_contatado'] = 'N';
                 $param['cd_funcionario'] = $param['cdop'];
 
-                $session = new Container("orangeSessionContainer");
                 $param['cd_loja'] = $session->cdLoja;
                 $param['dt_horario'] = date('d/m/Y H:i:s', strtotime(str_replace('/', '-', $param['dt_atendimento'] . ' ' . $param['hr_atendimento'])));
                 $param['dt_atendimento'] = date('d/m/Y H:i:s', strtotime(str_replace('/', '-', $param['dt_atendimento'] . ' ' . $param['hr_atendimento'])));
@@ -298,7 +315,8 @@ class AgendaController extends AbstractActionController {
                     $param['ds_nome'] = $this->getRequest()->getPost('ds_nome_razao_social');
                     $modelCliente = new ClienteRapido();
                     $modelCliente->exchangeArray($param);
-                    $param['cd_cliente'] = $param['cd_cliente_rapido'] = $sm->get("cliente_rapido_table")->save($modelCliente);
+                    $param['cd_cliente'] = 1; //consumidor
+                    $param['cd_cliente_rapido'] = $sm->get("cliente_rapido_table")->save($modelCliente);
                 } else {
                     // salva registro no CLIENTE
                     $modelCliente = new Cliente();
@@ -310,6 +328,7 @@ class AgendaController extends AbstractActionController {
                 $modelCliente = new AgendamentoFranquia();
                 $modelCliente->exchangeArray($param);
                 $sm->get("agendamento_franquia_table")->save($modelCliente);
+
 
                 // agendamento mercadoria
                 $modelCliente = new AgendamentoFranquiaServicos();
@@ -345,6 +364,7 @@ class AgendaController extends AbstractActionController {
         $sm = $this->getServiceLocator();
         $serviceServico = $sm->get('mercadoria_table');
         $resServico = $serviceServico->getComboPrecoServico($request->getPost('cd_servico'));
+        array_walk_recursive($resServico, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
         $response->setContent(\Zend\Json\Json::encode($resServico));
         return $response;
     }
@@ -405,7 +425,8 @@ class AgendaController extends AbstractActionController {
                 print json_encode(array('valido' => $retorno));
                 exit;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            echo $e->getMessage();
             $dbAdapter->getDriver()->getConnection()->rollback();
             exit;
         }
@@ -482,7 +503,7 @@ class AgendaController extends AbstractActionController {
                 $mercadoria["DS_LOCAL_RETIRADA"] = "";
                 $mercadoria["DS_OBSERVACAO"] = "";
 
-                //corre��o de bug para pre�o promocional
+                //correção de bug para preço promocional
                 $mercadoria["VL_PRECO_VENDA"] = ($precoNormal > $precoPromocao) ? $precoPromocao : $precoNormal;
 
                 $totalTotalVenda += $precoNormal;
@@ -517,7 +538,9 @@ class AgendaController extends AbstractActionController {
             $sm->get("agendamento_franquia")->atualizaAgendamentoFranquia(array($nrPedido, $post['cd_cliente'], $post['cd_loja'], $post["nr_maca"], $post["hratendimento"]));
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
             return false;
         }
     }

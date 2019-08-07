@@ -15,13 +15,30 @@ class PedidoTable extends AbstractTableGateway {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
         //$this->resultSetPrototype->setArrayObjectPrototype(new Servicos());
-        //$this->initialize();
+        $this->initialize();
 		
 		$session = new Container("orangeSessionContainer");
 		if( @$session->cdBase ){
 			$statement = $this->adapter->query("USE BDGE_".$session->cdBase);
 			$statement->execute();
 		}
+    }
+
+    public function selectCountNrPedido($cdLoja){
+        $statement = $this->adapter->query("SELECT  COUNT(A.NR_PEDIDO) AS NR_PEDIDO
+    									FROM TB_PEDIDO A
+										LEFT JOIN TB_CLIENTE C ON A.CD_CLIENTE = C.CD_CLIENTE
+    									INNER JOIN TB_PARAMEMPRESA PE ON PE.CD_LOJA=A.CD_LOJA
+										WHERE
+    										PE.FLALOJADEFAULT = 'S'	AND
+    			 							A.ST_PEDIDO   	  = 'A' AND
+    									    CONVERT(VARCHAR(10),A.DT_PEDIDO,103)= CONVERT(VARCHAR(10),GETDATE(),103) AND
+    										A.CD_LOJA     	  = ? ");
+
+
+        $results = $statement->execute(array($cdLoja));
+        $rowResult = $results->current();
+        return $rowResult["NR_PEDIDO"];
     }
 
     public function getIdClientePedido($nrPedido, $cdLoja)
@@ -37,10 +54,14 @@ class PedidoTable extends AbstractTableGateway {
     }
     
     public function getNextNumeroPedido() {
-        $statement = $this->adapter->query("SELECT MAX(NR_PEDIDO) + 1 NR_PEDIDO  FROM TB_PEDIDO");
-        $results = $statement->execute();
-        $rowResult = $results->current();
-        return $rowResult["NR_PEDIDO"];
+        try {
+            $statement = $this->adapter->query("SELECT COALESCE(MAX(NR_PEDIDO),0) + 1 NR_PEDIDO  FROM TB_PEDIDO");
+            $results = $statement->execute();
+            $rowResult = $results->current();
+            return $rowResult["NR_PEDIDO"];
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public function inserePedido($pedido) {
@@ -68,7 +89,7 @@ class PedidoTable extends AbstractTableGateway {
 
             $statementUpdate->execute($pedido);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -96,7 +117,7 @@ class PedidoTable extends AbstractTableGateway {
                                                    CD_LOJA   = ?   ");
             $statementUpdate->execute($pedido);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -110,8 +131,9 @@ class PedidoTable extends AbstractTableGateway {
                                         'UsuarioUltimaAlteracao' => $cdUsuario,
                                         ),
                                 array('NR_PEDIDO' => $nrPedido,
-                                        'CD_LOJA' => $cdLoja));
-        } catch (\Exception $e) {
+                                        'CD_LOJA' => $cdLoja,
+                                        'ST_PEDIDO' => 'A'));
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -148,7 +170,7 @@ class PedidoTable extends AbstractTableGateway {
                                 array('cd_loja' => (int) $cd_loja,
                                         'nr_pedido' => (int) $nr_pedido));
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -190,7 +212,7 @@ class PedidoTable extends AbstractTableGateway {
             $statementUpdate->execute($data);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -243,10 +265,17 @@ class PedidoTable extends AbstractTableGateway {
         return $returnArray;
     }
 
+    /**
+     * @param $nuPedido
+     * @param bool $res
+     * @return array|mixed
+     */
     public function recuperaPedidoPorNumero($nuPedido, $res = true) {
+
         $select = "SELECT *
                    FROM TB_PEDIDO
-                   WHERE NR_PEDIDO = ?";
+                   WHERE NR_PEDIDO = ? AND 
+                        CD_LOJA = 1 ";
 
         $statement = $this->adapter->query($select);
         $results = $statement->execute(array('nr_pedido' => (int) $nuPedido));
@@ -256,19 +285,68 @@ class PedidoTable extends AbstractTableGateway {
                 $returnArray[] = $result;
             }
             return $returnArray;
+        } else {
+            return $results->current();
         }
-
-        return $result->current();
     }
 
     public function recuperaMercadoriaNumeroPedido($nuPedido) {
-        $select = "SELECT *
-                   FROM TB_PEDIDO_MERCADORIA
-                   WHERE NR_PEDIDO = ?";
+        $select = "SELECT M.*
+                   FROM TB_PEDIDO_MERCADORIA M
+                   WHERE M.NR_PEDIDO = ?";
 
         $statement = $this->adapter->query($select);
         $results = $statement->execute(array('nr_pedido' => (int) $nuPedido));
         return $results->current();
+    }
+
+    /**
+     * @param $nuPedido
+     * @return mixed
+     */
+    public function recuperaMercadoriasNumeroPedido($nuPedido) {
+        $select = "SELECT PM.NR_PEDIDO, PM.NR_QTDE_VENDIDA, 
+                          PM.VL_TOTAL_LIQUIDO,
+                          CONVERT(VARCHAR, CONVERT(MONEY, ( PM.VL_PRECO_VENDA - (	PM.VL_PRECO_VENDA /100) * PM.VL_DESCONTO_MERC)) ) AS  VL_DESCONTO,
+                          CONVERT(VARCHAR, CONVERT(MONEY,  PM.VL_PRECO_VENDA) )  AS  VL_PRECO_VENDA, 
+                          CONVERT(VARCHAR, CONVERT(MONEY, ( PM.VL_PRECO_VENDA - (	PM.VL_PRECO_VENDA /100) * PM.VL_DESCONTO_MERC)* PM.NR_QTDE_VENDIDA) ) AS VL_TOTAL, 
+                          CONVERT(VARCHAR, CONVERT(MONEY, PM.VL_TOTAL_BRUTO) )  AS VL_TOTAL_BRUTO , 
+                          M.*
+                   FROM TB_PEDIDO_MERCADORIA PM
+                   INNER JOIN TB_MERCADORIA M ON M.CD_MERCADORIA = PM.CD_MERCADORIA
+                   WHERE PM.NR_PEDIDO = ?";
+
+        $statement      = $this->adapter->query($select);
+        $results        = $statement->execute(array('nr_pedido' => (int) $nuPedido));
+        $returnArray    = array();
+
+        foreach ($results as $result) {
+            $returnArray[] = $result;
+        }
+
+        return $returnArray;
+    }
+
+
+    /**
+     * @param $nuPedido
+     * @return mixed
+     */
+    public function recuperaClienteNumeroPedido($nuPedido) {
+        $select = "SELECT C.*
+                   FROM TB_CLIENTE C
+                   INNER JOIN TB_PEDIDO P ON P.CD_CLIENTE = C.CD_CLIENTE
+                   WHERE P.NR_PEDIDO = ?";
+
+        $statement      = $this->adapter->query($select);
+        $results        = $statement->execute(array('nr_pedido' => (int) $nuPedido));
+        $returnArray    = array();
+
+        foreach ($results as $result) {
+            $returnArray[] = $result;
+        }
+
+        return $returnArray;
     }
 
     public function listPrazo() {
@@ -483,7 +561,7 @@ class PedidoTable extends AbstractTableGateway {
 
             $statement->execute(array($session->cdLoja, $nrPedido));
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -513,7 +591,9 @@ class PedidoTable extends AbstractTableGateway {
 
             $statementInsert->execute($params);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            exit;
             return false;
         }
     }
@@ -529,7 +609,7 @@ class PedidoTable extends AbstractTableGateway {
             $statement = $this->adapter->query("DELETE TB_PEDIDO_MERCADORIA WHERE CD_LOJA   = ?  AND NR_PEDIDO = ? ");
             $statement->execute(array($loja, $pedido));
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }   
@@ -541,7 +621,7 @@ class PedidoTable extends AbstractTableGateway {
             $statement->execute($rlCP);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }

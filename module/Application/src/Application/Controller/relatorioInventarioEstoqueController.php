@@ -79,7 +79,7 @@ class RelatorioInventarioEstoqueController  extends RelatorioController
      *
      * @return \Zend\View\Model\ViewModel|\DOMPDFModule\View\Model\PdfModel
      */
-    public function relatorioInventarioEstoqueAction()
+    public function relatorioAction()
     {
     	 
     	//get session
@@ -156,7 +156,7 @@ class RelatorioInventarioEstoqueController  extends RelatorioController
     			$sql .= "	ORDER BY ".$dsOrdem;
     		}else {
     			$dsOrdem = " DescricaoMercadoria ";
-    			$dsLabelOrdem = "Produto / Serviço ";
+    			$dsLabelOrdem = "Produto / Serviï¿½o ";
     			$sql .= "	ORDER BY ".$dsOrdem;
     		}
     		
@@ -173,7 +173,7 @@ class RelatorioInventarioEstoqueController  extends RelatorioController
     		$viewModel->setVariable('estoquePositivo',$estoquePositivo);
     		$viewModel->setVariable('cdLoja',$session->cdLoja);
     		$viewModel->setVariable('dsLoja',$session->dsLoja);
-    		$viewModel->setVariable('logo','<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+    		$viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
     		$viewModel->setVariable('dataAtual',date("d/m/Y"));
     		$viewModel->setVariable('horaAtual',date("h:i:s"));
     		$viewModel->setTemplate("application/relatorio/inventarioEstoque/relatorio.phtml");
@@ -226,7 +226,7 @@ class RelatorioInventarioEstoqueController  extends RelatorioController
     		$pdf->setVariables(array(
     				'dataAtual' => date("d/m/Y"),
     				'horaAtual' => date("h:i:s"),
-    				'logo' => '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-relatorio.png" alt="logo"  />',
+    				'logo' => '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-orange-small.png" alt="logo"  />',
     				'nrLivroPreco'=>$nrLivroPreco,
     				'lista'=>$results,
     				'estoquePositivo'=>$estoquePositivo,

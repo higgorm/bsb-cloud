@@ -8,12 +8,12 @@
 					<?php foreach($formaPagamento as $dado): ?>    
 						<div class="col-xs-2 col-md-2">        
 							<label>Cód: </label>    
-							<input class="form-control" type="text" name="CD_TIPO_PAGAMENTO" maxlength="255" value="<?php echo $dado['CD_TIPO_PAGAMENTO'] ?>">    
+							<input class="form-control" type="number" name="CD_TIPO_PAGAMENTO" max="9999" min="1" value="<?php echo $dado['CD_TIPO_PAGAMENTO'] ?>" required>
 						</div>	
 						
 						<div class="col-xs-10 col-md-10">        
 							<label>Descrição: </label>        
-							<input class="form-control" type="text" name="DS_TIPO_PAGAMENTO" maxlength="255" value="<?php echo utf8_encode($dado['DS_TIPO_PAGAMENTO']) ?>">    
+							<input class="form-control" type="text" name="DS_TIPO_PAGAMENTO" maxlength="50" value="<?php echo utf8_encode($dado['DS_TIPO_PAGAMENTO']) ?>" required>
 						</div>
 					<?php endforeach; ?>
 					<div class="controls">
@@ -25,6 +25,7 @@
 									Salvar
 								</button>
 								<a href="/tabela/forma-pagamento"><button type="button" class="btn btn-default">
+                                    <i class="i i-back"></i>
 									Cancelar
 								</button></a>
 							</div>

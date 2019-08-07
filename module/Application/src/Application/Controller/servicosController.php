@@ -20,7 +20,7 @@ use Zend\Session\Container;
  * @author e.Guilherme
  *
  */
-class servicosController extends AbstractActionController
+class servicosController extends OrangeWebAbstractActionController
 {
 
     public function getTable($strService) {

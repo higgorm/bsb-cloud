@@ -22,20 +22,19 @@
                         </div>
 
                         <div class="controls">
+
                             <div class="col-md-2">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
-                                <div class="input-append date" id="dp1" data-date="" data-date-format="dd/mm/yyyy" >
-                                    <input class="form-control" size="16" type="text" value="" id="dtInicio" name="dtInicio" required>
-                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
-                                </div>
+                                <label for="" class="control-label text-info">De</label>
+                                <input type="text" class="dataP form-control" id="dtInicio" name="dtInicio"  required autocomplete="off">
+                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
+
                             <div class="col-md-2">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
-                                <div class="input-append date" id="dp2" data-date="" data-date-format="dd/mm/yyyy" >
-                                    <input class="form-control" size="16" type="text" value="" id="dtTermino" name="dtTermino" required>
-                                    <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
-                                </div>
+                                <input type="text" class="dataP form-control" id="dtTermino" name="dtTermino" required autocomplete="off">
+                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
+
                             <div class="col-md-2">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("Situa&ccedil;&atilde;o") ?></label>
                                 <div class="radio">
@@ -73,7 +72,7 @@
             <div class="modal-header">
                 <button type="button" class="pull-right btn btn-danger"  id="btnFechar"></i>Fechar</button>
                 <button type="button" class="pull-right btn btn-primary"  id="btnGerarPDF"></i>PDF</button>
-                <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio de Atendimento - Produtos / Serviços Vendidos") ?></span>
+                <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio de Agendamentos") ?></span>
             </div>
             <div id="modalBodyDadosRelatorio" class="container-fluid" style="overflow-y:scroll"></div>
         </div>
@@ -82,7 +81,15 @@
 </section>
 <script>
     $(document).ready(function() {
-        $('#dp1,#dp2').datepicker();
+
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
 
         $('#formRelatorio').submit(function()
         {
@@ -128,7 +135,7 @@
 
 
         $('#btnVoltarRelatorio').click(function() {
-            window.location = '/relatorio/index';
+            window.location = '/relatorio-agendamento/pesquisa';
         });
 
         $('#ds_nome_razao_social_input').attr('type', 'text');

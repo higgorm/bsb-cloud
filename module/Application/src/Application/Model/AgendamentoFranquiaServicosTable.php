@@ -62,7 +62,7 @@ class AgendamentoFranquiaServicosTable extends AbstractTableGateway
         try {
             $this->insert($data);
         } catch (Exception $exc) {
-            echo $exc->getTraceAsString();
+            echo $exc->getMessage();
         }
     }
 
@@ -74,30 +74,53 @@ class AgendamentoFranquiaServicosTable extends AbstractTableGateway
             "dt_horario" => $tableData['dt_horario'],
             "cd_mercadoria" => $tableData['cd_mercadoria']
         );
+
+        $existe = $this->existeMercadoriaAgendamento($data['cd_loja'],$data['nr_maca'],$data['dt_horario'],$data['cd_mercadoria']);
+
         try {
-            $result = $this->insert($data);
-//            var_dump($data );
-//            echo '<br>';
-//            var_dump($result);exit;
-        } catch (Exception $exc) {
-            echo $exc->getTraceAsString();
+            if ( (int) $existe['tot'] >= 1 ){
+                $this->update($data);
+            } else {
+                $this->insert($data);
+            }
+        } catch (RuntimeException $exc) {
+            echo $exc->getMessage();
         }
+    }
+
+    public function existeMercadoriaAgendamento($cdLoja, $nrMaca, $dtHorario, $cdMercadoria)
+    {
+        $statement = $this->adapter->query("SELECT   count(*) as tot
+                                            FROM TB_AGENDAMENTO_FRANQUIA_SERVICOS FS
+                                            INNER JOIN TB_MERCADORIA M ON M.CD_MERCADORIA = FS.CD_MERCADORIA
+                                          WHERE
+                                                FS.CD_LOJA = ?
+                                              AND FS.NR_MACA = ? 
+                                              AND FS.DT_HORARIO between ? and ?
+                                              AND FS.CD_MERCADORIA = ?
+                                         ");
+
+
+        $result= $statement->execute(array($cdLoja, $nrMaca, $dtHorario, $dtHorario, $cdMercadoria));
+        return $result->current();
     }
 
     public function recuperaAgendamentoAgendamento($cdLoja, $dtHorario, $nrMaca)
     {
-
-        $statement = $this->adapter->query("SELECT *
+        $statement = $this->adapter->query("SELECT   *
                                             FROM TB_AGENDAMENTO_FRANQUIA_SERVICOS FS
                                             INNER JOIN TB_MERCADORIA M ON M.CD_MERCADORIA = FS.CD_MERCADORIA
                                             INNER JOIN RL_PRAZO_LIVRO_PRECOS R on M.CD_MERCADORIA = R.CD_MERCADORIA
                                             LEFT JOIN TB_LIVRO_PRECOS L ON L.CD_MERCADORIA = M.CD_MERCADORIA
-                                          WHERE FS.CD_LOJA = ?
+                                          WHERE
+                                              R.CD_LIVRO = ?
+                                          AND  R.CD_PRAZO = ? 
+                                          AND FS.CD_LOJA = ?
                                           AND FS.DT_HORARIO between ? and ?
                                           AND FS.NR_MACA = ? ");
 
 
-        return $statement->execute(array($cdLoja, $dtHorario, $dtHorario, $nrMaca));
+        return $statement->execute(array(1,1,$cdLoja, $dtHorario, $dtHorario, $nrMaca));
     }
 
     public function recuperaprecoservico($mercadoria)

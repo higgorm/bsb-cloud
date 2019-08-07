@@ -8,9 +8,9 @@
 				</div>
 				<?php if( @$erro ): ?>
 					<div class="col-sm-12">
-						<h3>Nota não enviada!</h3>
-						<h3><?php echo $erro; ?></h3>
-						<a href="javascript:window.history.go(-1)">
+						<h3 class="text-danger text-center">Nota não enviada!</h3>
+						<h4><?php echo $erro; ?></h4>
+                        <a href="/nota/abrir?infNFe=<?php echo $infNFE; ?>">
 							<button type="button" class="btn btn-primary">
 								Voltar 
 							</button>
@@ -24,9 +24,10 @@
 				<?php else: ?>
 					<?php if( @$retorno['prot']['0']['nProt'] == '' ): ?>
 						<div class="col-sm-12">
-							<h3>Nota não enviada!</h3>
-							<h3><?php echo $retorno['prot']['0']['xMotivo']; ?></h3>							
-							<a href="javascript:window.history.go(-1)">
+							<h3 class="text-danger text-center">Nota não enviada!</h3>
+							<h4><?php echo $retorno['prot']['0']['xMotivo']; ?></h4>
+
+							<a href="/nota/abrir?infNFe=<?php echo $infNFE; ?>">
 								<button type="button" class="btn btn-primary"> 
 									Voltar 
 								</button>
@@ -39,7 +40,7 @@
 						</div>
 					<?php else: ?>
 						<div class="col-sm-12">
-							<h3>Envio com sucesso!</h3>
+							<h3 class="text-success text-center">Envio com sucesso!</h3>
 							<a href="/nota/imprime-danfe?nCh=<?php echo $retorno['prot']['0']['chNFe'].'&data='.$data?>">
 								<button type="button" class="btn btn-primary">
 									Imprimir

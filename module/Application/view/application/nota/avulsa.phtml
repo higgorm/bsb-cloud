@@ -18,80 +18,108 @@
 							<div role="tabpanel" class="tab-pane" id="dadosNota">
 								<fieldset>
 									<legend>Dados da Nota</legend>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">Tipo:</label><span class="text-danger"> *</span><br>
+                                        <input type="radio" value="55" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFE ') echo "checked" ?>>NFe
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="65" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFCE') echo "checked" ?> disabled>NFCe
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">Data de Emissão / Saída:</label>
+                                        <input type="text" class="dataP form-control" name="dhEmi" id="dhEmi" value="<?php echo ( @$nota['dhEmi'] ? date('d-m-Y', $nota['dhEmi']) : date('d-m-Y'))?>" required />
+                                    </div>
 									<div class="col-md-2">
-										<label class="control-label text-info">Número de Nota:</label><br>
+										<label class="control-label text-info">Número de Nota:</label>
 										<input type="text" value="<?php echo ( @$replicar == '1' ? '' : @$nota['infNFE'] )?>" name="infNFE" id="infNFE" class="form-control" readonly />
+                                        <input type="hidden" value="<?php echo ( @$replicar == '1' ? '' : @$nota['NR_PEDIDO'] )?>" name="NR_PEDIDO" id="NR_PEDIDO"  />
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="control-label text-info">Protocolo / Autorização:</label>
+                                        <input type="text" value="<?php echo ( @$replicar == '1' ? '' : @$nota['DS_PROTOCOLO'] )?>" name="DS_PROTOCOLO" id="DS_PROTOCOLO" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="col-md-12"></div>
+
+                                    <div class="col-md-4">
+                                        <label class="control-label text-info">Natureza da operação:</label>
+                                        <select class="form-control" name="natOp" id="natOp" required>
+                                            <option>Selecione</option>
+                                            <?php
+                                            $cfopDaNota      = (int)$nota['natOP'];
+                                            $cfopPadrao      = $dado['CD_NATUREZA_OPERACAO'];
+                                            $cfopSelecionado = !empty($cfopDaNota) ? $cfopDaNota : $cfopPadrao;
+                                            ?>
+                                            <?php foreach( $cfop as $res ):
+                                                $selected =($res['CD_NATUREZA_OPERACAO'] == $cfopSelecionado) ? " selected " : "" ;
+                                                ?>
+                                                <option value="<?php echo $res['CD_NATUREZA_OPERACAO']?>"  <?php echo $selected?>><?php echo utf8_encode($res['CD_NATUREZA_OPERACAO']." - ".$res['DS_NATUREZA_OPERACAO']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">CFOP:</label>
+                                        <input type="hidden" name="xNatOp" id="xNatOp" />
+                                        <input type="number" name="cfop" id="cfop" class="form-control numbersOnly" value="<?php echo (int)$cfopSelecionado ?>" required />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="checkbox" name="copiarCFOP" value="S">Copiar CFOP para <br>serviços/mercadorias
+                                    </div>
+
+                                    <div class="col-md-12"></div>
+
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">Forma de Pagamento:</label><span class="text-danger"> *</span><br>
+                                        <input type="radio" value="0"  id="indPag0" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '0') echo "checked" ?>>À Vista
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="1"  id="indPag1" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '1') echo "checked" ?>>Prazo
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="2" id="indPag2" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '2') echo "checked" ?>>Outros
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="3" id="indPag3" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '3') echo "checked" ?>>Sem pagamento
+                                    </div>
+
+
+                                    <div class="col-md-12">&nbsp;</div>
+
+									<div class="col-md-2">
+										<label class="control-label text-info">Finalidade da Nota:</label><span class="text-danger"> *</span><br>
+										<input type="radio" value="1" class="finalidadeNota"  name="finNFe" <?php if(@$nota['finNFe'] == '1' || @$nota['finNFe'] == null) echo "checked" ?> />Normal
 									</div>
-									<div class="col-md-1">
-										<label class="control-label text-info">Tipo:</label><br>
-										<input type="radio" value="55" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFE ') echo "checked" ?>>NFe
-									</div>
-									<div class="col-md-1">
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="3" class="finalidadeNota"  name="finNFe" <?php if(@$nota['finNFe'] == '3') echo "checked" ?> />Ajuste
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
+                                        <input type="radio" value="4" class="finalidadeNota" name="finNFe" <?php if(@$nota['finNFe'] == '4') echo "checked" ?>  />Devoluçao
+                                    </div>
+
+									<div class="col-md-2">
 										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="65" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFCE') echo "checked" ?> disabled>NFCe
+										<input type="radio" value="2" class="finalidadeNota"  name="finNFe" <?php if(@$nota['finNFe'] == '2') echo "checked" ?> />Complementar
 									</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">Finalidade da Nota</label><br>
-										<input type="radio" value="1" name="finNFe" Checked>Normal
-									</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="2" name="finNFe">Complementar
-									</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="3" name="finNFe">Ajuste
-									</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="4" name="finNFe">Devoluçao
-									</div>
-									<div class="col-md-12">&nbsp;</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">Autorização:</label><br>
-										<input type="text" value="<?php echo ( @$replicar == '1' ? '' : @$nota['DS_PROTOCOLO'] )?>" name="DS_PROTOCOLO" id="DS_PROTOCOLO" class="form-control" readonly />
-									</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">Forma de Pagamento:</label><br>
-										<input type="radio" value="0" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '0') echo "checked" ?>>À Vista
-									</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="1" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '1') echo "checked" ?>>Prazo
-									</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="radio" value="2" name="indPag" <?php if($dado['CD_FORMA_PAGAMENTO'] == '2') echo "checked" ?>>Outros
-									</div>
-									<div class="col-md-4">
-										<label class="control-label text-info">Data de Emissão / Data Saída:</label><br>
-										<input class="form-control" type="date" name="dhEmi" id="dhEmi" value="<?php echo ( @$nota['dhEmi'] ? date('Y-m-d', $nota['dhEmi']) : date('Y-m-d'))?>" />
-									</div>
-									<div class="col-md-12">&nbsp;</div>
-									<div class="col-md-7">
-										<label class="control-label text-info">Natureza da operação:</label><br>
-										<select class="form-control" name="natOp" id="natOp">
-											<option>Selecione</option>
-											<?php foreach( $cfop as $res ): ?>
-												<option value="<?php echo $res['CD_NATUREZA_OPERACAO']?>" <?php if($res['CD_NATUREZA_OPERACAO'] == $dado['CD_NATUREZA_OPERACAO']) echo "selected"?>><?php echo utf8_encode($res['DS_NATUREZA_OPERACAO']) ?></option>
-											<?php endforeach; ?>
-										</select>
-									</div>
-									<div class="col-md-2">
-										<label class="control-label text-info">CFOP:</label><br>
-										<input type="hidden" name="xNatOp" id="xNatOp" />
-										<input type="text" name="cfop" id="cfop" class="form-control" value="<?php echo ( @$nota['CFOP'] ? @$nota['CFOP'] : $dado['CD_NATUREZA_OPERACAO'] ) ?>"/>
-									</div>
-									<div class="col-md-3">
-										<label class="control-label text-info">&nbsp;&nbsp;</label><br>
-										<input type="checkbox" name="copiarCFOP">Copiar para serviços
-									</div>
-									<div class="col-md-12">&nbsp;</div>
+
+
+									<div id="divRefNfe" class="col-md-8">
+                                        <label class="control-label text-info">Chave da nota origem: </label>
+                                        <input type="text" class="form-control numbersOnly" id="refNFe" name="refNFe"  maxlength="44" value="<?php echo @$nfeReferenciada['refNFe']?>">
+                                    </div>
+
 									<div class="col-md-12">
 										<label class="control-label text-info">Informações Adicionais:</label><br>
-										<textarea name="infadc" id="infadc" class="form-control" rows="6"><?php echo @$nota['infCpl'] ?></textarea>
+										<textarea name="infadc" id="infadc" class="form-control" rows="5"><?php echo @$nota['infCpl'] ?></textarea>
 									</div>
-									<div class="col-md-12">&nbsp;</div>
+
 								</fieldset>
 								<!--------------------------------------------------------------------------------------------------------------------->
 							</div>
@@ -99,27 +127,38 @@
 								<fieldset>
 									<legend>Destinatário</legend>
 									<div class="controls" >
-										<div class="col-md-7">
-											<label class="control-label text-info" for="name">Nome / Razão Social:</label><br>
-											<!--<div id="ds_nome_razao_social" class="autocomplete"></div>-->
-											<input name="destNome" id="destNome" class="form-control"  maxlength="255" value="<?php echo utf8_decode(@$nota['Dest_xNome']) ?>"/>
+
+                                        <div class="col-md-1">
+                                            <label>Código</label>
+                                            <div class="input-group">
+                                                <input type="number" name="codCliente" id="codCliente" class="form-control"  min="1" max="9999999999" value="<?php echo @$nota['CD_CLIENTE'] ?>" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                            <button type="button" id="searchCliente" class="form-control">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+
+										<div class="col-md-6">
+											<label class="control-label text-info" for="name">Nome / Razão Social:</label>
+											<input name="destNome" id="destNome" class="form-control"  maxlength="255" value="<?php echo utf8_encode(@$nota['Dest_xNome']) ?>" required readonly/>
 										</div>
 
 										<div class="col-md-3">
 											<label class="control-label text-info" for="name">CPF / CNPJ:</label><br>
-											<input name="destCNPJ" id="destCNPJ" class="form-control"  maxlength="14" readonly value="<?php echo @$nota['Dest_CNPJCPF'] ?>" />
-											<input type="hidden" name="codCliente" id="codCliente" value="<?php echo @$nota['CD_CLIENTE'] ?>" />
+											<input name="destCNPJ" id="destCNPJ" class="form-control"  maxlength="14" readonly value="<?php echo @$nota['Dest_CNPJCPF'] ?>"  readonly />
+
 										</div>
-										<div class="col-md-1">
-											<label class="control-label text-info" for="name">&nbsp;</label><br>
-											<button type="button" id="searchCliente" class="form-control">
-												<i class="fa fa-search"></i>
-											</button>
-										</div>
-										<div class="col-md-1">
-											<label class="control-label text-info" for="name">&nbsp;</label><br>
-											<button type="button" class="form-control" id="cadastraClienteCompleto"><i class="fa fa-plus"></i></button>
-										</div>
+
+                                        <div class="col-md-1">
+                                            <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                            <button type="button" class="form-control" id="cadastraClienteCompleto"><i class="fa fa-plus"></i></button>
+                                        </div>
+
+
 									</div>
 									<div class="col-sm-12">&nbsp;</div>
 								</fieldset>
@@ -127,11 +166,13 @@
 									<legend>Produtos</legend>
 									<input type="hidden" name="nrPedido" id="nrPedido" value="<?php echo $nrPedido ?>" />
 									<input type="hidden" name="tpPedido" id="tpPedido" value="<?php echo $tpPedido ?>" />
+                                    <input type="hidden" name="isServico" id="isServico" value="<?php echo @$nfeMerc[0]['ST_SERVICO']; ?>" />
+                                    <input type="hidden" name="isServicoProxProduto" id="isServicoProxProduto" value="" />
 									<div class="row-fluid">
 											<div class="col-md-1">
 												<label>Código</label>
 												<div class="input-group">
-													<input type="text" name="CD_MERCADORIA" id="CD_MERCADORIA" class="form-control" value=""/>
+													<input type="number" name="CD_MERCADORIA" id="CD_MERCADORIA" class="form-control" value="" min="1" max="9999999999"/>
 												</div>
 											</div>
 											<div class="col-md-1">
@@ -140,9 +181,9 @@
 													<i class="fa fa-search"></i>
 												</button>
 											</div>
-											<div class="col-md-3">
+											<div class="col-md-5">
 												<label>Descrição</label><br>
-												<input type="text" class="form-control" id="ds_mercadoria" name="ds_mercadoria" maxlength="120" />
+												<input type="text" class="form-control" id="ds_mercadoria" name="ds_mercadoria" maxlength="120" readonly />
 											</div>
 											<div class="col-md-2">
 												<label>Valor Unitário</label><br>
@@ -150,14 +191,13 @@
 											</div>
 											<div class="col-md-1">
 												<label>Qtd</label><br>
-												<input type="text" class="form-control" value="1" id="qtd_mercadoria" name="qtd_mercadoria" />
-												<!-- <input type="text" class="form-control" value="1" id="qtd_mercadoria" name="qtd_mercadoria" onKeyUp="moeda(this)"  /> -->
+												<input type="text" class="form-control numbersOnly" value="1" id="qtd_mercadoria" name="qtd_mercadoria" />
 											</div>
 											<div class="col-md-2">
 												<label>Total</label><br>
 												<input type="text" class="form-control" id="vl_tot" name="vl_tot" readonly />
 											</div>
-											<div class="col-md-2">
+											<div class="col-md-12">
 												<label>&nbsp;</label><br>
 												<button id="btnIncluirMercadoria" class="btn btn-primary" type="button"><i class="icon-white icon-plus"></i>&nbsp;Adicionar a nota</button>
 											</div>
@@ -179,6 +219,9 @@
 														<th>
 															<span>Valor Unitario</span>
 														</th>
+                                                        <th>
+                                                            <span>Valor líquido</span>
+                                                        </th>
 														<th>
 															<span>Total</span>
 														</th>
@@ -196,13 +239,29 @@
 														<?php echo $merc['xProd'] ?> <input type="hidden" name="ds_mercadoria-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['xProd'] ?>" />
 													</td>
 													<td>
-														<?php echo $merc['qCom'] ?> <input type="hidden" name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['qCom'] ?>" />
+														<?php echo (int)$merc['qCom'] ?>
+                                                        <input type="hidden"
+                                                                name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    id="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                        value="<?php echo (int)$merc['qCom'] ?>" />
 													</td>
 													<td>
-														<?php echo $merc['vUnCom'] ?> <input type="hidden" name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
+														<?php echo number_format($merc['vUnCom'],2, '.', ''); ?>
+                                                        <input type="hidden"
+                                                               name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>"
+                                                                    id="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vUnCom'],2, '.', '') ?>" />
 													</td>
+                                                    <td>
+                                                        <span id="span_vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo number_format($merc['vDesc'],2, '.', '') ?></span>
+                                                        <input type="hidden"
+                                                               name="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vDesc'],2, '.', '') ?>"
+                                                                    id="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vDesc'],2, '.', '') ?>" />
+                                                    </td>
 													<td>
-														<?php echo $merc['vProd'] ?> <input type="hidden" name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" />
+                                                        <span id="span_vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo number_format($merc['vProd'],2, '.', '') ?></span>
+                                                        <input type="hidden"
+                                                               name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>"
+                                                                id="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo number_format($merc['vProd'],2, '.', '') ?>" />
 													</td>
 												</tr>
 												<?php endforeach; ?>
@@ -211,11 +270,51 @@
 											</table>
 										</div>
 									</div>
-									<div class="fluid">
-										<button id="btnExcluirMercadoria" class="btn  btn-info span3 pull-left" type="button"><i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados</button>
-										<input type="text" class="btn  btn-info span3 pull-right" readonly value="<?php echo ( @$totalNota ? number_format($totalNota, 2, ',', '.') : 0.00 )?>" id="totalNota">
-									</div>
-									<div class="col-md-12">&nbsp;</div>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <button id="btnExcluirMercadoria" class="btn  btn-info span3 pull-left" type="button">
+                                                <i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados
+                                            </button>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <label class="text-right"><b>Sub Total:&nbsp;R$</b></label>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input type="text" class="form-control text-right" readonly
+                                                   value="<?php echo ( @$totalSubNota ? number_format($totalSubNota, 2, ',', '.') : 0.00 )?>"
+                                                   id="subTotalNota"  name="vl_sub_tot" placeholder="R$ 0,00" title="Sub-total da nota, sem descontos." />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="col-md-10 text-right" >
+                                            <label class="text-right"><b>Desconto:&nbsp;</b></label>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="text" class="form-control text-right" style="width:120%!important;"
+                                                   value="<?php echo ( @$nrDesconto ? number_format($nrDesconto, 2, ',', '.') : "" )?>"
+                                                   id="nrPercentualDesconto" name="nr_desconto" placeholder="0,00 %"   onKeyUp="moeda(this)" title="%" maxlength="7">
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <input type="text" class="form-control text-right" style="margin-left:-20%!important; width:120%!important;"
+                                                   value="<?php echo ( @$valorDesconto ? number_format($valorDesconto, 2, ',', '.') : "" ) ?>"
+                                                   id="valorDesconto"  name="vl_desconto" placeholder="R$ 0,00"    onKeyUp="moeda(this)"  title="R$" >
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="col-md-10 text-right" >
+                                            <label class="text-right"><b>Total da Nota:&nbsp;R$</b></label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" class="form-control text-right" readonly
+                                                   value="<?php echo ( @$totalNota ? number_format($totalNota, 2, ',', '.') : 0.00 )?>"
+                                                   id="totalNota" name="vl_nota_tot" placeholder="R$ 0,00" title="Valor total da nota fiscal" />
+                                        </div>
+                                    </div>
 
 								</fieldset>
 								<!-------------------------------------------------------------------------------------->
@@ -223,91 +322,92 @@
 							<div role="tabpanel" class="tab-pane" id="retencao">
 								<div class="controls" >
 									<div class="col-sm-12 col-md-12">
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">BC PIS:</label><br>
-											<input name="retPis_bc" id="retPis_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo (@$nota['RET_Base_PIS'] ? number_format( @$nota['RET_Base_PIS'], 2, ',', '.') : 0) ?>"/>
+											<input name="retPis_bc" id="retPis_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo (@$nota['RET_Base_PIS'] ? number_format( @str_ireplace(",",".",$nota['RET_Base_PIS']), 2, ',', '.') : 0) ?>"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq PIS(%):</label><br>
-											<input name="retPis_aliq" id="retPis_aliq" class="form-control"  value="<?php echo ( @$nota['RET_Aliq_PIS'] ? number_format( @$nota['RET_Base_PIS'], 2) : number_format($dado['RETENCAO_pPIS'],2) )?>" onKeyUp="moeda(this)"/>
+
+											<input name="retPis_aliq" id="retPis_aliq" class="form-control"  value="<?php echo ( @$nota['RET_Aliq_PIS'] ? number_format( @$nota['RET_Aliq_PIS'], 2) : 0 )?>" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total PIS:</label><br>
 											<input name="retPis_total" id="retPis_total" class="form-control" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-6">
 											<label class="control-label text-info"></label><br>
 											<input type="checkbox" value="1" name="retPis" <?php echo ( @$nota['RET_Base_PIS'] > 0 ? 'checked' : '' ) ?>>Habilitar
 										</div>
 										<div class="col-sm-12 col-md-12">&nbsp;</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">BC COFINS:</label><br>
-											<input name="retCofins_bc" id="retCofins_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_COFINS'] ? number_format( @$nota['RET_Base_COFINS'], 2, ',', '.') : 0 ) ?>"/>
+											<input name="retCofins_bc" id="retCofins_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_COFINS'] ? number_format( @str_ireplace(",",".",$nota['RET_Base_COFINS']), 2, ',', '.') : 0 ) ?>"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq COFINS(%):</label><br>
-											<input name="retCofins_aliq" id="retCofins_aliq" class="form-control"  value="<?php echo number_format($dado['RETENCAO_pCOFINS'],2)?>" onKeyUp="moeda(this)"/>
+											<input name="retCofins_aliq" id="retCofins_aliq" class="form-control"  value="<?php echo number_format(@$nota['RET_Aliq_COFINS'],2)?>" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total COFINS:</label><br>
 											<input name="retCofins_total" id="retCofins_total" class="form-control" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-6">
 											<label class="control-label text-info"></label><br>
 											<input type="checkbox" value="1" name="retCofins" <?php echo ( @$nota['RET_Base_COFINS'] > 0 ? 'checked' : '' ) ?>>Habilitar
 										</div>
 										<div class="col-sm-12 col-md-12">&nbsp;</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">BC CSLL:</label><br>
-											<input name="retCsll_bc" id="retCsll_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_CSLL'] ? number_format( @$nota['RET_Base_CSLL'], 2, ',', '.') : 0 ) ?>"/>
+											<input name="retCsll_bc" id="retCsll_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_CSLL'] ? number_format( @str_ireplace(",",".",$nota['RET_Base_CSLL']), 2, ',', '.') : 0 ) ?>"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq CSLL(%):</label><br>
-											<input name="retCsll_aliq" id="retCsll_aliq" class="form-control" value="<?php echo number_format($dado['RETENCAO_pCSLL'],2)?>" onKeyUp="moeda(this)"/>
+											<input name="retCsll_aliq" id="retCsll_aliq" class="form-control" value="<?php echo number_format(@$nota['RET_Aliq_CSLL'],2)?>" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total CSLL:</label><br>
 											<input name="retCsll_total" id="retCsll_total" class="form-control" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-6">
 											<label class="control-label text-info"></label><br>
 											<input type="checkbox" value="1" name="retCsll" <?php echo ( @$nota['RET_Base_CSLL'] > 0 ? 'checked' : '' ) ?>>Habilitar
 										</div>
 										<div class="col-sm-12 col-md-12">&nbsp;</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">BC IRRF:</label><br>
 											<input name="retIrrf_bc" id="retIrrf_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_IRRF'] ? number_format( @$nota['RET_Base_IRRF'], 2, ',', '.') : 0 ) ?>"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq IRRF(%):</label><br>
-											<input name="retIrrf_aliq" id="retIrrf_aliq" class="form-control" value="<?php echo number_format($dado['RETENCAO_pIRRF'],2)?>" onKeyUp="moeda(this)"/>
+											<input name="retIrrf_aliq" id="retIrrf_aliq" class="form-control" value="<?php echo number_format(@$nota['RET_Aliq_IRRF'],2)?>" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total IRRF:</label><br>
 											<input name="retIrrf_total" id="retIrrf_total" class="form-control" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-6">
 											<label class="control-label text-info"></label><br>
 											<input type="checkbox" value="1" name="retIrrf" <?php echo ( @$nota['RET_Base_IRRF'] > 0 ? 'checked' : '' ) ?>>Habilitar
 										</div>
 										<div class="col-sm-12 col-md-12">&nbsp;</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">BC Previdência:</label><br>
 											<input name="retPrev_bc" id="retPrev_bc" class="form-control" onKeyUp="moeda(this)" value="<?php echo ( @$nota['RET_Base_PREV'] ?  number_format( @$nota['RET_Base_PREV'], 2, ',', '.') : 0 ) ?>" />
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Aliq Previdência(%):</label><br>
-											<input name="retPrev_aliq" id="retPrev_aliq" class="form-control" value="<?php echo number_format($dado['RETENCAO_pPrevidencia'],2)?>" onKeyUp="moeda(this)"/>
+											<input name="retPrev_aliq" id="retPrev_aliq" class="form-control" value="<?php echo number_format(@$nota['RET_Aliq_PREV'],2)?>" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-2">
 											<label class="control-label text-info" for="name">Total Previdência:</label><br>
 											<input name="retPrev_total" id="retPrev_total" class="form-control" onKeyUp="moeda(this)"/>
 										</div>
-										<div class="col-md-3">
+										<div class="col-md-6">
 											<label class="control-label text-info"></label><br>
 											<input type="checkbox" value="1" name="retPrev" <?php echo ( @$nota['RET_Base_PREV'] > 0 ? 'checked' : '' ) ?>>Habilitar
 										</div>
-										<div class="col-sm-12 col-md-12">&nbsp;</div>
+
 									</div>
 								</div>
 								<div class="col-sm-12 col-md-12">&nbsp;</div>
@@ -357,9 +457,11 @@
 						<hr>
 						<button id="btnEmitirNota" name="emitir" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Emitir</button>
 						<button id="btnSalvarNota" name="save" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Salvar</button>
-						<button id="btnCancelarRelatorio" class="btn btn-default btn" type="reset"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
-<!--						<button id="btnVoltarRelatorio"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button> </a>
--->
+						<button id="btnLimparNota" class="btn btn-default btn" type="button"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+						<button id="btnVoltarLista" class="btn btn-default btn" type="button" onclick="javascript:window.history.go(-1)">
+                            <i class="icon-arrow-left icon-white"></i>&nbsp;Voltar
+                        </button>
+
 					</div>
 					</div>
 				</div>
@@ -369,7 +471,7 @@
 		<!-- ###### MODAIS ###### -->
 
 		<!-- Indicar Paciente -->
-		<div id="pacientedMed" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pacientedMed" aria-hidden="true">
+	<!--	<div id="pacientedMed" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pacientedMed" aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -382,7 +484,7 @@
 							<div class="panel-body">
 								<div class="col-md-8">
 									<label>Nome: </label>
-									<input type="text" class="form-control" id="nome_paciente" name="nome_paciente" id="nome_paciente" <?php if( $dado['ST_OBRIGA_PACIENTE'] == 'S' ) echo 'required' ?> />
+									<input type="text" class="form-control" id="nome_paciente" name="nome_paciente" id="nome_paciente" <?php /*if( $dado['ST_OBRIGA_PACIENTE'] == 'S' ) echo 'required' */?> />
 								</div>
 								<div class="col-md-4">
 									<label>&nbsp;</label>
@@ -390,11 +492,11 @@
 								</div>
 								<div class="col-md-12">
 									<label>CPF: </label>
-									<input type="text" class="form-control" id="cpf_paciente" name="cpf_paciente" id="cpf_paciente" <?php if( $dado['ST_OBRIGA_PACIENTE'] == 'S' ) echo 'required' ?> />
+									<input type="text" class="form-control" id="cpf_paciente" name="cpf_paciente" id="cpf_paciente" <?php /*if( $dado['ST_OBRIGA_PACIENTE'] == 'S' ) echo 'required' */?> />
 								</div>
 								<div class="col-md-12">
 									<label>Data de Nascimento: </label>
-									<input type="date" class="form-control" id="nascimento_paciente" name="nascimento_paciente" />
+									<input type="text" class="dataP form-control" id="nascimento_paciente" name="nascimento_paciente" />
 								</div>
 								<div class="col-lg-12">
 									<hr>
@@ -406,7 +508,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>-->
 	</form>
 
 	<!-- Modal Pesquisa Cliente -->
@@ -472,6 +574,18 @@
 						event.preventDefault();
 					}
 			});
+
+			$(".finalidadeNota").click(function(){
+
+			   exibirDivRefNfe($(this).val());
+
+            });
+
+            $('.numbersOnly').keyup(function () {
+                this.value = this.value.replace(/[^0-9\.]/g,'');
+            });
+
+            exibirDivRefNfe($('input[name="finNFe"]:checked').val());
 		});
 	</script>
 <?php endforeach; ?>

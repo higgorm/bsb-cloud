@@ -10,7 +10,6 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
@@ -23,7 +22,7 @@ use Zend\Db\Adapter\Driver\ConnectionInterface;
  * @author e.Guilherme
  *
  */
-class MercadoriaController extends AbstractActionController{
+class MercadoriaController extends OrangeWebAbstractActionController{
 	
 	protected $mercadoriaTable;
 
@@ -75,10 +74,10 @@ class MercadoriaController extends AbstractActionController{
 
         $mercadorias = $this->getTable()->fetchAll($param, $pageNumber);
 		$util     = new \Util;
-
         $view = new ViewModel(array(
             "messages" => $messages,
             "mercadorias" => $mercadorias,
+			//"precos"    => $precosVenda,
 			"util"     => $util,
         ));
 
@@ -120,31 +119,33 @@ class MercadoriaController extends AbstractActionController{
 		if( $request->isPost() ) {
 			$id = $post->get( 'CD_MERCADORIA' );
 			$array = array(
-				'DS_MERCADORIA'					=> utf8_encode($post->get('MERCADORIA')),
+				'DS_MERCADORIA'					=> utf8_decode($post->get('MERCADORIA')),
 				'CD_UNIDADE_VENDA'				=> $post->get('UNIDADE_VENDA'),
 				'DS_CFOP_EXTERNO'				=> $post->get('CFOP_EXTERNO'),
 				'DS_CFOP_INTERNO'				=> $post->get('CFOP_INTERNO'),
 				'DS_CSOSN'						=> $post->get('CSOSN'),
 				'DS_NCM'						=> $post->get('NCM'),
-				'NR_PERCENTUAL_ICMS_EXTERNO'	=> $post->get('ICMS_EXTERNO'),
-				'NR_PERCENTUAL_ICMS_INTERNO'	=> $post->get('ICMS_INTERNO'),
-				'VL_ISS'						=> $post->get('vl_iss'),
-				'VL_RET_ISS'					=> $post->get('VL_RET_ISS'),
+                'CEST'							=> $post->get('CEST'),
+				'NR_PERCENTUAL_ICMS_EXTERNO'	=> str_ireplace(",",".",$post->get('ICMS_EXTERNO')),
+				'NR_PERCENTUAL_ICMS_INTERNO'	=> str_ireplace(",",".",$post->get('ICMS_INTERNO')),
+				'VL_ISS'						=> str_ireplace(",",".",$post->get('vl_iss')),
+				'VL_RET_ISS'					=> str_ireplace(",",".", $post->get('VL_RET_ISS')),
 				'VL_PIS'						=> $post->get('pis'),
 				'ISSQN_indISS'					=> $post->get('indIss'),
 				'ISSQN_indIncentivo'			=> $post->get('indIncentivo'),
 				'cListServ'						=> $post->get('cListServ'),
-				'NR_MVA'						=> $post->get('stMva'),
+				'NR_MVA'						=> str_ireplace(",",".",$post->get('stMva')),
 				'PIS_CST'						=> $post->get('stPis'),
 				'COFINS_CST'					=> $post->get('stCofins'),
 				'IPI_CST'						=> $post->get('ipi_cst'),
-				'NR_IPI'						=> $post->get('nr_ipi'),
+				'NR_IPI'						=> str_ireplace(",",".",$post->get('nr_ipi')),
 				'ICMS_Orig'						=> $post->get('icms_orgiem'),
 				'ICMS_CST'						=> $post->get('situacaoTributaria'),
 				'ICMS_modBC'					=> $post->get('ICMS_modBC'),
 				'ST_SERVICO'					=> $post->get('flg_tipo'),
-				'DT_UltimaAlteracao'			=> date('Ymd H:m'),
-				'UsuarioUltimaAlteracao'		=> 'OrangeWeb'
+				'DT_UltimaAlteracao'			=> date(FORMATO_ESCRITA_DATA_HORA),
+				'UsuarioUltimaAlteracao'		=> 'OrangeWeb',
+                'CD_BARRAS'					    => $post->get('CD_BARRAS')
 			);
 			
 			$mercadoria = $this->getTable()->atualiza_mercadoria($id, $array);
@@ -194,9 +195,12 @@ class MercadoriaController extends AbstractActionController{
 		}
 
         if ($request->isPost()) {
+
+		    $cdMercadoria = $this->getTable()->getNextId() + 1;
+
 			$array = array(
-				'CD_MERCADORIA'					=> $this->getTable()->getNextId() + 1,
-				'DS_MERCADORIA'					=> utf8_encode($post->get('MERCADORIA')),
+				'CD_MERCADORIA'					=> $cdMercadoria,
+				'DS_MERCADORIA'					=> utf8_decode($post->get('MERCADORIA')),
 				'CD_UNIDADE_VENDA'				=> $unidade,
 				'DS_CFOP_EXTERNO'				=> $post->get('CFOP_EXTERNO'),
 				'DS_CFOP_INTERNO'				=> $post->get('CFOP_INTERNO'),
@@ -215,12 +219,12 @@ class MercadoriaController extends AbstractActionController{
 				'PIS_CST'						=> $post->get('stPis'),
 				'COFINS_CST'					=> $post->get('stCofins'),
 				'IPI_CST'						=> $post->get('ipi_cst'),
-				'NR_IPI'						=> $post->get('nr_iss'),
+				'NR_IPI'						=> $post->get('nr_ipi'),
 				'ICMS_Orig'						=> $post->get('icms_orgiem'),
 				'ICMS_CST '		                => $post->get('situacaoTributaria'),
 				'ICMS_modBC'					=> $post->get('ICMS_modBC'),
 				'ST_SERVICO'					=> $post->get('flg_tipo'),
-				'DT_UltimaAlteracao'			=> date('Ymd H:m'),
+				'DT_UltimaAlteracao'			=> date(FORMATO_ESCRITA_DATA_HORA),
 				'UsuarioUltimaAlteracao'		=> 'OrangeWeb',
 				'CD_GRUPO'						=> '01',
 				'CD_SUBGRUPO'					=> '01',
@@ -232,32 +236,33 @@ class MercadoriaController extends AbstractActionController{
 				'NR_ALTURA'						=> '0',
 				'NR_PERCENTUAL_COMISSAO_INTERNO'=> '0',
 				'NR_PERCENTUAL_COMISSAO_EXTERNO'=> '0',
-				'IMPRIME_COMPOSICAO'			=> 'P'
+				'IMPRIME_COMPOSICAO'			=> 'P',
+                'CD_BARRAS'					    => $post->get('CD_BARRAS')
 			);
 			//die(var_dump($array));
 			$mercadoria = $this->getTable()->insere( $array );
 			
 			$array = array(
 				'CD_LIVRO'						=> '1',
-				'CD_MERCADORIA'					=> $this->getTable()->getNextId(),
+				'CD_MERCADORIA'					=> $cdMercadoria,
 				'VL_PRECO_COMPRA'				=> ( $post->get('vl_compra') == '' ? 0 : $post->get('vl_compra') ),
 				'VL_PRECO_VENDA'	 			=> $post->get('vl_venda'),
 				'ST_FOLHA_ROSTO'				=> '',
-				'DT_ALTERACAO'					=> date('Ymd H:m'),
-				'DT_UltimaAlteracao'			=> date('Ymd H:m'),
+				'DT_ALTERACAO'					=> date(FORMATO_ESCRITA_DATA_HORA),
+				'DT_UltimaAlteracao'			=> date(FORMATO_ESCRITA_DATA_HORA),
 				'UsuarioUltimaAlteracao'		=> 'OrangeWeb'
 			);
 			$livro_preco = $this->getTable()->insere_livro_preco( $array );
 			
 			$array = array(
 				'CD_LIVRO'						=> '1',
-				'CD_MERCADORIA'					=> $this->getTable()->getNextId(),
+				'CD_MERCADORIA'					=> $cdMercadoria,
 				'CD_PRAZO'						=> '1',
 				'VL_PRECO_VENDA'				=> $post->get('vl_venda'),
 				'VL_PRECO_VENDA_PROMOCAO'		=> '0',
 				'NR_PERCENTUAL_ACRESCIMO'		=> '0',
 				'ST_TIPO_REAJUSTE'				=> '2',
-				'DT_UltimaAlteracao'			=> date('Ymd H:m'),
+				'DT_UltimaAlteracao'			=> date(FORMATO_ESCRITA_DATA_HORA),
 				'UsuarioUltimaAlteracao'		=> 'OrangeWeb'
 			);
 			$preco = $this->getTable()->insere_preco( $array );
@@ -305,6 +310,7 @@ class MercadoriaController extends AbstractActionController{
         $arrMercadoria = $this->getServiceLocator()->get('mercadoria_table')->getComboPrecoServico(
                 $this->getRequest()->getPost()->get('CD_MERCADORIA'));
 
+        array_walk_recursive($arrMercadoria, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
         if (count($arrMercadoria)) {
             echo json_encode(array('result' => 'success', 'data' => $arrMercadoria));
             exit;
@@ -318,11 +324,11 @@ class MercadoriaController extends AbstractActionController{
         @$post = $this->getRequest()->getPost();
         $arrParams = array();
         foreach (@$post as $k => $v) {
-            $arrParams[$k] = $v;
+            $arrParams[$k] = utf8_decode($v);
         }
         $arrPedido = $this->getServiceLocator()->get('mercadoria_table')->pesquisaMercadoriaPorParamentro($arrParams);
-
-        if (count($arrPedido)) {
+        array_walk_recursive($arrPedido, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
+        if ($arrPedido) {
             echo json_encode(array('result' => 'success', 'data' => $arrPedido));
             exit;
         }
@@ -336,21 +342,21 @@ class MercadoriaController extends AbstractActionController{
         $sm = $this->getServiceLocator();
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         try {
+
             $dbAdapter->getDriver()->getConnection()->beginTransaction();
             $id = (int) $this->params()->fromQuery('id');
 
-            if ($this->getTable()->remove($id)) {
-                $message = array("success" => "Removido com sucesso");
-            } else {
-                $message = array("error" => "Não foi possível, este registro está em uso!");
-            }
-
+            $this->getTable()->remove($id);
+            $message = array("success" => "Removido com sucesso");
+            $this->flashMessenger()->addMessage($message);
             $dbAdapter->getDriver()->getConnection()->commit();
 
+        } catch (\Exception $e) {
+            $message = array("danger" => "Não foi possível, este registro está em uso!");
             $this->flashMessenger()->addMessage($message);
-            return $this->redirect()->toUrl("index?pg=1");
-        } catch (Exception $e) {
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
+
+        return $this->redirect()->toUrl("index?pg=1");
     }
 }

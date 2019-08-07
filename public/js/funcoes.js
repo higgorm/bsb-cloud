@@ -20,14 +20,17 @@ $(document).ready(function() {
 //                }
 //            });
 
+     roundDecimal = function(num) {
+        return +(Math.round(num + "e+2")  + "e-2");
+    }
+
     formatReal = function(number) 
     {        
         var decimals = 2;
         var dec_point = '.';
         var thousands_sep = '';
 
-        var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2
-        : decimals;
+        var n = number, c = isNaN(decimals = Math.abs(decimals)) ? 2 : decimals;
         var d = dec_point == undefined ? "," : dec_point;
         var t = thousands_sep == undefined ? "." : thousands_sep, s = n < 0 ? "-" : "";
         var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
@@ -55,7 +58,58 @@ $(document).ready(function() {
             return false;
         }
         return true;
+    },
+
+    setValidacaoCampoObrigatorio = function(){
+        var elements = document.getElementsByTagName("INPUT");
+        for (var i = 0; i < elements.length; i++) {
+
+            if (elements[i].required) {
+                elements[i].insertAdjacentHTML('beforebegin','<span class="text-danger"> *</span>');
+            }
+
+            elements[i].oninvalid = function (e) {
+                e.target.setCustomValidity("");
+                if (!e.target.validity.valid) {
+                    switch (e.srcElement.type) {
+                        case "number":
+                            e.target.setCustomValidity("Informe apenas números entre " + e.srcElement.min + ' e ' + e.srcElement.max + '.');
+                            break;
+                        case "text":
+                            e.target.setCustomValidity("Este campo é obrigatório.");
+                            break;
+                    }
+
+
+
+                }
+            };
+            elements[i].oninput = function (e) {
+                e.target.setCustomValidity("");
+            };
+        }
+        var elementsSelect = document.getElementsByTagName("SELECT");
+        for (var i = 0; i < elementsSelect.length; i++) {
+
+            if (elementsSelect[i].required) {
+                elementsSelect[i].insertAdjacentHTML('beforebegin','<span class="text-danger"> *</span>');
+            }
+
+            elementsSelect[i].oninvalid = function (e) {
+                e.target.setCustomValidity("");
+                if (!e.target.validity.valid) {
+                    e.target.setCustomValidity("Este campo é obrigatório.");
+                }
+            };
+            elementsSelect[i].oninput = function (e) {
+                e.target.setCustomValidity("");
+            };
+        }
     }
+
+
+    //fixed for all forms
+    setValidacaoCampoObrigatorio();
 });
 	function formatar(mascara, documento, numero = false, evt = null){
 		var i = documento.value.length;

@@ -50,13 +50,25 @@
                             <?php echo $this->formElementErrors($form->get("ds_endereco")) ?>
                         </div>
                     </div>
-
+                    <!--
                     <div class="controls">
                         <div class="col-sm-12">
                             <hr>
-                            <?php echo $this->formElement($form->get("submit")) ?>
-                            <?php echo $this->formElement($form->get("buttonLimpar")) ?>
+                            <?php // echo $this->formElement($form->get("submit")) ?>
+                            <?php // echo $this->formElement($form->get("buttonLimpar")) ?>
                         </div>
+                    </div> -->
+
+                    <div class="col-sm-12">
+                        <hr>
+                        <button type="submit" name="submit" id="btnSubmit" class="btn btn-primary btn" style="" value="">
+                            <i class="fa fa-search"></i>
+                            Pesquisar
+                        </button>
+                        <button type="button" name="buttonLimpar" class="btn btn-default btn" id="btnLimparFormulario" onclick="javascript:window.location.href='/cliente/index'" value="">
+                            <i class="i i-back"></i>
+                            Limpar
+                        </button>
                     </div>
 
                 </form>
@@ -67,8 +79,8 @@
                 <div class="controls">
                     <div class="col-sm-12">
                         <button id="btnNovoCliente" class="btn btn-success" style="float:right; margin-top:5px; margin-right:5px;">
-                            <i class="icon-plus icon-white"></i>
-                             Adicionar novo cliente
+                            <i class="i glyphicon-plus"></i>
+                             Adicionar cliente
                         </button>
                     </div>
                 </div>
@@ -76,10 +88,8 @@
                     <table class="table table-striped m-b-none" data-ride="datatables">
                         <thead>
                             <tr >
-                                <!-- th nowrap>#</th -->
                                 <th nowrap>Cliente</th>
-                                <th nowrap>Sexo</th>
-                                <th nowrap>CPF</th>
+                                <th nowrap>CPF/CNPJ</th>
                                 <th nowrap>Endere&ccedil;o</th>
                                 <th nowrap>Telefone(s)</th>
                                 <th nowrap>Email</th>
@@ -91,15 +101,14 @@
                                 <?php foreach ($clientes as $cliente): ?>
                                     <tr>
                                         <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
-                                        <td align="left"><?php echo utf8_decode($cliente->DS_NOME_RAZAO_SOCIAL) ?></td>
-                                        <td align="left"><?php echo $cliente->DS_SEXO ?></td>
-                                        <td align="right"><?php echo ( strlen( $cliente->NR_CGC_CPF ) > 11 ? $util->mask($cliente->NR_CGC_CPF,'##.###.###/####-##') : $util->mask($cliente->NR_CGC_CPF,'###.###.###-##') ); ?></td>
-                                        <td align="center"><?php echo utf8_decode($cliente->DS_ENDERECO) ?></td>
+                                        <td align="left"><?php echo utf8_encode($cliente->DS_NOME_RAZAO_SOCIAL) ?></td>
+                                        <td align="right" nowrap><?php echo ( strlen( $cliente->NR_CGC_CPF ) > 11 ? $util->mask($cliente->NR_CGC_CPF,'##.###.###/####-##') : $util->mask($cliente->NR_CGC_CPF,'###.###.###-##') ); ?></td>
+                                        <td align="center"><?php echo utf8_encode($cliente->DS_ENDERECO) ?></td>
                                         <td align="center"><?php echo $cliente->DS_FONE1 . " / " . $cliente->DS_FONE2 ?></td>
                                         <td align="left"><?php echo utf8_decode($cliente->DS_EMAIL) ?></td>
                                         <td  align="center">
-                                          <a href="/cliente/cadastro?id=<?php echo $cliente->CD_CLIENTE ?>" data-toggle="tooltip" data-placement="top" title="Editar Cliente" ><i class="fa fa-pencil"></i></a>   |
-                                            <a href="/cliente/remover?id=<?php echo $cliente->CD_CLIENTE ?>"data-toggle="tooltip" data-placement="top" title="Excluir Cliente" ><i class="fa fa-trash-o"></i></a>
+                                          <a href="/cliente/cadastro?id=<?php echo $cliente->CD_CLIENTE ?>" data-toggle="tooltip" data-placement="top" title="Editar Cliente" ><i class="fa fa-pencil"></i></a> |
+                                            <a href="#" onclick="Util.confirmarExclusao(this)" data-value="<?php echo $cliente->CD_CLIENTE ?>" data-url="/cliente/remover" data-toggle="tooltip" data-placement="top" title="Excluir Cliente" ><i class="fa fa-trash-o"></i></a>
                                         </td>
                                         </th>
                                     </tr>
@@ -108,10 +117,8 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <!-- th nowrap>#</th -->
                                 <th nowrap>Cliente</th>
-                                <th nowrap>Sexo</th>
-                                <th nowrap>CPF</th>
+                                <th nowrap>CPF/CNPJ</th>
                                 <th nowrap>Endere&ccedil;o</th>
                                 <th nowrap>Telefone(s)</th>
                                 <th nowrap>Email</th>

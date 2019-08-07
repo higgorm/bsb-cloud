@@ -1,0 +1,78 @@
+<script type="text/javascript" src="/js/orangeweb/nota/nota.js"></script>
+<section class="panel panel-default">
+	<div class="main">
+		<div class="row-fluid">
+			<div class="panel-body">
+				<div class="widget-header">
+					<h3>Envio de NFe a partir do recebimento no caixa</h3>
+				</div>
+				<?php if( @$erro ): ?>
+					<div class="col-sm-12">
+						<h3 class="text-danger text-center">Nota não  enviada!</h3>
+						<h4>
+                            <?php echo $erro; ?>
+                        </h4>
+
+                        <a href="/caixa/index">
+							<button type="button" class="btn btn-primary">
+								Voltar
+							</button>
+						</a>
+                        <a href="/nota/lista">
+                            <button type="button" class="btn btn-primary">
+                                Ir para a lista de notas
+                            </button>
+                        </a>
+					</div>
+				<?php else: ?>
+					<?php if( @$retorno['prot']['0']['nProt'] == '' ): ?>
+						<div class="col-sm-12">
+                            <h3 class="text-danger text-center">Nota não enviada!</h3>
+							<h4 class="text-center">
+                                <?php echo $retorno['prot']['0']['xMotivo']; ?>
+                            </h4>
+                            <a href="/caixa/index">
+								<button type="button" class="btn btn-primary"> 
+									Voltar 
+								</button>
+							</a>
+							<a href="/nota/lista">
+								<button type="button" class="btn btn-primary">
+                                    Ir para a lista de notas
+								</button>
+							</a>
+						</div>
+					<?php else: ?>
+						<div class="col-sm-12">
+							<h3 class="text-success text-center">Envio com sucesso!</h3>
+
+                            <h4 class="text-center">
+                                <?php echo $retorno['prot']['0']['xMotivo']; ?>
+                            </h4>
+
+                            <?php if($retornoMail) :?>
+                                <h4 class="text-center">
+                                  Nota enviada para:  <?php echo $emailsEnviados; ?>
+                                </h4>
+                            <?php endif; ?>
+
+                            <a href="/caixa/index">
+                                <button type="button" class="btn btn-primary">
+                                    Voltar
+                                </button>
+                            </a>
+
+                            <a href="/nota/imprime-danfe?nCh=<?php echo $retorno['prot']['0']['chNFe'].'&data='.$data?>">
+                                <button type="button" class="btn btn-primary">
+                                    Imprimir NF-e
+                                </button>
+                            </a>
+
+						</div>
+					<?php endif; ?>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</section>
+	

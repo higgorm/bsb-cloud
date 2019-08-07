@@ -24,7 +24,7 @@
 							</div>
 							<div class="col-xs-7 col-md-7">
 								<label>Descrição: </label>
-								<input class="form-control" type="text" name="MERCADORIA" maxlength="120" value="<?php echo utf8_decode( @$dado['DS_MERCADORIA'] ); ?>" required="required">
+								<input class="form-control" type="text" name="MERCADORIA" maxlength="120" value="<?php echo utf8_encode( @$dado['DS_MERCADORIA'] ); ?>" required="required">
 							</div>
 
 							<div class="col-xs-2 col-md-2" id="und_venda">
@@ -94,17 +94,17 @@
 								<label>NCM</label>
 								<input class="form-control" type="text" name="NCM" maxlength="255" value="<?php echo @$dado['DS_NCM']; ?>" required="required">
 							</div>
-							<div class="col-xs-3 col-md-3" id="div_cest">
+							<div class="col-xs-4 col-md-4" id="div_cest">
 								<label>CEST</label>
 								<input class="form-control" type="text" name="CEST" maxlength="255" value="<?php echo @$dado['CEST']; ?>">
 							</div>
 							<div class="col-xs-3 col-md-3" id="icms_interno">
 								<label>ICMS Interno</label>
-								<input class="form-control" type="text" name="ICMS_INTERNO" maxlength="255" value="<?php echo @$dado['NR_PERCENTUAL_ICMS_INTERNO']; ?>">
+								<input class="form-control" type="text" onkeyup="moeda(this)" name="ICMS_INTERNO" maxlength="255" value="<?php echo ( @$dado['NR_PERCENTUAL_ICMS_INTERNO'] ? number_format(@$dado['NR_PERCENTUAL_ICMS_INTERNO'],2, '.', '') : '0.00' ); ?>">
 							</div>
 							<div class="col-xs-3 col-md-3" id="icms_externo">
 								<label>ICMS Externo</label>
-								<input class="form-control" type="text" name="ICMS_EXTERNO" maxlength="255" value="<?php echo @$dado['NR_PERCENTUAL_ICMS_EXTERNO']; ?>">
+								<input class="form-control" type="text" onkeyup="moeda(this)" name="ICMS_EXTERNO" maxlength="255" value="<?php echo ( @$dado['NR_PERCENTUAL_ICMS_EXTERNO'] ? number_format(@$dado['NR_PERCENTUAL_ICMS_EXTERNO'],2, '.', '') : '0.00' ); ?>">
 							</div>
 							<!------------------------------->
 							<div class="col-xs-4 col-md-4" id="icms_modBC">
@@ -128,7 +128,7 @@
 							</div>
 							<div class="col-xs-3 col-md-3">
 								<label>Substituição Tributaria MVA %</label>
-								<input class="form-control" type="number" name="stMva" maxlength="255" value="<?php echo ( @$dado['NR_MVA'] ? number_format(@$dado['NR_MVA'],2, '.', '') : '0.00' ); ?>">
+								<input class="form-control" type="text" onkeyup="moeda(this)" name="stMva"   value="<?php echo ( @$dado['NR_MVA'] ? number_format(@$dado['NR_MVA'],2, '.', '') : '0.00' ); ?>">
 							</div>
 							<!------------------------------->
 							<div class="col-xs-12 col-md-12" id="icmsst">
@@ -170,12 +170,12 @@
 
 							<div class="col-xs-3 col-md-3" id="iss">
 								<label>ISS (%)</label>
-								<input class="form-control" type="text" name="vl_iss" maxlength="255" value="<?php echo ( @$dado['VL_ISS'] ? number_format(@$dado['VL_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+								<input class="form-control" type="text"  name="vl_iss" maxlength="255" value="<?php echo ( @$dado['VL_ISS'] ? number_format(@$dado['VL_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
 							</div>
 
 							<div class="col-xs-3 col-md-3" id="retiss">
 								<label>Retenção ISS (%)</label>
-								<input class="form-control" type="number" name="VL_RET_ISS" maxlength="255" value="<?php echo ( @$dado['VL_RET_ISS'] ? number_format(@$dado['VL_RET_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+								<input class="form-control" type="text"  name="VL_RET_ISS" maxlength="255" value="<?php echo ( @$dado['VL_RET_ISS'] ? number_format(@$dado['VL_RET_ISS'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
 							</div>
 
 							<div class="col-xs-4 col-md-4" id="ipicst">
@@ -190,7 +190,7 @@
 							</div>
 							<div class="col-xs-3 col-md-3" id="ipi">
 								<label>IPI</label>
-								<input class="form-control" type="number" name="nr_ipi" maxlength="255" value="<?php echo ( @$dado['NR_IPI'] ? number_format(@$dado['NR_IPI'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
+								<input class="form-control" type="text" name="nr_ipi" maxlength="255" value="<?php echo ( @$dado['NR_IPI'] ? number_format(@$dado['NR_IPI'],2, '.', '') : '0.00' ); ?>" onKeyUp="moeda(this)">
 							</div>
 							<div class="col-xs-5 col-md-5" id="icms_org">
 								<label>Origem</label>
@@ -237,6 +237,11 @@
 								<option VALUE="09" <?php if( @$dado['COFINS_CST'] == '09') echo 'selected';?>>09 - Operação com Suspensão da Contribuição</option>
 							</select>
 						</div>
+
+                        <div class="col-xs-4 col-md-4" id="cdBarras">
+                            <label>Código de Barras</label>
+                            <input class="form-control" type="text" name="CD_BARRAS" maxlength="13"  value="<?php echo @$dado['CD_BARRAS']; ?>">
+                        </div>
 							<!-------------------------------------->
 
 						</fieldset>
@@ -249,12 +254,15 @@
 							<div class="btn-group btn-group-justified col-md-12">
 								<div class="col-md-9">&nbsp;</div>
 								<div class="col-md-3">
-									<button type="submit" class="btn btn-primary">
+									<button type="submit" class="btn btn-primary" id="btnSalvarEditarMercadoria">
 										Salvar
 									</button>
-									<button type="button" class="btn btn-default">
-										Cancelar
-									</button>
+                                    <a href="/mercadoria/index">
+                                        <button type="button" class="btn btn-default" id="btnCancelarEditarMercadoria">
+                                            <i class="i i-back"></i>
+                                            Cancelar
+                                        </button>
+                                    </a>
 								</div>
 							</div>
 						</div>
@@ -285,6 +293,7 @@
 			document.getElementById('icms_modBC'  	).style.display	= 'none';
 			document.getElementById('div_cest'  	).style.display	= 'none';
 			document.getElementById('div_csosn'  	).style.display	= 'none';
+            document.getElementById('cdBarras'  	).style.display	= 'none';
 
 			document.getElementById('cListServ'		).style.display	= 'block';
 			document.getElementById('iss'			).style.display	= 'block';
@@ -305,6 +314,7 @@
 			document.getElementById('icms_modBC'	).style.display = 'block';
 			document.getElementById('div_cest'		).style.display = 'block';
 			document.getElementById('div_csosn'		).style.display = 'block';
+            document.getElementById('cdBarras'  	).style.display	= 'block';
 
 			document.getElementById('cListServ'		).style.display = 'none';
 			document.getElementById('iss'			).style.display = 'none';

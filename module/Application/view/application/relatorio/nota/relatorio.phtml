@@ -5,16 +5,16 @@
     <body>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td width="8%" align="left">
-                    <?php echo @$this->logo ?>
+                <td width="15%" align="left">
+                    <?php echo $this->logo ?>
                 </td>
-                <td width="77%" align="left">
-                    <b><?php echo htmlentities(@$this->dsLoja); ?></b><br>
-                    Sistema de Gest&atilde;o Empresarial <?php //echo VERSAO_GESTAO_EMPRESARIAL ?><br>
-                    <b>RELAT&Oacute;RIO DE NOTAS</b>
+                <td width="70%" align="left">
+                    <b><?php echo $this->dsLoja; ?></b><br>
+                    Sistema de Gest&atilde;o Empresarial <?php echo VERSAO_GESTAO_EMPRESARIAL ?><br>
+                    <b>Relat&oacute;rio de de notas fiscais</b>
                 </td>
                 <td width="15%" align="right">
-                    
+                    <h6><?php echo $this->horaAtual?><br><?php echo $this->dataAtual?></h6>
                 </td>
             </tr>
             <tr>
@@ -24,12 +24,12 @@
         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table">
             <tr>
                 <td colspan="6" >
-                    Loja:
+                    Loja: <b><?php echo $this->cdLoja; ?></b>
                     <hr> 
                 </td>
             </tr>
             <tr>
-                <td>N&#8304; Nota</td>
+                <td>Nr. Nota</td>
                 <td>Status</td>
                 <td>Data Emiss&atilde;o</td>
                 <!--<td>Cod. Cliente</td>-->
@@ -39,9 +39,12 @@
                 <?php foreach ($lista as $nota): ?>
                     <tr>
                         <td><?php echo $nota['infNFE'] ?></td>
-                        <td><?php if( $nota['DS_CANCELA_PROTOCOLO'] != '' ){
+                        <td><?php
+                                    if( $nota['INUTILIZADA'] == 'S' ){
+                                        echo 'Inutilizada';
+                                    } else if( $nota['DS_CANCELA_PROTOCOLO'] != '' ){
 										echo 'Cancelada';
-									}else{
+									} else {
 										if( $nota['DS_PROTOCOLO'] != '' ){
 											echo 'Emitida';
 										}else{
@@ -51,12 +54,13 @@
 							?></td>
                         <td><?php echo datE('d/m/y', strtotime($nota['dEmi'])); ?></td>
 						<td><?php echo $nota['DS_NFE_CHAVE'] ?></td>
-                        <td><?php echo number_format($nota['ICMSTot_vNF'],2,",",".") ?></td> 
+                        <td align="right"><?php echo number_format($nota['ICMSTot_vNF'],2,",",".") ?></td>
                     </tr>
+                <?php $totalPedRec+= (float)$nota['ICMSTot_vNF'];?>
                 <?php endforeach; ?>
             <tr><td></td></tr><tr class="success">
-                <td>Total</td>
-                <td><?php echo number_format(@$totalPedRec,2,",",".") ?></td>
+                <td  align="right" colspan="4">Total</td>
+                <td align="right"><?php echo number_format(@$totalPedRec,2,",",".") ?></td>
             </tr>
         </table>
     </body>

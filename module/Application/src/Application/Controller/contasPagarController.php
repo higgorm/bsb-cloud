@@ -10,7 +10,6 @@
 namespace Application\Controller;
 
 use Zend\I18n\View\Helper\DateFormat;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Model\Contaspagar;
@@ -21,7 +20,7 @@ use Application\Model\Contaspagar;
  * @author e.Guilherme
  *
  */
-class ContasPagarController extends AbstractActionController
+class ContasPagarController extends OrangeWebAbstractActionController
 {
 
     public function getTable($strService) {
@@ -36,9 +35,12 @@ class ContasPagarController extends AbstractActionController
         $session = new Container("orangeSessionContainer");
 
         $loja = array('cd_loja' => $session->cdLoja,
-            'ds_loja' => utf8_encode($session->dsLoja));
+                      'ds_loja' => utf8_encode($session->dsLoja));
+
+        $contasPagar = $this->getTable('contas_pagar')->fetchAll(array(), 1); //PAGENUMBER FIXO
 
         $viewModel = new ViewModel(array(
+            'contasPagar' => $contasPagar,
             'listaFornecedore' => $this->getTable("fornecedor")->selectAll(),
             'listaPagamento' => $this->getTable("pedido_table")->listaTipoPagamento(),
             'loja' => $loja
@@ -109,24 +111,25 @@ class ContasPagarController extends AbstractActionController
             }else{
                 $fornecedor = $_POST['CD_FORNECEDOR'];
             }
-            $id = $this->getTable('contas_pagar')->nextId($session->cdLoja);
+
+           $id = $this->getTable('contas_pagar')->nextId($session->cdLoja);
 
             $alt = array(
                 'CD_LOJA'                   =>  $session->cdLoja,
                 'NR_DOCUMENTO_CP'           =>  $id,
-                'CD_CLASSE_FINANCEIRA'      =>  $_POST['CD_CLASSE_FINANCEIRA'],
+                'CD_CLASSE_FINANCEIRA'      =>  (!empty($_POST['CD_CLASSE_FINANCEIRA'])) ? $_POST['CD_CLASSE_FINANCEIRA'] : null,
                 'CD_FORNECEDOR'             =>  $fornecedor,
-                'DT_MOVIMENTO'              =>  $_POST['DT_MOVIMENTO'],
-                'DS_CREDOR'                 =>  $_POST['DS_CREDOR'],
-                'CD_BANCO_PAGAMENTO'        =>  $_POST['CD_BANCO_PAGAMENTO'],
-                'DS_COMPL_HISTORICO'        =>  $_POST['DS_COMPL_HISTORICO'],
-                'DS_DOCUMENTO'              =>  $_POST['DS_DOCUMENTO'],
-                'VL_DOCUMENTO'              =>  $_POST['VL_DOCUMENTO'],
-                'DS_OBSERVACAO'             =>  $_POST['DS_OBSERVACAO'],
+                'DT_MOVIMENTO'              =>  !empty($_POST['DT_MOVIMENTO']) ? date(FORMATO_ESCRITA_DATA_HORA, strtotime($_POST['DT_MOVIMENTO']))  : null,
+                'DS_CREDOR'                 =>  (!empty($_POST['DS_CREDOR'])) ? $_POST['DS_CREDOR'] : null,
+                'CD_BANCO_PAGAMENTO'        =>  (!empty($_POST['CD_BANCO_PAGAMENTO'])) ? $_POST['CD_BANCO_PAGAMENTO'] : null,
+                'DS_COMPL_HISTORICO'        =>  (!empty($_POST['DS_COMPL_HISTORICO'])) ? $_POST['DS_COMPL_HISTORICO'] : null,
+                'DS_DOCUMENTO'              =>  (!empty($_POST['DS_DOCUMENTO'])) ? $_POST['DS_DOCUMENTO'] : null,
+                'VL_DOCUMENTO'              =>  (!empty($_POST['VL_DOCUMENTO'])) ? str_ireplace( ',', '.' ,str_ireplace( '.', '' ,$_POST['VL_DOCUMENTO']))  : 0.0,
+                'DS_OBSERVACAO'             =>  (!empty($_POST['DS_OBSERVACAO'])) ? $_POST['DS_OBSERVACAO'] : null,
                 'ST_AUTOMATICO'             =>  'N',
                 'DT_UltimaAlteracao'        =>  $dataAtual,
                 'UsuarioUltimaAlteracao'    =>  $session->usuario,
-                'CD_CENTRO_CUSTO'           =>  $_POST['CD_CENTRO_CUSTO']
+                'CD_CENTRO_CUSTO'           =>  (!empty($_POST['CD_CENTRO_CUSTO'])) ? $_POST['CD_CENTRO_CUSTO'] : NULL
             );
 
             $dbAdapter->getDriver()->getConnection()->beginTransaction();
@@ -223,18 +226,18 @@ class ContasPagarController extends AbstractActionController
             if ($request->isPost()) {
 
                 $alt = array(
-                    'CD_CLASSE_FINANCEIRA'      =>  $_POST['CD_CLASSE_FINANCEIRA'],
-                    'CD_FORNECEDOR'             =>  $_POST['CD_FORNECEDOR'],
-                    'DT_MOVIMENTO'              =>  $_POST['DT_MOVIMENTO'],
-                    'DS_CREDOR'                 =>  $_POST['DS_CREDOR'],
-                    'CD_BANCO_PAGAMENTO'        =>  $_POST['CD_BANCO_PAGAMENTO'],
-                    'DS_COMPL_HISTORICO'        =>  $_POST['DS_COMPL_HISTORICO'],
-                    'DS_DOCUMENTO'              =>  $_POST['DS_DOCUMENTO'],
-                    'VL_DOCUMENTO'              =>  $_POST['VL_DOCUMENTO'],
-                    'DS_OBSERVACAO'             =>  $_POST['DS_OBSERVACAO'],
+                    'CD_CLASSE_FINANCEIRA'      =>  (!empty($_POST['CD_CLASSE_FINANCEIRA'])) ? $_POST['CD_CLASSE_FINANCEIRA'] : null,
+                    'CD_FORNECEDOR'             =>  (!empty($_POST['CD_FORNECEDOR'])) ? $_POST['CD_FORNECEDOR'] : null,
+                    'DT_MOVIMENTO'              =>  (!empty($_POST['DT_MOVIMENTO'])) ? date('d-m-Y', strtotime($_POST['DT_MOVIMENTO'])) : NULL,
+                    'DS_CREDOR'                 =>  (!empty($_POST['DS_CREDOR'])) ? $_POST['DS_CREDOR'] : null,
+                    'CD_BANCO_PAGAMENTO'        =>  (!empty($_POST['CD_BANCO_PAGAMENTO'])) ? $_POST['CD_BANCO_PAGAMENTO'] : null,
+                    'DS_COMPL_HISTORICO'        =>  (!empty($_POST['DS_COMPL_HISTORICO'])) ? $_POST['DS_COMPL_HISTORICO'] : null,
+                    'DS_DOCUMENTO'              =>  (!empty($_POST['DS_DOCUMENTO'])) ? $_POST['DS_DOCUMENTO'] : null,
+                    'VL_DOCUMENTO'              =>  (!empty($_POST['VL_DOCUMENTO'])) ?   str_ireplace( ',', '.' ,str_ireplace( '.', '' ,$_POST['VL_DOCUMENTO']))  : 0.0,
+                    'DS_OBSERVACAO'             =>  (!empty($_POST['DS_OBSERVACAO'])) ? $_POST['DS_OBSERVACAO'] : null,
                     'DT_UltimaAlteracao'        =>  $dataAtual,
                     'UsuarioUltimaAlteracao'    =>  $session->usuario,
-                    'CD_CENTRO_CUSTO'           =>  $_POST['CD_CENTRO_CUSTO']
+                    'CD_CENTRO_CUSTO'           =>  (!empty($_POST['CD_CENTRO_CUSTO'])) ? $_POST['CD_CENTRO_CUSTO'] : null
                 );
 
                 $dbAdapter->getDriver()->getConnection()->beginTransaction();
@@ -276,20 +279,7 @@ class ContasPagarController extends AbstractActionController
                 }else{
                     $dbAdapter->getDriver()->getConnection()->rollback();
                 }
-                $viewModel = new ViewModel(array(
-                    'listaFuncionario'  => $this->getTable("functionario")->getListaFuncionarioLoja($session->cdLoja),
-                    'listaPagamento'    => $this->getTable("pedido_table")->listaTipoPagamento(),
-                    'listaBancos'       => $this->getTable("banco")->selectAll(),
-                    'listaCartao'       => $this->getTable("cartao")->selectAll(),
-                    'listaClassificacao'=> $this->getTable("classificacao_financeira_table")->listaClassiFinanceira("D"),
-                    'listaCentro'       => $this->getTable("centro_custo")->selectAll(),
-                    'post'              => $post,
-                    'loja'              => $loja
-                ));
-
-                $viewModel->setTemplate("application/pagar/index.phtml");
-
-                return $viewModel;
+                $this->redirect()->toUrl("/contas-pagar/index");
             }
             $ds_cliente = $this->getTable("cliente_table")->getId($post['CD_CLIENTE']);
             $form = "editar?id=".$id;

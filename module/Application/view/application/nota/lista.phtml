@@ -14,7 +14,7 @@
                   </div>';
         }
 		if (@$error) {
-            echo '<div class="alert alert-error">
+            echo '<div class="alert alert-danger">
                     <a class="close" data-dismiss="alert" href="#">x</a>' . $error . '
                   </div>';
         }
@@ -23,7 +23,7 @@
             <div class="widget stacked" >
 				<form class="form-horizontal" id="validation-form" novalidate="novalidate" method="post" role="form" action="/nota/lista">
 					<div class="controls">
-						<div class="col-sm-2">
+						<div class="col-sm-1">
 							<label>Nº Nota</label>
 							<input type="text" class="form-control" name="infNFE" id="infNFE" />
 						</div>
@@ -31,14 +31,24 @@
 							<label>Chave Nota</label>
 							<input type="text" class="form-control" name="DS_NFE_CHAVE" id="DS_NFE_CHAVE" />
 						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<label>Cliente</label>
 							<input type="text" class="form-control" name="Dest_xNome" id="Dest_xNome" />
 						</div>
 						<div class="col-sm-2">
-							<label>&nbsp;</label><br>
-							<button type="submit" id="btnSubmit" class="btn btn-primary">Pesquisar</button>
+							<label>&nbsp;</label>
+							<button type="submit" id="btnSubmit" class="btn btn-primary form-control">
+                                <i class="fa fa-search"></i>
+                                Pesquisar
+                            </button>
 						</div>
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <button id="btnNovaNota" type="button" class="btn btn-success form-control" >
+                                <i class="i glyphicon-plus"></i>
+                                Adicionar  nota
+                            </button>
+                        </div>
 					</div>
 				</form>
 			</div>
@@ -46,12 +56,6 @@
 		<br><hr><br>
         <div class="row-fluid" id="result">
             <div class="widget stacked" >
-                <div class="controls">
-                    <button id="btnNovaNota" class="btn btn-success" style="float:right; margin-top:5px; margin-right:5px;">
-                        <i class="icon-plus icon-white"></i>
-                        Adicionar nova nota
-                    </button>
-                </div>
                 <div class="panel-body">
                     <table class="table table-striped m-b-none" data-ride="datatables">
                         <thead>
@@ -59,6 +63,7 @@
                                 <!-- th nowrap>#</th -->
                                 <th nowrap>Nº Nota</th>
                                 <th nowrap>Cliente</th>
+                                <th nowrap>Nº Pedido</th>
                                 <th nowrap>Data Emissão</th>
                                 <th nowrap>Valor</th>
                                 <th nowrap>Situação</th>
@@ -68,42 +73,61 @@
                         <tbody>
                             <?php if (count($listaNfe)) : ?>
                                 <?php foreach ($listaNfe as $nfe): ?>
+                                    <?php
+                                        $foiInutilizada = in_array($nfe->infNFE,$listaNfeInutilizadas);
+                                    ?>
                                     <tr>
                                         <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
-                                        <td align="left"><?php echo $nfe['infNFE'] ?></td>
-                                        <td align="left"><?php echo utf8_decode($nfe['Dest_xNome']) ?></td>
-                                        <td align="left">                             <?php if ($nfe->DT_PROTOCOLO_DATA == ''){
-                                                                                                echo '';
-                                                                                        }else{
-                                                                                                echo datE('d/m/y', strtotime($nfe['dEmi'])); 
-                                                                                                
-                                                                                             }?></td>
-                                        <td align="left"><?php echo number_format($nfe['ISSQNtot_vServ'],2) ?></td>
+                                        <td align="center"><?php echo $nfe->infNFE ?></td>
+                                        <td align="left"><?php echo utf8_encode($nfe->Dest_xNome) ?></td>
+                                        <td align="center"><?php echo ( (int)$nfe->NR_PEDIDO > 0) ? $nfe->NR_PEDIDO : '-' ?></td>
+                                        <td align="center">
+                                        <?php
+                                            if ($nfe->DT_PROTOCOLO_DATA == ''){
+                                                echo '';
+                                            } else {
+                                                echo datE('d/m/y', strtotime($nfe['dEmi']));
+                                            }
+                                         ?>
+                                        </td>
+                                        <td align="right">
+                                            <?php
+                                              if ((float)$nfe['ICMSTot_vNF'] > 0) {
+                                                  echo number_format($nfe['ICMSTot_vNF'],2);
+                                              } else {
+                                                  echo number_format($nfe['ISSQNtot_vServ'],2);
+                                              }
+
+                                            ?></td>
                                         <td align="left">
-											<?php if( $nfe->DS_PROTOCOLO == ''){
-												echo 'Não enviada';
-											} else {
-												if( $nfe->DS_CANCELA_PROTOCOLO == '' ){
-													echo 'Enviada';
-												}else{
-													echo 'Nota Cancelada';
-												}
-											}?>
+											<?php
+                                                if ($foiInutilizada) {
+                                                    echo 'Inutilizada';
+                                                }else if( $nfe->DS_PROTOCOLO == ''){
+                                                    echo 'Não enviada';
+                                                } else {
+                                                    if( $nfe->DS_CANCELA_PROTOCOLO == '' ){
+                                                        echo 'Enviada';
+                                                    }else{
+                                                        echo 'Nota Cancelada';
+                                                    }
+                                                }
+											?>
 										</td>
 										<td align="left">
                                          <!-- <a href="/mercadoria/editar?id=<?php echo $nfe->infNFe ?>" ><i class="fa fa-pencil"></i></a> <!--  |-->
-										<?php if( $nfe->DS_PROTOCOLO && !$nfe->DS_CANCELA_PROTOCOLO): ?>
-											<a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>&replicar=1" data-toggle="tooltip" data-placement="top" title="Replicar NF-e"><i alt="Replicar NFe" class="fa fa-files-o"></i></a>&nbsp;|&nbsp;
-											<a alt="Enviar por E-mail" href="#" data-toggle="tooltip" data-placement="top" title="Enviar nota por E-mail" onclick="enviaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."','".date('Ym', strtotime($nfe->dEmi))."'"?>)"><span class="glyphicon glyphicon-envelope"></span></a>&nbsp;|&nbsp;
-											<a alt="Imprimir NFe" href="/nota/imprime-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE.'&data='.date('Ym', strtotime($nfe->dEmi))?>"data-toggle="tooltip" data-placement="top" title="Imprimir NF-e"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;|&nbsp;
-                                                                                        <a alt="Carta de Correção CCe" href="#" data-toggle="tooltip" data-placement="top" title="Carta de Correção CCe" onclick="cce(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'" ?>)"><i class= "fa fa-eraser"></i></a>&nbsp;|&nbsp;
-											<a alt="Cancelar NFe" href="#" data-toggle="tooltip" data-placement="top" title="Cancelar NF-e" onclick="cancelaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'".','."'".$nfe->DS_PROTOCOLO."'" ?>)"><i class="fa fa-times-circle"></i></a>
-                                        <?php else: ?>
-											<a alt="Visualizar NFe" target="_blank" href="/nota/visualiza-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE ?>" data-toggle="tooltip" data-placement="top" title="Pré-visualizar NF-e"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;|&nbsp;
-											<?php if( $nfe->DS_CANCELA_PROTOCOLO): ?>
-												<a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE']?>&replicar=1" ><i class="fa fa-files-o"></i></a>
+										<?php if( $nfe->DS_PROTOCOLO && !$nfe->DS_CANCELA_PROTOCOLO && !$foiInutilizada): ?>
+											<a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>&replicar=1" data-toggle="tooltip" data-placement="top" title="Replicar NF-e"><i alt="Replicar NFe" class="fa fa-files-o"></i></a>
+                                            &nbsp;|&nbsp;<a alt="Enviar por E-mail" href="#" data-toggle="tooltip" data-placement="top" title="Enviar nota por E-mail" onclick="enviaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."','".date('Ym', strtotime($nfe->dEmi))."'"?>)"><span class="glyphicon glyphicon-envelope"></span></a>
+                                            &nbsp;|&nbsp;<a alt="Imprimir NFe" href="/nota/imprime-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE.'&data='.date('Ym', strtotime($nfe->dEmi))?>"data-toggle="tooltip" data-placement="top" title="Imprimir NF-e"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
+                                             | <a alt="Carta de Correção CCe" href="#" data-toggle="tooltip" data-placement="top" title="Carta de Correção CCe" onclick="cce(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'" ?>)"><i class= "fa fa-eraser"></i></a>
+											 | <a alt="Cancelar NFe" href="#" data-toggle="tooltip" data-placement="top" title="Cancelar NF-e" onclick="cancelaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'".','."'".$nfe->DS_PROTOCOLO."'" ?>)"><i class="fa fa-times-circle"></i></a>
+                                        <?php elseif(!$foiInutilizada): ?>
+											<a alt="Visualizar NFe" target="_blank" href="/nota/visualiza-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE ?>" data-toggle="tooltip" data-placement="top" title="Pré-visualizar NF-e"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
+											<?php if( $nfe->DS_CANCELA_PROTOCOLO && !$foiInutilizada): ?>
+                                                &nbsp;| <a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE']?>&replicar=1" ><i class="fa fa-files-o"></i></a>
 											<?php else: ?>
-												<a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>"data-toggle="tooltip" data-placement="top" title="Editar NF-e"><i class="fa fa-pencil"></i></a>
+                                                &nbsp;| <a alt="Abrir NFe" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>"data-toggle="tooltip" data-placement="top" title="Editar NF-e"><i class="fa fa-pencil"></i></a>
 											<?php endif; ?>
 										<?php endif; ?>
 										</td>
@@ -117,6 +141,7 @@
                                 <!-- th nowrap>#</th -->
                                 <th nowrap>Nº Nota</th>
                                 <th nowrap>Cliente</th>
+                                <th nowrap>Nº Pedido</th>
                                 <th nowrap>Data Emissão</th>
                                 <th nowrap>Valor</th>
                                 <th nowrap>Situação</th>
@@ -128,11 +153,12 @@
                 	<br><hr><br>
 					<div class="col-sm-12">
 						<fieldset>
-							<legend>Baixar notas:</legend>
-							<form class="form-horizontal" id="saveNota" novalidate="novalidate" method="post" role="form" action="/nota/save-nota">
+							<legend>Baixar XML / PDF :</legend>
+							<form class="form-horizontal" id="saveNota" method="post" role="form" action="/nota/save-nota">
 								<div class="col-sm-2">
+                                    <label>Mês</label>
 									<select class="form-control" name="mes" id="mes" required="required">
-										<option value=''>Mês</option>
+										<option value=''>Selecione</option>
 										<option value='01'>Janeiro</option>
 										<option value='02'>Fevereiro</option>
 										<option value='03'>Março</option>
@@ -148,8 +174,9 @@
 									</select>
 								</div>
 								<div class="col-sm-2">
+                                    <label>Ano</label>
 									<select class="form-control" name="ano" id="ano" required="required">
-										<option value=''>Ano</option>
+										<option value=''>Selecione</option>
 										<?php 
 											for($i = date('Y') - 5; $i <= date('Y'); $i++ ){
 												echo "<option value='$i'>$i</option>";
@@ -158,9 +185,8 @@
 									</select>
 								</div>
 								<div class="col-sm-2">
-									&nbsp;<button type="submit" class="btn btn-success" >
-									Baixar
-									</button>
+                                     <br/>
+									&nbsp;<button type="submit" class="btn btn-success" >Baixar</button>
 								</div>
 							</form>
 						</fieldset>
@@ -196,7 +222,7 @@
 										<input type="hidden" name="tpAmb" id="tpAmb" />
 										<input type="hidden" name="nProt" id="nProt" />
 										<button id="btnCancelarNota" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Ok</button>
-										<button id="btnVoltar"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+										<button id="btnVoltar"   type="button"  data-dismiss="modal"   class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
 									</div>
 								</form>
 							</div>
@@ -224,14 +250,14 @@
 									</div>
 									<div class="col-md-12">
 										<label>Correção: </label>
-										<input type="text" class="form-control" id="xCorrecao" name="xCorrecao" required minlength="15" maxlength="100" />
+										<input type="text" class="form-control" id="xCorrecao" name="xCorrecao" required />
 									</div>
 									<div class="col-lg-12">
 										<hr>
 										<input type="hidden" name="modCCe" id="modCCe" />
 										<input type="hidden" name="tpAmbCCe" id="tpAmbCCe" />
 										<button id="btnCCe" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Ok</button>
-										<button id="btnVoltar"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+										<button id="btnVoltar"  type="button"  data-dismiss="modal"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
 									</div>
 								</form>
 							</div>
@@ -268,7 +294,7 @@
 										<input type="hidden" name="nProt" id="nProt" />
 										<input type="hidden" name="dataemis" id="dataemis" />
 										<button id="btnCancelarNota" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Ok</button>
-										<button id="btnVoltar"    class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+										<button id="btnVoltar"  type="button"  data-dismiss="modal" class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
 									</div>
 								</form>
 							</div>
@@ -284,9 +310,9 @@
         $("#btnNovaNota").click(function() {
             window.location = "/nota/avulsa";
         });
-	
+
     });
-	
+
 	function cancelaNota(chave, mod, tpAmb, nProt) {
 		$('#chave').val(chave);
 		$('#mod').val(mod);

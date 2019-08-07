@@ -10,21 +10,22 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
+use Application\Model\PedidoTable;
+use Application\Model\MercadoriaTable;
+use Application\Model\ClienteTable;
 
 /**
  *
  * @author HIGOR
  *
  */
-class PedidoController extends AbstractActionController
+class PedidoController extends OrangeWebAbstractActionController
 {
 
     /**
-     
      * @return \Zend\Http\Response
      */
     public function listaTabletAction(){
@@ -32,7 +33,7 @@ class PedidoController extends AbstractActionController
         $session = new Container("orangeSessionContainer");
 
         $identity = null;
-        if ((!$auth->hasIdentity()) && ($session->usuario != 'ORANGE')) {
+        if (!$auth->hasIdentity()) {
             // redirect to user index page
             return $this->redirect()->toRoute('home');
         }
@@ -43,29 +44,27 @@ class PedidoController extends AbstractActionController
      * @return \Zend\View\Model\ViewModel
      */
     public function gridListaAction(){
+
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+
         // get the db adapter
         $sm = $this->getServiceLocator();
         $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-        $session = new Container("orangeSessionContainer");
-
-        $statement = $dbAdapter->query("SELECT  COUNT(A.NR_PEDIDO) AS NR_PEDIDO
-    									FROM TB_PEDIDO A
-										LEFT JOIN TB_CLIENTE C ON A.CD_CLIENTE = C.CD_CLIENTE
-    									INNER JOIN BDGE.DBO.TB_PARAMEMPRESA PE ON PE.CD_LOJA=A.CD_LOJA
-										WHERE
-    										PE.FLALOJADEFAULT = 'S'	AND
-    			 							A.ST_PEDIDO   	  = 'A' AND
-    									    CONVERT(VARCHAR(10),A.DT_PEDIDO,103)= CONVERT(VARCHAR(10),GETDATE(),103) AND
-    										A.CD_LOJA     	  = ? ");
+        $table     = new PedidoTable($dbAdapter);
+        $session   = new Container("orangeSessionContainer");
 
         /* @var $summy Zend\Db\ResultSet\ResultSet */
-        $summy = $statement->execute(array($session->cdLoja));
+        $summy = $table->selectCountNrPedido($session->cdLoja);
+
 
         //NOME_DO_CLIENTE_CPF = ISNULL(C.NR_CGC_CPF,' ')  + '  ' + C.DS_NOME_RAZAO_SOCIAL,
         $statement = $dbAdapter->query("SELECT
 											   A.CD_LOJA,
     										   A.CD_CLIENTE,
 											   A.NR_PEDIDO,
+											   DT_PEDIDO = CONVERT(VARCHAR(10),A.DT_PEDIDO,103),
     										   C.NR_CGC_CPF,
     										   C.DS_NOME_RAZAO_SOCIAL as NOME_DO_CLIENTE,
 										       A.VL_TOTAL_LIQUIDO,
@@ -78,12 +77,11 @@ class PedidoController extends AbstractActionController
 
 										FROM TB_PEDIDO A
 										LEFT JOIN TB_CLIENTE C ON A.CD_CLIENTE = C.CD_CLIENTE
-    									INNER JOIN BDGE.DBO.TB_PARAMEMPRESA PE ON PE.CD_LOJA=A.CD_LOJA
-    									INNER JOIN TB_AGENDAMENTO_FRANQUIA AG ON AG.NR_PEDIDO=A.NR_PEDIDO
+    									INNER JOIN TB_PARAMEMPRESA PE ON PE.CD_LOJA=A.CD_LOJA
+    									LEFT JOIN TB_AGENDAMENTO_FRANQUIA AG ON AG.NR_PEDIDO=A.NR_PEDIDO
 										WHERE
     										PE.FLALOJADEFAULT = 'S'	AND
     										A.ST_PEDIDO   	  = 'A' AND
-    								 	    CONVERT(VARCHAR(10),A.DT_PEDIDO,103)= CONVERT(VARCHAR(10),GETDATE(),103) AND
     										A.CD_LOJA     = ?
 										ORDER BY
 											A.NR_PEDIDO,
@@ -94,7 +92,7 @@ class PedidoController extends AbstractActionController
 
         $viewModel = new ViewModel();
         $viewModel->setTerminal(true);
-        $viewModel->setVariable('total', $summy->current());
+        $viewModel->setVariable('total', $summy);
         $viewModel->setVariable('pedidos', $results);
         return $viewModel;
     }
@@ -107,24 +105,25 @@ class PedidoController extends AbstractActionController
         $request = $this->getRequest();
         $session = new Container("orangeSessionContainer");
         $arrLoja = array('cd_loja' => $session->cdLoja,
-            'ds_loja' => utf8_encode($session->dsLoja));
+                         'ds_loja' => utf8_encode($session->dsLoja));
 
         $nrPedido = $request->getPost()->get('nrPedido');
 
         $arrView = array(
-            'arrLoja' => $arrLoja,
-            'arrPrazo' => $this->getServiceLocator()->get('pedido_table')->listPrazo(),
+            'arrLoja'       => $arrLoja,
+            'arrPrazo'      => $this->getServiceLocator()->get('pedido_table')->listPrazo(),
             'arrMercadoria' => $this->getServiceLocator()->get('mercadoria_table')->getTiposMercadoriaSecao(),
             'arrTipoPedido' => $this->getServiceLocator()->get('tipo_pedido_table')->listTipoPedido(),
-            'arrUf' => $this->getServiceLocator()->get('uf_table')->listUf(),
-            'arrOperador' => $this->getServiceLocator()->get('functionario')->getListaFuncionarioLoja($session->cdLoja),
-            'nr_pedido' => $nrPedido,
+            'arrUf'         => $this->getServiceLocator()->get('uf_table')->listUf(),
+            'arrOperador'   => $this->getServiceLocator()->get('functionario')->getListaFuncionarioLoja($session->cdLoja),
+            'arrCliente'    => $this->getServiceLocator()->get('pedido_table')->recuperaClienteNumeroPedido($nrPedido),
+            'nr_pedido'     => $nrPedido
         );
 
-        $data = $request->getPost();
-        $viewModel = new ViewModel($arrView);
+        $data       = $request->getPost();
+        $viewModel  = new ViewModel($arrView);
+        $terminal   = $data['modal'] == 'show' ? true : false;
 
-        $terminal = $data['modal'] == 'show' ? true : false;
         $viewModel->setTerminal($terminal);
 
         return $viewModel;
@@ -198,6 +197,7 @@ class PedidoController extends AbstractActionController
         $message = '';
 
         $pedido = $this->getServiceLocator()->get('pedido_table')->recuperaPedido($post);
+
         // se nao retornar registros, pedido inexistente
         if (!count($pedido)) {
             echo json_encode(array('result' => 'erro', 'message' => 'Pedido/Orçamento não cadastrado.'));
@@ -224,6 +224,7 @@ class PedidoController extends AbstractActionController
             'mercadoriaPedido' => $arrMercadoriaPedido,
         );
 
+        array_walk_recursive($arrPedido, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
         echo json_encode(array('result' => $result, 'data' => $arrPedido, 'message' => $message));
         exit;
     }
@@ -310,91 +311,77 @@ class PedidoController extends AbstractActionController
      */
     public function pedidoTabletAction(){
 
-        $auth = new AuthenticationService();
-        // get the db adapter
-        $sm = $this->getServiceLocator();
-        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-
-
-        //get session
-        $session = new Container("orangeSessionContainer");
-
-        $identity = null;
-        if ((!$auth->hasIdentity()) && ($session->usuario != 'ORANGE')) {
-            // redirect to user index page
-            return $this->redirect()->toRoute('home');
-        } else {
-            // get post data
-            $request = $this->getRequest();
-            $post = $request->getPost();
-
-
-            $nmCliente = $post->get('nmCliente');
-            $cdVendedor = $post->get('cdVendedor');
-            $nrLoja = $post->get('nrLoja');
-            $nrPedido = $post->get('nrPedido');
-            $tpPedido = $post->get('tpPedido');
-
-            $statement = $dbAdapter->query("SELECT
-													M.CD_MERCADORIA,
-													M.DS_MERCADORIA
-											FROM
-    											  TB_MERCADORIA M
-												  INNER JOIN	  TB_ESTOQUE E ON M.CD_MERCADORIA = E.CD_MERCADORIA
-											WHERE
-    											E.CD_LOJA 		  = ?
-    											AND M.DT_EXCLUSAO is null
-    										ORDER BY
-    							  				M.CD_MERCADORIA
-    									");
-
-
-            /* @var $mercadorias Zend\Db\ResultSet\ResultSet */
-            $mercadorias = $statement->execute(array($session->cdLoja));
-
-            $statement = $dbAdapter->query("SELECT
-    											   A.CD_FUNCIONARIO,
-												   A.DS_FUNCIONARIO
-										    FROM
-    											  TB_FUNCIONARIO A
-    											  INNER JOIN TB_CARGO B ON A.CD_CARGO = B.CD_CARGO
-									    	WHERE
-    											A.DT_DESLIGAMENTO IS NULL 	 AND
-									    		B.ST_VENDEDOR 	= 'S'		 AND
-    											A.CD_LOJA 	    = ?
-    										ORDER BY
-    							  				A.CD_FUNCIONARIO
-										    ");
-
-            /* @var $vendedores Zend\Db\ResultSet\ResultSet */
-            $vendedores = $statement->execute(array($session->cdLoja));
-
-            $statement = $dbAdapter->query("SELECT
-												 PM.CD_MERCADORIA,
-												 PM.VL_TOTAL_BRUTO,
-												 M.DS_MERCADORIA
-											FROM TB_PEDIDO_MERCADORIA PM
-												 INNER JOIN TB_MERCADORIA M  ON  PM.CD_MERCADORIA= M.CD_MERCADORIA
-
-											WHERE PM.CD_LOJA   = ? AND
-											      PM.NR_PEDIDO = ? ");
-
-            /* @var $mercadoriasDoPedido Zend\Db\ResultSet\ResultSet */
-            $mercadoriasDoPedido = $statement->execute(array($session->cdLoja, $nrPedido));
-
-
-            $viewModel = new ViewModel();
-            $viewModel->setTerminal(true);
-            $viewModel->setVariable('nmClienteSelecionado', $nmCliente);
-            $viewModel->setVariable('cdVendedorSelecionado', $cdVendedor);
-            $viewModel->setVariable('nrPedido', $nrPedido);
-            $viewModel->setVariable('tpPedido', $tpPedido);
-            $viewModel->setVariable('mercadorias', $mercadorias);
-            $viewModel->setVariable('vendedores', $vendedores);
-            $viewModel->setVariable('mercadoriasDoPedido', $mercadoriasDoPedido);
-
-            return $viewModel;
-        }
+//        $auth = new AuthenticationService();
+//        // get the db adapter
+//        $sm = $this->getServiceLocator();
+//        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+//        $mercadoriaTable = new MercadoriaTable($dbAdapter);
+//
+//        //get session
+//        $session = new Container("orangeSessionContainer");
+//
+//        $identity = null;
+//        if (!$auth->hasIdentity()) {
+//            // redirect to user index page
+//            return $this->redirect()->toRoute('home');
+//        } else {
+//            // get post data
+//            $request = $this->getRequest();
+//            $post = $request->getPost();
+//
+//
+//            $nmCliente = $post->get('nmCliente');
+//            $cdVendedor = $post->get('cdVendedor');
+//            $nrLoja = $post->get('nrLoja');
+//            $nrPedido = $post->get('nrPedido');
+//            $tpPedido = $post->get('tpPedido');
+//
+//            /* @var $mercadorias Zend\Db\ResultSet\ResultSet */
+//            $mercadorias = $mercadoriaTable->getComboMercadorias($session->cdLoja);
+//
+//            $statement = $dbAdapter->query("SELECT
+//    											   A.CD_FUNCIONARIO,
+//												   A.DS_FUNCIONARIO
+//										    FROM
+//    											  TB_FUNCIONARIO A
+//    											  INNER JOIN TB_CARGO B ON A.CD_CARGO = B.CD_CARGO
+//									    	WHERE
+//    											A.DT_DESLIGAMENTO IS NULL 	 AND
+//									    		B.ST_VENDEDOR 	= 'S'		 AND
+//    											A.CD_LOJA 	    = ?
+//    										ORDER BY
+//    							  				A.CD_FUNCIONARIO
+//										    ");
+//
+//            /* @var $vendedores Zend\Db\ResultSet\ResultSet */
+//            $vendedores = $statement->execute(array($session->cdLoja));
+//
+//            $statement = $dbAdapter->query("SELECT
+//												 PM.CD_MERCADORIA,
+//												 PM.VL_TOTAL_BRUTO,
+//												 M.DS_MERCADORIA
+//											FROM TB_PEDIDO_MERCADORIA PM
+//												 INNER JOIN TB_MERCADORIA M  ON  PM.CD_MERCADORIA= M.CD_MERCADORIA
+//
+//											WHERE PM.CD_LOJA   = ? AND
+//											      PM.NR_PEDIDO = ? ");
+//
+//            /* @var $mercadoriasDoPedido Zend\Db\ResultSet\ResultSet */
+//            $mercadoriasDoPedido = $statement->execute(array($session->cdLoja, $nrPedido));
+//
+//
+//            $viewModel = new ViewModel();
+//            $viewModel->setTerminal(false);
+//            $viewModel->setVariable('nmClienteSelecionado', $nmCliente);
+//            $viewModel->setVariable('cdVendedorSelecionado', $cdVendedor);
+//            $viewModel->setVariable('nrPedido', $nrPedido);
+//            $viewModel->setVariable('tpPedido', $tpPedido);
+//            $viewModel->setVariable('mercadorias', $mercadorias);
+//            $viewModel->setVariable('vendedores', $vendedores);
+//            $viewModel->setVariable('mercadoriasDoPedido', $mercadoriasDoPedido);
+//
+//            return $viewModel;
+//        }
     } 
 	
 	/**
@@ -407,34 +394,20 @@ class PedidoController extends AbstractActionController
         // get the db adapter
         $sm = $this->getServiceLocator();
         $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-
+        $mercadoriaTable = new MercadoriaTable($dbAdapter);
 
         //get session
         $session = new Container("orangeSessionContainer");
 
         $identity = null;
-        if ((!$auth->hasIdentity()) && ($session->usuario != 'ORANGE')) {
+        if (!$auth->hasIdentity()) {
             // redirect to user index page
             return $this->redirect()->toRoute('home');
         } else {
             // get post data
 
-            $statement = $dbAdapter->query("SELECT
-													M.CD_MERCADORIA,
-													M.DS_MERCADORIA
-											FROM
-    											  TB_MERCADORIA M
-												  INNER JOIN	  TB_ESTOQUE E ON M.CD_MERCADORIA = E.CD_MERCADORIA
-											WHERE
-    											E.CD_LOJA 		  = ?
-    											AND M.DT_EXCLUSAO is null
-    										ORDER BY
-    							  				M.CD_MERCADORIA
-    									");
-
-
             /* @var $mercadorias Zend\Db\ResultSet\ResultSet */
-            $mercadorias = $statement->execute(array($session->cdLoja));
+            $mercadorias = $mercadoriaTable->getComboMercadorias($session->cdLoja);
 
             $statement = $dbAdapter->query("SELECT
     											   A.CD_FUNCIONARIO,
@@ -453,15 +426,77 @@ class PedidoController extends AbstractActionController
             /* @var $vendedores Zend\Db\ResultSet\ResultSet */
             $vendedores = $statement->execute(array($session->cdLoja));
 
-
-
             $viewModel = new ViewModel();
-            $viewModel->setTerminal(false);
+            //$viewModel->setTerminal(true);
             $viewModel->setVariable('mercadorias', $mercadorias);
             $viewModel->setVariable('vendedores', $vendedores);
 
             return $viewModel;
         }
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function abrirAction(){
+
+        $nuPedido             = (int) $this->params()->fromQuery('id');
+
+        // get the db adapter
+        $sm                 = $this->getServiceLocator();
+        $dbAdapter          = $sm->get('Zend\Db\Adapter\Adapter');
+        $mercadoriaTable    = new MercadoriaTable($dbAdapter);
+        $pedidoTable        = new PedidoTable($dbAdapter);
+        $clienteTable       = new ClienteTable($dbAdapter);
+
+        //get session
+        $session        = new Container("orangeSessionContainer");
+
+        $pedido 		      = $pedidoTable->recuperaPedidoPorNumero($nuPedido,false);
+
+        $cliente 		      = $clienteTable->getId($pedido['CD_CLIENTE']);
+
+        /* @var $mercadorias Zend\Db\ResultSet\ResultSet */
+        $mercadoriasDoPedido = $mercadoriaTable->recuperaMercadoriaPedido($nuPedido);
+
+        $statement = $dbAdapter->query("SELECT
+                                               A.CD_FUNCIONARIO,
+                                               A.DS_FUNCIONARIO
+                                        FROM
+                                              TB_FUNCIONARIO A
+                                              INNER JOIN TB_CARGO B ON A.CD_CARGO = B.CD_CARGO
+                                        WHERE
+                                            A.DT_DESLIGAMENTO IS NULL 	 AND
+                                            B.ST_VENDEDOR 	= 'S'		 AND
+                                            A.CD_LOJA 	    = ?
+                                        ORDER BY
+                                            A.CD_FUNCIONARIO
+                                        ");
+
+        /* @var $vendedores Zend\Db\ResultSet\ResultSet */
+        $vendedores = $statement->execute(array($session->cdLoja));
+
+        $totalPedido            = $pedido['VL_TOTAL_LIQUIDO'];
+        $totalSubPedido         = $pedido['VL_TOTAL_BRUTO'];
+        $nrDescontoPedido       = 0.0;
+        foreach( $mercadoriasDoPedido as $merc ){
+            $nrDescontoPedido       = (float)$merc['NR_DESCONTO'];
+            break;
+        }
+
+        $viewModel = new ViewModel();
+        $viewModel->setTemplate('application/pedido/novo-pedido');
+        $viewModel->setVariable('pedido', $pedido);
+        $viewModel->setVariable('cliente', (array)$cliente);
+        $viewModel->setVariable('pedidoMerc', $mercadoriasDoPedido);
+        $viewModel->setVariable('vendedores', $vendedores);
+        $viewModel->setVariable('nrDesconto', $nrDescontoPedido);
+        $viewModel->setVariable('valorDesconto', ($totalSubPedido - $totalPedido));
+        $viewModel->setVariable('totalPedido', $totalPedido);
+        $viewModel->setVariable('totalSubPedido', $totalSubPedido);
+
+        return $viewModel;
     }
 
     /**
@@ -489,7 +524,7 @@ class PedidoController extends AbstractActionController
             $valorTotalPedido = 0;
 
 
-            //1 - Recupero o agendamento pelo n�mero do pedido
+            //1 - Recupero o agendamento pelo número do pedido
             $statement = $dbAdapter->query("SELECT
                                                 CD_LOJA,
                                                 NR_MACA,
@@ -545,7 +580,7 @@ class PedidoController extends AbstractActionController
             //5- Obtenhos os valores das mercadorias, para inserir no corpo do pedido
             foreach ($cdsMercadoria as $cdMercadoria) {
 
-                //6 - Recuperando o valor do pre�o de venda normal
+                //6 - Recuperando o valor do preço de venda normal
                 $statement = $dbAdapter->query("SELECT
     											VL_PRECO_VENDA
 								    	  FROM
@@ -558,7 +593,7 @@ class PedidoController extends AbstractActionController
                 $rowResult = $results->current();
                 $precoNormal = $rowResult["VL_PRECO_VENDA"];
 
-                //7 - Recuperando o valor do pre�o de venda em promo��o
+                //7 - Recuperando o valor do preço de venda em promoção
                 $statement = $dbAdapter->query("SELECT
     											VL_PRECO_VENDA = CASE WHEN DT_VALIDADE_PROMOCAO > GETDATE() THEN VL_PRECO_VENDA_PROMOCAO ELSE VL_PRECO_VENDA END
 											FROM
@@ -588,9 +623,6 @@ class PedidoController extends AbstractActionController
                 $mercadoria["VL_DESCONTO_MERC"] = 0;
                 $mercadoria["DS_LOCAL_RETIRADA"] = "";
                 $mercadoria["DS_OBSERVACAO"] = "";
-
-
-                //corre��o de bug para pre�o promocional
                 $mercadoria["VL_PRECO_VENDA"] = ($precoNormal > $precoPromocao) ? $precoPromocao : $precoNormal;
 
 
@@ -635,7 +667,7 @@ class PedidoController extends AbstractActionController
             }
 
 
-            //6 - Atualiza a tabela de pedido, ou seja a "cabe�a do pedido"
+            //6 - Atualiza a tabela de pedido, ou seja a "cabeça do pedido"
             $pedido = array();
 
             //PARAMETROS DO SET NO UPDATE
@@ -651,7 +683,7 @@ class PedidoController extends AbstractActionController
             $pedido["VL_TOTAL_BRUTO"] = $valorTotalPedido;
             $pedido["VL_TOTAL_LIQUIDO"] = $valorTotalPedido;
             //$pedido["VL_TOTAL_LIQUIDO"] 	 =$valorTotalPedido * (1 - $descontoAgendamento / 100 );
-            $pedido["UsuarioUltimaAlteracao"] = substr($session->usuario, 0, 30); //login do usu�rio que fez a altera��o
+            $pedido["UsuarioUltimaAlteracao"] = substr($session->usuario, 0, 30); //login do usuário que fez a alteração
             //PARAMETROS DO WHERE NO UPDATE
             $pedido["NR_PEDIDO"] = $nrPedido;
             $pedido["CD_LOJA"] = $session->cdLoja;
@@ -696,7 +728,7 @@ class PedidoController extends AbstractActionController
 
 
 
-            //Recuperando o valor do pre�o de venda normal
+            //Recuperando o valor do preço de venda normal
             $statement = $dbAdapter->query("SELECT
     											VL_PRECO_VENDA
 								    	  FROM
@@ -727,49 +759,98 @@ class PedidoController extends AbstractActionController
         // get the db adapter
         $sm = $this->getServiceLocator();
         $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        //get session
+        $session = new Container("orangeSessionContainer");
 
-        Try {
-            //get session
-            $session = new Container("orangeSessionContainer");
+        //redirect after save
+        $redirect = '/pedido/lista-tablet';
+
+        try {
 
             $dbAdapter->getDriver()->getConnection()->beginTransaction();
+            $mercadoriaTable= new MercadoriaTable($dbAdapter);
 
             // get post data
-            $request = $this->getRequest();
-            $post = $request->getPost();
-            $cdVendedor = $post->get('cdVendedor');
-            $dsVendedor = $post->get('dsVendedor');
-            $cdsMercadoria = $post->get('checkBoxMercadoria');
-            $valorTotalPedido = 0;
+            $request            = $this->getRequest();
+            $post               = $request->getPost();
+//            echo "<pre>";
+//            print_r($post);
+//            exit;
+            $cdCliente                      = $post->get('codCliente');
+            $cdVendedor                     = $post->get('cdVendedor');
+            $cdsMercadoria                  = $post->get('cdMercadoria');
+            $dtPedido                       = $post->get('dtPedido');
+            $precoTotalBruto                = str_ireplace(",",".",$post->get('vl_sub_tot'));
+            $precoTotalPedido               = str_ireplace(",",".",$post->get('vl_pedido_tot'));
+            $vlDescontoPedido               = str_ireplace(",",".",$post->get('vl_desconto'));
+            $nrPercentualDescontoPedido     = str_ireplace(",",".",$post->get('nr_desconto'));
+            $valorTotalPedido               = 0;
 
-            //5- Obtenhos os valores das mercadorias, para inserir no corpo do pedido
-            foreach ($cdsMercadoria as $cdMercadoria) {
+            if ($post->get('nrPedido')) {
+                $nrPedido = $post->get('nrPedido');
+            } else {
+                $nrPedido = $sm->get("pedido_table")->getNextNumeroPedido();
+
+                //PARAMETROS
+                $pedido["CD_LOJA"]                  = $session->cdLoja;
+                $pedido["NR_PEDIDO"]                = $nrPedido;
+                $pedido["CD_LIVRO"]                 = 1;
+                $pedido["CD_PRAZO"]                 = 1;
+                $pedido["ST_PEDIDO"]                = 'A';
+                $pedido["CD_TIPO_PEDIDO"]           = 1;
+                $pedido["ORCAMENTO_PEDIDO"]         = "P";
+                $pedido["NR_CONTROLE"]              = -1;
+                $pedido["ST_CONSIGNADO"]            = "N";
+                $pedido["ST_APROVEITA_CREDITO"]     = "S";
+                $pedido["CD_FUNCIONARIO"]           = $cdVendedor;
+                $pedido["VL_TOTAL_BRUTO"]           = $precoTotalBruto;
+                $pedido["VL_TOTAL_LIQUIDO"]         = $precoTotalPedido;
+                $pedido["UsuarioUltimaAlteracao"]   = substr($session->usuario, 0, 30); //login do usuário que fez a alteração
+                $pedido["CD_CLIENTE"]               = $cdCliente;
+                $pedido["DT_PEDIDO"]                = $dtPedido;
+
+                $sm->get("pedido_table")->inserePedido($pedido);
+            }
+
+            $sm->get("pedido_table")->deletaPedidoMercadoria($session->cdLoja, $nrPedido);
+
+            //Obtenhos os valores das mercadorias, para inserir no corpo do pedido
+            foreach ($cdsMercadoria as $i => $cdMercadoria) {
+
+                $cdMercadoria           = (int) $cdMercadoria;
+
+                //Recuperando o valor do preço de venda normal
+                $precoNormal            = $sm->get('mercadoria_table')->getValorPrecoVenda($cdMercadoria);
+
+                //Recuperando o valor do preço de venda em promoção
+                $precoPromocao          = $sm->get('mercadoria_table')->getValorPromocao($cdMercadoria);
+
+                $qtdeMercadoria         = (int)$post->get('qtdVendida-'.$cdMercadoria);
+                $precoUnitario          = $post->get('vl_preco_unitario-'.$cdMercadoria);
+                $precoDesconto          = $post->get('vl_preco_desconto-'.$cdMercadoria);
+                $precototal             = $post->get('vl_tot-'.$cdMercadoria);
+                $total_venda_desconto   = 0;
 
                 //array set
                 $mercadoria = array();
-                $mercadoria["CD_LOJA"] = $session->cdLoja;
-                $mercadoria["NR_PEDIDO"] = $nrPedido;
-                $mercadoria["CD_MERCADORIA"] = $cdMercadoria;
-                $mercadoria["CD_LIVRO"] = 1;
-                $mercadoria["CD_PRAZO"] = 1;
-                $mercadoria["VL_PRECO_VENDA"] = $precoNormal;
-                $mercadoria["VL_PRECO_CUSTO"] = $precoPromocao;
-                $mercadoria["NR_QTDE_PEDIDA"] = 1;
-                $mercadoria["NR_QTDE_VENDIDA"] = 1;
-                $mercadoria["VL_TOTAL_BRUTO"] = $precoPromocao;
-                $mercadoria["VL_TOTAL_LIQUIDO"] = $precoPromocao;
-                $mercadoria["VL_PRECO_VENDA_TAB"] = $precoPromocao;
-                $mercadoria["ST_PROMOCAO"] = ($precoNormal > $precoPromocao) ? "S" : "N";
-                $mercadoria["VL_DESCONTO_MERC"] = 0;
-                $mercadoria["DS_LOCAL_RETIRADA"] = "";
-                $mercadoria["DS_OBSERVACAO"] = "";
+                $mercadoria["CD_LOJA"]              = $session->cdLoja;
+                $mercadoria["NR_PEDIDO"]            = $nrPedido;
+                $mercadoria["CD_MERCADORIA"]        = $cdMercadoria;
+                $mercadoria["CD_LIVRO"]             = 1;
+                $mercadoria["CD_PRAZO"]             = 1;
+                $mercadoria["VL_PRECO_VENDA"]       = $precoUnitario;
+                $mercadoria["VL_PRECO_CUSTO"]       = $precoPromocao;
+                $mercadoria["NR_QTDE_PEDIDA"]       = $qtdeMercadoria;
+                $mercadoria["NR_QTDE_VENDIDA"]      = $qtdeMercadoria;
+                $mercadoria["VL_TOTAL_BRUTO"]       = $precoUnitario;
+                $mercadoria["VL_TOTAL_LIQUIDO"]     = $precoDesconto;
+                $mercadoria["VL_PRECO_VENDA_TAB"]   = $precoDesconto;
+                $mercadoria["ST_PROMOCAO"]          = ($precoNormal > $precoPromocao) ? "S" : "N";
+                $mercadoria["VL_DESCONTO_MERC"]     = empty($nrPercentualDescontoPedido) ? 0 : $nrPercentualDescontoPedido;
+                $mercadoria["DS_LOCAL_RETIRADA"]    = "";
+                $mercadoria["DS_OBSERVACAO"]        = "";
 
-
-                //corre��o de bug para pre�o promocional
-                $mercadoria["VL_PRECO_VENDA"] = ($precoNormal > $precoPromocao) ? $precoPromocao : $precoNormal;
-
-
-                //8-Faz um ou mais "insert" na tabela de pedido mercadorias
+                //Faz um ou mais "insert" na tabela de pedido mercadorias
                 $statementInsert = $dbAdapter->query("INSERT INTO TB_PEDIDO_MERCADORIA
 											     (CD_LOJA
 											    	,NR_PEDIDO
@@ -791,45 +872,28 @@ class PedidoController extends AbstractActionController
 											      VALUES
     											  ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 $statementInsert->execute($mercadoria);
-
-                //9-Faz um ou mais "insert" na tabela de agendamento_franquia_servicos
-                //8-Faz um ou mais "insert" na tabela de pedido mercadorias
-                $statementInsertAgenda = $dbAdapter->query("INSERT INTO TB_AGENDAMENTO_FRANQUIA_SERVICOS
-											      (CD_LOJA,NR_MACA,DT_HORARIO,CD_MERCADORIA)
-											      VALUES
-    											  (?,?,CONVERT(DATETIME,?,121),?)"
-                );
-                $statementInsertAgenda->execute(array($agendamento["CD_LOJA"],
-                    $agendamento["NR_MACA"],
-                    $agendamento["DT_HORARIO"],
-                    $mercadoria["CD_MERCADORIA"]
-                ));
-
-
-                $valorTotalPedido+=$mercadoria["VL_PRECO_VENDA"];
+                $valorTotalPedido+=$precototal;
             }
-
-
-            //6 - Atualiza a tabela de pedido, ou seja a "cabe�a do pedido"
+            //Atualiza a tabela de pedido, ou seja a "cabeça do pedido"
             $pedido = array();
 
             //PARAMETROS DO SET NO UPDATE
-            $pedido["CD_LIVRO"] = 1;
-            $pedido["CD_PRAZO"] = 1;
-            $pedido["ST_PEDIDO"] = "A";
-            $pedido["CD_TIPO_PEDIDO"] = 1;
-            $pedido["ORCAMENTO_PEDIDO"] = "P";
-            $pedido["NR_CONTROLE"] = -1;
-            $pedido["ST_CONSIGNADO"] = "N";
-            $pedido["ST_APROVEITA_CREDITO"] = "S";
-            $pedido["CD_FUNCIONARIO"] = $cdVendedor;
-            $pedido["VL_TOTAL_BRUTO"] = $valorTotalPedido;
-            $pedido["VL_TOTAL_LIQUIDO"] = $valorTotalPedido;
-            //$pedido["VL_TOTAL_LIQUIDO"] 	 =$valorTotalPedido * (1 - $descontoAgendamento / 100 );
-            $pedido["UsuarioUltimaAlteracao"] = substr($session->usuario, 0, 30); //login do usu�rio que fez a altera��o
-            //PARAMETROS DO WHERE NO UPDATE
-            $pedido["NR_PEDIDO"] = $nrPedido;
-            $pedido["CD_LOJA"] = $session->cdLoja;
+            $pedido["CD_LIVRO"]                 = 1;
+            $pedido["CD_PRAZO"]                 = 1;
+            $pedido["ST_PEDIDO"]                = "A";
+            $pedido["CD_TIPO_PEDIDO"]           = 1;
+            $pedido["ORCAMENTO_PEDIDO"]         = "P";
+            $pedido["NR_CONTROLE"]              = -1;
+            $pedido["ST_CONSIGNADO"]            = "N";
+            $pedido["ST_APROVEITA_CREDITO"]     = "S";
+            $pedido["CD_FUNCIONARIO"]           = $cdVendedor;
+            $pedido["VL_TOTAL_BRUTO"]           = $precoTotalBruto;
+            $pedido["VL_TOTAL_LIQUIDO"]         = $valorTotalPedido;
+            $pedido["UsuarioUltimaAlteracao"]   = substr($session->usuario, 0, 30); //login do usuário que fez a alteração
+            $pedido["DT_PEDIDO"]                = $dtPedido;
+            $pedido["CD_CLIENTE"]               = $cdCliente;
+            $pedido["NR_PEDIDO"]                = $nrPedido;
+            $pedido["CD_LOJA"]                  = $session->cdLoja;
 
             $statementUpdate = $dbAdapter->query("UPDATE
     											TB_PEDIDO
@@ -846,52 +910,29 @@ class PedidoController extends AbstractActionController
 											    	VL_TOTAL_BRUTO		 =?,
 											    	VL_TOTAL_LIQUIDO	 =?,
 											    	DT_UltimaAlteracao	 =GETDATE(),
-											    	UsuarioUltimaAlteracao=?
+											    	UsuarioUltimaAlteracao=?,
+											    	DT_PEDIDO			 =?,
+											    	CD_CLIENTE           =?
 											     WHERE
     												NR_PEDIDO = ? AND
     												CD_LOJA   = ?   ");
             $statementUpdate->execute($pedido);
 
-            $statementUpdateAgenda = $dbAdapter->query("UPDATE
-	    												TB_AGENDAMENTO_FRANQUIA
-	    											 SET
-										    			CD_FUNCIONARIO	= ?
-												     WHERE
-															CD_LOJA    = ? AND
-															NR_MACA    = ? AND
-															DT_HORARIO = CONVERT(DATETIME,?,121) ;
-														    ");
-
-            $statementUpdateAgenda->execute(array($cdVendedor,
-                $agendamento["CD_LOJA"],
-                $agendamento["NR_MACA"],
-                $agendamento["DT_HORARIO"]
-            ));
-
-
-
-
-            //Recuperando o valor do pre�o de venda normal
-            $statement = $dbAdapter->query("SELECT
-    											VL_PRECO_VENDA
-								    	  FROM
-    											RL_PRAZO_LIVRO_PRECOS
-								          WHERE
-    											CD_LIVRO = 1 AND
-								          		CD_PRAZO = 1 AND
-								          		CD_MERCADORIA = ?");
-            $results = $statement->execute(array($cdMercadoria));
-            $rowResult = $results->current();
-            $precoNormal = $rowResult["VL_PRECO_VENDA"];
-
             $dbAdapter->getDriver()->getConnection()->commit();
+            $message = array("success" => "Pedido cadastrado com sucesso");
+            $this->flashMessenger()->addMessage($message);
 
-            $viewModel = new ViewModel();
-            $viewModel->setTerminal(true);
-            return $viewModel;
+            if($post->get('flRedirecionarAoCaixa') == 'S') {
+                $redirect = '/caixa/index';
+            }
+
         } catch (Exception $e) {
+            $message = array("error" => $e->getMessage());
+            $this->flashMessenger()->addMessage($message);
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
+
+        return $this->redirect()->toUrl($redirect);
     }
 
     /**
@@ -907,6 +948,7 @@ class PedidoController extends AbstractActionController
             // get the db adapter
             $sm = $this->getServiceLocator();
             $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+            $mercadoriaTable = new MercadoriaTable($dbAdapter);
 
             //get session
             $session = new Container("orangeSessionContainer");
@@ -919,32 +961,21 @@ class PedidoController extends AbstractActionController
             $tpPedidoBloqueados = array(4, 6, 7);
 
 
-            //Recuperando o valor do pre�o de venda normal
-            $statementEstoque = $dbAdapter->query("SELECT
-                                                        B.ST_LIBERA_SEM_ESTOQUE,
-                                                        dbo.MostraEstoque( b.cd_loja, a.CD_Mercadoria ) as NR_QTDE_ESTOQUE,
-                                                        dbo.MostraReserva( b.cd_loja, a.CD_Mercadoria ) as NR_QTDE_RESERVA,
-                                                        dbo.MostraEstoqueDisponivel( b.CD_LOJA, a.CD_MERCADORIA ) as NR_QTDE_DISPONIVEL
-                                                FROM	TB_MERCADORIA A
-                                                INNER JOIN TB_ESTOQUE B ON A.CD_MERCADORIA = B.CD_MERCADORIA
-                                                WHERE B.CD_LOJA = ? AND
-                                                    A.CD_Mercadoria = ? AND
-                                                    A.DT_EXCLUSAO is null ");
-            $results = $statementEstoque->execute(array($cdLoja, $cdMercadoria));
-            $resultEstoque = $results->current();
+            //Recuperando o valor do preço de venda normal
+            $resultEstoque = $mercadoriaTable->recuperaValorDeVenda($cdLoja, $cdMercadoria);
 
             $permitirPedido = in_array($tpPedido, $tpPedidoBloqueados) ? false : true;
             $liberaSemEstoque = trim($resultEstoque['ST_LIBERA_SEM_ESTOQUE']) != 'S' ? false : true;
             $estoqueDisponivel = (float) $resultEstoque['NR_QTDE_DISPONIVEL'];
 
-            if ($permitirPedido == true) { //Se o tipo do pedido � diferente de 4, 6 e 7
-                //verifica o estoque dispon�vel
-                if (($estoqueDisponivel <= 0) && ($liberaSemEstoque == false)) { // Se a quantidade dispon�vel for menor ou igual a zero e n�o liberar sem estoque
-                    throw new \Exception("A mercadoria/servi�o n�o pode ser liberada sem estoque");
+            if ($permitirPedido == true) { //Se o tipo do pedido é diferente de 4, 6 e 7
+                //verifica o estoque disponível
+                if (($estoqueDisponivel <= 0) && ($liberaSemEstoque == false)) { // Se a quantidade disponível for menor ou igual a zero e não liberar sem estoque
+                    throw new \Exception(utf8_decode("A mercadoria/serviço não pode ser liberada sem estoque"));
                 } else {
-                    //Verifica o estoque dos insumos da composi�ao da mercadoria
-                    //numeros de insumos da composi��o
-                    //Recuperando o valor do pre�o de venda normal
+                    //Verifica o estoque dos insumos da composição da mercadoria
+                    //numeros de insumos da composição
+                    //Recuperando o valor do preço de venda normal
                     $statementInsumo = $dbAdapter->query("SELECT
                                                             MC.CD_MERCADORIA_COMPOSICAO
                                                             ,MC.QUANTIDADE
@@ -961,26 +992,26 @@ class PedidoController extends AbstractActionController
                     $resultsInsumo = $statementInsumo->execute(array($cdLoja, $cdMercadoria));
 
                     if (is_object($resultsInsumo)) {
-                        //if numero de insumos da composi��o for maior igual a 1, percorre os insumos
+                        //if numero de insumos da composição for maior igual a 1, percorre os insumos
                         foreach ($resultsInsumo as $insumo) {
                             //verifica a quantidade de estoque do insumo
                             $estoqueDisponivelInsumo = (float) $insumo['NR_QTDE_DISPONIVEL'];
                             $cdInsumo = $insumo['CD_MERCADORIA_COMPOSICAO'];
                             $nmInsumo = $insumo['DS_MERCADORIA_COMPOSICAO'];
-                            if ($estoqueDisponivelInsumo <= 0) { ////se o estoque dispon�vel do insumo for menor igual a 0, dispara exce��o abaixo
-                                throw new \Exception("Composi��o da mercadoria com insumo ($cdInsumo - $nmInsumo ) sem estoque");
+                            if ($estoqueDisponivelInsumo <= 0) { ////se o estoque disponível do insumo for menor igual a 0, dispara exceção abaixo
+                                throw new \Exception("Composição da mercadoria com insumo ($cdInsumo - $nmInsumo ) sem estoque");
                             }
                         }
                     }
                 }
             } else {
-                throw new \Exception("A��o negada, para este tipo de pedido.");
+                throw new \Exception("Ação negada, para este tipo de pedido.");
             }
 
 
 
-            //Se n�o aconteceu nenhuma exce��o acima,
-            //ent�o seta as variav�is abaixo, permitindo a inclus�o da  mercadoria/sevi�o
+            //Se não aconteceu nenhuma exceção acima,
+            //então seta as variavéis abaixo, permitindo a inclusão da  mercadoria/serviço
             $permitir = 1;
             $erro = null;
         } catch (\Exception $e) {
@@ -1126,12 +1157,18 @@ class PedidoController extends AbstractActionController
         exit;
     }
 
+    /**
+     * @return ViewModel
+     */
     public function cpfNotaAction(){
         $viewModel = new ViewModel();
         $viewModel->setTerminal(true);
         return $viewModel;
     }
 
+    /**
+     *
+     */
     public function recuperaHistoricoPorDataAction(){
         $post = $this->getRequest()->getPost();
         $dtInicio = $post['dt_inicial'];
@@ -1143,6 +1180,40 @@ class PedidoController extends AbstractActionController
             echo json_encode(array('result' => 'erro'));
         }
         exit;
+    }
+
+    /**
+     *
+     */
+    public function cancelarAction(){
+
+        // get the db adapter
+        $sm             = $this->getServiceLocator();
+        $dbAdapter      = $sm->get('Zend\Db\Adapter\Adapter');
+
+        $dbAdapter->getDriver()->getConnection()->beginTransaction();
+
+        try
+        {
+            $session        = new Container("orangeSessionContainer");
+            $pedidoTable    = new PedidoTable($dbAdapter);
+            $nuPedido       = (int) $this->params()->fromQuery('id');
+            $retorno        = $pedidoTable->cancelaPedido($nuPedido, $session->cdFuncionario, $session->cdLoja);
+
+
+            $message = array("success" => "Pedido cancelado com sucesso");
+            $this->flashMessenger()->addMessage($message);
+
+            $dbAdapter->getDriver()->getConnection()->commit();
+        } catch (Exception $e) {
+
+            $message = array("error" => $e->getMessage());
+            $this->flashMessenger()->addMessage($message);
+            $dbAdapter->getDriver()->getConnection()->rollback();
+        }
+
+        return $this->redirect()->toUrl('/pedido/lista-tablet');
+
     }
 
 }

@@ -20,29 +20,41 @@
                 </div>	
 				<form class="form-horizontal" id="validation-form" action="/mercadoria/index" novalidate="novalidate" method="post" role="form">
 					<div class="controls">
-						<div class="col-sm-8">
-							<label>Pesquisar</label>
-							<input type="text" class="form-control" name="campo_pesquisa" id="campo_pesquisa" />
+						<div class="col-md-12">
+							<label>Descrição da mercadoria</label>
+							<input type="text" class="form-control" name="ds_mercadoria" id="campo_pesquisa" />
+                            <hr/>
 						</div>
-						<div class="col-sm-4">
-							<label>&nbsp;</label><br>
-							<button type="submit" id="btnSubmit" class="btn btn-primary">Pesquisar</button>
-						</div>
+
+                        <div class="col-md-9">
+                            <button type="submit" " id="btnSubmit" class="btn btn-primary btn" style="" value="">
+                                <i class="fa fa-search"></i>
+                                Pesquisar
+                            </button>
+                            <button type="button" name="buttonLimpar" class="btn btn-default btn" id="btnLimparFormulario" onclick="javascript:window.location.href='/cliente/index'" value="">
+                                <i class="i i-back"></i>
+                                Limpar
+                            </button>
+                        </div>
 					</div>
+                    <div class="controls">
+                        <div class="col-md-12">
+                            <label class="control-label text-info" for="name">&nbsp;</label>
+                            <a href="/mercadoria/cadastrar">
+                                <button id="btnNovoServicoMercadoria" type="button" class="btn btn-success" style="float:right;">
+                                    <i class="i glyphicon-plus"></i>
+                                    Adicionar Serviço/ Mercadoria
+                                </button>
+                            </a>
+                        </div>
+
+                    </div>
 				</form>
             </div>
         </div>
 		
         <div class="row-fluid" id="result">
             <div class="widget stacked" >
-                <div class="controls">
-                    <div class="col-sm-12">
-                        <button id="btnNovo" class="btn btn-success" style="float:right; margin-top:5px; margin-right:5px;">
-                            <i class="icon-plus icon-white"></i>
-                             Adicionar Serviço/ Mercadoria
-                        </button>
-                    </div>
-                </div>
                 <div class="panel-body">
                     <table class="table table-striped m-b-none" data-ride="datatables">
                         <thead>
@@ -60,12 +72,12 @@
                                 <?php foreach ($mercadorias as $mercadoria): ?>
                                     <tr>
                                         <td align="left"><?php echo $mercadoria->CD_MERCADORIA  ?></td>
-                                        <td align="left"><?php echo utf8_decode($mercadoria->DS_MERCADORIA) ?></td>
+                                        <td align="left"><?php echo utf8_encode($mercadoria->DS_MERCADORIA) ?></td>
                                         <td align="left"><?php echo $mercadoria->CD_UNIDADE_VENDA ?></td>
-                                        <td align="right"><?php echo $mercadoria->VL_PRECO_VENDA ?></td>
+                                        <td align="right"><?php  echo ( $mercadoria->VL_PRECO_VENDA ? number_format(@$mercadoria->VL_PRECO_VENDA,2, '.', '') : '0.00' ) ?></td>
                                         <td  align="center">
                                           <a href="/mercadoria/editar?id=<?php echo $mercadoria->CD_MERCADORIA ?>" ><i class="fa fa-pencil"></i></a> |
-                                            <a href="/mercadoria/remover?id=<?php echo $mercadoria->CD_MERCADORIA ?>" ><i class="fa fa-trash-o"></i></a>
+                                            <a href="#" onclick="Util.confirmarExclusao(this)" data-value="<?php echo $mercadoria->CD_MERCADORIA ?>" data-url="/mercadoria/remover" data-toggle="tooltip" data-placement="top" title="Excluir Mercadoria" ><i class="fa fa-trash-o"></i></a>
                                         </td>
                                         </th>
                                     </tr>
@@ -88,10 +100,3 @@
         </div>
     </div>
 </section>
-<script>
-    $(document).ready(function() {
-        $("#btnNovo").click(function() {
-            window.location = "/mercadoria/cadastrar";
-        });
-    });
-</script>

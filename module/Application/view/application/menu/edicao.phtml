@@ -1,0 +1,57 @@
+﻿<section class="panel panel-default">
+    <div class="main">
+		<div class="row-fluid">
+            <div class="panel-body">
+				<h3 class="tit">Editar Menu Web</h3>
+				<hr />   
+				<form action="/menu-web/edicao" method="post">
+                        <input type="hidden" name="cd_menu" value="<?php echo @$menu->cd_menu ?>" />
+                        <div class="col-xs-8 col-md-8">
+                            <label>Menu: </label>
+                            <input class="form-control" type="text" name="ds_menu" value="<?php echo utf8_encode(@$menu->ds_menu) ?>" maxlength="55" required="required" placeholder="Informe o nome do menu"/>
+                        </div>
+
+                        <div class="col-xs-8 col-md-8">
+                            <label>Menu Pai: </label>
+                            <select name="cd_menu_pai" class="form-control">
+                                <option VALUE="">Selecione...</option>
+                                <?php foreach( $menuPai as $menuoption){
+                                    echo '<option value="'.$menuoption['cd_menu'].'" '.
+                                         (($menu->cd_menu_pai == $menuoption['cd_menu']) ? " selected " : "") .'>'.
+                                         $menuoption['cd_menu'] . ' - ' . utf8_encode($menuoption['ds_menu']) .
+                                        '</option>';
+                                }?>
+                            </select>
+                        </div>
+
+                        <div class="col-xs-6 col-md-6">
+                            <label>Url: </label>
+                            <input class="form-control" type="text" name="ds_url" value="<?php echo utf8_encode(@$menu->ds_url) ?>" maxlength="50" placeholder="Url para acesso do menu" />
+                        </div>
+
+                        <div class="col-xs-6 col-md-6">
+                            <label>Ícone: </label>
+                            <input class="form-control" type="text" name="ds_icone" value="<?php echo utf8_encode(@$menu->ds_icone) ?>" maxlength="50" placeholder="Icone do menu ,se Menu Pai" />
+                        </div>
+
+                        <div class="controls">
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="btn-group btn-group-justified col-md-12">
+                                <div class="col-md-9">&nbsp;</div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        Salvar
+                                    </button>
+                                    <a href="/menu-web/index"><button type="button" class="btn btn-default">
+                                            <i class="i i-back"></i>
+                                            Cancelar
+                                        </button></a>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+			

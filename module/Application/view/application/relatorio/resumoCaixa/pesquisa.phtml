@@ -4,24 +4,24 @@
             <div class="panel-body">
                 <div class="widget-header">
                     <i class="icon-check"></i>
-                    <h3><?php echo utf8_encode("Relat&oacute;rio de Caixa") ?></h3>
+                    <h3><?php echo utf8_encode("Relat&oacute;rio Resumo de Caixa") ?></h3>
                 </div> <!-- /widget-header -->
                 <div class="widget-content">
                     <form id="formFiltro" class="form-vertical validation-form" method="post">
                         <div class="controls">
-                            <div class="col-md-12">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("Loja") ?></label>
+                            <!--<div class="col-md-12">
+                                <label for="" class="control-label text-info"><?php /*echo utf8_encode("Loja") */?></label>
                                 <br>
                                 <select class="form-control" id="cdLoja" name="cdLoja">
                                     <option value="">Selecione...</option>
                                     <?php
-                                    foreach ($listaLoja as $loja) {
+/*                                    foreach ($listaLoja as $loja) {
 
                                         echo "<option value='{$loja["CD_LOJA"]}'>{$loja["CD_LOJA"]} - " . utf8_encode($loja["DS_RAZAO_SOCIAL"]) . "</option>";
                                     }
-                                    ?>
+                                    */?>
                                 </select>
-                            </div>
+                            </div>-->
                             <div class="col-md-12">
                                 <label class="control-label text-info" for="name">
                                         <?php echo utf8_encode("Cliente:") ?>
@@ -32,21 +32,32 @@
                             <div class="col-md-6">
                                 <label for="" class="control-label text-info"><?php echo utf8_encode("Operador") ?></label>
                                 <br>
+
                                 <select class="form-control" id="cdOperador" name="cdOperador">
                                     <option value="">Selecione...</option>
+                                    <?php
+                                        foreach ($listaOperador as $operador) {
+
+                                            echo "<option value='{$operador["CD_FUNCIONARIO"]}'>
+                                                    {$operador["CD_FUNCIONARIO"]} - " . utf8_encode($operador["DS_FUNCIONARIO"]) .
+                                                "</option>";
+                                        }
+                                        ?>
                                 </select>
                             </div>
 
+
+
                             <div class="col-md-3">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("Data Inicial") ?></label>
-                                <br>
-                                <input type="text" id="dtInicial" name="dtInicial"  class="form-control" data-date-format="dd/mm/yyyy" />
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("De") ?></label>
+                                <input type="text" class="dataP form-control" id="dtInicial" name="dtInicial"  required autocomplete="off">
+                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
 
                             <div class="col-md-3">
-                                <label for="" class="control-label text-info"><?php echo utf8_encode("Data Final") ?></label>
-                                <br>
-                                <input type="text" id="dtFinal" name="dtFinal" class="form-control" data-date-format="dd/mm/yyyy" />
+                                <label for="" class="control-label text-info"><?php echo utf8_encode("At&eacute;") ?></label>
+                                <input type="text" class="dataP form-control" id="dtFinal" name="dtFinal" required autocomplete="off">
+                                <span class="add-on btn-info"><i class="icon-calendar icon-white"></i></span>
                             </div>
 
                             <div class="col-md-12">
@@ -71,7 +82,7 @@
             <div class="modal-header">
                 <button id="btnFechar" class="pull-right btn btn-danger btn" >Fechar</button>
                 <button type="button" class="pull-right btn btn-primary"  id="btnGerarPDF"></i>PDF</button>
-                <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio de Resumo de Caixa") ?></span>
+                <span class="text-info-modal"><i class="icon-white icon-check"></i><?php echo utf8_encode("Relat&oacute;rio Resumo de Caixa") ?></span>
             </div>
             <div id="modalBodyDadosRelatorio" class="container-fluid" style="overflow-y:scroll"></div>
             <form id="formRelatorio" target="_blank" action="/relatorio-resumo-caixa/relatorio" method="post">
@@ -87,14 +98,14 @@
 </section>
 <script>
     $(document).ready(function() {
-        $('#dtInicial').datepicker({format: 'dd/mm/yyyy',
-            language: 'pt-BR',
-            todayBtn: "linked"});
-
-        $('#dtFinal').datepicker({format: 'dd/mm/yyyy',
-            language: 'pt-BR',
-            todayBtn: "linked"});
-
+        $('.dataP').datepicker(
+            {
+                format: 'dd-mm-yyyy',
+                language: 'pt-BR',
+                todayBtn: "linked",
+                todayHighlight: true
+            }
+        );
 
         $('#cdLoja').change(function() {
             if ($('#cdLoja').val() == '') {

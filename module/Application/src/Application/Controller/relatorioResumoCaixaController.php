@@ -31,13 +31,14 @@ class relatorioResumoCaixaController extends RelatorioController
         return $this->table;
     }
 
+
     public function pesquisaAction()
     {
         self::validaAcessoGerente();
 
         $view = new ViewModel(array(
             "listaLoja" => $this->getTable('loja_table')->fetchAll(),
-            "listaOperador" => $this->getTable('loja_table')->fetchAll(),
+            "listaOperador" => $this->getTable('funcionario_table')->fetchAll(),
         ));
         $view->setTemplate("application/relatorio/resumoCaixa/pesquisa.phtml");
 
@@ -63,7 +64,7 @@ class relatorioResumoCaixaController extends RelatorioController
 
             $caixa = array();
 
-            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, $dtAbertura, $dtFechamento);
+            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, date(FORMATO_ESCRITA_DATA,strtotime($dtAbertura)), date(FORMATO_ESCRITA_DATA,strtotime($dtFechamento)));
             foreach($totalCaixa as $result){
                 $DT = date("d/m/Y", strtotime($result['DT_MOVIMENTO']));
                 $caixa[$DT] = array(
@@ -89,7 +90,7 @@ class relatorioResumoCaixaController extends RelatorioController
 
             $view = new ViewModel();
             $view->setTerminal(true);
-            $view->setVariable('logo', '<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+            $view->setVariable('logo', '<img src="/img/logo-orange-small.png" alt="logotipo"/>');
             $view->setVariable("cdLoja", $session->cdLoja);
             $view->setVariable("dsLoja", $session->dsLoja);
             $view->setVariable("dtAbertura", $dtAbertura);
@@ -113,7 +114,8 @@ class relatorioResumoCaixaController extends RelatorioController
             $dtFechamento = ($post->get('pdf_dtFinal')) ? $post->get('pdf_dtFinal') : NULL;
             $caixa = array();
 
-            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, $dtAbertura, $dtFechamento);
+           // $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, $dtAbertura, $dtFechamento);
+            $totalCaixa = $this->getTable('caixa-table')->calculaValorTotalCaixa('caixa',$cdLoja, date(FORMATO_ESCRITA_DATA,strtotime($dtAbertura)), date(FORMATO_ESCRITA_DATA,strtotime($dtFechamento)));
             foreach($totalCaixa as $result){
                 $DT = date("d/m/Y", strtotime($result['DT_MOVIMENTO']));
                 $caixa[$DT] = array(
@@ -142,7 +144,7 @@ class relatorioResumoCaixaController extends RelatorioController
             $pdf->setOption('paperSize', 'a4'); // Defaults to "8x11"
             $pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
 
-            $pdf->setVariable("logo",'<img src="/img/logo-relatorio.png" alt="logotipo"/>');
+            $pdf->setVariable("logo",'<img src="/img/logo-orange-small.png" alt="logotipo"/>');
             $pdf->setVariable("cdLoja", $session->cdLoja);
             $pdf->setVariable("dsLoja", $session->dsLoja);
             $pdf->setVariable("dtAbertura", $dtAbertura);

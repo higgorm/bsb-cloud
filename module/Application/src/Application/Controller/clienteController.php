@@ -13,17 +13,17 @@ namespace Application\Controller;
 use Zend\I18n\View\Helper\DateFormat;
 use Application\Form\ClienteForm;
 use Application\Form\ClienteSearchForm;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Model\Cliente;
 use Zend\Db\Adapter\Driver\ConnectionInterface;
+
 /**
  *
  * @author HIGOR
  *
  */
-class ClienteController extends AbstractActionController
+class ClienteController extends OrangeWebAbstractActionController
 {
 
     protected $clienteTable;
@@ -154,7 +154,7 @@ class ClienteController extends AbstractActionController
             $view->setTemplate("application/cliente/form.phtml");
 
             return $view;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
     }
@@ -171,7 +171,8 @@ class ClienteController extends AbstractActionController
 			try {
 				$dbAdapter->getDriver()->getConnection()->beginTransaction();
 				$data = $request->getPost();
-				
+
+                $data->usuarioultimaalteracao = $session->usuario;
 				$this->getTable()->save($data);
 				$dbAdapter->getDriver()->getConnection()->commit();
 
@@ -414,19 +415,18 @@ class ClienteController extends AbstractActionController
             $dbAdapter->getDriver()->getConnection()->beginTransaction();
             $id = (int) $this->params()->fromQuery('id');
 
-            if ($this->getTable()->remove($id)) {
-                $message = array("success" => "Removido com sucesso");
-            } else {
-                $message = array("error" => "Não foi possível, este registro está em uso!");
-            }
-
+            $this->getTable()->remove($id);
+            $message = array("success" => "Removido com sucesso");
+            $this->flashMessenger()->addMessage($message);
             $dbAdapter->getDriver()->getConnection()->commit();
 
+        } catch (\Exception $e) {
+            $message = array("danger" => "Não foi possível, este registro está em uso!");
             $this->flashMessenger()->addMessage($message);
-            return $this->redirect()->toUrl("index?pg=1");
-        } catch (Exception $e) {
             $dbAdapter->getDriver()->getConnection()->rollback();
         }
+
+        return $this->redirect()->toUrl("index?pg=1");
     }
 
     public function buscarclienteAction()
@@ -502,8 +502,18 @@ class ClienteController extends AbstractActionController
         $viewModel->setTerminal(true);
         return $viewModel;
     }
-	
-	/**
+
+    /**
+     *
+     */
+    public function modalPesquisaEmissorAction(){
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
+        return $viewModel;
+    }
+
+
+    /**
      *
      */
     public function recuperaClientePorCodigoAction(){
@@ -516,11 +526,12 @@ class ClienteController extends AbstractActionController
         $arrCliente = $this->getTable()->getId($data['cd_cliente']);
 
         if (count($arrCliente)) {
+            array_walk_recursive($arrCliente, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
             echo json_encode(array('result' => 'success', 'data' => $arrCliente));
-            exit;
+        } else {
+            echo json_encode(array('result' => 'erro', 'message' => 'Cliente não encontrado.'));
         }
 
-        echo json_encode(array('result' => 'erro', 'message' => $data['cd_cliente']));
         exit;
     }
 	
@@ -530,15 +541,38 @@ class ClienteController extends AbstractActionController
         foreach (@$post as $k => $v) {
             $arrParams[$k] = $v;
         }
-        $arrPedido = $this->getTable()->pesquisaClientePorParamentro($arrParams);
+        $arrPedido = $this->getTable()->pesquisaClientePedidoPorParametro($arrParams);
 
-        if (count($arrPedido)) {
+        if ($arrPedido) {
+            array_walk_recursive($arrPedido, function(&$item) { $item = mb_convert_encoding($item, 'UTF-8', 'Windows-1252'); });
             echo json_encode(array('result' => 'success', 'data' => $arrPedido));
-            exit;
+
+        } else {
+            echo json_encode(array('result' => 'erro', 'message' => 'Cliente não encontrado.'));
         }
 
-        echo json_encode(array('result' => 'erro', 'message' => 'Mercadoria não encontrada.'));
         exit;
     }
 
+    /**
+     *
+     */
+    public function validaDuplicidadeAction(){
+
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(false);
+        $request    = $this->getRequest();
+        $data       = $request->getPost();
+        $search     = str_ireplace(".","",  str_ireplace("/","",str_ireplace("-","",$data['nr_cgc_cpf'])));
+
+        $nrCgcCpf = $this->getTable()->getClientePorNrCgcCpf($search);
+
+        if (count($nrCgcCpf)) {
+            echo json_encode(array('retorno' =>  'N'));
+        } else {
+            echo json_encode(array('retorno' =>  'S'));
+        }
+
+        exit;
+    }
 }

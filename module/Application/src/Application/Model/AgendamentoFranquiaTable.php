@@ -20,6 +20,7 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
 	public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
+        $this->resultSetPrototype->setArrayObjectPrototype(new AgendamentoFranquia());
         $this->initialize();
 		
 		$session = new Container("orangeSessionContainer");
@@ -68,6 +69,7 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
         );
 
         if ($this->getId($tableData)) {
+
             $this->update($data, array('cd_cliente' => (int) $tableData->cd_cliente,
                 'nr_maca' => (int) $tableData->nr_maca,
                 'cd_loja' => (int) $tableData->cd_loja,
@@ -83,7 +85,7 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
         if ($this->getId($cdLoja, $nrMaca)) {
             $this->delete(array("cd_loja" => $cdLoja, "nr_maca" => $nrMaca));
         } else {
-            throw new \Exception("Maca $nrMaca  n�o existe no banco de dados!");
+            throw new \Exception("Maca $nrMaca  não existe no banco de dados!");
         }
     }
 
@@ -126,11 +128,12 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
                                                 tfm.NR_MACA,
                                                 tfm.DS_IDENTIFICACAO,
                                                 taf.DT_HORARIO,
-                                                tc.DS_NOME_RAZAO_SOCIAL,
+                                                DS_NOME_RAZAO_SOCIAL = CASE WHEN ( TC.CD_CLIENTE IS NULL or taf.CD_CLIENTE = 1 ) THEN FCR.DS_NOME ELSE TC.DS_NOME_RAZAO_SOCIAL END,
                                                 tc.CD_CLIENTE
                                             from TB_FRANQUIA_MACA tfm
                                             left join TB_AGENDAMENTO_FRANQUIA taf on tfm.CD_LOJA = taf.CD_LOJA and tfm.NR_MACA = taf.NR_MACA
                                             left join TB_CLIENTE tc on taf.CD_CLIENTE = tc.CD_CLIENTE
+                                            LEFT JOIN TB_FRANQUIA_CLIENTE_RAPIDO FCR ON FCR.CD_CLIENTE = taf.CD_CLIENTE_RAPIDO
                                             where tfm.CD_LOJA = ?
                                                     and tfm.NR_MACA = ?
                                                     and CONVERT(VARCHAR(10),taf.DT_HORARIO,103) between CONVERT(VARCHAR(10),?,103) and CONVERT(VARCHAR(10),?,103)
@@ -152,12 +155,13 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
                                                         tfm.NR_MACA,
                                                         tfm.DS_IDENTIFICACAO,
                                                         taf.DT_HORARIO,
-                                                        tc.DS_NOME_RAZAO_SOCIAL,
+                                                        DS_NOME_RAZAO_SOCIAL = CASE WHEN ( TC.CD_CLIENTE IS NULL or taf.CD_CLIENTE = 1 ) THEN FCR.DS_NOME ELSE TC.DS_NOME_RAZAO_SOCIAL END,
                                                         tc.CD_CLIENTE,
                                                         tc.DS_NOME_RAZAO_SOCIAL
                                                     from TB_FRANQUIA_MACA tfm
                                                     left join TB_AGENDAMENTO_FRANQUIA taf on tfm.CD_LOJA = taf.CD_LOJA and tfm.NR_MACA = taf.NR_MACA
                                                     left join TB_CLIENTE tc on taf.CD_CLIENTE = tc.CD_CLIENTE
+                                                    LEFT JOIN TB_FRANQUIA_CLIENTE_RAPIDO FCR ON FCR.CD_CLIENTE = taf.CD_CLIENTE_RAPIDO
                                                     where tfm.CD_LOJA = ?
                                                             and CONVERT(VARCHAR(10),taf.DT_HORARIO,103) between CONVERT(VARCHAR(10),?,103) and CONVERT(VARCHAR(10),?,103)
                                                     order by tfm.NR_MACA, taf.DT_HORARIO");
@@ -171,7 +175,7 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
                                                         AF.CD_CLIENTE, AF.CD_FUNCIONARIO,
                                                 DS_FONE1 = CASE WHEN ( C.CD_CLIENTE IS NULL or AF.CD_CLIENTE = 1 ) THEN FCR.DS_FONE1 ELSE C.DS_FONE1 END,
                                                 DS_FONE2 = CASE WHEN ( C.CD_CLIENTE IS NULL or AF.CD_CLIENTE = 1 ) THEN FCR.DS_FONE2 ELSE C.DS_FONE2 END,
-                                                DS_NOME_RAZAO_SOCIAL = CASE WHEN ( C.CD_CLIENTE IS NULL or AF.CD_CLIENTE = 1 ) THEN FCR.DS_NOME ELSE C.DS_FANTASIA END,
+                                                DS_NOME_RAZAO_SOCIAL = CASE WHEN ( C.CD_CLIENTE IS NULL or AF.CD_CLIENTE = 1 ) THEN FCR.DS_NOME ELSE C.DS_NOME_RAZAO_SOCIAL END,
                                                 AF.ST_CLIENTE_CHEGOU, AF.CD_FUNCIONARIO,
                                                 AF.CD_CLIENTE_RAPIDO, AF.NR_PEDIDO
                                             FROM TB_AGENDAMENTO_FRANQUIA AF
@@ -213,18 +217,23 @@ class AgendamentoFranquiaTable extends AbstractTableGateway
 
     public function atualizaAgendamentoFranquia($dados)
     {
-        $pedidostatement = $this->adapter->query("UPDATE
-                                                    TB_AGENDAMENTO_FRANQUIA
-                                                SET
-                                                    ST_CLIENTE_CHEGOU = 'S',
-                                                    NR_PEDIDO = ?,
-                                                    CD_CLIENTE = ?
-                                                WHERE
-                                                    CD_LOJA    = ? AND
-                                                    NR_MACA    = ? AND
-                                                    DT_HORARIO = ? ");
+        try{
+            $statement = $this->adapter->query("UPDATE
+                                                        TB_AGENDAMENTO_FRANQUIA
+                                                    SET
+                                                        ST_CLIENTE_CHEGOU = 'S',
+                                                        NR_PEDIDO = ?,
+                                                        CD_CLIENTE = ?
+                                                    WHERE
+                                                        CD_LOJA    = ? AND
+                                                        NR_MACA    = ? AND
+                                                        DT_HORARIO = ? ");
 
-        $pedidostatement->execute($dados);
+            $statement->execute($dados);
+
+        }catch(\Exception $e){
+            return false;
+        }
     }
 
     public function getAgendamentoByNumeroPedido($nrPedido)

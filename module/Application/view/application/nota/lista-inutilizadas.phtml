@@ -1,0 +1,68 @@
+<section class="panel panel-default">
+    <div class="main">
+
+        <div class="row-fluid" id="result">
+            <div class="widget stacked" >
+
+                <div class="panel-body">
+                    <table class="table table-striped m-b-none" data-ride="datatables">
+                        <thead>
+                            <tr >
+                                <th nowrap>Tipo</th>
+                                <th nowrap>Ano</th>
+                                <th nowrap>Série</th>
+                                <th nowrap>A partir de</th>
+                                <th nowrap>Até</th>
+                                <th nowrap>Data/hora</th>
+                                <th nowrap>Outras informações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (count($listaNfe) > 0) : ?>
+                                <?php foreach ($listaNfe as $nfe): ?>
+                                    <tr>
+                                        <td align="left"><?php echo $nfe['TP_MODELO'] ?></td>
+                                        <td align="left"><?php echo $nfe['NR_ANO'] ?></td>
+                                        <td align="left"><?php echo $nfe['NR_SERIE'] ?></td>
+                                        <td align="left"><?php echo $nfe['NR_FAIXA_INICIAL'] ?></td>
+                                        <td align="left"><?php echo $nfe['NR_FAIXA_FINAL'] ?></td>
+                                        <td align="left"><?php echo $nfe['DH_RECEBIMENTO'] ?></td>
+                                        <td align="left">
+                                              <b>Protocolo: </b><?php echo $nfe['NU_PROTOCOLO'] ?>, <b>CNPJ: </b><?php echo $nfe['NU_CNPJ'] ?>
+                                              <br/><b>Ambiente: </b><?php echo ($nfe['TP_AMBIENTE'] == 1 ? 'Produção' : 'Homologação' )?>, <b>Versão: </b><?php echo $nfe['NR_VERSAO'] ?>, <b>Versão Aplicação: </b><?php echo $nfe['NR_VERSAO_APLICACAO'] ?>
+                                              <br/><b>Justificativa: </b><?php echo utf8_encode($nfe['DS_JUSTIFICATIVA']) ?>
+                                              <br/><b>Retorno SEFAZ: </b><?php echo  $nfe['CSTAT']." - ".$nfe['DS_X_MOTIVO'] ?>
+                                          </td>
+                                      </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td align="left" colspan="7">Nenhum registro encontrado.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th nowrap>Tipo</th>
+                                <th nowrap>Ano</th>
+                                <th nowrap>Série</th>
+                                <th nowrap>A partir de</th>
+                                <th nowrap>Até</th>
+                                <th nowrap>Data/hora</th>
+                                <th nowrap>Outras informações</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+				</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<script>
+    $(document).ready(function() {
+        $("#btnFechoar").click(function() {
+            $('#historicoModal').modal('close');
+        });
+    });
+</script>

@@ -76,7 +76,7 @@
                                 <br>
                                 <input type="button" class="btn btn-primary pesquisa" id="btnLocalizar" value="Localizar">
                             </div>
-                            <div class="col-md-12 pesquisa"></div>
+                            <div class="col-md-12 "></div>
                             <div class="col-md-12 pesquisa">
                                 <table class="table table-striped table-hover" id="tblResultado">
                                     <thead>
@@ -119,7 +119,8 @@
                     <br />
                     <div class="controls">
                         <div class="col-md-12">
-                            <input type="submit" class="btn btn-primary btn-large debcred" id="btnGravar" value="Gravar">
+                            <input type="submit" class="btn btn-info debcred" id="btnGravar" value="Gravar">
+                            <input type="button" class="btn btn-info " id="btnFecharModalMov" value="Fechar">
                         </div>
                     </div>
                 </td>
@@ -141,6 +142,10 @@
         
         $(".debcred").hide();
         $(".pesquisa").hide();
+
+        $("#btnFecharModalMov").click(function(){
+            $('#divCaixaMovimentacao').modal('hide');
+        });
         
         $('#btnLocalizar').click(function(){
             $.ajax({

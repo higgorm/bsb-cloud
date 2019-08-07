@@ -58,10 +58,12 @@ class TabelaTable extends AbstractTableGateway
 		$insert = $sql->insert( 'TB_TIPO_PAGAMENTO' );
 		$insert->values($array);
 
-		$statement = $sql->getSqlStringForSqlObject($insert);
+        $selectString = $sql->getSqlStringForSqlObject($insert);
+        $statement = $this->adapter->query( $selectString );
 		$results = $statement->execute();
 
 		return $results;
+
 	}
 
 	public function atualiza_formaPagamento( $id, $array ){
@@ -77,6 +79,15 @@ class TabelaTable extends AbstractTableGateway
 
 		return $results;
 	}
+
+	public function getNaturezaOperacao($cfop){
+        $statement = $this->adapter->query("SELECT DS_NATUREZA_OPERACAO =  CAST(CD_NATUREZA_OPERACAO AS VARCHAR) + ' - ' + DS_NATUREZA_OPERACAO 
+                                            FROM TB_NATUREZA_OPERACAO 
+                                            WHERE CD_NATUREZA_OPERACAO = ".$cfop);
+
+        $results = $statement->execute();
+        return $results->current();
+    }
 
 	public function selectAll_cfop(){
         $statement = $this->adapter->query('SELECT * FROM TB_NATUREZA_OPERACAO ORDER BY CD_NATUREZA_OPERACAO ASC');
@@ -102,17 +113,22 @@ class TabelaTable extends AbstractTableGateway
 		return $results;
 	}
 
-	public function atualiza_cfop( $id, $array ){
-		$sql = new Sql($this->adapter);
-		$update = $sql->update();
-		$update->table('TB_NATUREZA_OPERACAO');
-		$update->set($array);
-		$update->where(array('CD_NATUREZA_OPERACAO' => $id));
+	public function atualiza_cfop( $id, $array ) {
+        try {
 
-		$statement = $sql->prepareStatementForSqlObject($update);
-		$results = $statement->execute();
+            $sql = new Sql($this->adapter);
+            $update = $sql->update();
+            $update->table('TB_NATUREZA_OPERACAO');
+            $update->set($array);
+            $update->where(array('CD_NATUREZA_OPERACAO' => $id));
 
-		return $results;
+            $statement = $sql->prepareStatementForSqlObject($update);
+            $results = $statement->execute();
+            return $results;
+        } catch (Exception $e) {
+            throw new \Exception("Erro ao atualizar o CFOP");
+        }
+
 	}
 
 	public function selectAll_cartao(){
@@ -132,7 +148,8 @@ class TabelaTable extends AbstractTableGateway
 		$insert = $sql->insert( 'TB_CARTAO' );
 		$insert->values($array);
 
-		$$statement = $sql->getSqlStringForSqlObject($insert);
+        $selectString = $sql->getSqlStringForSqlObject($insert);
+        $statement = $this->adapter->query( $selectString );
 		$results = $statement->execute();
 
 		return $results;

@@ -30,7 +30,7 @@ class FranquiaMacaForm extends Form {
         $nrCaixa = new Text("nr_maca");
         $nrCaixa->setAttributes(array(
             "class" => "form-control",
-            "placeholder" => "",
+            "placeholder" => "Número da Maca",
             "id" => "nr_maca",
         ));
 

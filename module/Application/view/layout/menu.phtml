@@ -1,0 +1,364 @@
+<ul class="nav nav-main" data-ride="collapse">
+    <li>
+        <a class="auto" href="/painel/index" >
+            <i class="i i-home"></i>
+            <span class="font-bold">Painel Inicial</span>
+        </a>
+    </li>
+    <?php
+
+        function in_array_menu_pai($menuPerfilWeb,$arrayIdMenu = array()){
+            $return = false;
+            $keys = array_keys($menuPerfilWeb);
+            foreach($arrayIdMenu as $idMenu) {
+                if( in_array($idMenu, $keys)) {
+                    $return = true;
+                }
+            }
+
+            return $return;
+        }
+
+        function in_array_menu($menuPerfilWeb,$idMenu){
+            return in_array($idMenu, array_keys($menuPerfilWeb));
+        }
+
+        function get_url_menu($menuPerfilWeb,$idMenu){
+            return $menuPerfilWeb[$idMenu];
+        }
+
+
+    ?>
+        <?php if (in_array_menu_pai($session->menuPerfilWeb, array(2, 3, 4))) : ?>
+            <li class="">
+                <a href="#" class="auto">
+            <span class="pull-right text-muted">
+                <i class="i i-circledown text"></i>
+                <i class="i i-circleup text-active"></i>
+            </span>
+                    <i class="fa fa-lock"></i>
+                    <span class="font-bold">Controle de Acesso</span>
+                </a>
+                <ul class="nav dk">
+                <?php if (in_array_menu($session->menuPerfilWeb, 2)) : ?>
+
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 2) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Menus do sistema</span>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 3)) : ?>
+
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 3) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Perfis do sistema</span>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 4)) : ?>
+
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 4) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Usuários Web</span>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+                </ul>
+            </li>
+        <?php endif; ?>
+
+        <?php if (in_array_menu_pai($session->menuPerfilWeb, array(6, 7, 8, 9, 10))) : ?>
+            <li class="">
+                <a href="#" class="auto">
+            <span class="pull-right text-muted">
+                <i class="i i-circledown text"></i>
+                <i class="i i-circleup text-active"></i>
+            </span>
+                    <i class="fa fa-qrcode"></i>
+                    <span class="font-bold">Cadastros</span>
+                </a>
+                <ul class="nav dk">
+                <?php if (in_array_menu($session->menuPerfilWeb, 6)) : ?>
+
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 6) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Clientes</span>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 7)) : ?>
+
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 7) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Serviço/Mercadoria</span>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 8)) : ?>
+
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 8) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>CFOP</span>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 9)) : ?>
+
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 9) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Cartões</span>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 10)) : ?>
+                    <li>
+                         <a href="<?php echo get_url_menu($session->menuPerfilWeb, 10) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Forma de Pagamento</span>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+
+                </ul>
+        </li>
+        <?php endif; ?>
+
+
+        <?php if (in_array_menu_pai($session->menuPerfilWeb, array(11))) : ?>
+            <li class="">
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 11) ?>" class="auto">
+                    <i class="fa fa-calendar"></i>
+                    <span class="font-bold">Agenda</span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+    <?php if (in_array_menu_pai($session->menuPerfilWeb, array(12))) : ?>
+            <li class="">
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 12) ?>" class="auto">
+                    <i class="fa fa-pencil"></i>
+                    <span class="font-bold">Pedido</span>
+                </a>
+            </li>
+    <?php endif; ?>
+
+    <?php if (in_array_menu_pai($session->menuPerfilWeb, array(13))) : ?>
+            <li class="">
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 13) ?>" class="auto">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="font-bold">Caixa</span>
+                </a>
+            </li>
+
+    <?php endif; ?>
+
+    <?php if (in_array_menu_pai($session->menuPerfilWeb, array(14,15,16,17,18))) : ?>
+            <li class="">
+                <a href="" class="auto">
+        <span class="pull-right text-muted">
+            <i class="i i-circledown text"></i>
+            <i class="i i-circleup text-active"></i>
+        </span>
+                    <i class="fa fa-clipboard"></i>
+                    <span class="font-bold">Nota Fiscal Eletrônica</span>
+                </a>
+                <ul class="nav dk">
+                    <?php if (in_array_menu($session->menuPerfilWeb, 15)) : ?>
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 15) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Emitir NF-e</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if (in_array_menu($session->menuPerfilWeb, 16)) : ?>
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 16) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Listar NF-e</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if (in_array_menu($session->menuPerfilWeb, 34)) : ?>
+                        <li>
+                            <a href="<?php echo get_url_menu($session->menuPerfilWeb, 34) ?>" class="auto">
+                                <i class="i i-dot"></i>
+                                <span>Inutilizar NF-e</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if (in_array_menu($session->menuPerfilWeb, 17)) : ?>
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 17) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Consulta(Receita)</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if (in_array_menu($session->menuPerfilWeb, 18)) : ?>
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 18) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Configurar</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                </ul>
+            </li>
+    <?php endif; ?>
+
+    <?php if (in_array_menu_pai($session->menuPerfilWeb, array(21,22,23,24,25,26,27,28,29,30))) : ?>
+        <li class="">
+            <a href="#" class="auto">
+            <span class="pull-right text-muted">
+                <i class="i i-circledown text"></i>
+                <i class="i i-circleup text-active"></i>
+            </span>
+                <i class="i i-graph icon"></i>
+                <span class="font-bold">Relatórios</span>
+            </a>
+            <ul class="nav dk">
+                <?php if (in_array_menu($session->menuPerfilWeb, 22)) : ?>
+                    <!-- RELATORIO ATENDIMENTO -->
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 22) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Atendimento</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 23)) : ?>
+                    <li class="">
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 23) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Notas Fiscais</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 24)) : ?>
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 24) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Pedidos</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 25)) : ?>
+
+                    <!-- RELATORIO AGENDAMENTO -->
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 25) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Agendamentos</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 26)) : ?>
+                    <!-- RELATORIO CAIXA -->
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 26) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Caixa</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 27)) : ?>
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 27) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Resumo de Caixa</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 28)) : ?>
+                    <!-- RELATORIO ESTOQE -->
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 28) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Invent&aacute;rio de Estoque</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 29)) : ?>
+                    <!-- RELATORIO GERENCIAL -->
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 29) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Vendas Mensais Por Tipo de Pagamento</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if (in_array_menu($session->menuPerfilWeb, 30)) : ?>
+
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 30) ?>" class="auto">
+                            <i class="i i-dots"></i>
+                            <span>Multi-Loja</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </li>
+    <?php endif; ?>
+
+    <?php if (in_array_menu_pai($session->menuPerfilWeb, array(19))) : ?>
+            <li class="">
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 19) ?>" class="auto">
+                    <i class="fa fa-paperclip"></i>
+                    <span class="font-bold">Contas à Pagar</span>
+                </a>
+            </li>
+    <?php endif; ?>
+
+    <?php if (in_array_menu_pai($session->menuPerfilWeb, array(20))) : ?>
+            <li class="">
+                <a href="<?php echo get_url_menu($session->menuPerfilWeb, 20) ?>" class="auto">
+                    <i class="fa fa-money"></i>
+                    <span class="font-bold">Contas à Receber</span>
+                </a>
+            </li>
+    <?php endif; ?>
+
+    <?php if (in_array_menu_pai($session->menuPerfilWeb, array(31,32))) : ?>
+            <li class="">
+                <a href="#" class="auto">
+        <span class="pull-right text-muted">
+            <i class="i i-circledown text"></i>
+            <i class="i i-circleup text-active"></i>
+        </span>
+                    <i class="fa fa-users"></i>
+                    <span class="font-bold">CRM</span>
+                </a>
+                <ul class="nav dk">
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 31) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>Análise</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?php echo get_url_menu($session->menuPerfilWeb, 32) ?>" class="auto">
+                            <i class="i i-dot"></i>
+                            <span>E-mail</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    <?php endif; ?>
+</ul>

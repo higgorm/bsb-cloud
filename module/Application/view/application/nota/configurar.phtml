@@ -70,7 +70,14 @@
 							<div class="col-sm-6">
 								<label>Logotipo: </label>
 								<input type="file" class="form-control" name="logo" id="logo" accept="image/jpeg"/>
+                                <span class="info small text-danger">Obs.: O logotipo deve ser uma imagem de tamanho máximo 339 x 114 pixels, no formato (.jpg)!</span>
 							</div>
+                            <?php if($logotipoExistente) : ?>
+                            <div class="col-sm-6">
+                                <img src="<?php echo $logotipoCliente; ?>" width="339" height="114"
+                                        alt="Logotipo exibido no campo emitente da Nota Fiscal" title="Logotipo exibido no campo emitente da Nota Fiscal">
+                            </div>
+                            <?php endif; ?>
 						</fieldset>	
 						<!--<fieldset>
 							<legend>Nota</legend>
@@ -203,11 +210,12 @@
 							<legend>Certificado</legend>
 							<div class="col-sm-6">
 								<label>Certificado A1</label>
-								<input type="file" class="form-control" name="certificado" id="certificado" />
+								<input type="file" class="form-control" name="certificado" id="certificado" accept=".pfx" />
+                                <span class="info small text-danger">Obs.: Apenas certificado A1 com extensão (.pfx) são válidos para esta aplicação!</span>
 							</div>
 							<div class="col-sm-3">
 								<label>Senha</label>
-								<input type="password" class="form-control" name="certPassword" required />
+								<input type="password" class="form-control" name="certPassword" required  value="<?php echo $dado['certPassword'] ?>/>
 							</div>
 							<div class="col-xs-3 col-md-3">
 								<div class="col-xs-6 col-md-6">

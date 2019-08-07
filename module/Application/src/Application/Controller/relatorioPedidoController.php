@@ -53,8 +53,12 @@ class relatorioPedidoController  extends RelatorioController
     	$dbAdapter  = $sm->get('Zend\Db\Adapter\Adapter');
     	
     	//query
-    	$sql 		= " SELECT * FROM TB_PEDIDO WHERE DT_PEDIDO BETWEEN ? AND ? ";
-    	
+    	$sql 		= " SELECT P.* ,
+                               C.DS_NOME_RAZAO_SOCIAL
+                        FROM TB_PEDIDO P 
+                        LEFT JOIN TB_CLIENTE C ON P.CD_CLIENTE = C.CD_CLIENTE
+                        WHERE 1=1 
+                      ";
     	
     	if($this->params()->fromQuery('pdf') != true)
     	{
@@ -63,19 +67,32 @@ class relatorioPedidoController  extends RelatorioController
 			$dataFim			= $post->get('dt_fim');
 			$nrPedido			= $post->get('nr_pedido');
 			$status				= $post->get('status');
-			
-			if( $nrPedido != '' )
-				$sql = $sql.' AND NR_PEDIDO = '.$nrPedido;
-			if( $status != '' )
-				$sql = $sql." AND NR_PEDIDO = '".$status."'";
+
+			if( $nrPedido != '' ) {
+                $sql = $sql.' AND P.NR_PEDIDO = '.$nrPedido;
+            }
+
+            if( $status != '' ) {
+                $sql = $sql." AND P.ST_PEDIDO = '".$status."'";
+            }
+
+            if (( $dataInicio != '' ) && ($dataFim != '')) {
+                $sql = $sql." AND P.DT_PEDIDO 
+                                    BETWEEN '". date(FORMATO_ESCRITA_DATA,strtotime($dataInicio)) ."' 
+                                        AND '". date(FORMATO_ESCRITA_DATA,strtotime($dataFim)) ."'";
+            }
 
     		$statementList   = $dbAdapter->query($sql);
     		/* @var $results Zend\Db\ResultSet\ResultSet */
-    		$results 			= $statementList->execute(array(date('Ymd',strtotime($dataInicio)),date('Ymd',strtotime($dataFim))));
+    		$results 			= $statementList->execute();
     		 
     		$viewModel = new ViewModel();
     		$viewModel->setTerminal(true);
     		$viewModel->setVariable('lista',$results);
+            $viewModel->setVariable('logo','<img src="/img/logo-orange-small.png" alt="logotipo"/>');
+            $viewModel->setVariable('dataAtual',date("d/m/Y"));
+            $viewModel->setVariable('horaAtual',date("h:i:s"));
+            $viewModel->setVariable('dsLoja',$session->dsLoja);
     		$viewModel->setTemplate("application/relatorio/pedido/relatorio.phtml");
     		return $viewModel;
     	}
@@ -85,23 +102,31 @@ class relatorioPedidoController  extends RelatorioController
 			$dataFim			= $this->params()->fromQuery('dt_fim');
 			$nrPedido			= $this->params()->fromQuery('nr_pedido');
 			$status				= $this->params()->fromQuery('status');
+
+            if( $nrPedido != '' )
+                $sql = $sql.' AND P.NR_PEDIDO = '.$nrPedido;
+            if( $status != '' )
+                $sql = $sql." AND P.ST_PEDIDO = '".$status."'";
 			
     		$statementList   = $dbAdapter->query($sql);
     		/* @var $results Zend\Db\ResultSet\ResultSet */
-    		$results 		= $statementList->execute(array(date('Ymd',strtotime($dataInicio)),date('Ymd',strtotime($dataFim))));
+    		$results 		= $statementList->execute(array(date(FORMATO_ESCRITA_DATA,strtotime($dataInicio)),date(FORMATO_ESCRITA_DATA,strtotime($dataFim))));
     	
     		$pdf = new PdfModel();
-    		$pdf->setOption('filename', 'pedido'); // Triggers PDF download, automatically appends ".pdf"
+    		$pdf->setOption('filename', 'relatorio_pedido'); // Triggers PDF download, automatically appends ".pdf"
     		$pdf->setOption('paperSize', 'a4'); // Defaults to "8x11"
     		$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
     	
     		// To set view variables
     		$pdf->setVariables(array(
-    				'lista'=>$results
+                'dataAtual' =>  date("d/m/Y"),
+                'horaAtual' =>  date("h:i:s"),
+                'logo'      =>  '<img src="'.realpath(__DIR__.'/../../../../../public/img').'/logo-orange-small.png" alt="logo"  />',
+                'lista'     =>  $results,
+                'dsLoja'    =>  $session->dsLoja
     		));
-    		
-    		$pdf->setTemplate("application/relatorio/pedido/relatorio.phtml");
-    	
+
+            $pdf->setTemplate("application/relatorio/pedido/relatorio.phtml");
     		return $pdf;
     	}
     	
@@ -121,13 +146,14 @@ class relatorioPedidoController  extends RelatorioController
 		$mes 	= ($post->get('mes') ? $post->get('mes') : date('m') );
     	//query
     	$sql 		= " SELECT	LOJA    = P.CD_LOJA,
-								DIA		= P.DT_PEDIDO,
+								DIA		= CONCAT(DAY(P.DT_PEDIDO),'/',MONTH(P.DT_PEDIDO)),
+								DATA	= P.DT_PEDIDO,
 								TOTAL	= SUM(P.VL_TOTAL_LIQUIDO )
 						FROM TB_PEDIDO P
-						WHERE P.DT_PEDIDO BETWEEN 	'".$ano.$mes."01' 
-												AND '".$ano.$mes."30'
+						WHERE 
+						  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
 						GROUP BY P.CD_LOJA, P.DT_PEDIDO
-						ORDER BY P.CD_LOJA, P.DT_PEDIDO DESC ";
+						ORDER BY P.CD_LOJA, P.DT_PEDIDO ASC ";
     	$statementList   	= $dbAdapter->query($sql);
     	$results 			= $statementList->execute();
 		
@@ -138,18 +164,39 @@ class relatorioPedidoController  extends RelatorioController
 									DIA		= P.DT_PEDIDO,
 									TOTAL	= SUM(P.VL_TOTAL_LIQUIDO )
 							FROM TB_PEDIDO P
-							WHERE P.DT_PEDIDO BETWEEN 	'".$ano.$mes."01' 
-													AND '".$ano.$mes."30'
+							WHERE 
+							  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
 							GROUP BY P.CD_LOJA, P.DT_PEDIDO
 						) AS QUERY";
 		$statementList   	= $dbAdapter->query($sql);
 		$totais				= $statementList->execute();
+
+        $sql 		= "	SELECT	DISTINCT  P.CD_LOJA		
+							FROM TB_PEDIDO P
+							WHERE 
+							  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
+							GROUP BY P.CD_LOJA";
+        $statementList   	= $dbAdapter->query($sql);
+        $lojas				= $statementList->execute();
+
+        //query
+        $sql 		= " SELECT	LOJA    = CONCAT('Loja ',P.CD_LOJA),
+								VALOR	= SUM(P.VL_TOTAL_LIQUIDO )
+						FROM TB_PEDIDO P
+						WHERE 
+						  YEAR(P.DT_PEDIDO) = $ano AND MONTH(P.DT_PEDIDO) = '".($mes)."' 
+						GROUP BY P.CD_LOJA
+						ORDER BY P.CD_LOJA DESC ";
+        $statementList   	= $dbAdapter->query($sql);
+        $graphics			= $statementList->execute();
     		 
     	$viewModel = new ViewModel();
-    	$viewModel->setVariable('lista',$results);
+    	$viewModel->setVariable('lista',iterator_to_array($results));
 		$viewModel->setVariable('ano',$ano);
 		$viewModel->setVariable('mes',$mes);
 		$viewModel->setVariable('totais',$totais);
+        $viewModel->setVariable('lojas',iterator_to_array($lojas));
+        $viewModel->setVariable('graficos',iterator_to_array($graphics));
     	$viewModel->setTemplate("application/relatorio/pedido/pesquisa-multi-loja.phtml");
     		
 		return $viewModel;

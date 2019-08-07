@@ -123,7 +123,7 @@
                                 <?php foreach ($servico as $serv) : ?>
                                     <tr>
                                         <td><?php echo $serv['CD_MERCADORIA'] ?></td>
-                                        <td><?php echo $serv['DS_MERCADORIA'] ?></td>
+                                        <td><?php echo utf8_encode($serv['DS_MERCADORIA']) ?></td>
                                         <td><?php echo number_format($serv['VL_PRECO_VENDA'], 2, ',', '.') ?></td>
                                         <td><?php echo number_format($serv['VL_PRECO_VENDA_PROMOCAO'], 2, ',', '.') ?></td>
                                         <td></td>
@@ -169,30 +169,37 @@
                 <?php echo $this->formElement($form->get("fechar")) ?>
                 &nbsp;
                 <?php
-                if ($params['data'] >= date('d/m/Y')) {
-                    if (isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
-                        echo $this->formElement($form->get("return"));
+                    if ($params['data'] >= date('d/m/Y')) {
+                        if ((isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') && ( $params['stPedido'] != 'F')) {
+                            echo $this->formElement($form->get("return"));
+                        }
                     }
-                }
                 ?>
                 &nbsp;
                 <?php
-                if ($params['data'] >= date('d/m/Y')) {
-                    if (!isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
-                        echo $this->formElement($form->get("submit"));
-						//echo $this->formElement($form->get("button"));
-						echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
+                    if ($params['data'] >= date('d/m/Y')) {
+                        if ($dados['ST_CLIENTE_CHEGOU'] != 'S') {
+                            if (!isset($dados['CD_CLIENTE'])) {
+                                echo $this->formElement($form->get("submit"));
+                                //echo $this->formElement($form->get("button"));
+
+                            } else {
+                                echo '&nbsp;<button type="submit" name="submit" class="btn btn-primary bntAgendarAtendimento" onclick="javascript:$(form).attr(\'action\', \'/agenda/agendamento-cliente\').submit();" value="">Salvar agendamento</button>';
+                            }
+                        }
                     }
-                }
                 ?>
                 &nbsp;
                 <?php
-                if ($params['data'] == date('d/m/Y')) {
-                    if ($params['stPedido'] == 'A') {
-                        echo $this->formElement($form->get("atender"));
+                    if ($params['data'] == date('d/m/Y')) {
+                        if ($params['stPedido'] == 'A')  {
+                            if(isset($dados) && $dados['NR_PEDIDO'] == '') {
+                                echo $this->formElement($form->get("atender"));
+                            }
+                        }
                     }
-                }
                 ?>
+
             </div>
         </div>
     </form>
@@ -264,7 +271,7 @@
         <div class="controls">
             <div class="col-md-10">
                 <label class="control-label text-info" for="name">
-                    <?php echo utf8_encode("Servi&ccedil;os:") ?>
+                    <?php echo "Servi&ccedil;os:" ?>
                 </label>
                 <?php echo $this->formElement($form->get("list_servico")) ?>
             </div>
@@ -297,7 +304,7 @@
                             <?php foreach ($servico as $serv) : ?>
                                 <tr>
                                     <td><?php echo $serv['CD_MERCADORIA'] ?></td>
-                                    <td><?php echo $serv['DS_MERCADORIA'] ?></td>
+                                    <td><?php echo utf8_encode($serv['DS_MERCADORIA']) ?></td>
                                     <td><?php echo number_format($serv['VL_PRECO_VENDA'], 2, ',', '.') ?></td>
                                     <td><?php echo number_format($serv['VL_PRECO_VENDA_PROMOCAO'], 2, ',', '.') ?></td>
                                     <td></td>
@@ -323,7 +330,7 @@
 
         <div class="controls">
             <div class="col-md-12">
-                <label for="" class="control-label text-info"><?php echo utf8_encode("Profissional:") ?></label>
+                <label for="" class="control-label text-info"><?php echo "Profissional:" ?></label>
                 <select class="form-control" id="cdFuncionario2" name="cdop">
                     <option selected="selected" value="">Selecione...</option>
                     <?php
@@ -342,28 +349,35 @@
                 <?php echo $this->formElement($form->get("fechar")) ?>
                 &nbsp;
                 <?php
-                if ($params['data'] >= date('d/m/Y')) {
-                    if (isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
-                        echo $this->formElement($form->get("return"));
+                    if ($params['data'] >= date('d/m/Y')) {
+                        if ((isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') && ( $params['stPedido'] != 'F')) {
+                            echo $this->formElement($form->get("return"));
+                        }
                     }
-                }
                 ?>
                 &nbsp;
                 <?php
-                if ($params['data'] >= date('d/m/Y')) {
-                    if (!isset($dados['CD_CLIENTE']) || $dados['ST_CLIENTE_CHEGOU'] == 'N') {
-                        echo $this->formElement($form->get("submit"));
-						echo '&nbsp;<button class="btn btn-primary">Enviar NF</button>';
+                    if ($params['data'] >= date('d/m/Y')) {
+                        if ($dados['ST_CLIENTE_CHEGOU'] != 'S') {
+                            if (!isset($dados['CD_CLIENTE'])) {
+                                echo $this->formElement($form->get("submit"));
+                                //echo $this->formElement($form->get("button"));
+
+                            } else {
+                                echo '&nbsp;<button type="submit" name="submit" class="btn btn-primary bntAgendarAtendimento" onclick="javascript:$(form).attr(\'action\', \'/agenda/agendamento-cliente\').submit();" value="">Salvar agendamento</button>';
+                            }
+                        }
                     }
-                }
                 ?>
                 &nbsp;
                 <?php
-                if ($params['data'] == date('d/m/Y')) {
-                    if ($params['stPedido'] == 'A') {
-                        echo $this->formElement($form->get("atender"));
+                    if ($params['data'] == date('d/m/Y')) {
+                        if ($params['stPedido'] == 'A')  {
+                            if(isset($dados) && $dados['NR_PEDIDO'] == '') {
+                                echo $this->formElement($form->get("atender"));
+                            }
+                        }
                     }
-                }
                 ?>
             </div>
         </div>
@@ -396,7 +410,7 @@
                                         <option value="">Selecione...</option>
                                         <?php
                                         if (!empty($listaSupervisor)) {
-                                            echo '<option value="ORANGE">ORANGE</option>';
+                                            //echo '<option value="ORANGE">ORANGE</option>';
                                             foreach ($listaSupervisor as $operador) {
                                                 echo "<option value='" . $operador["DS_LOGIN"] . "'>" . substr(utf8_encode($operador["DS_LOGIN"]), 0, 15) . "</option>";
                                             }

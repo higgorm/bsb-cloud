@@ -16,20 +16,9 @@
                                 </label>
                             </h4>
                         </div>
-                        <div class="col-md-3">
-                            <h4>
-                                <label for="" class="control-label text-info"><a href="#" onclick="abreDivFuncionario(true)">
-                                        Funcion&aacute;rio
-                                    </a>
-                                    /
-                                    <a href="#" onclick="abreDivFuncionario(false)">
-                                        Maca
-                                    </a>
-                                </label>
-                            </h4>
-                        </div>
 
-                        <div class="col-md-1 text-right text-left">
+
+                        <div class="col-md-4 text-right text-left">
                             <div class="btn-group">
                                 <a class="btn btn-rounded btn-default  dropdown-toggle" data-toggle="dropdown">Ações <span class="caret"></span></a>
                                 <ul class="dropdown-menu text-left pull-right">
@@ -40,7 +29,12 @@
                                     </li>
                                     <li>
                                         <a href="#" id="btnAdicionarMaca">
-                                            Adicionar Profissionais/Macas
+                                            Adicionar Profissional
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="abreDivFuncionario(true)">
+                                            Exibir lista de profissionais
                                         </a>
                                     </li>
                                 </ul>
@@ -116,13 +110,13 @@
                                                     echo '<tr><td onclick="javascript:abreModal(\'' . $value['idcliente'] . '\',\'' . $value['id'] . '\',\'' . trim($value['maca']) . '\',\'' . trim($value['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
                                                 }
                                             } else {
-                                                echo '<tr><td onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
+                                                echo '<tr><td title="Clique para agendar" onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;-&nbsp;</td></tr>';
                                             }
 
                                             $horaNova = strtotime("$hora + $intervalo minutes");
                                             $hora = date("H:i", $horaNova);
                                         } else {
-                                            echo '<tr><td onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;</td></tr>';
+                                            echo '<tr><td title="Clique para agendar" onclick="javascript:abreModal(0,\'' . $maca['id'] . '\',\'' . $maca['maca'] . '\',\'' . trim($maca['data']) . '\',\'' . $hora . '\',\'' . $vazio . '\',\'' . $stPedido . '\',\'' . $vazio . '\');" style="background-color:white;border-left: 1px  dashed;">&nbsp;-&nbsp;</td></tr>';
 
                                             $horaNova = strtotime("$hora + $intervalo minutes");
                                             $hora = date("H:i", $horaNova);
@@ -148,7 +142,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" onclick="window.location.reload();" data-dismiss="modal">X</button>
                     <i class="icon-search icon-white"></i>
-                    <span class="text-info-modal"><?php echo utf8_encode("Adicionar Profissional/Maca") ?></span>
+                    <span class="text-info-modal"><?php echo utf8_encode("Adicionar Profissional") ?></span>
                 </div>
                 <div id="bodyMacaModal" class="modal-body"></div>
             </div>

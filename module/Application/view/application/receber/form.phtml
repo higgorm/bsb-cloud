@@ -4,7 +4,7 @@
             <div class="panel-body">
                 <div class="widget-header">
                     <!--<i class="icon-check"></i>-->
-                    <h3><?php echo utf8_encode("CADASTRO DE CONTAS A RECEBER") ?></h3>
+                    <h3><?php echo "CADASTRO DE CONTAS A RECEBER" ?></h3>
                 </div> <!-- /widget-header -->
                 <form id="validation-form" action="<?php echo $form?>" method="post" role="form">
 
@@ -34,22 +34,40 @@
                           </div>
                       </div>
                       <br>
-                      <div class="controls" >
-                          <div class="col-md-12">
-                              <label class="control-label text-info" for="name">
-                                  <?php echo utf8_encode("Nome:") ?>
-                              </label>
 
-                              <?php $razao = (isset($ds_cliente->ds_nome_razao_social)) ? $ds_cliente->ds_nome_razao_social : null ?>
-                              <div id="ds_nome_razao_social" class="autocomplete"></div>
-                              <input type="hidden" id="cd_cliente" name="cd_cliente"/>
-                          </div>
-                      </div>
+                        <div class="controls" >
+
+                            <div class="col-md-1">
+                                <label>Código</label>
+                                <div class="input-group">
+                                    <input type="number" name="codCliente" id="codCliente" class="form-control" min="1" max="9999999999" value="<?php echo $post['CD_CLIENTE'] ?>" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                <button type="button" id="searchCliente" class="form-control">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+
+                            <div class="col-md-9">
+                                <label class="control-label text-info" for="name">Nome / Razão Social:</label><br>
+                                <input name="destNome" id="destNome" class="form-control"  maxlength="150" value="<?php echo utf8_encode($ds_cliente->ds_nome_razao_social) ?>" readonly />
+                            </div>
+
+
+                            <div class="col-md-1">
+                                <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                <button type="button" class="form-control" id="cadastraClienteCompleto"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">&nbsp;</div>
 
                         <div class="controls">
                             <div class="col-md-2">
                                 <label class="control-label text-info" for="name">Número NF</label>
-                                <input id="NR_NOTA" name="NR_NOTA" class="form-control" value="<?php echo $post['NR_NOTA']?>" maxlength="10" />
+                                <input id="NR_NOTA" name="NR_NOTA" class="form-control" value="<?php echo $post['NR_NOTA']?>" maxlength="7" />
                             </div>
                             <div class="col-md-2">
                                 <label class="control-label text-info" for="name">Número Doc</label>
@@ -58,25 +76,47 @@
                         </div>
                         <br>
 
+                        <?php
+                        $dataFormatadaEmissao = "";
+                        $dataFormatadaVencimento = "";
+                        $dataFormatadaMovimento = "";
+
+                        if(!empty($post['DT_MOVIMENTO'])) {
+                            $dtMov = new DateTime($post['DT_MOVIMENTO']);
+                            $dataFormatadaMovimento = $dtMov->format('d-m-Y');
+                        }
+
+                        if(!empty($post['DT_EMISSAO'])) {
+                            $dtEmissao = new DateTime($post['DT_EMISSAO']);
+                            $dataFormatadaEmissao = $dtEmissao->format('d-m-Y');
+                        }
+
+                        if(!empty($post['DT_VENCIMENTO'])) {
+                            $dtVencime = new DateTime($post['DT_VENCIMENTO']);
+                            $dataFormatadaVencimento = $dtVencime->format('d-m-Y');
+                        }
+
+                        ?>
+
                         <div class="controls">
                           <div class="col-md-2">
                               <label class="control-label text-info" for="name">Data Movimentação</label>
-                              <input id="DT_MOVIMENTO" name="DT_MOVIMENTO" class="dataP form-control" value="<?php echo $post['DT_MOVIMENTO']?>" maxlength="10" />
+                              <input id="DT_MOVIMENTO" name="DT_MOVIMENTO" class="dataP form-control" type="text" value="<?php echo $dataFormatadaMovimento ?>" maxlength="10" />
                           </div>
                           <div class="col-md-2">
-                              <label class="control-label text-info" for="name">Data Emisão</label>
-                              <input id="DT_EMISSAO" name="DT_EMISSAO" class="dataP form-control" value="<?php echo $post['DT_EMISSAO']?>" maxlength="10" />
+                              <label class="control-label text-info" for="name">Data Emissão</label>
+                              <input id="DT_EMISSAO" name="DT_EMISSAO" class="dataP form-control" type="text" value="<?php echo $dataFormatadaEmissao ?>" maxlength="10" />
                           </div>
                       </div>
 
                       <div class="controls">
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">Data Vencimento</label>
-                            <input id="DT_VENCIMENTO" name="DT_VENCIMENTO" class="dataP form-control" value="<?php echo $post['DT_VENCIMENTO']?>" maxlength="10" />
+                            <input id="DT_VENCIMENTO" name="DT_VENCIMENTO" class="dataP form-control" type="text"  value="<?php echo $dataFormatadaVencimento ?>" maxlength="10" />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label text-info" for="name">Valor</label>
-                            <input id="VL_DOCUMENTO" name="VL_DOCUMENTO" class="form-control" value="<?php echo $post['VL_DOCUMENTO']?>" maxlength="10" />
+                            <input id="VL_DOCUMENTO" name="VL_DOCUMENTO" class="moeda form-control" value="<?php echo ($post['VL_DOCUMENTO']) ? number_format($post['VL_DOCUMENTO'],2) : "" ?>" maxlength="10" />
                         </div>
                         </div>
                         <div class="controls">
@@ -113,20 +153,20 @@
                         <div class="controls">
                             <div class="col-md-6">
                                 <label class="control-label text-info" for="ds_fone1">Complemento</label>
-                                <input name="DS_COMPL_HISTORICO" id="DS_COMPL_HISTORICO" class="form-control" value="<?php echo $post['DS_COMPL_HISTORICO']?>" maxlength="255"/>
+                                <input name="DS_COMPL_HISTORICO" id="DS_COMPL_HISTORICO" class="form-control" value="<?php echo $post['DS_COMPL_HISTORICO']?>" maxlength="50"/>
                             </div>
                         </div>
                         <div class="controls">
                             <div class="col-md-6">
                                 <label class="control-label text-info" for="ds_fone1">Observação</label>
-                                <input name="DS_OBSERVACAO" id="DS_OBSERVACAO" class="form-control" value="<?php echo $post['DS_OBSERVACAO']?>" maxlength="255"/>
+                                <input name="DS_OBSERVACAO" id="DS_OBSERVACAO" class="form-control" value="<?php echo $post['DS_OBSERVACAO']?>" maxlength="100"/>
                             </div>
                         </div>
 
                         <div class="controls">
                             <div class="col-md-4">
                                 <label class="control-label text-info" for="name">Tipo de pagamento</label>
-                                <select name="CD_TIPO_PAGAMENTO" id="CD_TIPO_PAGAMENTO" class="form-control">
+                                <select name="CD_TIPO_PAGAMENTO" id="CD_TIPO_PAGAMENTO" class="form-control" required="true">
                                     <option value="">Selecione...</option>
                                     <?php if($listaPagamento):?>
                                         <?php foreach ($listaPagamento as $pagamento):?>
@@ -140,23 +180,48 @@
                             </div>
                         </div>
 
-                        <div class="controls" id="nome_emissor" style="display: none;">
+                     <!--   <div class="controls" id="nome_emissor">
                             <div class="col-md-4">
                                 <label class="control-label text-info" for="ds_fone1">Nome do Emissor</label>
-                                <input name="DS_EMISSOR" id="DS_EMISSOR" class="form-control" value="<?php echo $post['DS_EMISSOR']?>" maxlength="255"/>
+                                <input name="DS_EMISSOR" id="DS_EMISSOR" class="form-control" value="<?php /*echo $post['DS_EMISSOR']*/?>" maxlength="50"/>
                             </div>
                         </div>
 
-                        <div class="controls" id="CPF_emissor" style="display: none;">
+                        <div class="controls" id="CPF_emissor">
                             <div class="col-md-2">
-                                <label class="control-label text-info" for="ds_fone1">CPF Emissor</label>
-                                <input name="CPF_EMISSOR" id="CPF_EMISSOR" class="form-control" value="<?php echo $post['CPF_EMISSOR']?>" maxlength="255"/>
+                                <label class="control-label text-info" for="ds_fone1">CPF/CNPJ Emissor</label>
+                                <input type="number" name="NR_CGC_CPF_EMISSOR" id="CPF_EMISSOR" class="form-control" required="true" value="<?php /*echo $post['NR_CGC_CPF_EMISSOR']*/?>" required="true" maxlength="14"/>
+                            </div>
+                        </div>-->
+
+
+
+                        <div class="controls" id="nome_emissor">
+                            <div class="col-md-5">
+                                <label class="control-label text-info" for="DS_EMISSOR">Nome do Emissor</label><br>
+                                <input name="DS_EMISSOR" id="DS_EMISSOR" class="form-control"  maxlength="150" value="<?php echo $post['DS_EMISSOR'] ?>"  maxlength="50" />
+                            </div>
+
+                            <div class="controls" id="CPF_emissor">
+                                <div class="col-md-2">
+                                    <label class="control-label text-info" for="NR_CGC_CPF_EMISSOR">CPF/CNPJ Emissor</label>
+                                    <input type="number" name="NR_CGC_CPF_EMISSOR" id="CPF_EMISSOR" class="form-control" required="true" value="<?php echo $post['NR_CGC_CPF_EMISSOR'] ?>" required="true" maxlength="14"/>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                <button type="button" id="searchEmissor" class="form-control">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </div>
                         </div>
+
+
                         <div class="controls" id="foneEmissor" style="display: none;">
                             <div class="col-md-2">
                                 <label class="control-label text-info" for="ds_fone1">Fone Emissor</label>
-                                <input name="NR_FONE_EMISSOR" id="NR_FONE_EMISSOR" class="form-control" value="<?php echo $post['NR_FONE_EMISSOR']?>" maxlength="255"/>
+                                <input name="NR_FONE_EMISSOR" id="NR_FONE_EMISSOR" class="form-control" value="<?php echo $post['NR_FONE_EMISSOR']?>" maxlength="12"/>
                             </div>
                         </div>
                         <div class="controls" id="banco_emissor" style="display: none;">
@@ -177,19 +242,19 @@
                         <div class="controls" id="agencia_emissor" style="display: none;">
                             <div class="col-md-2">
                                 <label class="control-label text-info" for="ds_fone1">Agencia</label>
-                                <input name="CD_AGENCIA" id="CD_AGENCIA" class="form-control" value="<?php echo $post['CD_AGENCIA']?>" maxlength="255"/>
+                                <input name="CD_AGENCIA" id="CD_AGENCIA" class="form-control" value="<?php echo $post['CD_AGENCIA']?>" maxlength="6"/>
                             </div>
                         </div>
                         <div class="controls" id="conta_emissor" style="display: none;">
                             <div class="col-md-2">
                                 <label class="control-label text-info" for="ds_fone1">Conta</label>
-                                <input name="NR_CONTA" id="NR_CONTA" class="form-control" value="<?php echo $post['NR_CONTA']?>" maxlength="255"/>
+                                <input name="NR_CONTA" id="NR_CONTA" class="form-control" value="<?php echo $post['NR_CONTA']?>" maxlength="10"/>
                             </div>
                         </div>
                         <div class="controls" id="cheque_emissor" style="display: none;">
                             <div class="col-md-2">
                                 <label class="control-label text-info" for="ds_fone1">Cheque</label>
-                                <input name="NR_CHEQUE" id="NR_CHEQUE" class="form-control" value="<?php echo $post['NR_CHEQUE']?>" maxlength="255"/>
+                                <input name="NR_CHEQUE" id="NR_CHEQUE" class="form-control" value="<?php echo $post['NR_CHEQUE']?>" maxlength="15"/>
                             </div>
                         </div>
                         <div class="controls" id="cartao_emissor" style="display: none;">
@@ -231,6 +296,48 @@
         </div>
     </div>
 </section>
+
+<!-- Modal Pesquisa Cliente -->
+<div id="pesquisaClienteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pesquisaClienteModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal">PESQUISA CLIENTE</span>
+            </div>
+            <div id="bodyPesquisaCliente" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pesquisa Emissor -->
+<div id="pesquisaEmissorModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pesquisaEmissorModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal">PESQUISA EMISSOR</span>
+            </div>
+            <div id="bodyPesquisaEmissor" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cadastra Cliente -->
+<div id="cadastraClienteCompletoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cadastraClienteCompletoModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal">Cadastrar Cliente</span>
+            </div>
+            <div id="bodyCadastroCliente" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
 
 <style type="text/css">
     /* Input textbox - do not specify a width here, it will be overwritten */
@@ -349,21 +456,20 @@
         $('#ds_nome_razao_social_input').attr('type', 'text');
         $('#ds_nome_razao_social_input').attr('class', 'form-control');
         $('#ds_nome_razao_social_input').attr('style', 'width: 100%;');
+        $('#ds_nome_razao_social_input').attr('required', 'true');
 
         $('#CD_TIPO_PAGAMENTO').click(function() {
             if (this.value == 1 || this.value == "")
             {
                 $('#nome_emissor').hide();
                 $('#foneEmissor').hide();
-                $('#CPF_emissor').hide();
+                $('#CPF_emissor').show();
                 $('#banco_emissor').hide();
                 $('#agencia_emissor').hide();
                 $('#conta_emissor').hide();
                 $('#cheque_emissor').hide();
                 $('#cartao_emissor').hide();
-            }
-            if (this.value == 2)
-            {
+            } else if (this.value == 2) {
                 $('#nome_emissor').show();
                 $('#foneEmissor').show();
                 $('#CPF_emissor').show();
@@ -372,9 +478,7 @@
                 $('#conta_emissor').show();
                 $('#cheque_emissor').show();
                 $('#cartao_emissor').hide();
-            }
-            if(this.value == 5)
-            {
+            } if(this.value == 5) {
                 $('#nome_emissor').show();
                 $('#foneEmissor').show();
                 $('#CPF_emissor').show();
@@ -383,6 +487,43 @@
                 $('#conta_emissor').show();
                 $('#cheque_emissor').hide();
                 $('#cartao_emissor').show();
+            } else {
+                $('#nome_emissor').show();
+                $('#foneEmissor').hide();
+                $('#CPF_emissor').show();
+                $('#banco_emissor').hide();
+                $('#agencia_emissor').hide();
+                $('#conta_emissor').hide();
+                $('#cheque_emissor').hide();
+                $('#cartao_emissor').hide();
+            }
+        });
+
+        $(".moeda").maskMoney({showSymbol:false, symbol:"", decimal:",", thousands:"."});
+
+        $("#codCliente").change(function (){
+            var cdCliente = $("#codCliente").val();
+
+            if (cdCliente > 0){
+                $.ajax({
+                    type: 'post',
+                    dataType: "json",
+                    url: '/cliente/recupera-cliente-por-codigo',
+                    data: {
+                        cd_cliente: cdCliente
+                    },
+                    success: function(data) {
+                        if (data.result == 'erro') {
+                            alert(data.message);
+                            $("#destNome").val("");
+                            return false;
+                        }
+
+                        $("#destNome").val(data.data.ds_nome_razao_social);
+                        $("#codCliente").val(data.data.cd_cliente);
+                        $('.modal').modal('hide');
+                    }
+                });
             }
         });
     });

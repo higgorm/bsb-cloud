@@ -46,7 +46,7 @@ class ClienteRapidoTable extends AbstractTableGateway
         $row = $rowset->current();
 
 //        if (!$row) {
-//            throw new \Exception("Maca $nrMaca  n�o existe no banco de dados!");
+//            throw new Exception("Profissional $nrMaca  não existe no banco de dados!");
 //        }
 
         return $row;
@@ -85,7 +85,7 @@ class ClienteRapidoTable extends AbstractTableGateway
         if ($this->getId($cdLoja, $nrMaca)) {
             $this->delete(array("cd_loja" => $cdLoja, "nr_maca" => $nrMaca));
         } else {
-            throw new \Exception("Maca $nrMaca  n�o existe no banco de dados!");
+            throw new Exception("Profissional $nrMaca  não existe no banco de dados!");
         }
     }
 

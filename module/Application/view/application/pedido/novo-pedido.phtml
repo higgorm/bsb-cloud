@@ -1,320 +1,318 @@
-<div  class="controls form-inline fluid">
-    <div id="alertaDeInclusao" class="alert">
-        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
-        <strong>Alerta: </strong> Informe o produto / servi&ccedil;o  a ser adicionado.
-    </div>
-    <div id="alertaDeExclusao" class="alert">
-        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
-        <strong>Alerta: </strong> Voc&ecirc; n&atilde;o selecionou nenhum produto / servi&ccedil;o.
-    </div>
-    <div id="alertaDeDuplicidade" class="alert">
-        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
-        <strong>Alerta: </strong> Voc&ecirc; j&aacute; adicionou este produto / servi&ccedil;o  ao pedido.
-    </div>
-    <div id="alertaDeInclusaoProfissional" class="alert">
-        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
-        <strong>Alerta: </strong> Voc&ecirc; ainda n&atilde;o informou o profissional.
-    </div>
-    <div id="alertaDeValidacaoEstoque" class="alert">
-        <button class="close" type="button" onclick="desabilitaAlerta()">x</button>
-        <strong>Alerta: </strong><span id="txtAlertaDeValidacaoEstoque"></span>
-    </div>
-    <label class="control-label text-info" for="name"><?php echo utf8_encode("Nome do Cliente") ?>:</label>&nbsp;
-    <span><?php echo $nmClienteSelecionado ?></span>
-</div>
-        <form name="frmPedidoTablet" id="frmPedidoTablet" method="post">
-            <input type="hidden" name="nrPedido" id="nrPedido" value="<?php echo $nrPedido ?>" />
-            <input type="hidden" name="tpPedido" id="tpPedido" value="<?php echo $tpPedido ?>" />
+<script type="text/javascript" src="/js/orangeweb/pedido/pedido.js"></script>
+
+<form class="form-horizontal"  id="pedido" action="/pedido/salvar-novo-pedido" method="post" role="form" enctype="multipart/form-data">
+
+    <input type="hidden" name="tpPedido" id="tpPedido" value="P" />
+    <input type="hidden" name="cdTpPedido" id="cdTpPedido" value="<?php echo @$pedido['CD_TIPO_PEDIDO'] ?>" />
+    <input type="hidden" name="flRedirecionarAoCaixa" id="flRedirecionarAoCaixa" value="N" />
+
+
+    <section class="panel panel-default">
+        <div class="main">
             <div class="row-fluid">
-                    <div class="span8">
-                        <label class="control-label text-info" for="name"><?php echo "Produto / Serviço" ?>:&nbsp;</label>
-                        <select name="comboSelectServico" id="comboSelectServico" class="form-control">
-                            <option value="">Selecione...</option>
-                            <?php
-                            foreach ($mercadorias as $mercadoria) {
-                                echo "<option value='{$mercadoria["CD_MERCADORIA"]}'>{$mercadoria["CD_MERCADORIA"]} - " . utf8_encode($mercadoria["DS_MERCADORIA"]) . "</option>";
-                            }
-                            ?>
-                        </select>
-                        <div class="col-md-12">&nbsp;</div>
-                        <button id="btnIncluirMercadoria" class="btn btn-primary" type="button"><i class="icon-white icon-plus"></i>&nbsp;Adicionar ao pedido</button>
+                <div class="panel-body">
+                    <!-- Nav tabs -->
+<!--                    <ul class="nav nav-tabs" role="tablist">-->
+<!--                        <li role="presentation" class="active"><a href="#destinatario" aria-controls="destinatario" role="tab" data-toggle="tab">Pedido</a></li>-->
+<!--                        <li role="presentation"><a href="#dadosPedido" aria-controls="dadosPedido" role="tab" data-toggle="tab">Dados do Pedido</a></li>-->
+<!--                    </ul>-->
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+<!--                        <div role="tabpanel" class="tab-pane active" id="destinatario">-->
+                            <fieldset>
+                                <legend>Dados do Pedido</legend>
+                                <div class="col-md-2">
+                                    <label class="control-label text-info">Número do Pedido:</label>
+                                    <input type="text" value="<?php echo $pedido['NR_PEDIDO'] ?>" name="nrPedido" id="nrPedido" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label text-info">Data do Pedido:</label>
+                                    <input type="text" class="dataP form-control" name="dtPedido" id="dtPedido" value="<?php echo ( @$pedido['DT_PEDIDO'] ? date(FORMATO_ESCRITA_DATA, strtotime($pedido['DT_PEDIDO'])) : date('d-m-Y'))?>" required />
+                                </div>
+
+                                <div class="controls col-md-4">
+                                    <label for="validateSelectProfissional" class="control-label text-info" >&nbsp;Vendedor:</label>
+                                    <select name="cdVendedor" id="cdVendedor" class="form-control" onchange="desabilitaAlerta()" required>
+                                        <option value="">Selecione...</option>
+                                        <?php
+                                        foreach ($vendedores as $vendedor) {
+                                            $selected = "  ";
+                                            if ((int) $vendedor["CD_FUNCIONARIO"] == (int) $pedido['CD_FUNCIONARIO']) {
+                                                $selected = " selected ";
+                                            }
+                                            echo "<option value='{$vendedor["CD_FUNCIONARIO"]}'  " . $selected . ">{$vendedor["CD_FUNCIONARIO"]} - " . utf8_encode($vendedor["DS_FUNCIONARIO"]) . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12">&nbsp;</div>
+                            </fieldset>
+                            <!--------------------------------------------------------------------------------------------------------------------->
+                            <fieldset>
+                                <legend>Cliente</legend>
+                                <div class="controls" >
+
+                                    <div class="col-md-1">
+                                        <label>Código</label>
+                                        <div class="input-group">
+                                            <input type="number" name="codCliente" id="codCliente" class="form-control" min="1" max="9999999999" value="<?php echo @$pedido['CD_CLIENTE'] ?>" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                        <button type="button" id="searchCliente" class="form-control">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="control-label text-info" for="name">Nome / Razão Social:</label>
+                                        <input name="destNome" id="destNome" class="form-control"  maxlength="255" value="<?php echo @$cliente['ds_nome_razao_social'] ?>" required  readonly />
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label class="control-label text-info" for="name">CPF / CNPJ:</label><br>
+                                        <input name="destCNPJ" id="destCNPJ" class="form-control"  maxlength="14" readonly value="<?php echo @$cliente['nr_cgc_cpf'] ?>" readonly />
+
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                        <button type="button" class="form-control" id="cadastraClienteCompleto"><i class="fa fa-plus"></i></button>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-sm-12">&nbsp;</div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Produtos</legend>
+
+                                <input type="hidden" name="isServico" id="isServico" value="<?php echo @$pedidoMerc[0]['ST_SERVICO']; ?>" />
+                                <input type="hidden" name="isServicoProxProduto" id="isServicoProxProduto" value="" />
+                                <div class="row-fluid">
+                                    <div class="col-md-1">
+                                        <label>Código</label>
+                                        <div class="input-group">
+                                            <input type="number" name="CD_MERCADORIA" id="CD_MERCADORIA" class="form-control" value="" min="1" max="9999999999"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label class="control-label text-info" for="name">&nbsp;</label><br>
+                                        <button id="searchMercadoria" type="button" class="form-control">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label>Descrição</label><br>
+                                        <input type="text" class="form-control" id="ds_mercadoria" name="ds_mercadoria" maxlength="120" readonly/>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Valor Unitário</label><br>
+                                        <input type="text" class="form-control" id="vl_preco_unitario" name="vl_preco_unitario" onKeyUp="moeda(this)" />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>Qtd</label><br>
+                                        <input type="text" class="form-control numbersOnly" value="1" id="qtd_mercadoria" name="qtd_mercadoria" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Total</label><br>
+                                        <input type="text" class="form-control" id="vl_tot" name="vl_tot" readonly />
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label>&nbsp;</label><br>
+                                        <button id="btnIncluirMercadoria" class="btn btn-primary" type="button"><i class="icon-white icon-plus"></i>&nbsp;Adicionar ao pedido</button>
+                                    </div>
+                                    <div class="col-md-12">&nbsp;</div>
+                                    <div class="col-md-12">
+                                        <table class="table table-striped table-bordered" id="tabelaMercadorias" name="tabelaMercadorias">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <button type="button" id="chkTodos" class="btn btn-info" ><i class="icon-white"></i></button>
+                                                </th>
+                                                <th>
+                                                    <span>Cód.</span>
+                                                </th>
+                                                <th>
+                                                    <span>Produto / Serviço</span>
+                                                </th>
+                                                <th>
+                                                    <span>Quantidade</span>
+                                                </th>
+                                                <th>
+                                                    <span>Valor Unitário</span>
+                                                </th>
+                                                <th>
+                                                    <span>Valor líquido</span>
+                                                </th>
+                                                <th>
+                                                    <span>Total</span>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if( @$pedidoMerc ) :?>
+                                                <?php  foreach( $pedidoMerc as $merc ): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <button type="button" name="chkMercadoria[]" id="chkMercadoria<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['CD_MERCADORIA'] ?>" class="btn btn-info" onclick="verificaStatus($(this))"><i class=\"icon-white\"></i></button>
+                                                            <input type="hidden" name="cdMercadoria[]" value="<?php echo $merc['CD_MERCADORIA'] ?>" />
+                                                        </td>
+                                                        <td>
+                                                            <?php echo $merc['CD_MERCADORIA'] ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php echo $merc['DS_MERCADORIA'] ?> <input type="hidden" name="ds_mercadoria-<?php echo $merc['CD_MERCADORIA'] ?>" value="<?php echo $merc['DS_MERCADORIA'] ?>" />
+                                                        </td>
+                                                        <td>
+                                                            <?php echo (int)$merc['QTD'] ?>
+                                                            <input type="hidden"
+                                                                   id="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    name="qtdVendida-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                      value="<?php echo (int)$merc['QTD'] ?>" />
+                                                        </td>
+                                                        <td>
+                                                            <?php echo $merc['VL_TOTAL_BRUTO'] ?>
+                                                            <input type="hidden"
+                                                                   id="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    name="vl_preco_unitario-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                        value="<?php echo number_format($merc['VL_TOTAL_BRUTO'],2, '.', '') ?>" />
+                                                        </td>
+                                                        <td>
+                                                            <span id="span_vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo $merc['VL_DESCONTO'] ?></span>
+                                                            <input type="hidden"
+                                                                   id="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    name="vl_preco_desconto-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                        value="<?php echo number_format($merc['VL_DESCONTO'],2, '.', '') ?>" />
+                                                        </td>
+                                                        <td>
+                                                            <span id="span_vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"><?php echo $merc['VL_TOTAL'] ?></span>
+                                                            <input type="hidden"
+                                                                   id="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                    name="vl_tot-<?php echo $merc['CD_MERCADORIA'] ?>"
+                                                                        value="<?php echo number_format($merc['VL_TOTAL'],2, '.', '') ?>" />
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+
+                                    <div class="col-md-2">
+                                        <button id="btnExcluirMercadoria" class="btn btn-info" type="button"><i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados</button>
+                                    </div>
+
+                                    <div class="col-md-8 text-right">
+                                        <label class="text-right"><b>Sub Total:&nbsp;R$</b></label>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control text-right" readonly
+                                               value="<?php echo ( @$totalSubPedido ? number_format($totalSubPedido, 2, ',', '.') : "0,00" )?>"
+                                               id="subTotalPedido"  name="vl_sub_tot" placeholder="R$ 0,00" title="Sub-total do pedido, sem descontos." />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="col-md-10 text-right" >
+                                        <label class="text-right"><b>Desconto:&nbsp;</b></label>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" class="form-control text-right" style="width:120%!important;"
+                                               value="<?php echo ( @$nrDesconto ? number_format($nrDesconto, 2, ',', '.') : "" )?>"
+                                               id="nrPercentualDesconto" name="nr_desconto" placeholder="0,00 %"   onKeyUp="moeda(this)" title="%" maxlength="7">
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <input type="text" class="form-control text-right" style="margin-left:-20%!important; width:120%!important;"
+                                               value="<?php echo ( @$valorDesconto ? number_format($valorDesconto, 2, ',', '.') : "" ) ?>"
+                                                id="valorDesconto"  name="vl_desconto" placeholder="R$ 0,00"    onKeyUp="moeda(this)"  title="R$" >
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="col-md-10 text-right" >
+                                        <label class="text-right"><b>Total do Pedido:&nbsp;R$</b></label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control text-right" readonly
+                                               value="<?php echo ( @$totalPedido ? number_format($totalPedido, 2, ',', '.') : "0,00" )?>"
+                                               id="totalPedido" name="vl_pedido_tot" placeholder="R$ 0,00" title="Valor total do pedido" />
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+                            <!-------------------------------------------------------------------------------------->
+<!--                        </div>-->
+
+<!--                        <div role="tabpanel" class="tab-pane" id="dadosPedido">-->
+<!---->
+<!--                        </div>-->
+
                     </div>
-            </div>
-            <div class="col-md-12">&nbsp;</div>
-            <div class="fluid">
-                <table class="table table-striped table-bordered" id="tablePedido">
-                    <thead>
-                        <tr>
-                            <th>
-                                <button type="button" id="chkTodos" class="btn btn-info" ><i class="icon-white"></i></button>
-                            </th>
-                            <th>
-                                <span><?php echo "PRODUTO / SERVIÇO" ?></span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    <div class="col-lg-12">
+                        <hr>
+<!--                        <button id="btnSalvarPedido" name="save" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Salvar</button>-->
+                        <button id="btnSalvarPedido" name="save" class="btn btn-primary btn" type="button"><i class="icon-check icon-white"></i>&nbsp;Salvar </button>
+                        <button id="btnCancelarPedido" class="btn btn-info btn" type="button"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
+                        <button id="btnVoltarListagemPedido"   class="btn btn-default btn" type="button"> <i class="i i-back"></i> Cancelar</button>
 
-                    </tbody>
-                </table>
-            </div>
-            <div class="fluid">
-                <button id="btnExcluirMercadoria" class="btn  btn-info span3 pull-right" type="button"><i class="icon-white icon-trash"></i>&nbsp;Excluir selecionados</button>
-            </div>
-            <div class="col-md-12">&nbsp;</div>
-            <div class="controls form-inline fluid">
-                <label for="validateSelectProfissional" class="control-label text-info" >&nbsp;<?php echo utf8_encode("Profissional / Atendente") ?>:</label>
-                <select name="comboSelectVendedor" id="comboSelectVendedor" class="form-control" onchange="desabilitaAlerta()">
-                    <option value="">Selecione...</option>
-        <?php
-        foreach ($vendedores as $vendedor) {
-            if ((int) $vendedor["CD_FUNCIONARIO"] == (int) $cdVendedorSelecionado) {
-                $selected = " selected ";
-            } else {
-                $selected = "  ";
-            }
-            echo "<option value='{$vendedor["CD_FUNCIONARIO"]}'  " . $selected . ">{$vendedor["CD_FUNCIONARIO"]} - " . utf8_encode($vendedor["DS_FUNCIONARIO"]) . "</option>";
-        }
-        ?>
-                </select>
-            </div>
-
-            <div class="col-md-12">&nbsp;</div>
-            <div class="controls">
-                <div class="col-md-12">
-                    &nbsp;
-                    <button id="btnCancelarAtendimento" class="btn btn-danger" type="button"><i class="icon-white icon-remove-sign"></i>&nbsp;Retornar a listagem </button>
-                    <button id="btnSalvarPedido" class="btn btn-primary" type="button" data-loadign-text="Salvando...."><i class="icon-white icon-ok-sign"></i>&nbsp;Salvar Pedido</button>
+                    </div>
                 </div>
             </div>
-        </form>
-<div class="col-md-12">&nbsp;</div>
-<script>
+        </div>
+    </section>
+</form>
+
+<!-- Modal Pesquisa Cliente -->
+<div id="pesquisaClienteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pesquisaClienteModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal">PESQUISA CLIENTE</span>
+            </div>
+            <div id="bodyPesquisaCliente" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+<!-- Modal Pesquisa Mercadoria -->
+<div id="pesquisaMercadoriaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pesquisaMercadoriaModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal">PESQUISA MERCADORIA - PREÇO DE VENDA</span>
+            </div>
+            <div id="bodyMercadoria" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+<!-- Modal Cadastra Cliente --><div id="cadastraClienteCompletoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cadastraClienteCompletoModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal">Cadastrar Cliente</span>
+            </div>
+            <div id="bodyCadastroCliente" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
     $(document).ready(function() {
-
-
-        /* Table initialisation */
-        oTablePedido = $('#tablePedido').dataTable({
-            "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
-            "sScrollY": "160px",
-            "bScrollCollapse": false,
-            "bPaginate": false,
-            "bLengthChange": false,
-            "bFilter": false,
-            "bInfo": false,
-            "bProcessing": false,
-            "bServerSide": false,
-            "aoColumns": [
-                {"sClass": "nowrap left", "sWidth": "4%", "sType": "html"},
-                {"sClass": "nowrap left", "sWidth": "96%", "sType": "string"}
-            ]
-
-        });
-
-		$("#btnSalvarPedido").click(
-			function(){
-				
-				var cdSelectVendedor = $("#comboSelectVendedor :selected").val();
-                var dsSelectVendedor = $("#comboSelectVendedor :selected").text();
-				var arrayCheckBoxMercadorias = new Array();
-				
-				if (cdSelectVendedor > 0){
-                    //Salva Pedido
-                    $.ajax({
-                        "type": "post",
-                        "data": {	cdVendedor: cdSelectVendedor,
-									dsVendedor: dsSelectVendedor,
-									checkBoxMercadoria: arrayCheckBoxMercadorias
-                        },
-                        "url": "/pedido/salvar-novo-pedido",
-                        "dataType": "json",
-                        "success": function(json){
-							if (json.retorno == true){
-                                //Redirecionar para tela com lista de pedidos
-								 
-                            }
-						},
-                        "error": function(json){
-                            alert("Falha inesperada do servidor! Contate a Orange do Brasil.");
-                        }
-                    });
-				}else{
-                    desabilitaAlerta();
-                    $("#alertaDeInclusaoProfissional").show();
-                }				
-			}
-		);
-
-        $("#btnAtualizarAtendimento").click(
-                function() {
-
-                    var cdSelectVendedor = $("#comboSelectVendedor :selected").val();
-                    var dsSelectVendedor = $("#comboSelectVendedor :selected").text();
-                    var nrPedidoAtualizacao = $("#nrPedido").val();
-                    var arrayCheckBoxMercadorias = new Array();
-
-                    $("button[type='button'][name^='chkMercadoria']").each(function() {
-                        arrayCheckBoxMercadorias.push($(this).val());
-                    });
-
-                    if (cdSelectVendedor > 0)
-                    {
-                        //Envia os dados ao servidor para atualiza??o do pedido
-                        $.ajax({
-                            "type": "post",
-                            "data": {nrPedido: nrPedidoAtualizacao,
-                                cdVendedor: cdSelectVendedor,
-                                dsVendedor: dsSelectVendedor,
-                                checkBoxMercadoria: arrayCheckBoxMercadorias
-                            },
-                            "url": "/pedido/salvar-pedido",
-                            "dataType": "json",
-                            "success": function(json)
-                            {
-                                if (json.retorno == true)
-                                {
-                                    oTableLista.fnReloadAjax(); //Atualiza a lista de pedido
-                                    oTablePedido.fnClearTable(); //Retira as mercadorias do pedido atual
-                                    $("#modalPedidoTablet").modal('hide'); //Fecha a janela modal
-                                }
-
-                            },
-                            "error": function(json)
-                            {
-                                alert("Falha inesperada do servidor! Contate a Orange do Brasil.");
-                            }
-                        });
-
-                    }
-                    else
-                    {
-                        desabilitaAlerta();
-                        $("#alertaDeInclusaoProfissional").show();
-                    }
-
-                }
-        );
-
-        $("#btnCancelarAtendimento").click(
-                function() {
-
-                    oTableLista.fnReloadAjax(); //Atualiza a lista de pedido
-                    oTablePedido.fnClearTable(); //Retira as mercadorias do pedido atual
-                    $("#modalPedidoTablet").modal('hide'); //Fecha a janela modal
-                }
-        );
-
-        $("#chkTodos").click(function() {
-            $("button[type='button'][name^='chkMercadoria']").each(function() {
-                if ($(this).html() == "<i class=\"icon-white\"></i>")
-                {
-                    $(this).html("<i class=\"icon-white icon-ok\"></i>");
-                }
-                else
-                {
-                    $(this).html("<i class=\"icon-white\"></i>");
-                }
-            });
-
-            if ($(this).html() == "<i class=\"icon-white\"></i>")
-            {
-                $(this).html("<i class=\"icon-white icon-ok\"></i>");
-            }
-            else
-            {
-                $(this).html("<i class=\"icon-white\"></i>");
-            }
-        });
-
-
-        $("#btnExcluirMercadoria").click(
-                function() {
-
-                    desabilitaAlerta();
-                    var numCheckboxMarcados = 0;
-                    $("button[type='button'][name^='chkMercadoria']").each(function() {
-                        if ($(this).html() == "<i class=\"icon-white icon-ok\"></i>")
-                        {
-                            //remove a mercadoria
-                            oTablePedido.fnDeleteRow(oTablePedido.fnGetPosition($(this).closest('tr').get(0)));
-                            numCheckboxMarcados++;
-                        }
-                    });
-                    $("#chkTodos").removeAttr("checked");//Desmarca a op??o todos
-                    if (numCheckboxMarcados == 0)
-                    {
-                        $('#alertaDeExclusao').show();
-                    }
-                }
-        );
-
-        $("#btnIncluirMercadoria").click(
-                function () {
-
-                    var cdTipoPedido = $("#tpPedido").val();
-                    var cdSelectServico = $("#comboSelectServico :selected").val();
-                    var descSelectServico = $("#comboSelectServico  :selected").text();
-
-                    desabilitaAlerta();
-
-                    if (cdSelectServico > 0)
-                    {
-
-                        if ($("#chkMercadoria" + cdSelectServico).length >= 1)
-                        {
-                            //A mercadoria j? foi adicionada
-                            $("#alertaDeDuplicidade").show();
-                        }
-                        else
-                        {
-                            //verifica estoque
-                            $.getJSON("/pedido/verifica-estoque", {tpPedido: cdTipoPedido, cdMercadoria: cdSelectServico}, function(responseJson) {
-                                if (responseJson.PERMITIR == 1)
-                                {
-                                    oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria' + cdSelectServico + '" value="' + cdSelectServico + '" class=\"btn btn-info\" onclick=\"verificaStatus($(this))\"><i class=\"icon-white\"></i></button>',
-                                        descSelectServico
-                                    ]);
-                                    $("#comboSelectServico").val("");
-                                }
-                                else
-                                {
-                                    $("#txtAlertaDeValidacaoEstoque").html(responseJson.ERRO);
-                                    $("#alertaDeValidacaoEstoque").show();
-                                }
-                            });
-
-
-
-                        }
-                    }
-                    else
-                    {
-                        $("#alertaDeInclusao").show();
-                    }
-                }
-       );
-
-        desabilitaAlerta = function() {
-            $('#alertaDeExclusao').hide();
-            $("#alertaDeInclusao").hide();
-            $("#alertaDeDuplicidade").hide();
-            $("#alertaDeInclusaoProfissional").hide();
-            $("#alertaDeValidacaoEstoque").hide();
-
-        },
-                verificaStatus = function(button) {
-                    if (button.html() == "<i class=\"icon-white\"></i>")
-                    {
-                        button.html("<i class=\"icon-white icon-ok\"></i>");
-                    }
-                    else
-                    {
-                        button.html("<i class=\"icon-white\"></i>");
-                    }
-                }
-
-        //chamada a fun??o  desabilitaAlerta
-        desabilitaAlerta();
-
+        Pedido.init();
     });
 </script>
+

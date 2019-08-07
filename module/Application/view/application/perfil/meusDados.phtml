@@ -1,0 +1,38 @@
+<section class="panel panel-default">
+    <div class="main">
+        <div class="row-fluid">
+            <div class="panel-body">
+                <h3 class="tit">Meus dados</h3>
+                <hr />
+
+                <div class="col-xs-10 col-md-10">
+                    <fieldset>
+                        <legend>Dados básicos</legend>
+
+                        <div class="col-xs-10 col-md-10">
+                            <label class="text-black">Meu usuário: </label>
+                            <?php echo $usuario ?>
+                        </div>
+
+                        <div class="col-xs-10 col-md-10">
+                            <label class="text-black">Meu perfil: </label>
+                            <?php echo utf8_encode($perfil) ?>
+                        </div>
+
+                        <div class="col-xs-10 col-md-10">
+                            <label class="text-black">E-mail para envio: </label>
+                            <?php echo $email ?>
+                        </div>
+
+                        <div class="col-xs-10 col-md-10">
+                            <label class="text-black">Loja em uso: </label>
+                            <?php echo $cdLoja ?> - <?php echo utf8_encode($dsLoja) ?>
+                        </div>
+                    </fieldset>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</section>

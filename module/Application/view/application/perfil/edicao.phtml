@@ -1,0 +1,218 @@
+﻿<section class="panel panel-default">
+    <div class="main">
+		<div class="row-fluid">
+            <div class="panel-body">
+				<h3 class="tit">Editar Perfil Web</h3>
+				<hr />   
+				<form action="/perfil-web/edicao" method="post">
+                    <input type="hidden" name="cd_perfil_web" value="<?php echo @$perfil->cd_perfil_web ?>" />
+					<div class="col-xs-5 col-md-5">
+                        <label>Nome do Perfil: </label>
+                        <input class="form-control" type="text" name="ds_nome" value="<?php echo utf8_encode(@$perfil->ds_nome) ?>" maxlength="55" required="required" placeholder="Informe o Nome do perfil">
+					</div>
+
+                    <div class="col-xs-12 col-md-12">
+                        <br/>
+                        <label>Funcionalidades do Perfil: </label>
+                    </div>
+                    <div class="col-md-10">
+
+                        <div class="col-xs-3 col-md-3">
+                            <label>Painel Inicial</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="35" <?php echo (in_array(35,$menus) ? 'checked' : '') ?> readonly/>&nbsp;Painel Inicial e ACL diversos
+                            </label>
+                            <hr/>
+                        </div>
+
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Controle de acesso </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="2" <?php echo (in_array(2,$menus) ? 'checked' : '') ?> />&nbsp;Menus do sistema
+                            </label>
+                            <br>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="3" <?php echo (in_array(3,$menus) ? 'checked' : '') ?> />&nbsp;Perfis do sistema
+                            </label>
+                            <br>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="4"  <?php echo (in_array(4,$menus) ? 'checked' : '') ?> />&nbsp; Usuários Web
+                            </label>
+                            <hr/>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Cadastros </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="6"  <?php echo (in_array(6,$menus) ? 'checked' : '') ?> />&nbsp;Clientes
+                            </label>
+                            <br>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="7"  <?php echo (in_array(7,$menus) ? 'checked' : '') ?> />&nbsp;Serviço/Mercadoria
+                            </label>
+                            <br>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="8"  <?php echo (in_array(8,$menus) ? 'checked' : '') ?> />&nbsp;CFOP
+                            </label>
+                            <br>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="9"  <?php echo (in_array(9,$menus) ? 'checked' : '') ?> />&nbsp;Cartões
+                            </label>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="10"  <?php echo (in_array(10,$menus) ? 'checked' : '') ?> />&nbsp;Forma de Pagamento
+                            </label>
+                            <hr/>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Agenda</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="11"  <?php echo (in_array(11,$menus) ? 'checked' : '') ?> />&nbsp;Agenda
+                            </label>
+                            <hr/>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Pedido</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="12"  <?php echo (in_array(12,$menus) ? 'checked' : '') ?> />&nbsp;Pedido
+                            </label>
+                            <hr/>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Caixa</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="13"  <?php echo (in_array(13,$menus) ? 'checked' : '') ?> />&nbsp;Caixa
+                            </label>
+                            <hr/>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Contas à Pagar</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="19" <?php echo (in_array(19,$menus) ? 'checked' : '') ?>  />&nbsp;Contas à Pagar
+                            </label>
+                            <hr/>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Contas à Receber</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="20"  <?php echo (in_array(20,$menus) ? 'checked' : '') ?> />&nbsp;Contas à Receber
+                            </label>
+                            <hr/>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Nota Fiscal Eletrônica</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="15"  <?php echo (in_array(15,$menus) ? 'checked' : '') ?> />&nbsp;Emitir NF-e
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="16"  <?php echo (in_array(16,$menus) ? 'checked' : '') ?> />&nbsp;Listar NF-e
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="34"  <?php echo (in_array(34,$menus) ? 'checked' : '') ?> />&nbsp;Inutilizar NF-e
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="17"  <?php echo (in_array(17,$menus) ? 'checked' : '') ?> />&nbsp;Consulta(Receita)
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="18"  <?php echo (in_array(18,$menus) ? 'checked' : '') ?> />&nbsp;Configurar
+                            </label>
+                            <hr/>
+                        </div>
+
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu Relatórios</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="22"  <?php echo (in_array(22,$menus) ? 'checked' : '') ?> />&nbsp;Atendimento - Produtos / Serviços Vendidos
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="23"  <?php echo (in_array(23,$menus) ? 'checked' : '') ?> />&nbsp;Notas
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="24"  <?php echo (in_array(24,$menus) ? 'checked' : '') ?> />&nbsp;Pedidos
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="25"  <?php echo (in_array(25,$menus) ? 'checked' : '') ?> />Agendamentos
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="26"  <?php echo (in_array(26,$menus) ? 'checked' : '') ?> />&nbsp;Caixa
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="27"  <?php echo (in_array(27,$menus) ? 'checked' : '') ?> />&nbsp;Resumo de Caixa
+                            </label>
+
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="28"  <?php echo (in_array(28,$menus) ? 'checked' : '') ?> />&nbsp;Invent&aacute;rio de Estoque
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="29"  <?php echo (in_array(29,$menus) ? 'checked' : '') ?> />&nbsp;Vendas Mensais Por Tipo de Pagamento
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="30"  <?php echo (in_array(30,$menus) ? 'checked' : '') ?> />&nbsp;Multi-Loja
+                            </label>
+                            <hr/>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                            <label>Menu CRM</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="32"  <?php echo (in_array(32,$menus) ? 'checked' : '') ?> />&nbsp;Análise
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="checkbox" name="cd_menu[]" id="ckMenu" value="33"  <?php echo (in_array(33,$menus) ? 'checked' : '') ?> />&nbsp;E-mail
+                            </label>
+                            <hr/>
+                        </div>
+
+                        <div class="controls">
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="btn-group btn-group-justified col-md-12">
+                                <div class="col-md-9">&nbsp;</div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        Salvar
+                                    </button>
+                                    <a href="/perfil-web/index"><button type="button" class="btn btn-default">
+                                            <i class="i i-back"></i>
+                                            Cancelar
+                                        </button></a>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+			

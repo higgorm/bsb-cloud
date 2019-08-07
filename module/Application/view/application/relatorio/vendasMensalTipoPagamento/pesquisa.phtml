@@ -5,7 +5,7 @@
             <div class="panel-body">
                 <div class="widget-header">
                     <i class="icon-check"></i>
-                    <h3><?php echo utf8_encode("Relat&oacute;rio de vendas mensais por tipo de pagamento ") ?></h3>
+                    <h3><?php echo "Relatório de vendas mensais por tipo de pagamento " ?></h3>
                 </div> <!-- /widget-header -->
                 <div class="widget-content">
                     <form id="formRelatorio" target="self" class="form-vertical validation-form"  action="/relatorio-vendas-mensal-tipo-pagamento/relatorio">
@@ -115,6 +115,9 @@
 </section>
 <script>
     $(document).ready(function() {
+
+
+
         $('#dpYears').datepicker({
             "format": "yyyy",
             'startView': 2
