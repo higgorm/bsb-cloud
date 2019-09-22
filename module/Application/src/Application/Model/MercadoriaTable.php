@@ -37,7 +37,12 @@ class MercadoriaTable extends AbstractTableGateway {
 		
 		$where = 'M.DT_EXCLUSAO IS NULL  AND R.CD_PRAZO = 1';
         foreach ($param as $field => $search) {
-            $where = $where . ' AND ' . $field . " like '%" . $search . "%'";  
+            if ($field == 'cd_mercadoria'){
+                $where = $where . ' AND  M.CD_MERCADORIA = '. $search . ' ';
+            } else {
+                $where = $where . ' AND ' . $field . " like '%" . utf8_decode($search) . "%'";
+            }
+
         }
 
         $select->from(array('M' => $this->table))

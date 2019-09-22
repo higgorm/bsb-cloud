@@ -133,7 +133,7 @@
 
                     if (cdSelectVendedor > 0)
                     {
-                        //Envia os dados ao servidor para atualiza��o do pedido
+                        //Envia os dados ao servidor para atualização do pedido
                         $.ajax({
                             "type": "post",
                             "data": {nrPedido: nrPedidoAtualizacao,
@@ -155,7 +155,7 @@
                             },
                             "error": function(json)
                             {
-                                alert("Falha inesperada do servidor! Contate a Orange do Brasil.");
+                                alert("Falha inesperada do servidor! Contate a BSB Gestão.");
                             }
                         });
 
@@ -214,7 +214,7 @@
                             numCheckboxMarcados++;
                         }
                     });
-                    $("#chkTodos").removeAttr("checked");//Desmarca a op��o todos
+                    $("#chkTodos").removeAttr("checked");//Desmarca a opção todos
                     if (numCheckboxMarcados == 0)
                     {
                         $('#alertaDeExclusao').show();
@@ -236,7 +236,7 @@
 
                         if ($("#chkMercadoria" + cdSelectServico).length >= 1)
                         {
-                            //A mercadoria j� foi adicionada
+                            //A mercadoria já foi adicionada
                             $("#alertaDeDuplicidade").show();
                         }
                         else
@@ -287,7 +287,7 @@
                     }
                 }
 
-        //chamada a fun��o  desabilitaAlerta
+        //chamada a função  desabilitaAlerta
         desabilitaAlerta();
 
     });

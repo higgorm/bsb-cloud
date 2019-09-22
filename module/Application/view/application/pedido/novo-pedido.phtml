@@ -259,7 +259,6 @@
                     </div>
                     <div class="col-lg-12">
                         <hr>
-<!--                        <button id="btnSalvarPedido" name="save" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Salvar</button>-->
                         <button id="btnSalvarPedido" name="save" class="btn btn-primary btn" type="button"><i class="icon-check icon-white"></i>&nbsp;Salvar </button>
                         <button id="btnCancelarPedido" class="btn btn-info btn" type="button"><i class="icon-remove icon-white"></i>&nbsp;Limpar</button>
                         <button id="btnVoltarListagemPedido"   class="btn btn-default btn" type="button"> <i class="i i-back"></i> Cancelar</button>
@@ -297,15 +296,52 @@
         </div>
     </div>
 </div>
-<!-- Modal Cadastra Cliente --><div id="cadastraClienteCompletoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cadastraClienteCompletoModal" aria-hidden="true">
+<!-- Modal Cadastra Cliente -->
+<div id="cadastraClienteCompletoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cadastraClienteCompletoModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">X</button>
                 <i class="icon-search icon-white"></i>
-                <span class="text-info-modal">Cadastrar Cliente</span>
+                <span class="text-info-modal">CADASTRAR CLIENTE</span>
             </div>
             <div id="bodyCadastroCliente" class="modal-body-xlarge"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Redireciona Caixa -->
+<div id="redirecionarCaixaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="redirecionarCaixaModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-black"></i>
+                <span class="text-info-modal"><b>SALVAR PEDIDO</b></span>
+            </div>
+            <div id="bodyRedirecionarCaixaModal" class="modal-body-sm">
+
+
+                <div align="center">
+                    <h4>&nbsp;Deseja ser redirecionado ao caixa?&nbsp;</h4>
+                    <br/>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary " id="btnRedirecionarCaixa">
+                            <i class="i i-ok"></i>
+                            Sim
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default " id="btnContinuarPedido">
+                            <i class="i i-cancel"></i>
+                            Não
+                        </button>
+                    </div>
+
+                </div>
+                <br/>
+                <br/>
+            </div>
         </div>
     </div>
 </div>

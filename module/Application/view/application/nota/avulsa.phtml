@@ -18,13 +18,11 @@
 							<div role="tabpanel" class="tab-pane" id="dadosNota">
 								<fieldset>
 									<legend>Dados da Nota</legend>
-                                    <div class="col-md-2">
-                                        <label class="control-label text-info">Tipo:</label><span class="text-danger"> *</span><br>
-                                        <input type="radio" value="55" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFE ') echo "checked" ?>>NFe
-                                    </div>
-                                    <div class="col-md-1">
-                                        <label class="control-label text-info">&nbsp;&nbsp;</label><br>
-                                        <input type="radio" value="65" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFCE') echo "checked" ?> disabled>NFCe
+                                    <div class="col-md-3">
+                                        <label class="control-label text-info">Modelo:</label><span class="text-danger"> *</span><br>
+                                        <input type="radio" value="55" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFE ') echo "checked" ?>>55 (NF-e)
+                                        &nbsp; &nbsp; &nbsp;
+                                        <input type="radio" value="65" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFCE') echo "checked" ?>>65 (NFC-e)
                                     </div>
                                     <div class="col-md-2">
                                         <label class="control-label text-info">Data de Emissão / Saída:</label>

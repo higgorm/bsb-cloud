@@ -1,15 +1,15 @@
 <?php
 
 
-    if(defined('VERSAO_GESTAO_EMPRESARIAL')==false) {
-        define('VERSAO_GESTAO_EMPRESARIAL',"2.16.3");
+    if (defined('VERSAO_GESTAO_EMPRESARIAL')==false) {
+        define('VERSAO_GESTAO_EMPRESARIAL',"3.0.0");
     }
 
-    if(defined('FORMATO_ESCRITA_DATA_HORA')==false) {
+    if (defined('FORMATO_ESCRITA_DATA_HORA')==false) {
         define('FORMATO_ESCRITA_DATA_HORA','d-m-Y H:i:s');
     }
 
-    if(defined('FORMATO_ESCRITA_DATA')==false) {
+    if (defined('FORMATO_ESCRITA_DATA')==false) {
         define('FORMATO_ESCRITA_DATA','d-m-Y');
     }
 

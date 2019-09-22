@@ -4,12 +4,16 @@
     "license": "BSD-3-Clause",
     "keywords": [
         "framework",
-        "zf2"
+        "zf2",
+        "nfephp",
+        "phpmailer"
     ],
     "homepage": "http://framework.zend.com/",
     "require": {
-        "php": ">=5.3.3",
+        "php": "5.3.3",
         "zendframework/zendframework": "2.1.3",
-		"zendframework/zftool": "dev-master"
+		"zendframework/zftool": "dev-master",
+        "nfephp-org/nfephp": "dev-master",
+        "phpmailer/phpmailer": "2.3.0"
     }
 }

@@ -115,7 +115,8 @@ class MercadoriaController extends OrangeWebAbstractActionController{
 		$tabelaTable = new TabelaTable($dbAdapter);
         $session = new Container("orangeSessionContainer");	
         $request = $this->getRequest();
-		$post = $request->getPost();	
+		$post = $request->getPost();
+
 		if( $request->isPost() ) {
 			$id = $post->get( 'CD_MERCADORIA' );
 			$array = array(
@@ -124,7 +125,7 @@ class MercadoriaController extends OrangeWebAbstractActionController{
 				'DS_CFOP_EXTERNO'				=> $post->get('CFOP_EXTERNO'),
 				'DS_CFOP_INTERNO'				=> $post->get('CFOP_INTERNO'),
 				'DS_CSOSN'						=> $post->get('CSOSN'),
-				'DS_NCM'						=> $post->get('NCM'),
+				'DS_NCM'						=> (trim($post->get('NCM')) == '') ?  '00'  : $post->get('NCM'),
                 'CEST'							=> $post->get('CEST'),
 				'NR_PERCENTUAL_ICMS_EXTERNO'	=> str_ireplace(",",".",$post->get('ICMS_EXTERNO')),
 				'NR_PERCENTUAL_ICMS_INTERNO'	=> str_ireplace(",",".",$post->get('ICMS_INTERNO')),
@@ -147,7 +148,7 @@ class MercadoriaController extends OrangeWebAbstractActionController{
 				'UsuarioUltimaAlteracao'		=> 'OrangeWeb',
                 'CD_BARRAS'					    => $post->get('CD_BARRAS')
 			);
-			
+
 			$mercadoria = $this->getTable()->atualiza_mercadoria($id, $array);
 			
 			$array = array(

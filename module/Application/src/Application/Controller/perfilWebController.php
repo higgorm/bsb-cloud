@@ -235,11 +235,12 @@ class PerfilWebController extends OrangeWebAbstractActionController
         $session = new Container("orangeSessionContainer");
 
         $view = new ViewModel(array(
-                'usuario'=>$session->usuario,
-                'perfil'=>$session->dsPerfilWeb,
-                'cdLoja'=> $session->cdLoja,
-                'dsLoja'=> $session->dsLoja,
-                'email'=>$session->email
+                'cdBase'    => $session->cdBase,
+                'usuario'   => $session->usuario,
+                'perfil'    => $session->dsPerfilWeb,
+                'cdLoja'    => $session->cdLoja,
+                'dsLoja'    => $session->dsLoja,
+                'email'     => $session->email
             )
         );
         $view->setTemplate("application/perfil/meusDados.phtml");

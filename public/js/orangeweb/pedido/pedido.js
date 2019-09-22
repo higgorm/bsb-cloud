@@ -67,22 +67,34 @@ var Pedido = {
                 return false;
             }
 
+            $('#redirecionarCaixaModal').modal('show');
+
+        });
+
+        $("#btnRedirecionarCaixa").click(function () {
             var $myForm = $('#pedido');
-            var $msgRedirect = 'Deseja ser redirecionado para o recebimento no caixa, após salvar este pedido? Escolha uma das opções abaixo:\n\n'+
-                               ' OK - para ir direto ao caixa. \n' +
-                               ' Cancelar - para continuar no modulo de pedido. \n';
+            $('#redirecionarCaixaModal').modal('hide');
 
             if($myForm[0].checkValidity()) {
-
-                if (confirm($msgRedirect)) {
-                    $("#flRedirecionarAoCaixa").val("S");
-                } else {
-                    $("#flRedirecionarAoCaixa").val("N");
-                }
+                $("#flRedirecionarAoCaixa").val("S");
                 $myForm[0].submit();
             } else {
                 $myForm[0].reportValidity()
             }
+
+        });
+
+        $("#btnContinuarPedido").click(function () {
+            var $myForm = $('#pedido');
+            $('#redirecionarCaixaModal').modal('hide');
+
+            if($myForm[0].checkValidity()) {
+                $("#flRedirecionarAoCaixa").val("N");
+                $myForm[0].submit();
+            } else {
+                $myForm[0].reportValidity()
+            }
+
         });
 
 		$("#btnIncluirMercadoria").click(function () {

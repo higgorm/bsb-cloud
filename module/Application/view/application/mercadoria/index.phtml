@@ -20,7 +20,12 @@
                 </div>	
 				<form class="form-horizontal" id="validation-form" action="/mercadoria/index" novalidate="novalidate" method="post" role="form">
 					<div class="controls">
-						<div class="col-md-12">
+                        <div class="col-md-2">
+                            <label>Código da mercadoria</label>
+                            <input type="number" class="form-control" name="cd_mercadoria" id="campo_pesquisa" />
+                            <hr/>
+                        </div>
+						<div class="col-md-10">
 							<label>Descrição da mercadoria</label>
 							<input type="text" class="form-control" name="ds_mercadoria" id="campo_pesquisa" />
                             <hr/>
@@ -31,7 +36,7 @@
                                 <i class="fa fa-search"></i>
                                 Pesquisar
                             </button>
-                            <button type="button" name="buttonLimpar" class="btn btn-default btn" id="btnLimparFormulario" onclick="javascript:window.location.href='/cliente/index'" value="">
+                            <button type="button" name="buttonLimpar" class="btn btn-default btn" id="btnLimparFormulario" onclick="javascript:window.location.href='/mercadoria/index'" value="">
                                 <i class="i i-back"></i>
                                 Limpar
                             </button>

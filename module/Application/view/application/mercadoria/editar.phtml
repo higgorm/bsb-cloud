@@ -22,7 +22,13 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-7 col-md-7">
+                            <?php if ( isset($dado['CD_MERCADORIA']) ): ?>
+                                <div class="col-xs-1 col-md-1">
+                                    <label>Código: </label>
+                                    <input class="form-control" type="text" name="CD_MERCADORIA" maxlength="12" value="<?php echo @$dado['CD_MERCADORIA']; ?>" required="required" readonly disabled >
+                                </div>
+                            <?php endif; ?>
+							<div class="col-xs-8 col-md-8">
 								<label>Descrição: </label>
 								<input class="form-control" type="text" name="MERCADORIA" maxlength="120" value="<?php echo utf8_encode( @$dado['DS_MERCADORIA'] ); ?>" required="required">
 							</div>
@@ -90,9 +96,9 @@
 									<option value="400" <?php if(@$dado['DS_CSOSN'] == '400') echo 'selected'; ?>>Não tributada pelo Simples Nacional </option>
 								</select>
 							</div>
-							<div class="col-xs-4 col-md-4">
+							<div class="col-xs-4 col-md-4" id="ncm">
 								<label>NCM</label>
-								<input class="form-control" type="text" name="NCM" maxlength="255" value="<?php echo @$dado['DS_NCM']; ?>" required="required">
+								<input class="form-control" type="text"  name="NCM" maxlength="255" value="<?php echo @$dado['DS_NCM']; ?>" required="required">
 							</div>
 							<div class="col-xs-4 col-md-4" id="div_cest">
 								<label>CEST</label>
@@ -294,12 +300,14 @@
 			document.getElementById('div_cest'  	).style.display	= 'none';
 			document.getElementById('div_csosn'  	).style.display	= 'none';
             document.getElementById('cdBarras'  	).style.display	= 'none';
+            document.getElementById('ncm'		    ).style.display = 'none';
 
 			document.getElementById('cListServ'		).style.display	= 'block';
 			document.getElementById('iss'			).style.display	= 'block';
 			document.getElementById('indIncentivo'	).style.display	= 'block';
 			document.getElementById('div_indIss'	).style.display = 'block';
 			document.getElementById('retiss'		).style.display = 'block';
+
 
 			document.getElementById("indIss").required = true;
 		}else{
@@ -315,6 +323,7 @@
 			document.getElementById('div_cest'		).style.display = 'block';
 			document.getElementById('div_csosn'		).style.display = 'block';
             document.getElementById('cdBarras'  	).style.display	= 'block';
+            document.getElementById('ncm'		    ).style.display = 'block';
 
 			document.getElementById('cListServ'		).style.display = 'none';
 			document.getElementById('iss'			).style.display = 'none';

@@ -61,7 +61,8 @@
                         <thead>
                             <tr >
                                 <!-- th nowrap>#</th -->
-                                <th nowrap>Nº Nota</th>
+                                <th nowrap>Modelo</th>
+                                <th nowrap>Nr. Nota</th>
                                 <th nowrap>Cliente</th>
                                 <th nowrap>Nº Pedido</th>
                                 <th nowrap>Data Emissão</th>
@@ -77,7 +78,7 @@
                                         $foiInutilizada = in_array($nfe->infNFE,$listaNfeInutilizadas);
                                     ?>
                                     <tr>
-                                        <!-- td align="right"><?php //echo $cliente->CD_CLIENTE  ?></td -->
+                                        <td align="center">55</td>
                                         <td align="center"><?php echo $nfe->infNFE ?></td>
                                         <td align="left"><?php echo utf8_encode($nfe->Dest_xNome) ?></td>
                                         <td align="center"><?php echo ( (int)$nfe->NR_PEDIDO > 0) ? $nfe->NR_PEDIDO : '-' ?></td>
@@ -138,8 +139,8 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <!-- th nowrap>#</th -->
-                                <th nowrap>Nº Nota</th>
+                                <th nowrap>Modelo</th>
+                                <th nowrap>Nr. Nota</th>
                                 <th nowrap>Cliente</th>
                                 <th nowrap>Nº Pedido</th>
                                 <th nowrap>Data Emissão</th>

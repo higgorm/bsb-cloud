@@ -45,10 +45,5 @@ return array(
 	'NFePHP\Extras\DocumentoNFePHP'						=> __DIR__ . '/../NFePHP/Extras/DocumentoNFePHP.interface.php',
 	'NFePHP\Extras\FPDF\FPDF'							=> __DIR__ . '/../NFePHP/Extras/FPDF/FPDF.php',
     'NFePHP\Extras\NfephpException'                     => __DIR__ . '/../NFePHP/Extras/FPDF/ExceptionNFePHP.class.class.php',
-
 	'Html2Text\Html2Text'								=> __DIR__ . '/../Html2Text/Html2Text.php',
-
-    // 'SpedNfe\Common\Files\FilesFolders'					=> __DIR__ . '/../NFePHP/Common/Files/FilesFolders.php',
-	// 'SpedNfe\Make'								         => __DIR__ . '/../SpedNfe/src/Make.php',
-
 );
