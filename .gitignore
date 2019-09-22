@@ -10,3 +10,6 @@ composer.lock
 vendor/bin
 public/clientes
 module.rar
+*.pfx
+*.pem
+*.pfx

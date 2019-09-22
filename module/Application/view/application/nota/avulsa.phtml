@@ -19,10 +19,17 @@
 								<fieldset>
 									<legend>Dados da Nota</legend>
                                     <div class="col-md-3">
+                                        <?php
+                                            $modeloNota = ($dado['DS_NOTA_PADRAO'] == 'NFE') ? 55 : 65;
+                                            if (@$nota['infNFE']) {
+                                                $modeloNota = @$nota['mod'];
+                                            }
+                                        ?>
+
                                         <label class="control-label text-info">Modelo:</label><span class="text-danger"> *</span><br>
-                                        <input type="radio" value="55" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFE ') echo "checked" ?>>55 (NF-e)
+                                        <input type="radio" value="55" name="mod" <?php if($modeloNota == '55') echo "checked" ?>>55 (NF-e)
                                         &nbsp; &nbsp; &nbsp;
-                                        <input type="radio" value="65" name="mod" <?php if($dado['DS_NOTA_PADRAO'] == 'NFCE') echo "checked" ?>>65 (NFC-e)
+                                        <input type="radio" value="65" name="mod" <?php if($modeloNota == '65') echo "checked" ?>>65 (NFC-e)
                                     </div>
                                     <div class="col-md-2">
                                         <label class="control-label text-info">Data de Emissão / Saída:</label>

@@ -18,7 +18,7 @@
 		<div class="row-fluid">
 			<div class="panel-body">
 				<div class="widget-header">
-					<h3>Inutilização de NF-e</h3>
+					<h3>Inutilização de NF-e/NFC-e</h3>
 				</div>
 
 					<form class="form"  id="validation-form" action="/nota/inutilizar" method="post" role="form">
@@ -44,11 +44,11 @@
                             </div>
                             <div class="col-sm-1">
                                 <label class="control-label text-info">Modelo:</label><br>
-                                <input type="radio" value="55" name="mod" checked />55 (NF-e)
+                                <input type="radio" value="55" name="mod"  readonly <?php echo ((@$config['DS_NOTA_PADRAO'] =='NFE') ? ' checked ' : '' )?> />55 (NF-e)
                             </div>
                             <div class="col-sm-2">
                                 <label class="control-label text-info">&nbsp;&nbsp;</label><br>
-                                <input type="radio" value="65" name="mod" />65 (NFC-e)
+                                <input type="radio" value="65" name="mod"  readonly <?php echo ((@$config['DS_NOTA_PADRAO'] =='NFCE') ? ' checked ' : '' )?> />65 (NFC-e)
                             </div>
 
 							<div class="col-sm-12">

@@ -237,7 +237,8 @@ class NotaController extends OrangeWebAbstractActionController{
                 $aResposta  = array();
                 $data       = $request->getPost();
                 $nfe        = new ToolsNFe(getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
-                $nfe->setModelo(55);             //55 nfe - 65 nfce
+
+                $nfe->setModelo((int)$data->mod);   //55 nfe - 65 nfce
 
                 $xml = @$nfe->sefazInutiliza($data->nr_serie, $data->nr_inicio, $data->nf_final, $data->ds_justificativa, $tpAmb, $aResposta);
 
@@ -329,7 +330,12 @@ class NotaController extends OrangeWebAbstractActionController{
 
 			$tpAmb = $post->get('tp_amb'); // 1 - produção // 2 - Homologação
 
-			$pathXmlUrlFileNFe  = 'wsnfe_4.00_mod55.xml';
+            if (  $post->get('mod') == 'NFE') {
+                $pathXmlUrlFileNFe  = 'wsnfe_4.00_mod55.xml';
+            } else {
+                $pathXmlUrlFileNFe  = 'wsnfe_4.00_mod65.xml';
+            }
+
 			$pathXmlUrlFileNFSe = '';
             $pathXmlUrlFileCTe  = '';
 			$pathXmlUrlFileMDFe = '';
@@ -337,6 +343,7 @@ class NotaController extends OrangeWebAbstractActionController{
 
 			if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\\' ))
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\\');
+
 			$pathNFeFiles   = getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\\';
 			if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\\' )){
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\\');
@@ -349,6 +356,7 @@ class NotaController extends OrangeWebAbstractActionController{
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\temporarias\\');
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\canceladas\\');
 			}
+
 			$pathNFSeFiles  = getcwd() . '\public\clientes\\'.$session->cdBase.'\NFSe\\';
 			if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFSe\\' )){
 				@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFSe\\');
