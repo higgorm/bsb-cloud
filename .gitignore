@@ -13,3 +13,8 @@ module.rar
 *.pfx
 *.pem
 *.pfx
+*.pem
+*.pem
+*.pfx
+vendor/config/config_541.json
+vendor/config/config_715.json
