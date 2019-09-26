@@ -39,6 +39,7 @@ return array(
 	'NFePHP\Common\Dom\ValidXsd'						=> __DIR__ . '/../NFePHP/Common/Dom/ValidXsd.php',
 	'NFePHP\Common\Base\BaseMail'						=> __DIR__ . '/../NFePHP/Common/Base/BaseMail.php',
 	'NFePHP\Extras\Danfe'								=> __DIR__ . '/../NFePHP/Extras/Danfe.php',
+    'NFePHP\Extras\Danfce'								=> __DIR__ . '/../NFePHP/Extras/Danfce.php',
 	'NFePHP\Extras\CommonNFePHP'						=> __DIR__ . '/../NFePHP/Extras/CommonNFePHP.class.php',
 	'NFePHP\Extras\DomDocumentNFePHP'					=> __DIR__ . '/../NFePHP/Extras/DomDocumentNFePHP.class.php',
 	'NFePHP\Extras\PdfNFePHP'							=> __DIR__ . '/../NFePHP/Extras/PdfNFePHP.class.php',
@@ -46,4 +47,6 @@ return array(
 	'NFePHP\Extras\FPDF\FPDF'							=> __DIR__ . '/../NFePHP/Extras/FPDF/FPDF.php',
     'NFePHP\Extras\NfephpException'                     => __DIR__ . '/../NFePHP/Extras/FPDF/ExceptionNFePHP.class.class.php',
 	'Html2Text\Html2Text'								=> __DIR__ . '/../Html2Text/Html2Text.php',
+    'Endroid\QrCode\QrCode'								=> __DIR__ . '/../Endroid/QrCode/src/QrCode.php',
+    'mPDF'                                              => __DIR__ . '/../mpdf/mpdf.php',
 );

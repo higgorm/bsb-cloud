@@ -19,6 +19,7 @@ use Zend\File\Transfer\Adapter\Http;
 use Zend\Mail;
 use Util;
 use NFePHP\Extras\Danfe;
+use NFePHP\Extras\Danfce;
 use NFePHP\NFe\ToolsNFe;
 use NFePHP\Common\Files\FilesFolders;
 use NFePHP\NFe\MakeNFe;
@@ -2207,7 +2208,52 @@ class NotaController extends OrangeWebAbstractActionController{
         return true;
 	}
 
-	//Função apenas para notas não enviadas
+    /**
+     *  Impressão de DANFCE
+     * @return bool|\Zend\Http\Response
+     */
+    public function imprimeDanfceAction(){
+
+        //get session
+        $session = new Container("orangeSessionContainer");
+        $chave = (string) $this->params()->fromQuery('nCh');
+        $data  = (string) $this->params()->fromQuery('data');
+
+        try {
+            $nfe        = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+            $xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/enviadas/aprovadas/". $data ."/".$chave."-protNFe.xml";
+            //$xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/xml-erro-montaDanfce.xml";
+
+            // Uso da nomeclatura '-danfce.pdf' para facilitar a diferenciação entre PDFs DANFE e DANFCE salvos na mesma pasta...
+            $pdfDanfce = getcwd() ."/public/clientes/".$session->cdBase."/NFe/PDF/". $data ."/".$chave."-danfce.pdf";
+
+            if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $data .'\\' )) {
+                @mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $data .'\\');
+            }
+
+            $docxml     = FilesFolders::readFile($xmlProt);
+            $ecoNFCe    = false;    //false = Não (NFC-e Completa);
+                                    //true = Sim (NFC-e Simplificada)
+
+            $danfce     = new Danfce($docxml,  $nfe->aConfig['aDocFormat']->pathLogoFile, 2);
+            $id         = $danfce->montaDANFCE($ecoNFCe);
+            $salva      = $danfce->printDANFCE('pdf', $pdfDanfce, 'F'); //Salva o PDF na pasta
+            $abre       = $danfce->printDANFCE('pdf', $pdfDanfce, 'I'); //Abre o PDF no Navegador
+
+        } catch(\Exception $e){
+            $msg = 'error='.$e->getMessage();
+            return $this->redirect()->toUrl("/nota/lista?".$msg);
+        }
+
+        return true;
+    }
+
+    /**
+     * Metodo apenas para DANFE não enviadas
+     *
+     * @return bool
+     * @throws \NFePHP\Extras\NfephpException
+     */
 	public function visualizaDanfeAction(){
 
 		//get session
@@ -2215,12 +2261,13 @@ class NotaController extends OrangeWebAbstractActionController{
 		$chave = (string) $this->params()->fromQuery('nCh');
 
 		$nfe = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
-
 		$xmlProt = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/".$chave."-nfe.xml";
 		// Uso da nomeclatura '-danfe.pdf' para facilitar a diferenciação entre PDFs DANFE e DANFCE salvos na mesma pasta...
-		$pdfDanfe = getcwd() ."/public/clientes/".$session->cdBase."/NFe/PDF/temporarias/".$chave."-danfe.pdf";
-		if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\' ))
-			@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\');
+		//$pdfDanfe = getcwd() ."/public/clientes/".$session->cdBase."/NFe/PDF/temporarias/".$chave."-danfe.pdf";
+
+		if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\' )) {
+            @mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\');
+        }
 
 		$docxml = FilesFolders::readFile($xmlProt);
 		$danfe = new Danfe($docxml, 'P', 'A4', $nfe->aConfig['aDocFormat']->pathLogoFile, 'I', '');
@@ -2228,13 +2275,41 @@ class NotaController extends OrangeWebAbstractActionController{
 		//$salva = $danfe->printDANFE($pdfDanfe, 'F'); //Salva o PDF na pasta
 		$abre = $danfe->printDANFE("{$id}-danfe.pdf", 'I'); //Abre o PDF no Navegador
 
-		Return true;
+		return true;
 	}
 
-	public function addProt($chave, $recibo){
+    /**
+     * Metodo apenas para DANFCE não enviadas
+     *
+     * @return bool
+     * @throws \NFePHP\Extras\NfephpException
+     */
+    public function visualizaDanfceAction(){
+
+        //get session
+        $session    = new Container("orangeSessionContainer");
+        $chave      = (string) $this->params()->fromQuery('nCh');
+        $nfe        = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+        //$xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/".$chave."-nfe.xml";
+        $xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/xml-erro-montaDanfce.xml";
 
 
-	}
+        if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\' )){
+            @mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\');
+        }
+
+        $docxml = FilesFolders::readFile($xmlProt);
+        $danfce = new Danfce($docxml, $nfe->aConfig['aDocFormat']->pathLogoFile, 2);
+
+        $ecoNFCe = false; //false = Não (NFC-e Completa); true = Sim (NFC-e Simplificada)
+        $id = $danfce->montaDANFCE($ecoNFCe);
+
+        $abre = $danfce->printDANFCE('pdf', "{$id}-danfce.pdf", 'I'); //Abre o PDF no Navegador
+
+        return true;
+    }
+
+	public function addProt($chave, $recibo){}
 
 	public function consultaChave($chave){
 

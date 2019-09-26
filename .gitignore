@@ -19,3 +19,9 @@ module.rar
 vendor/config/config_541.json
 vendor/config/config_715.json
 *.pem
+vendor/config/config_715.json
+vendor/config/config_541.json
+vendor/Certs/715.pfx
+vendor/Certs/26048151000103_pubKEY.pem
+vendor/Certs/26048151000103_priKEY.pem
+vendor/Certs/26048151000103_certKEY.pem
