@@ -601,6 +601,10 @@ class NotaController extends OrangeWebAbstractActionController{
             $nfeGe['DMED_NASCIMENTO'] = date('Ymd',$post->get('nascimento_paciente'));
         }
 
+        //modelo da NFe 55 ou 65 essa última NFCe
+        $mod            = $post->get('mod');
+        $nfeGe['mod']   = $mod;
+
         //Dados da NFe (ide)
         //Recupera parametros de configuração da NFE persitidos no Banco
         //$remetente = $statement->execute(array($session->cdLoja));
@@ -609,26 +613,27 @@ class NotaController extends OrangeWebAbstractActionController{
         foreach ($remetente as $rem){
             $cUF            = substr( $rem['CD_IBGE_CIDADE'], 0, 2 ); //codigo numerico do estado
             $nfeGe['cUF']   = $cUF;
-            $tpImp          = '1'; //0=Sem geração de DANFE;
-                                    // 1=DANFE normal, Retrato;
-                                    //2=DANFE normal, Paisagem;
-                                    //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
-                                    //(o envio de mensagem eletrônica pode ser feita de forma simultânea com a impressão do DANFE;
-                                    //usar o tpImp=5 quando esta for a única forma de disponibilização do DANFE).
-            $tpEmis         = '1'; //1=Emissão normal (não em contingência);
-                                    //2=Contingência FS-IA, com impressão do DANFE em formulário de segurança;
-                                    //3=Contingência SCAN (Sistema de Contingência do Ambiente Nacional);
-                                    //4=Contingência DPEC (Declaração Prévia da Emissão em Contingência);
-                                    //5=Contingência FS-DA, com impressão do DANFE em formulário de segurança;
-                                    //6=Contingência SVC-AN (SEFAZ Virtual de Contingência do AN);
-                                    //7=Contingência SVC-RS (SEFAZ Virtual de Contingência do RS);
-                                    //9=Contingência off-line da NFC-e (as demais opções de contingência são válidas também para a NFC-e);
+            $tpImp          = $mod == '65' ? '4' :'1';  //0=Sem geração de DANFE;
+                                                        //1=DANFE normal, Retrato;
+                                                        //2=DANFE normal, Paisagem;
+                                                        //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
+                                                        //(o envio de mensagem eletrônica pode ser feita de forma simultânea com a impressão do DANFE;
+                                                        //usar o tpImp=5 quando esta for a única forma de disponibilização do DANFE).
+
+             $tpEmis        = '1';                      //1=Emissão normal (não em contingência);
+                                                        //2=Contingência FS-IA, com impressão do DANFE em formulário de segurança;
+                                                        //3=Contingência SCAN (Sistema de Contingência do Ambiente Nacional);
+                                                        //4=Contingência DPEC (Declaração Prévia da Emissão em Contingência);
+                                                        //5=Contingência FS-DA, com impressão do DANFE em formulário de segurança;
+                                                        //6=Contingência SVC-AN (SEFAZ Virtual de Contingência do AN);
+                                                        //7=Contingência SVC-RS (SEFAZ Virtual de Contingência do RS);
+                                                        //9=Contingência off-line da NFC-e (as demais opções de contingência são válidas também para a NFC-e);
 
             //Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de contingência 5 e 9.
             $nfeGe['tpEmis']    = $tpEmis;
             $tpAmb              = $rem['TP_AMBIENTE']; //1=Produção; 2=Homologação
             $nfeGe['tpAmb']     = $tpAmb;
-            $procEmi            = '3'; 	//0=Emissão de NF-e com aplicativo do contribuinte;
+            $procEmi            = '0'; 	//0=Emissão de NF-e com aplicativo do contribuinte;
                                         //1=Emissão de NF-e avulsa pelo Fisco;
                                         //2=Emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco;
                                         //3=Emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
@@ -646,11 +651,11 @@ class NotaController extends OrangeWebAbstractActionController{
 
             //Dados do emitente
             $CNPJ               = $rem['NR_CGC'];
-            $CPF                = '00000000000';
+            $CPF                = ''; // Utilizado para CPF na nota
             $xNome              = $rem['DS_RAZAO_SOCIAL'];
             $xFant              = $rem['DS_FANTASIA'];
             $IE                 = $rem['NR_INSC_ESTADUAL'];
-            $IEST               = '';
+            $IEST               = ''; //NFC-e não deve informar IE de Substituto Tributário
             $IM                 = $rem['NR_INSC_ESTADUAL'];
             $CNAE               = $rem['DS_CNAE'];
             $CRT                = $rem['DS_REGIME_TRIBUTARIO'];
@@ -707,9 +712,7 @@ class NotaController extends OrangeWebAbstractActionController{
 
         } //end foreach remetente
 
-        //modelo da NFe 55 ou 65 essa última NFCe
-        $mod            = $post->get('mod');
-        $nfeGe['mod']   = $mod;
+
 
         if ( $mod == '55' ) {
             //para versão 3.10 '2014-02-03T13:22:42-3.00' não informar para NFCe
@@ -723,16 +726,19 @@ class NotaController extends OrangeWebAbstractActionController{
                                     //4=NFC-e em operação com entrega a domicílio;
                                     //9=Operação não presencial, outros.
         } else {
-            $indFinal = '1'; //0=Não; 1=Consumidor final;
-            $indPres = '1'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
-                            //1=Operação presencial;
-                            //2=Operação não presencial, pela Internet;
-                            //3=Operação não presencial, Teleatendimento;
-                            //4=NFC-e em operação com entrega a domicílio;
-                            //9=Operação não presencial, outros.
-        }
-        $nfeGe['indPres'] = $indPres;
+            //Formato: “AAAA-MM-DDThh:mm:ssTZD” (UTC - Universal Coordinated Time).
+            $dhEmi          = date("Y-m-d\TH:i:sP");;
+            $nfeGe['dEmi']  = date(FORMATO_ESCRITA_DATA_HORA, strtotime($dhEmi));
 
+            $indFinal       = '1';  //0=Não; 1=Consumidor final;
+            $indPres        = '1';  //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
+                                    //1=Operação presencial;
+                                    //2=Operação não presencial, pela Internet;
+                                    //3=Operação não presencial, Teleatendimento;
+                                    //4=NFC-e em operação com entrega a domicílio;
+                                    //9=Operação não presencial, outros.
+        }
+        $nfeGe['indPres']   = $indPres;
 
         //destinatário
         $statement = $dbAdapter->query("SELECT TOP 1 	CI.CD_UF,
@@ -744,9 +750,9 @@ class NotaController extends OrangeWebAbstractActionController{
 										WHERE C.CD_CLIENTE  = ? ");
 
         //Parametros do Banco
-        $destinatario = $statement->execute(array($post->get('codCliente')));
-        $destCNPJ = '';
-        $destCPF  = '';
+        $destinatario   = $statement->execute(array($post->get('codCliente')));
+        $destCNPJ       = '';
+        $destCPF        = '';
         foreach( $destinatario as $dest ){
 
             if ( $post[ 'cfop' ] < 2000 ) {
@@ -792,14 +798,13 @@ class NotaController extends OrangeWebAbstractActionController{
             $nfeGe['infNFE']    = $nr_nota;// numero da NFe
             $dhSaiEnt           = str_replace(" ", "T", date("Y-m-d H:i:sP", strtotime($post['dhEmi']))); //versão 2.00, 3.00 e 3.10
             $nfeGe['dSaiEnt']   = date(FORMATO_ESCRITA_DATA_HORA, strtotime($post['dhEmi']));
-            $cDV = '4';         //digito verificador
+            //$cDV                = '4';         //digito verificador
             $finNFe             = $post->get('finNFe'); //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
             $nfeGe['finNFe']    = $finNFe;
             $dhCont             = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
             $xJust              = ''; //Justificativa da entrada em contingência
 
             //Numero e versão da NFe (infNFe)
-            //$chave = '35140258716523000119550000000280051760377394';
             $tempData   = explode("-", $dhEmi);
             $ano        = $tempData[0] - 2000;
             $mes        = $tempData[1];
@@ -872,7 +877,9 @@ class NotaController extends OrangeWebAbstractActionController{
                 $IM = $dest['NR_INSC_ESTADUAL']; //Verificar
             }
 
-            $resp = $nfe->tagdest($destCNPJ, $destCPF, $idEstrangeiro, $xNome, $indIEDest, $IE, $ISUF, $IM, $email);
+            if ( $mod == '55' ) {
+                $resp = $nfe->tagdest($destCNPJ, $destCPF, $idEstrangeiro, $xNome, $indIEDest, $IE, $ISUF, $IM, $email);
+            }
 
             //Passar para o array DB
             $nfeGe['CD_CLIENTE']         = $post->get('codCliente');
@@ -899,7 +906,10 @@ class NotaController extends OrangeWebAbstractActionController{
             $cPais      = '1058';
             $xPais      = 'BRASIL';
             $fone       = str_replace(array('.',',','/','-','(',')'),array('','','','','',''),$dest['DS_FONE1']);
-            $resp       = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $destUF, $CEP, $cPais, $xPais, $fone);
+
+            if ( $mod == '55' ) {
+                $resp = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $destUF, $CEP, $cPais, $xPais, $fone);
+            }
 
             //Passar para o array DB
             $nfeGe['Dest_xLgr']         = utf8_decode($xLgr);
@@ -981,13 +991,18 @@ class NotaController extends OrangeWebAbstractActionController{
                 $vlDesconto = $vlPrecoVenda;
             }
 
+            //Quando for emitida uma NFC-e em Homologação e a Descrição do primeiro item (xProd)
+            //for diferente de "NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL",
+            //será retornado a rejeição "373 - Descrição do primeiro item diferente de NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL".
+            $xProdNfceHomologacao = "NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL";
+
             //Montar array da mercadoria
             $aP[] = array(
                 'nItem'		=> $i,
                 'cProd'     => $cdMercadoria,
                 //GTIN (Global Trade Item Number) do produto, antigo código EAN ou código de barras
                 'cEAN'      => (empty($rowResult["CD_BARRAS"]) ? 'SEM GTIN' : $rowResult["CD_BARRAS"]),
-                'xProd'     => $dsMercadoria,
+                'xProd'     => (($mod == '65') && ($tpAmb == '2')) ? $xProdNfceHomologacao : $dsMercadoria,
                 'NCM'       => $rowResult["DS_NCM"],
                 'NVE'       => "",
                 'CEST'      => $rowResult["CEST"],
@@ -1438,6 +1453,20 @@ class NotaController extends OrangeWebAbstractActionController{
 
         $resp = $nfe->tagICMSTot($vBC, $vICMS, $vICMSDeson, $vBCST, $vST, $vProd, $vFrete, $vSeg, $vDesTotalIcms, $vII, $vIPI, $vPIS, $vCOFINS, $vOutro, $vNF, $vTotTrib);
 
+
+        //*************************************************************
+        //Grupo obrigatório para a NFC-e. Não informar para a NF-e.
+        //$tPag = '03'; //01=Dinheiro 02=Cheque 03=Cartão de Crédito 04=Cartão de Débito 05=Crédito Loja 10=Vale Alimentação 11=Vale Refeição 12=Vale Presente 13=Vale Combustível 99=Outros
+        //$vPag = '1452,33';
+        //$resp = $nfe->tagpag($tPag, $vPag);
+
+        //se a operação for com cartão de crédito essa informação é obrigatória
+        //$CNPJ = '31551765000143'; //CNPJ da operadora de cartão
+        //$tBand = '01'; //01=Visa 02=Mastercard 03=American Express 04=Sorocred 99=Outros
+        //$cAut = 'AB254FC79001'; //número da autorização da tranzação
+        //$resp = $nfe->tagcard($CNPJ, $tBand, $cAut);
+        //**************************************************************
+
         if($finNFe == 4) { //Devolução/Retorno
 
             if (!empty($refNFe)) {
@@ -1508,37 +1537,21 @@ class NotaController extends OrangeWebAbstractActionController{
         //Passar para o array DB
         $nfeGe['trans_modFrete'] = $modFrete;
 
-        //*************************************************************
-        //Grupo obrigatório para a NFC-e. Não informar para a NF-e.
-        //$tPag = '03'; //01=Dinheiro 02=Cheque 03=Cartão de Crédito 04=Cartão de Débito 05=Crédito Loja 10=Vale Alimentação 11=Vale Refeição 12=Vale Presente 13=Vale Combustível 99=Outros
-        //$vPag = '1452,33';
-        //$resp = $nfe->tagpag($tPag, $vPag);
-
-        //se a operação for com cartão de crédito essa informação é obrigatória
-        //$CNPJ = '31551765000143'; //CNPJ da operadora de cartão
-        //$tBand = '01'; //01=Visa 02=Mastercard 03=American Express 04=Sorocred 99=Outros
-        //$cAut = 'AB254FC79001'; //número da autorização da tranzação
-        //$resp = $nfe->tagcard($CNPJ, $tBand, $cAut);
-        //**************************************************************
-
         //informações Adicionais
         //$infAdFisco = 'SAIDA COM SUSPENSAO DO IPI CONFORME ART 29 DA LEI 10.637';
         //$infCpl = '';
         //$resp = $nfe->taginfAdic($infAdFisco, $infCpl);
 
         if( $post['infadc'] != '' ){
-            //die(var_dump(str_replace("<br />", ' ',nl2br($post['infadc']))));
-            $infAdFisco = '';
-            $infCpl = $post['infadc'];
-            //die(var_dump($infCpl));
-            $infCpl = str_replace(chr(13), ' ', $infCpl);
-            //$infCpl = str_replace('\r', ' ', $infCpl);
-            $resp = $nfe->taginfAdic($infAdFisco, $infCpl);
 
+            $infAdFisco      = '';
+            $infCpl          = $post['infadc'];
+            $infCpl          = str_replace(chr(13), ' ', $infCpl);
+            $resp            = $nfe->taginfAdic($infAdFisco, $infCpl);
             $nfeGe['infCpl'] = $infCpl;
         }
-
         $nfeGe['infAdFisco'] = '';
+
         //observações DMED
         if( $post->get('nome_paciente') != '' ){
             $aObsC[] = array( array('DMED Paciente',$post->get('nome_paciente')));
@@ -1728,7 +1741,7 @@ class NotaController extends OrangeWebAbstractActionController{
                 //return $this->redirect()->toUrl("/nota/lista");
                 $arrayViewModel = array('redirect'=>'/nota/lista');
             } else {
-                $erro       = $this->assinaNFe($chave);
+                $erro       = $this->assinaNFe($chave,$mod);
 
                 //$viewModel = new ViewModel();
                 //$viewModel->setTerminal(false);
@@ -1743,7 +1756,7 @@ class NotaController extends OrangeWebAbstractActionController{
                 } else {
 
                     //Envia nota para SEFAZ, pelo menos tenta rsrs
-                    $retorno = $this->enviaNFe($chave, $tpAmb);
+                    $retorno = $this->enviaNFe($chave, $tpAmb, $mod);
 
                     //Se tiver protocolo é porque enviou
                     if ( $retorno['protcoloco'] != '' ) {
@@ -2094,13 +2107,14 @@ class NotaController extends OrangeWebAbstractActionController{
         return $viewModel;
 	}
 
-	public function assinaNFe($chave){
+	public function assinaNFe($chave, $modelo){
 
 		//get session
         $session = new Container("orangeSessionContainer");
 		$msgErro = '';
 
 		$nfe = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
+        $nfe->setModelo((int)$modelo);
 
 		//$filename = "/var/www/nfe/homologacao/entradas/{$chave}-nfe.xml"; // Ambiente Linux
 		//$filename = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/entradas/{$chave}-nfe.xml"; // Ambiente Windows
@@ -2117,7 +2131,8 @@ class NotaController extends OrangeWebAbstractActionController{
 
 		// Valida XML
 		$validador = new ToolsNFe(getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
-		$validador->setModelo('55');
+		$validador->setModelo((int)$modelo);
+
 		if (! $validador->validarXml($xml) || sizeof($nfe->errors)) {
 			foreach ($validador->errors as $erro) {
 				if (is_array($erro)) {
@@ -2134,12 +2149,12 @@ class NotaController extends OrangeWebAbstractActionController{
 		return $msgErro;
 	}
 
-	public function enviaNFe($chave, $tpAmb){
+	public function enviaNFe($chave, $tpAmb, $modelo){
 
 		//get session
         $session = new Container("orangeSessionContainer");
 		$nfe = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json' );
-		$nfe->setModelo('55');
+		$nfe->setModelo((int)$modelo);
 
 		$aResposta = array();
 		// $aXml = file_get_contents("/var/www/nfe/homologacao/assinadas/{$chave}-nfe.xml"); // Ambiente Linux
@@ -2290,8 +2305,8 @@ class NotaController extends OrangeWebAbstractActionController{
         $session    = new Container("orangeSessionContainer");
         $chave      = (string) $this->params()->fromQuery('nCh');
         $nfe        = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
-        //$xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/".$chave."-nfe.xml";
-        $xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/xml-erro-montaDanfce.xml";
+        $xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/".$chave."-nfe.xml";
+        //$xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/bsbgestao-nfe.xml";
 
 
         if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\' )){

@@ -72,8 +72,12 @@ class relatorioNotaController  extends RelatorioController
 			$infNfe				= $post->get('infNfe');
 			$status				= $post->get('status');
 
-			if( $dataInicio	!= '' && $dataFim != '' )
-				$sql = $sql." AND A.dEmi BETWEEN '".date(FORMATO_ESCRITA_DATA,strtotime($dataInicio))."' AND '".date(FORMATO_ESCRITA_DATA,strtotime($dataFim))."'";
+			if( $dataInicio	!= '' && $dataFim != '' ) {
+                $dataInicio .= " 00:00:00";
+                $dataFim    .= " 23:59:59";
+                $sql = $sql." AND A.dEmi BETWEEN '".date(FORMATO_ESCRITA_DATA_HORA,strtotime($dataInicio))."' AND '".date(FORMATO_ESCRITA_DATA_HORA,strtotime($dataFim))."'";
+            }
+
 			if( $infNfe != '' )
 				$sql = $sql.' AND A.infNFE = '.$infNfe;
 			if( $status == 'E' )

@@ -78,7 +78,7 @@
                                         $foiInutilizada = in_array($nfe->infNFE,$listaNfeInutilizadas);
                                     ?>
                                     <tr>
-                                        <td align="center">55</td>
+                                        <td align="center"><?php echo $nfe->mod ?></td>
                                         <td align="center"><?php echo $nfe->infNFE ?></td>
                                         <td align="left"><?php echo utf8_encode($nfe->Dest_xNome) ?></td>
                                         <td align="center"><?php echo ( (int)$nfe->NR_PEDIDO > 0) ? $nfe->NR_PEDIDO : '-' ?></td>
@@ -130,7 +130,7 @@
                                         <?php elseif(!$foiInutilizada): ?>
                                             <?php if ($nfe['mod'] == '55' ): ?>
 											    <a alt="Visualizar NF" target="_blank" href="/nota/visualiza-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE ?>" data-toggle="tooltip" data-placement="top" title="Pré-visualizar NF"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
-                                            <?php //else: ?>
+                                            <?php else: ?>
                                                 <a alt="Visualizar NF" target="_blank" href="/nota/visualiza-danfce?nCh=<?php echo $nfe->DS_NFE_CHAVE ?>" data-toggle="tooltip" data-placement="top" title="Pré-visualizar NF"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
                                             <?php endif; ?>
                                             <?php if( $nfe->DS_CANCELA_PROTOCOLO && !$foiInutilizada): ?>
