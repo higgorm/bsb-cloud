@@ -78,22 +78,9 @@
                                         alt="Logotipo exibido no campo emitente da Nota Fiscal" title="Logotipo exibido no campo emitente da Nota Fiscal">
                             </div>
                             <?php endif; ?>
+                            <div class="col-md-12">&nbsp;</div>
 						</fieldset>	
-						<!--<fieldset>
-							<legend>Nota</legend>
-							<div class="col-sm-4">
-								<label>Token IBPT</label>
-								<input type="text" name="tokenIBPT" id="tokenIBPT" value="" class="form-control"/>
-							</div>
-							<div class="col-sm-4">
-								<label>Token NFCe</label>
-								<input type="text" name="tokenNFCe" id="tokenNFCe" value="" class="form-control"/>
-							</div>
-							<div class="col-sm-4">
-								<label>Token Id NFCe</label>
-								<input type="text" name="tokenNFCe" id="tokenNFCe" value="" class="form-control"/>
-							</div>
-						</fieldset>-->
+
 						<fieldset>
 							<legend>Outras informações</legend>
 							<div class="col-sm-4">
@@ -153,7 +140,9 @@
 								<label>Ultima nota</label>
 								<input type="text" class="form-control" name="ultimaNota" value="<?php echo $dado['NR_NFE']; ?>"/>
 							</div>
+                            <div class="col-md-12">&nbsp;</div>
 						</fieldset>
+
 						<fieldset>
 							<legend>Alíquota</legend>
 							<div class="col-sm-6">
@@ -205,34 +194,67 @@
 								<label>Percentual Aproxima de Tributos Municipais</label>
 								<input type="text" class="form-control" name="nr_pTributos_mun" value="<?php echo number_format($dado['NR_pTRIBUTOS_MUN'],2); ?>" onKeyUp="moeda(this)"/>
 							</div>
+                            <div class="col-md-12">&nbsp;</div>
 						</fieldset>
+
+                        <fieldset>
+                            <legend>Ambiente SEFAZ</legend>
+                            <div class="col-sm-12">
+                                <div class="col-sm-2">
+                                    <input id="homologacao" type="radio"  name="tp_amb" value="2" <?php if( $dado['TP_AMBIENTE'] == '2') echo "checked" ?> />
+                                    <label>Homologação</label>
+                                </div>
+                                <div class="col-sm-2">
+
+                                    <input id="producao" type="radio" name="tp_amb" value="1" <?php if( $dado['TP_AMBIENTE'] == '1') echo "checked" ?>/>
+                                    <label>Produção</label>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+                        </fieldset>
+
 						<fieldset>
 							<legend>Certificado</legend>
-							<div class="col-sm-6">
-								<label>Certificado A1</label>
-								<input type="file" class="form-control" name="certificado" id="certificado" accept=".pfx" />
-                                <span class="info small text-danger">Obs.: Apenas certificado A1 com extensão (.pfx) são válidos para esta aplicação!</span>
-							</div>
-							<div class="col-sm-3">
-								<label>Senha</label>
-								<input type="password" class="form-control" name="certPassword" required  value="<?php echo $dado['certPassword'] ?>/>
-							</div>
-							<div class="col-xs-3 col-md-3">
-								<div class="col-xs-6 col-md-6">
-									<div class="col-xs-7 col-md-7">
-										<label>Homologação</label>
-										<input id="homologacao" type="radio" name="tp_amb" value="2" <?php if( $dado['TP_AMBIENTE'] == '2') echo "checked" ?> />
-									</div>
-								</div>
-								<div class="col-xs-6 col-md-6">
-									<div class="col-xs-7 col-md-7">
-										<label>Produção</label>
-										<input id="producao" type="radio" name="tp_amb" value="1" <?php if( $dado['TP_AMBIENTE'] == '1') echo "checked" ?>/>
-									</div>
-								</div>
-							</div>
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label>Certificado A1</label>
+                                    <input type="file" class="form-control" name="certificado" id="certificado" accept=".pfx" />
+                                    <span class="info small text-danger">Obs.: Apenas certificado A1 com extensão (.pfx) são válidos para esta aplicação!</span>
+
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Senha</label>
+                                    <input type="password" class="form-control" name="certPassword"   value="<?php echo $dado['certPassword'] ?>"/>
+                                </div>
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
 						</fieldset>
-						
+
+                        <fieldset>
+                            <legend>Código de Segurança do Contribuinte (CSC) - Token NFC-e</legend>
+                            <div class="col-sm-12">
+                                <div class="col-sm-3">
+                                    <label>Id Token Ativo 01</label>
+                                    <input id="idTokenAtivo01" type="text" name="DS_IDTOKEN_CSC01" value="<?php echo $dado['DS_IDTOKEN_CSC01']; ?>" class="form-control" maxlength="6" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>Token Ativo 01  (CSC)</label>
+                                    <input id="tokenAtivo01" type="text" name="DS_TOKEN_CSC01" value="<?php echo $dado['DS_TOKEN_CSC01']; ?>" class="form-control"  maxlength="36" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="col-sm-3">
+                                    <label>Id Token Ativo 02</label>
+                                    <input id="idTokenAtivo02" type="text" name="DS_IDTOKEN_CSC02" value="<?php echo $dado['DS_IDTOKEN_CSC02']; ?>" class="form-control"   maxlength="6"/>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>Token Ativo 02 (CSC)</label>
+                                    <input id="tokenAtivo02" type="text" name="DS_TOKEN_CSC02" value="<?php echo $dado['DS_TOKEN_CSC02']; ?>" class="form-control"   maxlength="36" />
+                                </div>
+                            </div>
+                        </fieldset>
+
 						<input type="hidden" name="cliente" value="" />
 						
 						<div class="controls">

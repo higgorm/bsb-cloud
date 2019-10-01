@@ -320,8 +320,18 @@ class NotaController extends OrangeWebAbstractActionController{
 				"NR_pTRIBUTOS"			=> $post->get('nr_pTributos'),
 				"NR_pTRIBUTOS_EST"		=> $post->get('nr_pTributos_est'),
 				"NR_pTRIBUTOS_MUN"		=> $post->get('nr_pTributos_mun'),
-				"ST_ZERAR_BC"			=> $post->get('ST_ZERAR_BC')
+				"ST_ZERAR_BC"			=> $post->get('ST_ZERAR_BC'),
+                "DS_TOKEN_CSC01"        => $post->get('DS_TOKEN_CSC01'),
+                "DS_IDTOKEN_CSC01"      => $post->get('DS_IDTOKEN_CSC01'),
+                "DS_TOKEN_CSC02"        => $post->get('DS_TOKEN_CSC02'),
+                "DS_IDTOKEN_CSC02"      => $post->get('DS_IDTOKEN_CSC02')
+
 			);
+
+            if( @$post->get('certPassword') != '' ) {
+                $certPassword 	     = @$post->get('certPassword');
+                $array["DS_SENHA" ]  = $certPassword;
+            }
 
 			$table->atualiza_config( '1', $array );
 			//$configfolder = @$post->get('configfolder');
@@ -395,11 +405,10 @@ class NotaController extends OrangeWebAbstractActionController{
 			$siglaUF 	 = @$post->get('siglaUF');
 			$cnpj 		 = @$post->get('cnpj');
 			//$tokenIBPT 	 = @$post->get('tokenIBPT');
-			//$tokenNFCe 	 = @$post->get('tokenNFCe');
-			//$tokenNFCeId = @$post->get('tokenNFCeId');
             $tokenIBPT 	 = "";
-            $tokenNFCe 	 = "";
-            $tokenNFCeId = "";
+            $tokenNFCe 	 = $post->get('DS_TOKEN_CSC01');   //"1A0F469E-50B1-4283-B402-33F2E1DE878E";
+            $tokenNFCeId = $post->get('DS_IDTOKEN_CSC01'); //"000003";
+
 			if(is_uploaded_file($_FILES['certificado']['tmp_name'])){
 				//Fazer Upload
 				$uploadAdapter->setDestination( getcwd() . '\vendor\Certs\\' );
@@ -408,11 +417,14 @@ class NotaController extends OrangeWebAbstractActionController{
 				rename( getcwd() . '\vendor\Certs\\'.$_FILES['certificado']['name'], getcwd() . '\vendor\Certs\\'.$session->cdBase.'.pfx' );
 			}
 			$certPfxName 	= $session->cdBase.'.pfx';
-			if( @$post->get('certPassword') != '' )
-				$certPassword 	= @$post->get('certPassword');
-			$certPhrase 	= '';     //@$post->get('certPhrase'); //Verificar
+			if( @$post->get('certPassword') != '' ) {
+                $certPassword 	= @$post->get('certPassword');
+            }
 
-			$format = 'P';
+			//@$post->get('certPhrase'); //Verificar
+            $certPhrase 	= '';
+
+            $format = 'P';
 			$paper = 'A4';
 			$southpaw = true;
 			$pathLogoFile = getcwd() . '\public\clientes\\'.$session->cdBase.'\logo.jpg';
@@ -1781,16 +1793,20 @@ class NotaController extends OrangeWebAbstractActionController{
                         $table->atualiza_nota($nfeGe['infNFE'], $array);
 
                         //Envia por email
-                        $retornoMail = $this->enviaMail($chave, $arrayMail, date('Ym', strtotime($nfeGe['dEmi'])));
+                        $retornoMail = $this->enviaMail($chave, $arrayMail, date('Ym', strtotime($nfeGe['dEmi'])),$mod);
                         $arrayViewModel['retornoMail']      = $retornoMail;
                         $arrayViewModel['emailsEnviados']   = $arrayMail;
-                    } else {
+                    } else if(isset($retorno['xMotivo'])) {
+                        $arrayViewModel['erro']  = $retorno['cStat']." : ".$retorno['xMotivo'];
+                        $arrayViewModel['chave'] = $chave;
+                    }   else {
                         //$viewModel->setVariable('erro', $retorno['prot']['0']['xMotivo']);
                         $arrayViewModel['erro']  = $retorno['prot']['0']['xMotivo'];
                         $arrayViewModel['chave'] = $retorno['prot']['0']['chNFe'];
                     }
                     $arrayViewModel['infNFE'] = $nfeGe['infNFE'];
                     $arrayViewModel['chave']  = $chave;
+                    $arrayViewModel['mod']  = $mod;
                 }
             }
             //return $viewModel;
@@ -2306,8 +2322,6 @@ class NotaController extends OrangeWebAbstractActionController{
         $chave      = (string) $this->params()->fromQuery('nCh');
         $nfe        = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json');
         $xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/".$chave."-nfe.xml";
-        //$xmlProt    = getcwd() ."/public/clientes/".$session->cdBase."/NFe/saidas/bsbgestao-nfe.xml";
-
 
         if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\' )){
             @mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\temporarias\\');
@@ -2389,31 +2403,45 @@ class NotaController extends OrangeWebAbstractActionController{
      * @param $dataemis
      * @return bool
      */
-	public function enviaMail($chave, $email = array (), $dataemis){
+	public function enviaMail($chave, $email = array (), $dataemis, $modelo = '55'){
 
 		//get session
         $session = new Container("orangeSessionContainer");
 		$nfe = new ToolsNFe( getcwd() . '/vendor/config/config_'.$session->cdBase.'.json' );
-		$nfe->setModelo('55');
-
+		$nfe->setModelo($modelo);
 
 		$pathXml = getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\enviadas\aprovadas\\'. $dataemis .'\\'.$chave.'-protNFe.xml';
-		$pathPdf = getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $dataemis .'\\'.$chave.'-danfe.pdf';
 
 		if( !is_dir( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $dataemis .'\\' ))
 			@mkdir(getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $dataemis .'\\');
 
-		$docxml = FilesFolders::readFile($pathXml);
-		$danfe = new Danfe($docxml, 'P', 'A4', $nfe->aConfig['aDocFormat']->pathLogoFile, 'I', '');
-		$id = $danfe->montaDANFE();
-		$salva = $danfe->printDANFE($pathPdf, 'F'); //Salva o PDF na pasta
+        $aMails         = $email; //se for um array vazio a classe Mail irá pegar os emails do xml
+        $templateFile   = ''; //se vazio usará o template padrão da mensagem
+        $comPdf         = true; //se true, anexa a DANFE no e-mail
 
-		$aMails = $email; //se for um array vazio a classe Mail irá pegar os emails do xml
-		$templateFile = ''; //se vazio usará o template padrão da mensagem
-		$comPdf = true; //se true, anexa a DANFE no e-mail
 		try {
-			$nfe->enviaMail($pathXml, $aMails, $templateFile, $comPdf, $pathPdf);
-			//echo "DANFE enviada com sucesso!!!";
+
+            $docxml = FilesFolders::readFile($pathXml);
+
+            if ($modelo == '65') { //nfc-e
+
+                $pathPdf    = getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $dataemis .'\\'.$chave.'-danfce.pdf';
+                $ecoNFCe    = false;    //false = Não (NFC-e Completa);
+                                        //true = Sim (NFC-e Simplificada)
+                $danfce     = new Danfce($docxml,  $nfe->aConfig['aDocFormat']->pathLogoFile, 2);
+                $id         = $danfce->montaDANFCE($ecoNFCe);
+                $salva      = $danfce->printDANFCE('pdf', $pathPdf, 'F'); //Salva o PDF na pasta
+
+            } else {
+                $pathPdf = getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\PDF\\'. $dataemis .'\\'.$chave.'-danfe.pdf';
+
+                $danfe = new Danfe($docxml, 'P', 'A4', $nfe->aConfig['aDocFormat']->pathLogoFile, 'I', '');
+                $id = $danfe->montaDANFE();
+                $salva = $danfe->printDANFE($pathPdf, 'F'); //Salva o PDF na pasta
+            }
+
+            $nfe->enviaMail($pathXml, $aMails, $templateFile, $comPdf, $pathPdf);
+
 			return true;
 		} catch ( \Exception $e/*NFePHP\Common\Exception\RuntimeException $e*/) { //Essa exception está atrapalhando o fluxo caso email errado
 			//echo $e->getMessage();
@@ -2428,12 +2456,13 @@ class NotaController extends OrangeWebAbstractActionController{
 
 		@$post = @$this->getRequest()->getPost();
 
-		$chave = $post->get('chaveMail');
-		$email = $post->get('email');
-		$dataemis = $post->get('dataemis');
+		$chave      = $post->get('chaveMail');
+		$email      = $post->get('email');
+		$dataemis   = $post->get('dataemis');
+        $modelo     = $post->get('mod');
 
 		try {
-            $this->enviaMail( $chave, array($email), $dataemis );
+            $this->enviaMail( $chave, array($email), $dataemis , $modelo);
             $msg = "success=Email enviado!";
         } catch ( \Exception $e) {
             $msg = "error=". $e->getMessage();

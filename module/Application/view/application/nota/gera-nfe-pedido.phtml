@@ -62,7 +62,12 @@
                                 </button>
                             </a>
 
-                            <a href="/nota/imprime-danfe?nCh=<?php echo $retorno['prot']['0']['chNFe'].'&data='.$data?>">
+                         <?php if ($mod == '55') : ?>
+                            <a href="/nota/imprime-danfe?nCh=<?php echo $retorno['prot']['0']['chNFe'].'&data='.$data?>" target="_blank">
+                         <?php else: ?>
+                            <a href="/nota/imprime-danfce?nCh=<?php echo $retorno['prot']['0']['chNFe'].'&data='.$data?>" target="_blank">
+                         <?php endif; ?>
+
                                 <button type="button" class="btn btn-primary">
                                     Imprimir NF-e
                                 </button>

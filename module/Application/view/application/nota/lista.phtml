@@ -119,11 +119,13 @@
                                          <!-- <a href="/mercadoria/editar?id=<?php echo $nfe->infNFe ?>" ><i class="fa fa-pencil"></i></a> <!--  |-->
 										<?php if( $nfe->DS_PROTOCOLO && !$nfe->DS_CANCELA_PROTOCOLO && !$foiInutilizada): ?>
 											<a alt="Abrir NF" href="/nota/abrir?infNFe=<?php echo $nfe['infNFE'] ?>&replicar=1" data-toggle="tooltip" data-placement="top" title="Replicar NF"><i alt="Replicar NF" class="fa fa-files-o"></i></a>
-                                            &nbsp;|&nbsp;<a alt="Enviar por E-mail" href="#" data-toggle="tooltip" data-placement="top" title="Enviar nota por E-mail" onclick="enviaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."','".date('Ym', strtotime($nfe->dEmi))."'"?>)"><span class="glyphicon glyphicon-envelope"></span></a>
+
                                                 <?php if ($nfe['mod'] == '55' ): ?>&nbsp;
-                                                |&nbsp;<a alt="Imprimir NF" href="/nota/imprime-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE.'&data='.date('Ym', strtotime($nfe->dEmi))?>"data-toggle="tooltip" data-placement="top" title="Imprimir NF"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
+                                                &nbsp;|&nbsp;<a alt="Enviar por E-mail" href="#" data-toggle="tooltip" data-placement="top" title="Enviar nota por E-mail" onclick="enviaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."','".date('Ym', strtotime($nfe->dEmi))."','".$nfe->mod."'"?>)"><span class="glyphicon glyphicon-envelope"></span></a>
+                                                 |&nbsp;<a alt="Imprimir NF" href="/nota/imprime-danfe?nCh=<?php echo $nfe->DS_NFE_CHAVE.'&data='.date('Ym', strtotime($nfe->dEmi))?>"data-toggle="tooltip" data-placement="top" title="Imprimir NF"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
                                                 <?php else: ?>
-                                                |&nbsp;<a alt="Imprimir NF" href="/nota/imprime-danfce?nCh=<?php echo $nfe->DS_NFE_CHAVE.'&data='.date('Ym', strtotime($nfe->dEmi))?>"data-toggle="tooltip" data-placement="top" title="Imprimir NF"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
+                                                &nbsp;|&nbsp;<a alt="Enviar por E-mail" href="#" data-toggle="tooltip" data-placement="top" title="Enviar nota por E-mail" onclick="enviaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."','".date('Ym', strtotime($nfe->dEmi))."','".$nfe->mod."'"?>)"><span class="glyphicon glyphicon-envelope"></span></a>
+                                                 |&nbsp;<a alt="Imprimir NF" href="/nota/imprime-danfce?nCh=<?php echo $nfe->DS_NFE_CHAVE.'&data='.date('Ym', strtotime($nfe->dEmi))?>"data-toggle="tooltip" data-placement="top" title="Imprimir NF"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;
                                                 <?php endif; ?>
                                              | <a alt="Carta de Correção CCe" href="#" data-toggle="tooltip" data-placement="top" title="Carta de Correção CCe" onclick="cce(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'" ?>)"><i class= "fa fa-eraser"></i></a>
 											 | <a alt="Cancelar NF" href="#" data-toggle="tooltip" data-placement="top" title="Cancelar NF" onclick="cancelaNota(<?php echo "'".$nfe->DS_NFE_CHAVE."'".','."'".$nfe->mod."'".','."'".$nfe->tpAmb."'".','."'".$nfe->DS_PROTOCOLO."'" ?>)"><i class="fa fa-times-circle"></i></a>
@@ -298,7 +300,7 @@
 									</div>
 									<div class="col-lg-12">
 										<hr>
-										<input type="hidden" name="mod" id="mod" />
+										<input type="hidden" name="mod" id="modMail" />
 										<input type="hidden" name="tpAmb" id="tpAmb" />
 										<input type="hidden" name="nProt" id="nProt" />
 										<input type="hidden" name="dataemis" id="dataemis" />
@@ -337,9 +339,10 @@
         $('#modalCCe').modal('show');
     }
 	
-	function enviaNota(chave, dataemis) {
+	function enviaNota(chave, dataemis, mod) {
 		$('#chaveMail').val(chave);
 		$('#dataemis').val(dataemis);
+        $('#modMail').val(mod);
         $('#modalEmail').modal('show');
     }
 </script>

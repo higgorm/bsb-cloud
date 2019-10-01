@@ -224,7 +224,10 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
                 $this->urlQR = $this->urlConsulta[$this->pSimpleGetValue($this->ide, 'cUF')];
             }
         }
-        $this->qrCode = $this->dom->getElementsByTagName('qrCode')->item(0)->nodeValue;
+
+        if (isset($this->dom->getElementsByTagName('qrCode')->item(0)->nodeValue)) {
+            $this->qrCode = $this->dom->getElementsByTagName('qrCode')->item(0)->nodeValue;
+        }
         if (isset($this->dom->getElementsByTagName("infCpl")->item(0)->nodeValue)) {
             $this->infCpl = $this->dom->getElementsByTagName("infCpl")->item(0)->nodeValue;
         }

@@ -598,12 +598,14 @@ class ToolsNFe extends BaseTools
                 }
             }
         }
-        $vNF = $dom->getValue($icmsTot, 'vNF');
-        $vICMS = $dom->getValue($icmsTot, 'vICMS');
-        $digVal = $dom->getValue($signedInfo, 'DigestValue');
-        $token = $this->aConfig['tokenNFCe'];
-        $idToken = $this->aConfig['tokenNFCeId'];
-        $versao = '100';
+        $vNF        = $dom->getValue($icmsTot, 'vNF');
+        $vICMS      = $dom->getValue($icmsTot, 'vICMS');
+        $digVal     = $dom->getValue($signedInfo, 'DigestValue');
+        $token      = $this->aConfig['tokenNFCe'];
+        $idToken    = $this->aConfig['tokenNFCeId'];
+        //$versao     = '100';
+        $versao     = '200';
+
         /*
          *Pega a URL para consulta do QRCode do estado emissor,
          *essa url está em nfe_ws3_mode65.xml, em tese essa url
@@ -645,14 +647,18 @@ class ToolsNFe extends BaseTools
         if ($qrcode == '') {
             return $dom->saveXML();
         }
+
         //inclui a TAG NFe/infNFeSupl com o qrcode
         $infNFeSupl = $dom->createElement("infNFeSupl");
+        //$infNFeSupl->appendChild($dom->createElement('qrCode', $qrcode));
         $nodeqr = $infNFeSupl->appendChild($dom->createElement('qrCode'));
         $nodeqr->appendChild($dom->createCDATASection($qrcode));
+        $infNFeSupl->appendChild($dom->createElement('urlChave', $url));
         $signature = $dom->getElementsByTagName('Signature')->item(0);
         $nfe->insertBefore($infNFeSupl, $signature);
         $dom->formatOutput = false;
         $xmlSigned = $dom->saveXML();
+
         //salva novamente o xml assinado e agora com o QRCode
         if ($saveFile) {
             $anomes = date(
@@ -2197,32 +2203,42 @@ class ToolsNFe extends BaseTools
         $token = '',
         $cDest = '',
         $idToken = '000001',
-        $versao = '100'
+        $versao = '200'
     ) {
         if ($token == '') {
             return '';
         }
-        $dhHex = self::zStr2Hex($dhEmi);
-        $digHex = self::zStr2Hex($digVal);
+        //$dhHex = self::zStr2Hex($dhEmi);
+        //$digHex = self::zStr2Hex($digVal);
 
         $seq = '';
-        $seq .= 'chNFe=' . $chNFe;
-        $seq .= '&nVersao=' . $versao;
-        $seq .= '&tpAmb=' . $tpAmb;
-        if ($cDest != '') {
-            $seq .= '&cDest=' . $cDest;
-        }
-        $seq .= '&dhEmi=' . strtolower($dhHex);
-        $seq .= '&vNF=' . $vNF;
-        $seq .= '&vICMS=' . $vICMS;
-        $seq .= '&digVal=' . strtolower($digHex);
-        $seq .= '&cIdToken=' . $idToken;
+        //$seq .= 'chNFe=' . $chNFe;
+        //$seq .= '&nVersao=' . $versao;
+        //$seq .= '&tpAmb=' . $tpAmb;
+        $seq .= $chNFe;
+        $seq .= '|' . ($versao/100);
+        $seq .= '|' . $tpAmb;
+        //if ($cDest != '') {
+        //    $seq .= '&cDest=' . $cDest;
+        //}
+        //$seq .= '&dhEmi=' . strtolower($dhHex);
+        //$seq .= '&vNF=' . $vNF;
+        //$seq .= '&vICMS=' . $vICMS;
+        //$seq .= '&digVal=' . strtolower($digHex);
+        //$seq .= '&cIdToken=' . $idToken;
+        $seq .= '|' . (int) $idToken;
         //o hash code é calculado com o Token incluso
         $hash = sha1($seq.$token);
-        $seq .= '&cHashQRCode='. strtoupper($hash);
-        if (strpos($url, '?') === false) {
-            $url = $url.'?';
+        //$seq .= '&cHashQRCode='. strtoupper($hash);
+        $seq .= '|'. strtoupper($hash);
+       // if (strpos($url, '?') === false) {
+       //     $url = $url.'?';
+       // }
+
+        if (strpos($url, '?p=') === false) {
+            $url = $url.'?p=';
         }
+
         $seq = $url.$seq;
         return $seq;
     }
