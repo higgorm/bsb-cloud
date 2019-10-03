@@ -308,7 +308,8 @@ class NotaController extends OrangeWebAbstractActionController{
 				"DS_BAIRRO"				=> $post->get('bairro'),
 				"CD_IBGE_CIDADE"		=> $post->get('cidade_ibge'),
 				"NR_CEP"				=> $post->get('cep'),
-				"NR_NFE"				=> $post->get('ultimaNota'),
+				"NR_NFE"				=> $post->get('NR_NFE'),
+                "NR_NFCE"				=> $post->get('NR_NFCE'),
 				"CD_NATUREZA_OPERACAO"	=> $post->get('natOpPad'),
 				"RETENCAO_pPIS"			=> $post->get('rtPis'),
 				"RETENCAO_pCOFINS"		=> $post->get('rtCofins'),
@@ -404,10 +405,10 @@ class NotaController extends OrangeWebAbstractActionController{
 			$razaosocial = @$post->get('razaosocial');
 			$siglaUF 	 = @$post->get('siglaUF');
 			$cnpj 		 = @$post->get('cnpj');
-			//$tokenIBPT 	 = @$post->get('tokenIBPT');
-            $tokenIBPT 	 = "";
-            $tokenNFCe 	 = $post->get('DS_TOKEN_CSC01');   //"1A0F469E-50B1-4283-B402-33F2E1DE878E";
-            $tokenNFCeId = $post->get('DS_IDTOKEN_CSC01'); //"000003";
+
+            $tokenIBPT 	 = ""; //@$post->get('tokenIBPT');
+            $tokenNFCe 	 = ($post->get('DS_TOKEN_CSC01') == '')   ? $post->get('DS_TOKEN_CSC01')    : $post->get('DS_TOKEN_CSC02');   //"1A0F469E-50B1-4283-B402-33F2E1DE878E";
+            $tokenNFCeId = ($post->get('DS_IDTOKEN_CSC01') == '') ? $post->get('DS_IDTOKEN_CSC01')  : $post->get('DS_IDTOKEN_CSC02'); //"000003";
 
 			if(is_uploaded_file($_FILES['certificado']['tmp_name'])){
 				//Fazer Upload
@@ -711,8 +712,10 @@ class NotaController extends OrangeWebAbstractActionController{
             } else {
                 $bReenvia = false;
 
-                if( $rem['NR_NFE'] > 0 ) {  //Pegar ultima nota
+                if( $mod == '55' && ($rem['NR_NFE'] > 0 )) {  //Pegar ultima NFE
                     $nr_nota = $rem['NR_NFE'] + 1;
+                } else if( $mod == '65' && ($rem['NR_NFCE'] > 0 )) {  //Pegar ultima NFCE
+                    $nr_nota = $rem['NR_NFCE'] + 1;
                 } else {
                     $nr_nota = 1;
                 }
@@ -1721,7 +1724,7 @@ class NotaController extends OrangeWebAbstractActionController{
 
         } else {
             //Salva NFE no banco
-            $table->atualiza_nextId($nfeGe['infNFE']);
+            $table->atualiza_nextId($nfeGe['infNFE'],$mod);
 
             $table->insere_nota($nfeGe);
 
@@ -1751,7 +1754,7 @@ class NotaController extends OrangeWebAbstractActionController{
 
             if (isset($_POST['save'])) {
                 //return $this->redirect()->toUrl("/nota/lista");
-                $arrayViewModel = array('redirect'=>'/nota/lista');
+                $arrayViewModel = array('redirect'=>'/nota/lista','mod'=>$mod);
             } else {
                 $erro       = $this->assinaNFe($chave,$mod);
 
@@ -1763,7 +1766,8 @@ class NotaController extends OrangeWebAbstractActionController{
                     //$viewModel->setVariable('erro', $erro);
                     //$viewModel->setVariable('chave', $chave);
                     $arrayViewModel = array('erro'=> $erro,
-                                            'chave'=> $chave);
+                                            'chave'=> $chave,
+                                            'mod'=>$mod);
 
                 } else {
 
@@ -1796,6 +1800,7 @@ class NotaController extends OrangeWebAbstractActionController{
                         $retornoMail = $this->enviaMail($chave, $arrayMail, date('Ym', strtotime($nfeGe['dEmi'])),$mod);
                         $arrayViewModel['retornoMail']      = $retornoMail;
                         $arrayViewModel['emailsEnviados']   = $arrayMail;
+                        $arrayViewModel['mod']              = $mod;
                     } else if(isset($retorno['xMotivo'])) {
                         $arrayViewModel['erro']  = $retorno['cStat']." : ".$retorno['xMotivo'];
                         $arrayViewModel['chave'] = $chave;
@@ -1804,9 +1809,9 @@ class NotaController extends OrangeWebAbstractActionController{
                         $arrayViewModel['erro']  = $retorno['prot']['0']['xMotivo'];
                         $arrayViewModel['chave'] = $retorno['prot']['0']['chNFe'];
                     }
-                    $arrayViewModel['infNFE'] = $nfeGe['infNFE'];
-                    $arrayViewModel['chave']  = $chave;
-                    $arrayViewModel['mod']  = $mod;
+                    $arrayViewModel['infNFE']   = $nfeGe['infNFE'];
+                    $arrayViewModel['chave']    = $chave;
+                    $arrayViewModel['mod']      = $mod;
                 }
             }
             //return $viewModel;
@@ -1885,16 +1890,17 @@ class NotaController extends OrangeWebAbstractActionController{
                 //Impostos
                 // valor base igual (bruto - descontos = liquido)
                 $baseCalculoImpostos = !empty($pedidoExistente['VL_TOTAL_LIQUIDO']) ? $pedidoExistente['VL_TOTAL_LIQUIDO'] : $pedidoExistente['VL_TOTAL_BRUTO'];
-                $aliquotaPis        = (float)$dadosConfiguracaoNF['RETENCAO_pPIS'];
-                $aliquotaCofins     = (float)$dadosConfiguracaoNF['RETENCAO_pCOFINS'];
-                $aliquotaCsll       = (float)$dadosConfiguracaoNF['RETENCAO_pCSLL'];
-                $aliquotaIrrf       = (float)$dadosConfiguracaoNF['RETENCAO_pIRRF'];
-                $aliquotaPrev       = (float)$dadosConfiguracaoNF['RETENCAO_pPrevidencia'];
+                $aliquotaPis        = (float)$dadosConfiguracaoNF[0]['RETENCAO_pPIS'];
+                $aliquotaCofins     = (float)$dadosConfiguracaoNF[0]['RETENCAO_pCOFINS'];
+                $aliquotaCsll       = (float)$dadosConfiguracaoNF[0]['RETENCAO_pCSLL'];
+                $aliquotaIrrf       = (float)$dadosConfiguracaoNF[0]['RETENCAO_pIRRF'];
+                $aliquotaPrev       = (float)$dadosConfiguracaoNF[0]['RETENCAO_pPrevidencia'];
                 $totalPis           = ((float)($baseCalculoImpostos * $aliquotaPis)     / 100);
                 $totalCofins        = ((float)($baseCalculoImpostos * $aliquotaCofins)  / 100);
                 $totalCsll          = ((float)($baseCalculoImpostos * $aliquotaCsll)    / 100);
                 $totalIrrf          = ((float)($baseCalculoImpostos * $aliquotaIrrf)    / 100);
                 $totalPrev          = ((float)($baseCalculoImpostos * $aliquotaPrev)    / 100);
+                $mod                = trim($dadosConfiguracaoNF[0]['DS_NOTA_PADRAO']) == 'NFE' ? '55' : '65';
 
                 //Prepara um objeto Zend\Stdlib\Parameters
                 $post->set('infNFE',($notaExistente ? $notaExistente['infNFE'] : ''));
@@ -1909,7 +1915,7 @@ class NotaController extends OrangeWebAbstractActionController{
                 $post->set('destNome',$clienteExistente[0]['DS_NOME_RAZAO_SOCIAL']);
                 $post->set('destCNPJ',$clienteExistente[0]['NR_CGC_CPF']);
 
-                $post->set('mod',"55");  //55 nfe or 65 nfce
+                $post->set('mod',$mod);  //55 nfe or 65 nfce
                 $post->set('dhEmi',date("d-m-Y"));
                 $post->set('indPag','0');
                 $post->set('finNFe','1');
@@ -2010,6 +2016,10 @@ class NotaController extends OrangeWebAbstractActionController{
                 $data = $retornoViewModel['data'];
             }
 
+            if (isset($retornoViewModel['mod'])) {
+                $mod = $retornoViewModel['mod'];
+            }
+
             if (isset($retornoViewModel['emailsEnviados'])) {
                 $emailsEnviados = implode(",",$retornoViewModel['emailsEnviados']);
             }
@@ -2024,6 +2034,7 @@ class NotaController extends OrangeWebAbstractActionController{
         $viewModel->setVariable('emailsEnviados', $emailsEnviados);
         $viewModel->setVariable('chave', $chave);
         $viewModel->setVariable('data', $data);
+        $viewModel->setVariable('mod', $mod);
 
         return $viewModel;
     }
@@ -2079,6 +2090,10 @@ class NotaController extends OrangeWebAbstractActionController{
                 $infNfe = $retornoViewModel['infNFE'];
             }
 
+            if (isset($retornoViewModel['mod'])) {
+                $mod = $retornoViewModel['mod'];
+            }
+
             if (isset($retornoViewModel['redirect'])){
                 return $this->redirect()->toUrl($retornoViewModel['redirect']);
             }
@@ -2091,6 +2106,7 @@ class NotaController extends OrangeWebAbstractActionController{
         $viewModel->setVariable('chave', $chave);
         $viewModel->setVariable('data', $data);
         $viewModel->setVariable('infNFE', $infNfe);
+        $viewModel->setVariable('mod', $mod);
 
         return $viewModel;
 

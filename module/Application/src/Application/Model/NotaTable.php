@@ -73,7 +73,7 @@ class NotaTable extends AbstractTableGateway
 		
 		$select->from($this->table)
             ->where($where)
-            ->order("infNFE DESC");
+            ->order("dEmi DESC, infNfe DESC");
 
 		$adapter = new DbSelect($select, $this->adapter);
         $paginator = new Paginator($adapter);
@@ -100,7 +100,7 @@ class NotaTable extends AbstractTableGateway
 
         $select->from($this->table)
             ->where($where)
-            ->order("infNFE DESC");
+            ->order("dEmi DESC");
 
         $selectString = $sql->getSqlStringForSqlObject($select);
         $statement = $this->adapter->query( $selectString );
@@ -359,27 +359,34 @@ class NotaTable extends AbstractTableGateway
      */
 	public function getNextId($cliente){
 		
-		$statement = $this->adapter->query('SELECT NR_NFE + 1 AS nextID FROM '.$this->table_config );//.' WHERE CD_LOJA = '.$cliente );
-		
+		/*$statement = $this->adapter->query('SELECT NR_NFE + 1 AS nextID FROM '.$this->table_config );//.' WHERE CD_LOJA = '.$cliente );
+
 		$results = $statement->execute();
 		$returnArray = array();
-		
+
 		foreach ($results as $result){
 			$return = $result['nextID'];
 		}
-		return $return;
+		return $return;*/
+		return null;
 	}
 
     /**
-     * @param $ID
+     * @param $novoNumero
+     * @param string $modeloNota
      * @return \Zend\Db\Adapter\Driver\ResultInterface
      */
-	public function atualiza_nextId( $ID ){
+	public function atualiza_nextId( $novoNumero , $modeloNota = '55'){
 
 		$sql = new Sql($this->adapter);
 		$update = $sql->update();
 		$update->table($this->table_config);
-		$array = array( 'NR_NFE' => $ID );
+		if ($modeloNota == '55') {
+            $array = array( 'NR_NFE' => $novoNumero );
+        } else {
+            $array = array( 'NR_NFCE' => $novoNumero );
+        }
+
 		$update->set($array);
 		
 		$statement = $sql->prepareStatementForSqlObject($update);

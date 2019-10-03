@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/js/orangeweb/nota/configurar.js"></script>
 <section class="panel panel-default">
 	<div class="main">
 		<div class="row-fluid">
@@ -116,9 +117,9 @@
 							</div>
 							<div class="col-sm-2">
 								<label>Modelo Padrão</label>
-								<select name="mod" class="form-control">
-									<option value="NFE " <?php if( $dado['DS_NOTA_PADRAO'] == 'NFE ') echo "selected"; ?>>NF-e</option>
-									<option value="NFCE" <?php if( $dado['DS_NOTA_PADRAO'] == 'NFCE') echo "selected"; ?>>NFC-e</option>
+								<select name="mod" class="form-control" onchange="notaConfigurar.recuperarUltimaNota(this)" />
+									<option value="NFE" <?php if( trim($dado['DS_NOTA_PADRAO']) == 'NFE') echo "selected"; ?>>NF-e</option>
+									<option value="NFCE" <?php if( trim($dado['DS_NOTA_PADRAO']) == 'NFCE') echo "selected"; ?>>NFC-e</option>
 								</select>
 							</div>
 							<div class="col-sm-3">
@@ -138,7 +139,12 @@
 							</div>
 							<div class="col-sm-2">
 								<label>Ultima nota</label>
-								<input type="text" class="form-control" name="ultimaNota" value="<?php echo $dado['NR_NFE']; ?>"/>
+								<input type="text" class="form-control" name="NR_NFE"  id="NR_NFE"
+                                       style="display:<?php echo ( trim($dado['DS_NOTA_PADRAO']) == 'NFE') ? "block" : "none"; ?>"
+                                        value="<?php echo $dado['NR_NFE']; ?>" />
+                                <input type="text" class="form-control" name="NR_NFCE" id="NR_NFCE"
+                                       style="display:<?php echo ( trim($dado['DS_NOTA_PADRAO']) == 'NFCE') ? "block" : "none"; ?>"
+                                        value="<?php echo $dado['NR_NFCE']; ?>" />
 							</div>
                             <div class="col-md-12">&nbsp;</div>
 						</fieldset>
@@ -231,7 +237,7 @@
                             <div class="col-md-12">&nbsp;</div>
 						</fieldset>
 
-                        <fieldset>
+                        <fieldset id="fsTokenNFCE"  style="display:<?php echo ( $dado['DS_NOTA_PADRAO'] == 'NFCE') ? "block" : "none"; ?>">
                             <legend>Código de Segurança do Contribuinte (CSC) - Token NFC-e</legend>
                             <div class="col-sm-12">
                                 <div class="col-sm-3">

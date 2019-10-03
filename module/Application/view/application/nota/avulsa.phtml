@@ -20,7 +20,7 @@
 									<legend>Dados da Nota</legend>
                                     <div class="col-md-3">
                                         <?php
-                                            $modeloNota = ($dado['DS_NOTA_PADRAO'] == 'NFE') ? 55 : 65;
+                                            $modeloNota = (trim($dado['DS_NOTA_PADRAO']) == 'NFE') ? 55 : 65;
                                             if (@$nota['infNFE']) {
                                                 $modeloNota = @$nota['mod'];
                                             }
