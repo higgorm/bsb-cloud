@@ -559,7 +559,7 @@
 		$(document).ready(function() {
 			Nota.init();
 			$("#btnEmitirNota").click(function () {
-				if($("#destCNPJ").val() == ''){
+				if(($("#destCNPJ").val() == '') && ($("input[name='mod']:checked").val() == '55')){
 					alert('Cliente sem cadastro de CPF/CNPJ');
 					return false;
 				}

@@ -812,6 +812,7 @@ class PedidoController extends OrangeWebAbstractActionController
                 $sm->get("pedido_table")->inserePedido($pedido);
             }
 
+            $sm->get("pedido_table")->deletaPedidoEstoqueLoja($session->cdLoja, $nrPedido);
             $sm->get("pedido_table")->deletaPedidoMercadoria($session->cdLoja, $nrPedido);
 
             //Obtenhos os valores das mercadorias, para inserir no corpo do pedido

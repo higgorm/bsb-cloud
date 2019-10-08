@@ -98,7 +98,7 @@
 							</div>
 							<div class="col-xs-4 col-md-4" id="ncm">
 								<label>NCM</label>
-								<input class="form-control" type="text"  name="NCM" maxlength="255" value="<?php echo @$dado['DS_NCM']; ?>" required="required">
+								<input class="form-control" type="text" id="dsNcm" name="NCM" maxlength="255" value="<?php echo @$dado['DS_NCM']; ?>" required="required">
 							</div>
 							<div class="col-xs-4 col-md-4" id="div_cest">
 								<label>CEST</label>
@@ -308,8 +308,9 @@
 			document.getElementById('div_indIss'	).style.display = 'block';
 			document.getElementById('retiss'		).style.display = 'block';
 
-
+            document.getElementById("dsNcm").required = false;
 			document.getElementById("indIss").required = true;
+
 		}else{
 			document.getElementById('icms_interno'	).style.display	= 'block';
 			document.getElementById('icms_externo'	).style.display	= 'block';
@@ -332,6 +333,8 @@
 			document.getElementById('retiss'		).style.display = 'none';
 
 			document.getElementById("indIss").required = false;
+            document.getElementById("dsNcm").required = true;
+
 		}
 	}
 </script>

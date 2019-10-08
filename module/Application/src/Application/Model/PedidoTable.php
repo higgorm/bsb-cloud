@@ -509,7 +509,7 @@ class PedidoTable extends AbstractTableGateway {
 
     public function deletaRegistosPedido() {
         try {
-            //1 - Recupero o agendamento pelo n�mero do pedido
+            //1 - Recupero o agendamento pelo número do pedido
             $statement = $dbAdapter->query("SELECT
                                                 CD_LOJA,
                                                 NR_MACA,
@@ -612,7 +612,26 @@ class PedidoTable extends AbstractTableGateway {
         } catch (Exception $e) {
             return false;
         }
-    }   
+    }
+
+    public function deletaPedidoEstoqueLoja($loja, $pedido) {
+        try {
+
+            $statement = $this->adapter->query("DELETE
+								    	 	TB_PEDIDO_ESTOQUE_LOJA
+                                             WHERE CD_LOJA   = ?  AND
+                                                   NR_PEDIDO = ?
+										    ");
+
+            $statement->execute(array($loja, $pedido));
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+
+
     
     public function insereRLCaixaPedido($rlCP) {
         try {

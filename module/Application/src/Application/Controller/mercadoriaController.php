@@ -125,7 +125,7 @@ class MercadoriaController extends OrangeWebAbstractActionController{
 				'DS_CFOP_EXTERNO'				=> $post->get('CFOP_EXTERNO'),
 				'DS_CFOP_INTERNO'				=> $post->get('CFOP_INTERNO'),
 				'DS_CSOSN'						=> $post->get('CSOSN'),
-				'DS_NCM'						=> (trim($post->get('NCM')) == '') ?  '00'  : $post->get('NCM'),
+				'DS_NCM'						=> (trim($post->get('NCM')) == '') ?  ($post->get('flg_tipo') == 'S' ? '00' : '00000000')  : $post->get('NCM'),
                 'CEST'							=> $post->get('CEST'),
 				'NR_PERCENTUAL_ICMS_EXTERNO'	=> str_ireplace(",",".",$post->get('ICMS_EXTERNO')),
 				'NR_PERCENTUAL_ICMS_INTERNO'	=> str_ireplace(",",".",$post->get('ICMS_INTERNO')),

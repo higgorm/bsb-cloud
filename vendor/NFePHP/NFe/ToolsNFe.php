@@ -554,7 +554,8 @@ class ToolsNFe extends BaseTools
         $modelo = $dom->getValue($dom, 'mod');
         $oldmod = $this->modelo;
         $this->modelo = $modelo;
-        if ($this->modelo == 65) {
+
+        if ($this->modelo == '65') {
             //descomentar essa linha após 03/11/2015 conforme NT 2015.002
             //ou quando for habilitada essa TAG no XML da NFCe
             //para incluir o QRCode no corpo da NFCe

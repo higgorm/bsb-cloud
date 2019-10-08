@@ -136,19 +136,19 @@ var Pedido = {
                 return false;
             }
 
-            if(oTablePedido.fnGetData().length >= 1){
-                if( (isServicoProxProduto != isServico) && (isServico != "")) {
+            //if(oTablePedido.fnGetData().length >= 1){
+                //if( (isServicoProxProduto != isServico) && (isServico != "")) {
                     //Limpar os campos
-                    limparCampos();
-                    $("#isServicoProxProduto").val("");
+                    //limparCampos();
+                    //$("#isServicoProxProduto").val("");
 
                     //msg alerta
-                    alert('Aviso:\n Não está habilitado  serviços e mercadorias no mesmo pedido. \n\n Favor emitir pedidos distintos!');
-                    return false;
-                }
-            }
+                    //alert('Aviso:\n Não está habilitado  serviços e mercadorias no mesmo pedido. \n\n Favor emitir pedidos distintos!');
+                    //return false;
+                //}
+            //}
 
-            $("#isServico").val($("#isServicoProxProduto").val());
+            //$("#isServico").val($("#isServicoProxProduto").val());
 
             oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria" value="' + cdMercadoria + '" class="btn btn-info" onclick="verificaStatus($(this))"><i class="icon-white"></i></button>'
 														+ ' <input type="hidden" name="cdMercadoria[]" value="' + cdMercadoria + '" /> ',

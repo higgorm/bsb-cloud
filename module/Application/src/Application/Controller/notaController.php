@@ -407,8 +407,8 @@ class NotaController extends OrangeWebAbstractActionController{
 			$cnpj 		 = @$post->get('cnpj');
 
             $tokenIBPT 	 = ""; //@$post->get('tokenIBPT');
-            $tokenNFCe 	 = ($post->get('DS_TOKEN_CSC01') == '')   ? $post->get('DS_TOKEN_CSC01')    : $post->get('DS_TOKEN_CSC02');   //"1A0F469E-50B1-4283-B402-33F2E1DE878E";
-            $tokenNFCeId = ($post->get('DS_IDTOKEN_CSC01') == '') ? $post->get('DS_IDTOKEN_CSC01')  : $post->get('DS_IDTOKEN_CSC02'); //"000003";
+            $tokenNFCe 	 = ($post->get('DS_TOKEN_CSC01') != '')   ? $post->get('DS_TOKEN_CSC01')    : $post->get('DS_TOKEN_CSC02');   //"1A0F469E-50B1-4283-B402-33F2E1DE878E";
+            $tokenNFCeId = ($post->get('DS_IDTOKEN_CSC01') != '') ? $post->get('DS_IDTOKEN_CSC01')  : $post->get('DS_IDTOKEN_CSC02'); //"000003";
 
 			if(is_uploaded_file($_FILES['certificado']['tmp_name'])){
 				//Fazer Upload
@@ -1753,7 +1753,6 @@ class NotaController extends OrangeWebAbstractActionController{
             chmod($filename, 0777);
 
             if (isset($_POST['save'])) {
-                //return $this->redirect()->toUrl("/nota/lista");
                 $arrayViewModel = array('redirect'=>'/nota/lista','mod'=>$mod);
             } else {
                 $erro       = $this->assinaNFe($chave,$mod);
@@ -1803,6 +1802,10 @@ class NotaController extends OrangeWebAbstractActionController{
                         $arrayViewModel['mod']              = $mod;
                     } else if(isset($retorno['xMotivo'])) {
                         $arrayViewModel['erro']  = $retorno['cStat']." : ".$retorno['xMotivo'];
+                        if (isset($retorno['prot']['0'])) {
+                            $arrayViewModel['erro']  .=  "<br>" . $retorno['prot']['0']['cStat']." : ".$retorno['prot']['0']['xMotivo'];
+                        }
+
                         $arrayViewModel['chave'] = $chave;
                     }   else {
                         //$viewModel->setVariable('erro', $retorno['prot']['0']['xMotivo']);
@@ -2190,22 +2193,23 @@ class NotaController extends OrangeWebAbstractActionController{
 
 		$aResposta = array();
 		// $aXml = file_get_contents("/var/www/nfe/homologacao/assinadas/{$chave}-nfe.xml"); // Ambiente Linux
-		$aXml = file_get_contents( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\assinadas\\'.$chave.'-nfe.xml'); // Ambiente Windows
-		$idLote = '';
-		$indSinc = '1';
-		$flagZip = false;
+		$aXml       = file_get_contents( getcwd() . '\public\clientes\\'.$session->cdBase.'\NFe\assinadas\\'.$chave.'-nfe.xml'); // Ambiente Windows
+		$idLote     = '';
+		$indSinc    = '1';  //0=asíncrono, 1=síncrono
+		$flagZip    = false;
 
 		$retorno = $nfe->sefazEnviaLote($aXml, $tpAmb, $idLote, $aResposta, $indSinc, $flagZip);
 
 		//$nfe = new ToolsNFe( getcwd() . '/vendor/config/config.json' );
 
-		//$indSinc = '1'; //0=asíncrono, 1=síncrono
+		//$indSinc = '1';
 		//$pathNFefile = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/assinadas/{$chave}-nfe.xml";
 		//if (! $indSinc) {
 		//	$pathProtfile = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/temporarias/201605/{$recibo}-retConsReciNFe.xml";
 		//} else {
 		//	$pathProtfile = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/temporarias/201605/{$recibo}-retEnviNFe.xml";
 		//}
+
 		if( $aResposta['prot']['0']['nProt'] != ''){
 			$recibo = $aResposta['idLote'];
 			$retorno = $aResposta;

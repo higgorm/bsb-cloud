@@ -86,17 +86,17 @@ var Nota = {
                 return false;
             }
 
-            if(oTablePedido.fnGetData().length >= 1){
-                if( (isServicoProxProduto != isServico) && (isServico != "")) {
-                    alert('Aviso: \n Este emissor não está habilitado para emissão de serviços e mercadorias na mesma nota. \n\n Favor emitir notas distintas!');
+            // if(oTablePedido.fnGetData().length >= 1){
+            //     if( (isServicoProxProduto != isServico) && (isServico != "")) {
+            //         alert('Aviso: \n Este emissor não está habilitado para emissão de serviços e mercadorias na mesma nota. \n\n Favor emitir notas distintas!');
+            //
+            //        //Limpar os campos
+            //         limparCampos();
+            //         return false;
+            //     }
+            // }
 
-                   //Limpar os campos
-                    limparCampos();
-                    return false;
-                }
-            }
-
-            $("#isServico").val($("#isServicoProxProduto").val());
+            //$("#isServico").val($("#isServicoProxProduto").val());
 
 			oTablePedido.fnAddData(['<button type="button" name="chkMercadoria[]" id="chkMercadoria" value="' + cdMercadoria + '" class="btn btn-info" onclick="verificaStatus($(this))"><i class="icon-white"></i></button>'
 														+ ' <input type="hidden" name="cdMercadoria[]" value="' + cdMercadoria + '" /> ',
