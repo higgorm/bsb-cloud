@@ -3,7 +3,8 @@
 return array(
 
     '1' => array(
-
+        'api/login',
+        'api/index',
         // LAYOUT and PAINEL CONTROLLER
         'index/',
         'index/logout',
@@ -41,6 +42,8 @@ return array(
 
     ),
     '3' => array(
+        'api/login',
+        'api/index',
 
         // LAYOUT and PAINEL CONTROLLER
         'index/',

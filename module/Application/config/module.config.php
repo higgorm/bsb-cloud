@@ -44,6 +44,7 @@ return array(
             'Application\Controller\MenuWeb' => 'Application\Controller\MenuWebController',
             'Application\Controller\PerfilWeb' => 'Application\Controller\PerfilWebController',
             'Application\Controller\UsuarioWeb' => 'Application\Controller\UsuarioWebController',
+            'Application\Controller\Api' => 'Application\Controller\ApiController',
         ),
     ),
 

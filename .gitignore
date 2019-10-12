@@ -25,3 +25,6 @@ vendor/Certs/715.pfx
 vendor/Certs/26048151000103_pubKEY.pem
 vendor/Certs/26048151000103_priKEY.pem
 vendor/Certs/26048151000103_certKEY.pem
+module/Application/config/module.config.php.bak
+*.bak
+module/Application/config/module.acl.roles.php.bak
