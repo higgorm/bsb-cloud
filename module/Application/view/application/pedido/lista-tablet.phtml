@@ -77,14 +77,14 @@
         /* Table initialisation */
         oTableLista = $('#tableGridPedidos').dataTable({
             "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
-
+            "aaSorting": [[ 4, "asc" ]],
             "sPaginationType": "full_numbers",
             "oLanguage": {"sLenghtMenu": "_MENU_ registros por pag."},
             //"sScrollY": "280px",
             "bScrollCollapse": true,
             "bPaginate": true,
             "bLengthChange": false,
-            "iDisplayLength": 10,
+            "iDisplayLength": 15,
             "bFilter": false,
             "bInfo": false,
             "bProcessing": true,

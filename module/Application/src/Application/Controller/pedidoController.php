@@ -84,8 +84,7 @@ class PedidoController extends OrangeWebAbstractActionController
     										A.ST_PEDIDO   	  = 'A' AND
     										A.CD_LOJA     = ?
 										ORDER BY
-											A.NR_PEDIDO,
-											NOME_DO_CLIENTE ");
+										    A.DT_PEDIDO ASC");
 
         /* @var $results Zend\Db\ResultSet\ResultSet */
         $results = $statement->execute(array($session->cdLoja));

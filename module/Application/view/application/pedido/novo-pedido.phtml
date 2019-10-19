@@ -31,17 +31,27 @@
                                 </div>
 
                                 <div class="controls col-md-4">
+                                    <?php
+
+                                        $numVendedores = 0;
+                                        $arrayVendedor= array();
+                                        foreach ($vendedores as $vendedor) {
+                                            $numVendedores++;
+                                            array_push($arrayVendedor,$vendedor) ;
+                                        }
+
+                                    ?>
                                     <label for="validateSelectProfissional" class="control-label text-info" >&nbsp;Vendedor:</label>
                                     <select name="cdVendedor" id="cdVendedor" class="form-control" required>
                                         <option value="">Selecione...</option>
                                         <?php
-                                        foreach ($vendedores as $vendedor) {
-                                            $selected = "  ";
-                                            if ((int) $vendedor["CD_FUNCIONARIO"] == (int) $pedido['CD_FUNCIONARIO']) {
-                                                $selected = " selected ";
+                                            foreach ($arrayVendedor as $vendedor) {
+                                                $selected = "  ";
+                                                if (((int) $vendedor["CD_FUNCIONARIO"] == (int) $pedido['CD_FUNCIONARIO']) || ($numVendedores == 1)) {
+                                                    $selected = " selected ";
+                                                }
+                                                echo "<option value='{$vendedor["CD_FUNCIONARIO"]}'  " . $selected . ">{$vendedor["CD_FUNCIONARIO"]} - " . utf8_encode($vendedor["DS_FUNCIONARIO"]) . "</option>";
                                             }
-                                            echo "<option value='{$vendedor["CD_FUNCIONARIO"]}'  " . $selected . ">{$vendedor["CD_FUNCIONARIO"]} - " . utf8_encode($vendedor["DS_FUNCIONARIO"]) . "</option>";
-                                        }
                                         ?>
                                     </select>
                                 </div>
