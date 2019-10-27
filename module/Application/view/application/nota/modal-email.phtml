@@ -1,0 +1,46 @@
+<!-- Modal email -->
+<div id="modalEmail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalEmail" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">X</button>
+                <i class="icon-search icon-white"></i>
+                <span class="text-info-modal">Enviar Nota</span>
+            </div>
+            <div class="modal-body-xlarge">
+                <div class="row-fluid">
+                    <div class="panel-body">
+                        <form action="/nota/send" method="post">
+
+                            <div class="col-md-12">
+                                <label>Informe o email: </label>
+                                <input type="text" class="form-control" id="email" name="email" required />
+                            </div>
+                            <div class="col-lg-12">
+                                <hr>
+                                <input type="hidden" id="chaveMail" name="chaveMail" required />
+                                <input type="hidden" name="mod" id="modMail" />
+                                <input type="hidden" name="tpAmb" id="tpAmb" />
+                                <input type="hidden" name="nProt" id="nProt" />
+                                <input type="hidden" name="dataemis" id="dataemis" />
+                                <button id="btnEnviarNota" class="btn btn-primary btn" type="submit"><i class="icon-check icon-white"></i>&nbsp;Ok</button>
+                                <button id="btnVoltar"  type="button"  data-dismiss="modal" class="btn btn-info btn"><i class="icon-arrow-left icon-white"></i>&nbsp;Voltar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<script>
+
+    function enviaNota(chave, dataemis, mod) {
+        $('#chaveMail').val(chave);
+        $('#dataemis').val(dataemis);
+        $('#modMail').val(mod);
+        $('#modalEmail').modal('show');
+    }
+</script>

@@ -977,6 +977,7 @@ class NotaController extends OrangeWebAbstractActionController{
         //Recupera lista de mercadoria da tabela
         $cdsMercadoria = $post->get('cdMercadoria');
         $i = 1;
+
         //produtos
         foreach ($cdsMercadoria as $cdMercadoria) {
             //Buscar dados da mercadoria
@@ -1017,7 +1018,7 @@ class NotaController extends OrangeWebAbstractActionController{
                 'cProd'     => $cdMercadoria,
                 //GTIN (Global Trade Item Number) do produto, antigo código EAN ou código de barras
                 'cEAN'      => (empty($rowResult["CD_BARRAS"]) ? 'SEM GTIN' : $rowResult["CD_BARRAS"]),
-                'xProd'     => (($mod == '65') && ($tpAmb == '2')) ? $xProdNfceHomologacao : $dsMercadoria,
+                'xProd'     => (($mod == '65') && ($tpAmb == '2') && ($i == 1)) ? $xProdNfceHomologacao : $dsMercadoria,
                 'NCM'       => $rowResult["DS_NCM"],
                 'NVE'       => "",
                 'CEST'      => $rowResult["CEST"],
@@ -1521,20 +1522,21 @@ class NotaController extends OrangeWebAbstractActionController{
 
 
         //total ISSQNTot
-        $vServ          = ( $totalServ != '0.00' ? number_format($totalServ,2, '.', '') : '' );
-        $vBC            = ( $totalBcISSQN != '0.00' ? number_format($totalBcISSQN,2, '.', '') : '' );
-        $vISS           = ( $totalISSQN != '0.00' ? number_format($totalISSQN,2, '.', '') : '' );
-        $vPIS           = ( $totalPISISSQN != '0.00' ? number_format($totalPISISSQN,2, '.', '') : '' );
-        $vCOFINS        = ( $totalCOFINSISSQN != '0.00' ? number_format($totalCOFINSISSQN,2, '.', '') : '' );
+
+        $vServ          = ( ((int)$totalServ > 0) ? number_format($totalServ,2, '.', '') : '' );
+        $vBC            = ( ((int)$totalBcISSQN > 0) ? number_format($totalBcISSQN,2, '.', '') : '' );
+        $vISS           = ( ((int)$totalISSQN > 0) ? number_format($totalISSQN,2, '.', '') : '' );
+        $vPIS           = ( ((int)$totalPISISSQN > 0) ? number_format($totalPISISSQN,2, '.', '') : '' );
+        $vCOFINS        = ( ((int)$totalCOFINSISSQN > 0) ? number_format($totalCOFINSISSQN,2, '.', '') : '' );
         $dCompet        = date('Y-m-d');
         $vDeducao       = '';
         $vOutro         = '';
         $vDescIncond    = '';
         $vDescCond      = '';
-        $vISSRet        = ( $totalRetISS != '0.00' ? number_format($totalRetISS,2,'.','') : '' );
-        $cRegTrib       = ( $totalServ != '0.00' ? $regime : '');
+        $vISSRet        = ( ((int)$totalRetISS > 0) ? number_format($totalRetISS,2,'.','') : '' );
+        $cRegTrib       = ( ((int)$totalServ > 0) ? $regime : '');
 
-        if( $totalServ != '0.00' ) {
+        if( (int)$totalServ > 0 ) {
             $resp = $nfe->tagISSQNTot($vServ, $vBC, $vISS, $vPIS, $vCOFINS, $dCompet, $vDeducao, $vOutro, $vDescIncond, $vDescCond, $vISSRet, $cRegTrib );
         }
 

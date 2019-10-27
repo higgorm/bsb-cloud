@@ -55,6 +55,16 @@
 									Emitir outra 
 								</button>
 							</a>
+
+                            <?php if ($mod == '65') : ?>
+                                <a alt="Enviar por e-mail" href="#" data-toggle="tooltip" data-placement="top"
+                                   title="Enviar por e-mail " onclick='enviaNota("<?php echo $retorno['prot']['0']['chNFe']; ?>","<?php echo $data ?>","<?php echo $mod; ?>")'
+                                   data-original-title="Enviar nota por e-mail">
+                                    <button type="button" class="btn btn-primary">
+                                        Enviar por email
+                                    </button>
+                                </a>
+                            <?php endif; ?>
 						</div>
 					<?php endif; ?>
 				<?php endif; ?>
@@ -62,4 +72,4 @@
 		</div>
 	</div>
 </section>
-	
+<?php echo $this->partial('Application\nota\modal-email.phtml'); ?>

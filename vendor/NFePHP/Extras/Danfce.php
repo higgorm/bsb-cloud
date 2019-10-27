@@ -55,6 +55,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     protected $ide;
     protected $enderDest;
     protected $ICMSTot;
+    protected $ISSQNtot;
     protected $imposto;
     protected $emit;
     protected $enderEmit;
@@ -214,6 +215,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $this->pag        = $this->dom->getElementsByTagName("pag");
             $this->imposto    = $this->dom->getElementsByTagName("imposto")->item(0);
             $this->ICMSTot    = $this->dom->getElementsByTagName("ICMSTot")->item(0);
+            $this->ISSQNtot   = $this->dom->getElementsByTagName("ISSQNtot")->item(0);
         }
         $this->idToken = $idToken;
         $this->emitToken = $emitToken;
@@ -362,6 +364,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $vTotTrib = !empty($this->pSimpleGetValue($this->ICMSTot, "vTotTrib")) ? $this->pSimpleGetValue($this->ICMSTot, "vTotTrib") : 0.00;
         $vICMS = $this->pSimpleGetValue($this->ICMSTot, "vICMS");
         $vProd = $this->pSimpleGetValue($this->ICMSTot, "vProd");
+        $vServ = !empty($this->pSimpleGetValue($this->ISSQNtot, "vServ")) ? $this->pSimpleGetValue($this->ISSQNtot, "vServ") : 0;
         $vDesc  = $this->pSimpleGetValue($this->ICMSTot, "vDesc");
         $vOutro = $this->pSimpleGetValue($this->ICMSTot, "vOutro");
         $vNF = $this->pSimpleGetValue($this->ICMSTot, "vNF");
@@ -504,7 +507,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor Total R$')."</td>\n";
-        $this->html .= "<td class=\"tRight\">".number_format($vProd, 2, ',', '.')."</td>\n";
+        $this->html .= "<td class=\"tRight\">".number_format(($vProd + $vServ), 2, ',', '.')."</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
         // Acréscimos (frete, seguro e outras despesas)/Desconto R$ (Exibe somente se houver!)
@@ -529,7 +532,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         if ($hasAD) {
             $this->html .= "<tr>\n";
             $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor a Pagar R$')."</td>\n";
-            $this->html .= "<td class=\"tRight\">".number_format($vOutro, 2, ',', '.')."</td>\n";
+            $this->html .= "<td class=\"tRight\">".number_format($vNF, 2, ',', '.')."</td>\n";
             $this->html .= "</tr>\n";
         }
         // Formas de Pagamentos

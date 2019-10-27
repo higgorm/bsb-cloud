@@ -146,7 +146,7 @@ class MailNFe extends BaseMail
     protected function zTemplate()
     {
         if (empty($this->template)) {
-            $this->template = "<p><b>Prezados {contato},</b></p>".
+            $this->template = "<p><b>Prezado {contato},</b></p>".
                 "<p>Você está recebendo a Nota Fiscal Eletrônica emitida em {data} com o número ".
                 "{numero}, série {serie} de {emitente}, no valor de R$ {valor}. ".
                 "Junto com a mercadoria, você receberá também um DANFE (Documento ".
