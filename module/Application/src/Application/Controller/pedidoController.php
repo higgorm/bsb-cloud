@@ -16,6 +16,7 @@ use Zend\Session\Container;
 use Application\Model\PedidoTable;
 use Application\Model\MercadoriaTable;
 use Application\Model\ClienteTable;
+use Application\Model\NotaTable;
 
 /**
  *
@@ -433,6 +434,35 @@ class PedidoController extends OrangeWebAbstractActionController
             return $viewModel;
         }
     }
+
+    /**
+     * @return ViewModel
+     */
+    public function cpfNotaAction(){
+
+        // get the db adapter
+        $sm = $this->getServiceLocator();
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        //get session
+        $session = new Container("orangeSessionContainer");
+
+        $pedidoTable        = new PedidoTable($dbAdapter);
+        $clienteTable       = new ClienteTable($dbAdapter);
+        $notaTable          = new NotaTable($dbAdapter);
+
+        $nuPedido           = (int) $this->params()->fromQuery('id');
+        $pedido 		    = $pedidoTable->recuperaPedidoPorNumero($nuPedido,false);
+        $cliente 		    = $clienteTable->getId($pedido['CD_CLIENTE']);
+        $configPadrao       = $notaTable->getConfig('1');
+        $modeloNota         = (trim($configPadrao['DS_NOTA_PADRAO']) == 'NFE') ? 55 : 65;
+
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
+        $viewModel->setVariable('cliente', (array)$cliente);
+        $viewModel->setVariable('modeloNota', $modeloNota);
+        return $viewModel;
+    }
+
 
     /**
      *
@@ -1157,14 +1187,6 @@ class PedidoController extends OrangeWebAbstractActionController
         exit;
     }
 
-    /**
-     * @return ViewModel
-     */
-    public function cpfNotaAction(){
-        $viewModel = new ViewModel();
-        $viewModel->setTerminal(true);
-        return $viewModel;
-    }
 
     /**
      *

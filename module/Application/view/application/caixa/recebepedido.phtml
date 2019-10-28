@@ -6,7 +6,7 @@
                     <div class="widget-content">
                         <div>
                             <div class="col-md-6">
-                                <h3>Pedido(s) nº <?php echo $nrPedido ?></h3>
+                                <h3>Pedido nº <?php echo $nrPedido ?></h3>
                             </div>
                             <div class="col-md-12"></div>
 
@@ -152,7 +152,11 @@
 
                             <div class="col-md-12" style="padding-top: 7px;">
                                 <input type="button" class="btn btn-primary btn-large" id="btnReceber" value="Receber">
-                                <input type="button" class="btn btn-danger btn-large" id="btnCancelar" value="Cancelar">
+
+                                <button type="button" class="btn btn-danger btn-large" id="btnCancelar" value="Cancelar">
+                                    <i class="i i-cancel"></i>
+                                    Cancelar
+                                </button>
                             </div>
                         </div>
                         <input type="hidden" name="nrPedido" id="nrPedido" value="<?php echo $nrPedido ?>">
@@ -252,8 +256,8 @@
 
             if ( parseFloat(vpago) >=  parseFloat(cobrado)) {
                 // Mod 55 nf-e é obrigatorio cpf/cnpj
-                //modalCpfNota();
-                prosseguir();
+                modalCpfNota();
+                //prosseguir();
             } else {
                 alert('Valor recebido menor que o valor do pedido!');
             }
@@ -309,10 +313,10 @@
     });
 
     // Mod 55 nf-e é obrigatorio cpf/cnpj
-    //function modalCpfNota() {
-        //$('#bodyDivModalPedido').load('/pedido/cpf-nota');
-        //$('#divModalPedido').modal('show');
-    //}
+    function modalCpfNota() {
+        $('#bodyDivModalCpfNota').load('/pedido/cpf-nota?id=<?php echo $nrPedido ?>');
+        $('#divModalCpfNota').modal('show');
+    }
     function prosseguir(){
         $('#divModalPagamento').modal('hide');
         $('#divModalAguarde').modal('show');

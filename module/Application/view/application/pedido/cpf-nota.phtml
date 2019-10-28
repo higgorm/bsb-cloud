@@ -2,36 +2,51 @@
     <div class="main">
         <div class="row-fluid">
             <div class="panel-body">
-                <div class="controls">
-                    <div class="col-md-4">
-                        <label class="text-info">CPF</label>
-                        <input type="text" class="form-control" name="" id="" value="" />
-                    </div>
-                </div>
-                <div class="controls">
-                    <div class="col-md-8">
-                        <label class="text-info">Nome do Cliente</label>
-                        <input type="text" class="form-control" name="" id="" value="" />
-                    </div>
-                </div>
-                <div class="controls">
-                    <div class="col-md-12">
-                        <label class="text-info">Endereço</label>
-                        <input type="text" class="form-control" name="" id="" value="" />
-                    </div>
-                </div>
                 <div class="col-md-12"></div>
+
+                <div class="controls">
+                    <div class="controls">
+                        <div class="col-md-12">
+                            <label class="control-label text-info">Modelo emissão da nota fiscal:</label><span class="text-danger"> *</span><br>
+                            <input type="radio" value="55" name="modEmissao" <?php if($modeloNota == '55') echo "checked" ?>>55 (NF-e) &nbsp;&nbsp;
+                            <input type="radio" value="65" name="modEmissao" <?php if($modeloNota == '65') echo "checked" ?>>65 (NFC-e)&nbsp;&nbsp;
+                        </div>
+
+                        <div class="col-md-12">&nbsp;</div>
+
+                        <div class="col-md-6">
+                            <label class="text-info">CPF / CNPJ: </label>
+                            <input type="text" class="form-control" name="cpfcnpjEmissao" id="cpfcnpjEmissao"
+                                   value="<?php echo $cliente['nr_cgc_cpf'] ?>" placeholder="Digite o número a ser impresso"
+                                    name='cpfcnpjEmissao' maxlength="17" onkeypress="mascaraCliente(this,'cpfcnpjEmissao')"/>
+                        </div>
+
+                        <div class="col-md-12">&nbsp;</div>
+
+                        <div class="col-md-12">
+                            <span class="text-danger">Obs.: Para emissão do modelo 55 (NF-e) é obrigatorio informar o CPF/CNPJ do cliente!</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-12">&nbsp;</div>
             </div>
             <div class="panel-footer">
                 <div class="controls">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary inclurDados">
+                        <button type="button" class="btn btn-primary" id="prosseguirModalCpfNota">
                             <i class="i i-ok"></i>
-                            Ok
+                            Prosseguir
                         </button>
                     </div>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default cancelarDados">
+                        <button type="button" class="btn btn-danger" id="cancelarModalCpfNota">
                             <i class="i i-cancel"></i>
                             Cancelar
                         </button>
@@ -44,11 +59,69 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.inclurDados').click(function() {
-            $('#frmCaixaFuncionario').submit();
+
+        $('#prosseguirModalCpfNota').click(function() {
+
+            if ( ($("input[name='modEmissao']:checked").val() == '55') && ($("#cpfcnpjEmissao").val() == '')) {
+                alert('Favor informar o "CPF / CNPJ" para prosseguir!!!');
+                return false;
+            } else {
+                //prossegue para o recebimento e emissão da nota fiscal de acordo com o modelo selecionado
+                prosseguir();
+            }
+
+
         });
-        $('.cancelarDados').click(function() {
-            $('#frmCaixaFuncionario').submit();
+
+        $('#cancelarModalCpfNota').click(function() {
+            $('#divModalCpfNota').modal('hide');
         });
+
+
+        cpfcnpjEmissao = function(v){
+
+            //Remove tudo o que não é dígito
+            v=v.replace(/\D/g,"")
+
+            if (v.length <= 14) { //CPF
+
+                //Coloca um ponto entre o terceiro e o quarto dígitos
+                v=v.replace(/(\d{3})(\d)/,"$1.$2")
+
+                //Coloca um ponto entre o terceiro e o quarto dígitos
+                //de novo (para o segundo bloco de números)
+                v=v.replace(/(\d{3})(\d)/,"$1.$2")
+
+                //Coloca um hífen entre o terceiro e o quarto dígitos
+                v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+
+            } else { //CNPJ
+
+                //Coloca ponto entre o segundo e o terceiro dígitos
+                v=v.replace(/^(\d{2})(\d)/,"$1.$2")
+
+                //Coloca ponto entre o quinto e o sexto dígitos
+                v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3")
+
+                //Coloca uma barra entre o oitavo e o nono dígitos
+                v=v.replace(/\.(\d{3})(\d)/,".$1/$2")
+
+                //Coloca um hífen depois do bloco de quatro dígitos
+                v=v.replace(/(\d{4})(\d)/,"$1-$2")
+
+            }
+
+            return v;
+        }
+
+        mascaraCliente = function(o,f){
+            v_obj=o
+            v_fun=f;
+            v_obj.value = cpfcnpjEmissao(v_obj.value)
+        }
+
+        // trigger keypress
+        $("#cpfcnpjEmissao").keypress();
     });
+
 </script>
