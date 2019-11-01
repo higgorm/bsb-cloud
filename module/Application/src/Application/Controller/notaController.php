@@ -11,6 +11,7 @@
 namespace Application\Controller;
 
 use Application\Service\NotaFiscalService;
+use Couchbase\Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
@@ -471,7 +472,7 @@ class NotaController extends OrangeWebAbstractActionController{
 			    'mailFrom' => 'nao-responder@bsbgestao.com.br',
 			    'mailSmtp' => 'email-ssl.com.br',
 			    'mailUser' => 'nao-responder@bsbgestao.com.br',
-			    'mailPass' => 'suporte123456',
+			    'mailPass' => 'Orange@2000',
 			    'mailProtocol' => 'SSL',
 			    'mailPort' => '465',
 			    'mailFromMail' => 'nao-responder@bsbgestao.com.br',
@@ -2466,8 +2467,7 @@ class NotaController extends OrangeWebAbstractActionController{
 
 			return true;
 		} catch ( \Exception $e/*NFePHP\Common\Exception\RuntimeException $e*/) { //Essa exception está atrapalhando o fluxo caso email errado
-			//echo $e->getMessage();
-			return false;
+            return false;
 		}
 	}
 
@@ -2484,8 +2484,12 @@ class NotaController extends OrangeWebAbstractActionController{
         $modelo     = $post->get('mod');
 
 		try {
-            $this->enviaMail( $chave, array($email), $dataemis , $modelo);
-            $msg = "success=Email enviado!";
+            if ($this->enviaMail( $chave, array($email), $dataemis , $modelo)){
+                $msg = "success=Email enviado!";
+            } else {
+                $msg = "error=Email não pode ser enviado, falha ao conectar no servidor SMTP!";
+            }
+
         } catch ( \Exception $e) {
             $msg = "error=". $e->getMessage();
         }
