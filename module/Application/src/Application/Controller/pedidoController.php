@@ -16,7 +16,6 @@ use Zend\Session\Container;
 use Application\Model\PedidoTable;
 use Application\Model\MercadoriaTable;
 use Application\Model\ClienteTable;
-use Application\Model\NotaTable;
 
 /**
  *
@@ -448,18 +447,18 @@ class PedidoController extends OrangeWebAbstractActionController
 
         $pedidoTable        = new PedidoTable($dbAdapter);
         $clienteTable       = new ClienteTable($dbAdapter);
-        $notaTable          = new NotaTable($dbAdapter);
 
         $nuPedido           = (int) $this->params()->fromQuery('id');
+        $modEmissaoCpfNota 	= (int) $this->params()->fromQuery('modEmissaoCpfNota');
+
         $pedido 		    = $pedidoTable->recuperaPedidoPorNumero($nuPedido,false);
         $cliente 		    = $clienteTable->getId($pedido['CD_CLIENTE']);
-        $configPadrao       = $notaTable->getConfig('1');
-        $modeloNota         = (trim($configPadrao['DS_NOTA_PADRAO']) == 'NFE') ? 55 : 65;
 
         $viewModel = new ViewModel();
         $viewModel->setTerminal(true);
         $viewModel->setVariable('cliente', (array)$cliente);
-        $viewModel->setVariable('modeloNota', $modeloNota);
+        $viewModel->setVariable('modEmissaoCpfNota', $modEmissaoCpfNota);
+
         return $viewModel;
     }
 

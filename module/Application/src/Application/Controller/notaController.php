@@ -30,6 +30,7 @@ use Application\Model\NotaInutilizadaTable;
 use Application\Model\TabelaTable;
 use Application\Model\MercadoriaTable;
 use Application\Model\PedidoTable;
+use Application\Model\ClienteTable;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -767,6 +768,7 @@ class NotaController extends OrangeWebAbstractActionController{
 
         //Parametros do Banco
         $destinatario   = $statement->execute(array($post->get('codCliente')));
+
         $destCNPJ       = '';
         $destCPF        = '';
         foreach( $destinatario as $dest ){
@@ -880,12 +882,13 @@ class NotaController extends OrangeWebAbstractActionController{
             else
                 $destCPF = $cpfCnpj;
 
-            $idEstrangeiro  = '';
-            $xNome          = $dest['DS_NOME_RAZAO_SOCIAL'];
-            $indIEDest      = $dest['indIE'];
-            $IE             = $dest['NR_INSC_ESTADUAL'];
-            $ISUF           = $dest['DS_SUFRAMA'];
-            $email          = $dest['DS_EMAIL'];
+            $idEstrangeiro          = '';
+            $xNomeDestHomologacao   = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+            $xNome                  = (($mod == '65' && ($tpAmb == '2')) ? $xNomeDestHomologacao : $dest['DS_NOME_RAZAO_SOCIAL']);
+            $indIEDest              = (($mod == '65') ? '' : $dest['indIE']);
+            $IE                     = (($mod == '65') ? '' :$dest['NR_INSC_ESTADUAL']);
+            $ISUF                   = $dest['DS_SUFRAMA'];
+            $email                  = $dest['DS_EMAIL'];
 
             if( strlen($dest['NR_INSC_MUNICIPAL']) > 1 ){
                 $IM = $dest['NR_INSC_MUNICIPAL'];
@@ -893,7 +896,9 @@ class NotaController extends OrangeWebAbstractActionController{
                 $IM = $dest['NR_INSC_ESTADUAL']; //Verificar
             }
 
-            if ( $mod == '55' ) {
+            if (( $mod == '55' ) || ( $mod == '65'  && $cpfCnpj != '') ) {
+                //nfe
+                //nfce com cpf/cnpj
                 $resp = $nfe->tagdest($destCNPJ, $destCPF, $idEstrangeiro, $xNome, $indIEDest, $IE, $ISUF, $IM, $email);
             }
 
@@ -1856,8 +1861,11 @@ class NotaController extends OrangeWebAbstractActionController{
         $retorno        = array();
 
         //get request
-        $nrPedido   = $this->params()->fromQuery('nrPedido');
-        $post       = $this->getRequest()->getPost();
+        $nrPedido               = $this->params()->fromQuery('nrPedido');
+        $modEmissaoNota         = $this->params()->fromQuery('mod');
+        $destCpfCnpjEmissaoNota = $this->params()->fromQuery('destCpfCnpj'); // cpfcnpj informados no caixa, quando o pedido não possui
+
+        $post                   = $this->getRequest()->getPost();
 
         // get the db adapter
         $sm = $this->getServiceLocator();
@@ -1893,6 +1901,15 @@ class NotaController extends OrangeWebAbstractActionController{
                 //Recuperar dados do cliente do pedido
                 $clienteExistente    =   $pedidoTable->recuperaClienteNumeroPedido($nrPedido);
 
+                if (is_array($clienteExistente)) {
+                    if (((int)$clienteExistente['0']['CD_CLIENTE'] == (int)"1") &&
+                        ($destCpfCnpjEmissaoNota != '')) {
+                        $clienteTable              = new ClienteTable($dbAdapter);
+                        $searchCpfCnpjEmissaoNota  =  str_ireplace(".","",  str_ireplace("/","",str_ireplace("-","",$destCpfCnpjEmissaoNota)));
+                        $clienteExistente          =  $clienteTable->recuperaClienteNumeroCgcCpf($searchCpfCnpjEmissaoNota);
+                    }
+                }
+
                 //Impostos
                 // valor base igual (bruto - descontos = liquido)
                 $baseCalculoImpostos = !empty($pedidoExistente['VL_TOTAL_LIQUIDO']) ? $pedidoExistente['VL_TOTAL_LIQUIDO'] : $pedidoExistente['VL_TOTAL_BRUTO'];
@@ -1908,6 +1925,12 @@ class NotaController extends OrangeWebAbstractActionController{
                 $totalPrev          = ((float)($baseCalculoImpostos * $aliquotaPrev)    / 100);
                 $mod                = trim($dadosConfiguracaoNF[0]['DS_NOTA_PADRAO']) == 'NFE' ? '55' : '65';
 
+                //Se foi informado um modelo de nota na tela de recebimento do pedido, este deve ser sobrescrito
+                //Senão será considerado o da configuração padrão
+                if (((int)$modEmissaoNota == 55) || ((int)$modEmissaoNota == 65)) {
+                    $mod = $modEmissaoNota;
+                }
+
                 //Prepara um objeto Zend\Stdlib\Parameters
                 $post->set('infNFE',($notaExistente ? $notaExistente['infNFE'] : ''));
                 $post->set('nrPedido',$nrPedido);
@@ -1916,8 +1939,7 @@ class NotaController extends OrangeWebAbstractActionController{
                 $post->set('nome_paciente',null);
                 $post->set('cpf_paciente',null);
                 $post->set('nascimento_paciente',null);
-                $post->set('codCliente',$pedidoExistente['CD_CLIENTE']);
-
+                $post->set('codCliente',$clienteExistente[0]['CD_CLIENTE']);
                 $post->set('destNome',$clienteExistente[0]['DS_NOME_RAZAO_SOCIAL']);
                 $post->set('destCNPJ',$clienteExistente[0]['NR_CGC_CPF']);
 

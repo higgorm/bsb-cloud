@@ -564,7 +564,6 @@ class ClienteController extends OrangeWebAbstractActionController
         $request    = $this->getRequest();
         $data       = $request->getPost();
         $search     = str_ireplace(".","",  str_ireplace("/","",str_ireplace("-","",$data['nr_cgc_cpf'])));
-
         $nrCgcCpf = $this->getTable()->getClientePorNrCgcCpf($search);
 
         if (count($nrCgcCpf)) {

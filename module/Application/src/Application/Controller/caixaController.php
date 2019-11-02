@@ -15,6 +15,7 @@ use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Form\CaixaForm;
 use Zend\Db\Adapter\Driver\ConnectionInterface;
+use Application\Model\NotaTable;
 
 /**
  *
@@ -238,10 +239,14 @@ class CaixaController extends OrangeWebAbstractActionController {
         $dbAdapter = $this->getAdapter();
 
         try {
-            $data = array();
-            $session = new Container("orangeSessionContainer");
-            $request = $this->getRequest();
-            $objPedido = new \Application\Model\PedidoTable($dbAdapter);
+            $data       = array();
+            $session    = new Container("orangeSessionContainer");
+            $request    = $this->getRequest();
+            $objPedido  = new \Application\Model\PedidoTable($dbAdapter);
+
+            $notaTable      = new NotaTable($dbAdapter);
+            $configPadrao   = $notaTable->getConfig('1');
+            $modeloNota     = (trim($configPadrao['DS_NOTA_PADRAO']) == 'NFE') ? (int)'55' : (int)'65';
 
             if ($request->isPost()) {
 
@@ -252,10 +257,12 @@ class CaixaController extends OrangeWebAbstractActionController {
 
                 $data = $request->getPost();
 
-                $arrNrPedido  = explode(',', $data['nrPedido']);
-                $nrPedido     = $arrNrPedido[0];
-                $vlTotalTroco = 0;
-                $vlTotalBruto = 0;                
+                $arrNrPedido    = explode(',', $data['nrPedido']);
+                $nrPedido       = $arrNrPedido[0];
+                $modEmissao     = ($data['modEmissao'] != '')  ? (int)$data['modEmissao']    :  $modeloNota;
+                $destCpfCnpj    = ($data['destCpfCnpj'] != '') ? trim($data['destCpfCnpj']) :  ''; //somente se o pedido, nao tem cpf/cnpj no pedido
+                $vlTotalTroco   = 0;
+                $vlTotalBruto   = 0;
 
                 //Alterado para receber apenas um pedido por vez
                 //foreach ($arrNrPedido as $value) {
@@ -439,18 +446,29 @@ class CaixaController extends OrangeWebAbstractActionController {
                 $dbAdapter->getDriver()->getConnection()->commit();
 
                 //Se funcionou tudo, cria uma NFe apartir do pedido, salva e envia
-                $this->redirect()->toUrl("/nota/gera-nfe-pedido?nrPedido=".$nrPedido);
+                if ($cdCliente == 1) {
+                    $this->redirect()->toUrl("/nota/gera-nfe-pedido?nrPedido=".$nrPedido."&mod=".$modEmissao."&destCpfCnpj=".$destCpfCnpj);
+                } else {
+                    $this->redirect()->toUrl("/nota/gera-nfe-pedido?nrPedido=".$nrPedido."&mod=".$modEmissao);
+                }
+
+
+
             }
+
+
 
             $view = new ViewModel(array(
                 'cdCliente'     => $this->params()->fromQuery('cdCliente'),
+                'cliente'       => $objPedido->recuperaClienteNumeroPedido($this->params()->fromQuery('nrPedido')),
                 'nrPedido'      => $this->params()->fromQuery('nrPedido'),
                 'vlPedido'      => $this->params()->fromQuery('vlPedido'),
                 'nrCaixa'       => $this->params()->fromQuery('nrCaixa'),
                 'listaFormaPagamento'   => $objPedido->listaFormaPagamento(),
                 'listaTipoPagamento'    => $objPedido->listaTipoPagamento(),
                 'listaCartao'           => $objPedido->listaCartao(),
-                'listaBanco'            => $objPedido->listaBanco()
+                'listaBanco'            => $objPedido->listaBanco(),
+                'modeloNota'            => $modeloNota,
             ));
 
             $view->setTerminal(true);

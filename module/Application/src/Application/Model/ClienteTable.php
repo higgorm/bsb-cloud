@@ -158,13 +158,33 @@ class ClienteTable extends AbstractTableGateway
         ))
         ->where(array(
                 'nr_cgc_cpf' => trim($nrCgcCpf),
-                'dt_exclusao' => ''
+               // 'dt_exclusao' => ''
         ));
 
         $rowset = $this->selectWith($select);
         $row = $rowset->current();
 
         return $row;
+    }
+
+    /**
+     * @param $nuPedido
+     * @return mixed
+     */
+    public function recuperaClienteNumeroCgcCpf($nrCgcCpf) {
+        $select = "SELECT C.*
+                   FROM TB_CLIENTE C
+                   WHERE C.NR_CGC_CPF = ?";
+
+        $statement      = $this->adapter->query($select);
+        $results        = $statement->execute(array('nr_cgc_cpf' => $nrCgcCpf));
+        $returnArray    = array();
+
+        foreach ($results as $result) {
+            $returnArray[] = $result;
+        }
+
+        return $returnArray;
     }
 
 

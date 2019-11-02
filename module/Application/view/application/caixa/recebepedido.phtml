@@ -10,6 +10,13 @@
                             </div>
                             <div class="col-md-12"></div>
 
+
+                            <div class="col-md-3">
+                                <label class="control-label text-info">Modelo de emissão da nota fiscal:</label>
+                                <input type="radio" value="55" name="modEmissao" <?php if($modeloNota == '55') echo "checked" ?>>55 (NF-e) &nbsp;&nbsp;
+                                <input type="radio" value="65" name="modEmissao" <?php if($modeloNota == '65') echo "checked" ?>>65 (NFC-e)&nbsp;&nbsp;
+                            </div>
+
                             <div class="col-md-3">
                                 <label class="control-label text-info" for="name">Forma pagamento:</label>
 
@@ -22,7 +29,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="control-label text-info" for="name">Tipo pagamento:</label>
                                 <select style="width:100%;" required="required" name="tpPagamento" id="tpPagamento" class="form-control">
                                     <?php
@@ -33,7 +40,9 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-3" id="divCartao" style="display:none;">
+
+
+                            <div class="col-md-2" id="divCartao" style="display:none;">
                                 <label class="control-label text-info" for="name">Cartão:</label>
                                 <select style="width:100%;" required="required" name="tpCartao" id="tpCartao" class="form-control">
                                     <?php
@@ -159,9 +168,11 @@
                                 </button>
                             </div>
                         </div>
-                        <input type="hidden" name="nrPedido" id="nrPedido" value="<?php echo $nrPedido ?>">
-                        <input type="hidden" name="cdCliente" id="cdCliente" value="<?php echo $cdCliente ?>">
-                        <input type="hidden" name="nrCaixa" id="nrCaixa" value="<?php echo $nrCaixa ?>">
+                        <input type="hidden" name="nrPedido"    id="nrPedido"    value="<?php echo $nrPedido ?>"  />
+                        <input type="hidden" name="cdCliente"   id="cdCliente"   value="<?php echo $cliente[0]['CD_CLIENTE'] ?>" />
+                        <input type="hidden" name="nrCaixa"     id="nrCaixa"     value="<?php echo $nrCaixa ?>"   />
+                        <input type="hidden" name="destCpfCnpj" id="destCpfCnpj" value="<?php echo $cliente[0]['NR_CGC_CPF'] ?>"   />
+
                     </div>
                 </div>
             </td>
@@ -241,6 +252,7 @@
         });
 
         $('#btnCancelar').click(function() {
+            $('#bodyDivModalPagamento').html('');
             $('#divModalPagamento').modal('hide');
         });
 
@@ -256,8 +268,12 @@
 
             if ( parseFloat(vpago) >=  parseFloat(cobrado)) {
                 // Mod 55 nf-e é obrigatorio cpf/cnpj
-                modalCpfNota();
-                //prosseguir();
+                if(($.trim($("#destCpfCnpj").val()) == '')){
+                    modalCpfNota();
+                } else {
+                    prosseguir();
+                }
+
             } else {
                 alert('Valor recebido menor que o valor do pedido!');
             }
@@ -314,7 +330,7 @@
 
     // Mod 55 nf-e é obrigatorio cpf/cnpj
     function modalCpfNota() {
-        $('#bodyDivModalCpfNota').load('/pedido/cpf-nota?id=<?php echo $nrPedido ?>');
+        $('#bodyDivModalCpfNota').load('/pedido/cpf-nota?id=<?php echo $nrPedido ?>&modEmissaoCpfNota='+$("input[name='modEmissao']:checked").val());
         $('#divModalCpfNota').modal('show');
     }
     function prosseguir(){

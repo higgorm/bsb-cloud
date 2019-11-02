@@ -6,26 +6,30 @@
 
                 <div class="controls">
                     <div class="controls">
+
                         <div class="col-md-12">
-                            <label class="control-label text-info">Modelo emissão da nota fiscal:</label><span class="text-danger"> *</span><br>
-                            <input type="radio" value="55" name="modEmissao" <?php if($modeloNota == '55') echo "checked" ?>>55 (NF-e) &nbsp;&nbsp;
-                            <input type="radio" value="65" name="modEmissao" <?php if($modeloNota == '65') echo "checked" ?>>65 (NFC-e)&nbsp;&nbsp;
+                            <span class="text-danger">Alerta: </span>
+                        </div>
+                        <div class="col-md-12">
+                            <span class="text-danger">Para emissão do modelo 55 (NF-e) é obrigatorio informar o CPF/CNPJ de cliente um já cadastrado!</span>
+                        </div>
+                        <div class="col-md-12">
+                            <span class="text-danger">Para emissão sem o CPF/CNPJ do cliente, somente o modelo 65 é habilitado.</span>
                         </div>
 
+                        <div class="col-md-12">&nbsp;</div>
                         <div class="col-md-12">&nbsp;</div>
 
                         <div class="col-md-6">
-                            <label class="text-info">CPF / CNPJ: </label>
+                            <label class="text-info">Informe o CPF / CNPJ: </label>
+                            <input type="hidden" name="modEmissaoCpfNota"  id="modEmissaoCpfNota" value="<?php echo $modEmissaoCpfNota ?>"/>
                             <input type="text" class="form-control" name="cpfcnpjEmissao" id="cpfcnpjEmissao"
-                                   value="<?php echo $cliente['nr_cgc_cpf'] ?>" placeholder="Digite o número a ser impresso"
-                                    name='cpfcnpjEmissao' maxlength="17" onkeypress="mascaraCliente(this,'cpfcnpjEmissao')"/>
+                                   value="<?php echo $cliente['nr_cgc_cpf'] ?>" placeholder="Digite o número a ser impresso na nota fiscal"
+                                    name='cpfcnpjEmissao' maxlength="18" onblur="validaDuplicidade(this.value)"/>
                         </div>
 
                         <div class="col-md-12">&nbsp;</div>
 
-                        <div class="col-md-12">
-                            <span class="text-danger">Obs.: Para emissão do modelo 55 (NF-e) é obrigatorio informar o CPF/CNPJ do cliente!</span>
-                        </div>
                     </div>
                 </div>
                 <div class="col-md-12">&nbsp;</div>
@@ -61,67 +65,98 @@
     $(document).ready(function() {
 
         $('#prosseguirModalCpfNota').click(function() {
+           var  nrCpfCnpj       = $.trim($("#cpfcnpjEmissao").val());
+                nrCpfCnpj       = nrCpfCnpj.replace(/[-/\\^$*+?.()|[\]{}]/g, '');
+           var  mod             = $("#modEmissaoCpfNota").val();
+           var  nrCpfCnpjValido = true;
 
-            if ( ($("input[name='modEmissao']:checked").val() == '55') && ($("#cpfcnpjEmissao").val() == '')) {
-                alert('Favor informar o "CPF / CNPJ" para prosseguir!!!');
-                return false;
+           //valida
+            if (nrCpfCnpj != '') {
+                nrCpfCnpjValido = validarCpfCnpj(nrCpfCnpj) ;
+
+                if (nrCpfCnpjValido) {
+                    // se houver cpf/cnpj valido e existente na base de dados
+                    validaExistenciaCpfCnpj(nrCpfCnpj);
+                    return;
+                } else {
+                    alert('Favor informar um "CPF / CNPJ" válido!!!');
+                    return;
+                }
             } else {
-                //prossegue para o recebimento e emissão da nota fiscal de acordo com o modelo selecionado
-                prosseguir();
+                if (mod == '55') {
+                    alert('Para emissão do modelo 55 (NF-e) é obrigatorio informar o CPF/CNPJ de um cliente já cadastrado!');
+                    return;
+                } else {
+                    // se não houver cpf/cnpj  emitir cupom fiscal prossegue para o recebimento e emissão da nota fiscal
+                    prosseguir()
+                }
             }
-
 
         });
 
         $('#cancelarModalCpfNota').click(function() {
+            $('#bodyDivModalCpfNota').html('');
             $('#divModalCpfNota').modal('hide');
         });
 
-
-        cpfcnpjEmissao = function(v){
-
+        // trigger keypress
+        $("#cpfcnpjEmissao").keypress(function(){
+            v =  $(this).val();
             //Remove tudo o que não é dígito
-            v=v.replace(/\D/g,"")
+            v =v.replace(/\D/g,"");
 
             if (v.length <= 14) { //CPF
 
-                //Coloca um ponto entre o terceiro e o quarto dígitos
-                v=v.replace(/(\d{3})(\d)/,"$1.$2")
-
-                //Coloca um ponto entre o terceiro e o quarto dígitos
-                //de novo (para o segundo bloco de números)
-                v=v.replace(/(\d{3})(\d)/,"$1.$2")
-
-                //Coloca um hífen entre o terceiro e o quarto dígitos
-                v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+                return formatar('###.###.###-##',this,true,event);
 
             } else { //CNPJ
 
-                //Coloca ponto entre o segundo e o terceiro dígitos
-                v=v.replace(/^(\d{2})(\d)/,"$1.$2")
-
-                //Coloca ponto entre o quinto e o sexto dígitos
-                v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3")
-
-                //Coloca uma barra entre o oitavo e o nono dígitos
-                v=v.replace(/\.(\d{3})(\d)/,".$1/$2")
-
-                //Coloca um hífen depois do bloco de quatro dígitos
-                v=v.replace(/(\d{4})(\d)/,"$1-$2")
+                return formatar('##.###.###/####-##',this,true,event);
 
             }
 
-            return v;
+        });
+
+
+        validarCpfCnpj = function(nrCpfCnpj) {
+
+            if ((nrCpfCnpj.length < 11) ||
+                        ( nrCpfCnpj.length > 11 && nrCpfCnpj.length < 14)) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
-        mascaraCliente = function(o,f){
-            v_obj=o
-            v_fun=f;
-            v_obj.value = cpfcnpjEmissao(v_obj.value)
+        validaExistenciaCpfCnpj =   function (doc) {
+
+
+            if( doc != "") {
+                $.ajax({
+                    url: "/cliente/valida-duplicidade",
+                    type: "POST",
+                    dataType: "json",
+                    cache : "false",
+                    data: {
+                        nr_cgc_cpf: doc
+                    },
+                    success: function(data) {
+                        if (data.retorno == "S") {
+                            alert('CPF / CNPJ  de número ' + doc + ' não existe entre os clientes cadastrados!');
+                            $("#cpfcnpjEmissao").val("");
+                        }else {
+                            $("#destCpfCnpj").val( $("#cpfcnpjEmissao").val());
+                            prosseguir();
+                        }
+                    }
+                });
+            }
+
+
         }
 
-        // trigger keypress
-        $("#cpfcnpjEmissao").keypress();
+
+
     });
 
 </script>
