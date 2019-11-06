@@ -246,7 +246,8 @@ class CaixaController extends OrangeWebAbstractActionController {
 
             $notaTable      = new NotaTable($dbAdapter);
             $configPadrao   = $notaTable->getConfig('1');
-            $modeloNota     = (trim($configPadrao['DS_NOTA_PADRAO']) == 'NFE') ? (int)'55' : (int)'65';
+
+            $modeloNota     = (trim($configPadrao[0]['DS_NOTA_PADRAO']) == 'NFE') ? (int)'55' : (int)'65';
 
             if ($request->isPost()) {
 
